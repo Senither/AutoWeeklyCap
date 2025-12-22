@@ -1,7 +1,7 @@
 ﻿using Dalamud.Configuration;
 using System;
 
-namespace SamplePlugin;
+namespace AutoWeeklyCap;
 
 [Serializable]
 public class Configuration : IPluginConfiguration

@@ -2,11 +2,11 @@
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using System.IO;
+using AutoWeeklyCap.Windows;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-using SamplePlugin.Windows;
 
-namespace SamplePlugin;
+namespace AutoWeeklyCap;
 
 public sealed class Plugin : IDalamudPlugin
 {
