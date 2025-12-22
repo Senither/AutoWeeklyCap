@@ -15,4 +15,9 @@ public class Configuration : IPluginConfiguration
     {
         Plugin.PluginInterface.SavePluginConfig(this);
     }
+
+    public int GetWeeklyTomes(string character)
+    {
+        return 0;
+    }
 }

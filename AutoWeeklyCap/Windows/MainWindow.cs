@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Numerics;
+using AutoWeeklyCap.IPC;
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using Lumina.Excel.Sheets;
 
 namespace AutoWeeklyCap.Windows;
@@ -16,7 +19,7 @@ public class MainWindow : Window, IDisposable
     {
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(375, 330),
+            MinimumSize = new Vector2(460, 400),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 
@@ -27,11 +30,22 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (ImGui.Button("Manage Characters"))
-        {
+        ImGui.BeginTable("header-options", 2);
+
+        ImGui.TableNextColumn();
+        ImGui.TextColored(ImGuiColors.HealerGreen, LifestreamIPC.IsEnabled ? "✓ Lifestream" : "✖ Lifestream");
+        ImGui.SameLine();
+        ImGui.TextColored(ImGuiColors.HealerGreen, AutoDutyIPC.IsEnabled ? "✓ AutoDuty" : "✖ AutoDuty");
+
+        ImGui.TableNextColumn();
+        if (ImGui.Button("Start Tomestone Capping"))
+            Plugin.Log.Debug("Tomestone capper should start here...");
+        ImGui.SameLine();
+        if (ImGui.Button("Settings"))
             plugin.ToggleConfigUi();
-        }
-        
+
+        ImGui.EndTable();
+
         // unsafe
         // {
         //     var count = InventoryManager.Instance()->GetWeeklyAcquiredTomestoneCount();
@@ -46,47 +60,58 @@ public class MainWindow : Window, IDisposable
         // DuoLog.Information("Lifestream is busy: " + LifestreamIPC.IsBusy.Invoke());
         // DuoLog.Information("Relogging to alt: " + LifestreamIPC.ChangeCharacter("Zenith Ether","Raiden"));
 
-        ImGui.Spacing();
-
         using (var child = ImRaii.Child("SomeChildWithAScrollbar", Vector2.Zero, true))
         {
-            // Check if this child is drawing
             if (child.Success)
             {
-                ImGuiHelpers.ScaledDummy(20.0f);
-
-                // Example for other services that Dalamud provides.
-                // PlayerState provides a wrapper filled with information about the player character.
-
-                var playerState = Plugin.PlayerState;
-                if (!playerState.IsLoaded)
+                if (Plugin.DataManager.GetExcelSheet<TerritoryType>()
+                          .TryGetRow(plugin.Configuration.ZoneId, out var territoryRow))
                 {
-                    ImGui.Text("Our local player is currently not logged in.");
-                    return;
-                }
-
-                if (!playerState.ClassJob.IsValid)
-                {
-                    ImGui.Text("Our current job is currently not valid.");
-                    return;
-                }
-
-                // If you want to see the Macro representation of this SeString use `.ToMacroString()`
-                // More info about SeStrings: https://dalamud.dev/plugin-development/sestring/
-                ImGui.Text(
-                    $"Our current job is ({playerState.ClassJob.RowId}) '{playerState.ClassJob.Value.Abbreviation}' with level {playerState.Level}");
-
-                // Example for querying Lumina, getting the name of our current area.
-                var territoryId = Plugin.ClientState.TerritoryType;
-                if (Plugin.DataManager.GetExcelSheet<TerritoryType>().TryGetRow(plugin.Configuration.ZoneId, out var territoryRow))
-                {
-                    ImGui.Text($"We are currently in ({plugin.Configuration.ZoneId}) '{territoryRow.PlaceName.Value.Name}'");
+                    ImGui.Text(
+                        $"Selected duty is ({plugin.Configuration.ZoneId}) '{territoryRow.PlaceName.Value.Name}'");
                 }
                 else
                 {
-                    ImGui.Text("Invalid territory.");
+                    ImGui.Text("Enter a valid zone ID in the settings");
                 }
             }
+
+            ImGui.Spacing();
+            ImGui.Spacing();
+
+            ImGui.BeginTable("Characters", 2);
+
+            ImGui.TableNextColumn();
+            ImGui.TableHeader(" Character");
+            ImGui.TableNextColumn();
+            ImGui.TableHeader(" Tomes");
+
+            var charactersFound = 0;
+            var totalTomesCollected = 0;
+            var weeklyTomeLimit = InventoryManager.GetLimitedTomestoneWeeklyLimit();
+
+            foreach (var character in plugin.Configuration.Characters)
+            {
+                if (character.Length == 0)
+                    continue;
+
+                charactersFound++;
+                var tomes = plugin.Configuration.GetWeeklyTomes(character);
+                totalTomesCollected += tomes;
+                
+                ImGui.TableNextColumn();
+                ImGui.Text($" {character}");
+                ImGui.TableNextColumn();
+                ImGui.Text($" {tomes}/{weeklyTomeLimit}");    
+            }
+            
+            ImGui.EndTable();
+            
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.Spacing();
+            
+            ImGui.Text($"Weekly tomestone cap is at {totalTomesCollected}/{weeklyTomeLimit * charactersFound}");
         }
     }
 }

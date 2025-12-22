@@ -53,8 +53,7 @@ public class ConfigWindow : Window, IDisposable
         
         ImGui.Text("The characters must be in the format:");
         ImGui.Text("    FirstName LastName@Server");
-        ImGui.Text("If the character name is incorrectly formatted, Lifestream");
-        ImGui.Text("can enter a login loop when trying to relog.");
+        ImGui.TextWrapped("If the character name is incorrectly formatted, Lifestream can enter a login loop when trying to relog.");
     }
 
     protected void drawCharacterInput(int index)
