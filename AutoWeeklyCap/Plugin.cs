@@ -69,9 +69,6 @@ public sealed class Plugin : IDalamudPlugin
         MainWindow.Dispose();
 
         CommandManager.RemoveHandler(CommandName);
-
-        IPCSubscriber.DisposeAll(AutoDutyIPC.disposalTokens);
-        IPCSubscriber.DisposeAll(LifestreamIPC.disposalTokens);
     }
 
     private void OnCommand(string command, string args)

@@ -2,6 +2,7 @@
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
+using Lumina.Excel.Sheets;
 
 namespace AutoWeeklyCap.Windows;
 
@@ -9,50 +10,59 @@ public class ConfigWindow : Window, IDisposable
 {
     private readonly Configuration configuration;
 
-    // We give this window a constant ID using ###.
-    // This allows for labels to be dynamic, like "{FPS Counter}fps###XYZ counter window",
-    // and the window ID will always be "###XYZ counter window" for ImGui
-    public ConfigWindow(Plugin plugin) : base("A Wonderful Configuration Window###With a constant ID")
+    public ConfigWindow(Plugin plugin) : base("Auto Weekly Tomestone Settings")
     {
-        Flags = ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
-                ImGuiWindowFlags.NoScrollWithMouse;
-
-        Size = new Vector2(232, 90);
-        SizeCondition = ImGuiCond.Always;
+        Flags = ImGuiWindowFlags.NoResize;
+        
+        SizeConstraints = new WindowSizeConstraints
+        {
+            MinimumSize = new Vector2(350, 420),
+            MaximumSize = new Vector2(350, 420)
+        };
 
         configuration = plugin.Configuration;
     }
 
     public void Dispose() { }
 
-    public override void PreDraw()
-    {
-        // Flags must be added or removed before Draw() is being called, or they won't apply
-        if (configuration.IsConfigWindowMovable)
-        {
-            Flags &= ~ImGuiWindowFlags.NoMove;
-        }
-        else
-        {
-            Flags |= ImGuiWindowFlags.NoMove;
-        }
-    }
-
     public override void Draw()
     {
-        // Can't ref a property, so use a local copy
-        var configValue = configuration.SomePropertyToBeSavedAndWithADefault;
-        if (ImGui.Checkbox("Random Config Bool", ref configValue))
+        var zoneId = configuration.ZoneId;
+        if (ImGui.InputUInt("Duty ID", ref zoneId))
         {
-            configuration.SomePropertyToBeSavedAndWithADefault = configValue;
-            // Can save immediately on change if you don't want to provide a "Save and Close" button
+            configuration.ZoneId = zoneId;
             configuration.Save();
         }
 
-        var movable = configuration.IsConfigWindowMovable;
-        if (ImGui.Checkbox("Movable Config Window", ref movable))
+        if (Plugin.DataManager.GetExcelSheet<TerritoryType>().TryGetRow(configuration.ZoneId, out var territoryRow))
         {
-            configuration.IsConfigWindowMovable = movable;
+            ImGui.Text($"Selected duty: {territoryRow.PlaceName.Value.Name}");
+        }
+        else
+        {
+            ImGui.Text("Invalid territory.");
+        }
+
+        ImGui.Spacing();
+        ImGui.Spacing();
+
+        for (var i = 0; i < 9; i++)
+        {
+            drawCharacterInput(i);
+        }
+        
+        ImGui.Text("The characters must be in the format:");
+        ImGui.Text("    FirstName LastName@Server");
+        ImGui.Text("If the character name is incorrectly formatted, Lifestream");
+        ImGui.Text("can enter a login loop when trying to relog.");
+    }
+
+    protected void drawCharacterInput(int index)
+    {
+        var character = configuration.Characters[index];
+        if (ImGui.InputText("Character " + (index + 1), ref character))
+        {
+            configuration.Characters[index] = character;
             configuration.Save();
         }
     }
