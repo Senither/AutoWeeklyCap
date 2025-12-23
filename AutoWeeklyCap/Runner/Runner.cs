@@ -44,13 +44,35 @@ public class Runner
 
         LifestreamIPC.Abort();
         AutoDutyIPC.Stop();
-        
+
         Plugin.Log.Debug("Stopped weekly cap runner");
     }
 
     public bool IsRunning()
     {
         return state != State.Waiting;
+    }
+
+    public string GetStatus()
+    {
+        switch (state)
+        {
+            case State.Waiting:
+                return "idle";
+            case State.CheckingTomestone:
+                return "Checking Tomestone";
+            case State.StartingAutoDuty:
+                return "Starting AutoDuty";
+            case State.RunningAutoDuty:
+                return "Running AutoDuty";
+            case State.StartingCharacterSwap:
+                return "Starting Character Swap";
+            case State.SwitchingCharacter:
+                return "Switching Character to " + currentCharacter;
+
+            default:
+                return "unknown";
+        }
     }
 
     public void Tick()
@@ -98,7 +120,10 @@ public class Runner
     private void StartAutoDuty()
     {
         if (!AutoDutyIPC.IsStopped())
+        {
+            state = State.RunningAutoDuty;
             return;
+        }
 
         Plugin.Log.Debug($"Starting auto duty for ${currentCharacter} in zone ${configuration.ZoneId}");
         AutoDutyIPC.Run(configuration.ZoneId, 1, false);

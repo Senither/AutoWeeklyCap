@@ -20,7 +20,7 @@ public class FrameworkListener
         if (enforceUpdateStateAt > unixNow)
             return;
 
-        enforceUpdateStateAt = unixNow + 5;
+        enforceUpdateStateAt = unixNow + 2;
 
         Utils.UpdateWeeklyAcquiredTomestonesForCurrentCharacter(Configuration);
 

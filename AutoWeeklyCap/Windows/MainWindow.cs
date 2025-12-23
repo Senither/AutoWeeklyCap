@@ -62,6 +62,8 @@ public class MainWindow : Window, IDisposable
             plugin.ToggleConfigUi();
 
         ImGui.EndTable();
+        
+        ImGui.Text("Status: " + Plugin.Runner.GetStatus());
 
         using (var child = ImRaii.Child("SomeChildWithAScrollbar", Vector2.Zero, true))
         {
