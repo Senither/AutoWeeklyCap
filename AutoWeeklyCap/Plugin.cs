@@ -32,7 +32,7 @@ public sealed class Plugin : IDalamudPlugin
 
     [PluginService]
     internal static IPluginLog Log { get; private set; } = null!;
-    
+
     public static Runner.Runner Runner { get; set; }
 
     private const string CommandName = "/awc";
@@ -61,7 +61,7 @@ public sealed class Plugin : IDalamudPlugin
 
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
-            HelpMessage = "A useful message to display in /xlhelp"
+            HelpMessage = "Toggles the Auto Weekly Cap main window"
         });
 
         Framework.Update += FrameworkListener.OnFrameworkUpdate;
@@ -69,8 +69,6 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
-
-        ToggleMainUi();
     }
 
     public void Dispose()

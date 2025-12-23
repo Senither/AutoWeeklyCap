@@ -1,8 +1,15 @@
 {
-  "Author": "your name here",
-  "Name": "AutoWeeklyCap",
-  "Punchline": "A short one-liner that shows up in /xlplugins.",
-  "Description": "A description that shows up in /xlplugins. List any major slash-command(s).",
+  "Author": "Senither",
+  "Name": "Auto Weekly Capper",
+  "Punchline": "Cap your weekly tomestones automatically",
+  "Description": "Automatically tracks and caps your weekly tomestones for all characters, all at once.",
   "ApplicableVersion": "any",
-  "Tags": []
+  "Tags": [
+    "auto",
+    "tomestone",
+    "weekly"
+  ],
+   "CategoryTags": [
+    "Utility"
+  ]
 }
