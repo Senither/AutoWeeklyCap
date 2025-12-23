@@ -16,6 +16,9 @@ public class LifestreamIPC
 
     [EzIPC]
     internal static Func<string, string, ErrorCode> ChangeCharacter;
+    
+    [EzIPC]
+    internal static Action Abort;
 
     internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
 }

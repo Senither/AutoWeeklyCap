@@ -14,7 +14,6 @@ namespace AutoWeeklyCap.Windows;
 public class MainWindow : Window, IDisposable
 {
     private readonly Plugin plugin;
-    private bool isRunnering = false;
 
     public MainWindow(Plugin plugin) : base("Auto Weekly Tomestone Capper##main-window")
     {
@@ -39,20 +38,21 @@ public class MainWindow : Window, IDisposable
         ImGui.TextColored(ImGuiColors.HealerGreen, AutoDutyIPC.IsEnabled ? "✓ AutoDuty" : "✖ AutoDuty");
 
         ImGui.TableNextColumn();
-        if (isRunnering)
+        if (Plugin.Runner.IsRunning())
         {
             if (ImGui.Button(" Stop "))
             {
-                Plugin.Log.Debug("Tomestone capper should stop here...");
-                isRunnering = false;
+                Plugin.Runner.Stop();
             }
         }
         else
         {
             if (ImGui.Button(" Start "))
             {
-                Plugin.Log.Debug("Tomestone capper should start here...");
-                isRunnering = true;
+                if (LifestreamIPC.IsEnabled && AutoDutyIPC.IsEnabled)
+                {
+                    Plugin.Runner.Start();
+                }
             }
         }
 
@@ -62,11 +62,6 @@ public class MainWindow : Window, IDisposable
             plugin.ToggleConfigUi();
 
         ImGui.EndTable();
-
-        // DuoLog.Information("Lifestream is enabled: " + LifestreamIPC.IsEnabled);
-        // DuoLog.Information("Lifestream is busy: " + LifestreamIPC.IsBusy.Invoke());
-        // DuoLog.Information("AutoDuty is enabled: " + AutoDutyIPC.IsEnabled);
-        // DuoLog.Information("Relogging to alt: " + LifestreamIPC.ChangeCharacter("Zenith Ether","Raiden"));
 
         using (var child = ImRaii.Child("SomeChildWithAScrollbar", Vector2.Zero, true))
         {

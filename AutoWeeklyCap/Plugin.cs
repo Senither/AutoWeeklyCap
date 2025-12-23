@@ -1,4 +1,6 @@
-﻿using AutoWeeklyCap.Windows;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
+using AutoWeeklyCap.Windows;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
@@ -30,6 +32,8 @@ public sealed class Plugin : IDalamudPlugin
 
     [PluginService]
     internal static IPluginLog Log { get; private set; } = null!;
+    
+    public static Runner.Runner Runner { get; set; }
 
     private const string CommandName = "/awc";
 
@@ -45,6 +49,7 @@ public sealed class Plugin : IDalamudPlugin
         ECommonsMain.Init(PluginInterface, this, Module.DalamudReflector);
 
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        Runner = new(Configuration);
 
         FrameworkListener = new(this);
 
