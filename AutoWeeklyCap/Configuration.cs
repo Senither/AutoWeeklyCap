@@ -1,5 +1,6 @@
-﻿using Dalamud.Configuration;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using Dalamud.Configuration;
 
 namespace AutoWeeklyCap;
 
@@ -10,6 +11,8 @@ public class Configuration : IPluginConfiguration
 
     public uint ZoneId { get; set; } = 0;
     public string[] Characters { get; set; } = ["", "", "", "", "", "", "", "", ""];
+    
+    public Dictionary<string, int> CollectedTomes { get; set; } = new();
 
     public void Save()
     {
@@ -18,6 +21,6 @@ public class Configuration : IPluginConfiguration
 
     public int GetWeeklyTomes(string character)
     {
-        return 0;
+        return CollectedTomes.GetValueOrDefault(character, 0);
     }
 }

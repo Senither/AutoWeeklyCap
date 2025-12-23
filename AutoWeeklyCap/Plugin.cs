@@ -17,8 +17,11 @@ public sealed class Plugin : IDalamudPlugin
     internal static ICommandManager CommandManager { get; private set; } = null!;
 
     [PluginService]
-    internal static IClientState ClientState { get; private set; } = null!;
+    internal static IFramework Framework { get; private set; } = null!;
 
+    [PluginService]
+    internal static IClientState ClientState { get; private set; } = null!;
+    
     [PluginService]
     internal static IPlayerState PlayerState { get; private set; } = null!;
 
@@ -35,12 +38,15 @@ public sealed class Plugin : IDalamudPlugin
     public readonly WindowSystem WindowSystem = new("AutoWeeklyCap");
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
+    private FrameworkListener FrameworkListener { get; init; }
 
     public Plugin()
     {
         ECommonsMain.Init(PluginInterface, this, Module.DalamudReflector);
-        
+
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+
+        FrameworkListener = new(this);
 
         ConfigWindow = new ConfigWindow(this);
         MainWindow = new MainWindow(this);
@@ -53,10 +59,12 @@ public sealed class Plugin : IDalamudPlugin
             HelpMessage = "A useful message to display in /xlhelp"
         });
 
+        Framework.Update += FrameworkListener.OnFrameworkUpdate;
+
         PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
-        
+
         ToggleMainUi();
     }
 

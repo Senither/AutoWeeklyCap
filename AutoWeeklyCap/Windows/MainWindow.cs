@@ -3,7 +3,6 @@ using System.Numerics;
 using AutoWeeklyCap.IPC;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
-using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -112,6 +111,12 @@ public class MainWindow : Window, IDisposable
             ImGui.Spacing();
             
             ImGui.Text($"Weekly tomestone cap is at {totalTomesCollected}/{weeklyTomeLimit * charactersFound}");
+
+            if (ImGui.Button("Reset Weekly Tomes"))
+            {
+                plugin.Configuration.CollectedTomes.Clear();
+                plugin.Configuration.Save();
+            }
         }
     }
 }

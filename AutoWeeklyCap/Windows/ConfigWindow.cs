@@ -48,7 +48,7 @@ public class ConfigWindow : Window, IDisposable
 
         for (var i = 0; i < 9; i++)
         {
-            drawCharacterInput(i);
+            DrawCharacterInput(i);
         }
         
         ImGui.Text("The characters must be in the format:");
@@ -56,7 +56,7 @@ public class ConfigWindow : Window, IDisposable
         ImGui.TextWrapped("If the character name is incorrectly formatted, Lifestream can enter a login loop when trying to relog.");
     }
 
-    protected void drawCharacterInput(int index)
+    protected void DrawCharacterInput(int index)
     {
         var character = configuration.Characters[index];
         if (ImGui.InputText("Character " + (index + 1), ref character))
