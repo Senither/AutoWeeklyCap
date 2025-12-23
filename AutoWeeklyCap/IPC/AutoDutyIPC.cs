@@ -12,9 +12,9 @@ public class AutoDutyIPC
 
     [EzIPC]
     internal static Action Run;
-    
+
     [EzIPC]
     internal static Action<bool> Start;
-    
+
     internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
 }

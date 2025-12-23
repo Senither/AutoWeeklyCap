@@ -5,6 +5,7 @@ using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
+using ECommons.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Lumina.Excel.Sheets;
 
@@ -13,6 +14,7 @@ namespace AutoWeeklyCap.Windows;
 public class MainWindow : Window, IDisposable
 {
     private readonly Plugin plugin;
+    private bool isRunnering = false;
 
     public MainWindow(Plugin plugin) : base("Auto Weekly Tomestone Capper##main-window")
     {
@@ -37,26 +39,33 @@ public class MainWindow : Window, IDisposable
         ImGui.TextColored(ImGuiColors.HealerGreen, AutoDutyIPC.IsEnabled ? "✓ AutoDuty" : "✖ AutoDuty");
 
         ImGui.TableNextColumn();
-        if (ImGui.Button("Start Tomestone Capping"))
-            Plugin.Log.Debug("Tomestone capper should start here...");
+        if (isRunnering)
+        {
+            if (ImGui.Button(" Stop "))
+            {
+                Plugin.Log.Debug("Tomestone capper should stop here...");
+                isRunnering = false;
+            }
+        }
+        else
+        {
+            if (ImGui.Button(" Start "))
+            {
+                Plugin.Log.Debug("Tomestone capper should start here...");
+                isRunnering = true;
+            }
+        }
+
+
         ImGui.SameLine();
-        if (ImGui.Button("Settings"))
+        if (ImGui.Button(" Manage Characters "))
             plugin.ToggleConfigUi();
 
         ImGui.EndTable();
 
-        // unsafe
-        // {
-        //     var count = InventoryManager.Instance()->GetWeeklyAcquiredTomestoneCount();
-        //     var weeklyCap = InventoryManager.GetLimitedTomestoneWeeklyLimit();
-        //
-        //     DuoLog.Information("Weekly tombstones: " + count);
-        //     DuoLog.Information("Weekly cap limit: " + weeklyCap);
-        //     DuoLog.Information("Weekly cap left: " + (weeklyCap - count));
-        // }
-        //
         // DuoLog.Information("Lifestream is enabled: " + LifestreamIPC.IsEnabled);
         // DuoLog.Information("Lifestream is busy: " + LifestreamIPC.IsBusy.Invoke());
+        // DuoLog.Information("AutoDuty is enabled: " + AutoDutyIPC.IsEnabled);
         // DuoLog.Information("Relogging to alt: " + LifestreamIPC.ChangeCharacter("Zenith Ether","Raiden"));
 
         using (var child = ImRaii.Child("SomeChildWithAScrollbar", Vector2.Zero, true))
@@ -67,7 +76,7 @@ public class MainWindow : Window, IDisposable
                           .TryGetRow(plugin.Configuration.ZoneId, out var territoryRow))
                 {
                     ImGui.Text(
-                        $"Selected duty is ({plugin.Configuration.ZoneId}) '{territoryRow.PlaceName.Value.Name}'");
+                        $"Selected duty is {territoryRow.PlaceName.Value.Name} ({plugin.Configuration.ZoneId})");
                 }
                 else
                 {
@@ -97,19 +106,19 @@ public class MainWindow : Window, IDisposable
                 charactersFound++;
                 var tomes = plugin.Configuration.GetWeeklyTomes(character);
                 totalTomesCollected += tomes;
-                
+
                 ImGui.TableNextColumn();
                 ImGui.Text($" {character}");
                 ImGui.TableNextColumn();
-                ImGui.Text($" {tomes}/{weeklyTomeLimit}");    
+                ImGui.Text($" {tomes}/{weeklyTomeLimit}");
             }
-            
+
             ImGui.EndTable();
-            
+
             ImGui.Spacing();
             ImGui.Spacing();
             ImGui.Spacing();
-            
+
             ImGui.Text($"Weekly tomestone cap is at {totalTomesCollected}/{weeklyTomeLimit * charactersFound}");
 
             if (ImGui.Button("Reset Weekly Tomes"))

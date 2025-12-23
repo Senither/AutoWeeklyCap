@@ -11,7 +11,7 @@ public class Configuration : IPluginConfiguration
 
     public uint ZoneId { get; set; } = 0;
     public string[] Characters { get; set; } = ["", "", "", "", "", "", "", "", ""];
-    
+
     public Dictionary<string, int> CollectedTomes { get; set; } = new();
 
     public void Save()

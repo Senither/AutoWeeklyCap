@@ -21,7 +21,7 @@ public sealed class Plugin : IDalamudPlugin
 
     [PluginService]
     internal static IClientState ClientState { get; private set; } = null!;
-    
+
     [PluginService]
     internal static IPlayerState PlayerState { get; private set; } = null!;
 

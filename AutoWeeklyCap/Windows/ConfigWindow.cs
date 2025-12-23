@@ -13,7 +13,7 @@ public class ConfigWindow : Window, IDisposable
     public ConfigWindow(Plugin plugin) : base("Auto Weekly Tomestone Settings")
     {
         Flags = ImGuiWindowFlags.NoResize;
-        
+
         SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new Vector2(350, 420),
@@ -50,10 +50,11 @@ public class ConfigWindow : Window, IDisposable
         {
             DrawCharacterInput(i);
         }
-        
+
         ImGui.Text("The characters must be in the format:");
         ImGui.Text("    FirstName LastName@Server");
-        ImGui.TextWrapped("If the character name is incorrectly formatted, Lifestream can enter a login loop when trying to relog.");
+        ImGui.TextWrapped(
+            "If the character name is incorrectly formatted, Lifestream can enter a login loop when trying to relog.");
     }
 
     protected void DrawCharacterInput(int index)
