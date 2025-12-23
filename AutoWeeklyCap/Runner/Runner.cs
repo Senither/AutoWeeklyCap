@@ -25,7 +25,10 @@ public class Runner
 
         var character = Utils.GetFullCharacterName();
         if (character == null)
-            return false;
+        {
+            StartCharacterSwap();
+            return true;
+        }
 
         currentCharacter = character;
         state = State.CheckingTomestone;
@@ -112,6 +115,7 @@ public class Runner
 
         var tomes = Utils.GetWeeklyAcquiredTomestoneCount();
 
+        timestamp = DateTime.UtcNow;
         state = InventoryManager.GetLimitedTomestoneWeeklyLimit() == tomes
                     ? State.StartingCharacterSwap
                     : State.StartingAutoDuty;
@@ -119,17 +123,23 @@ public class Runner
 
     private void StartAutoDuty()
     {
-        if (!AutoDutyIPC.IsStopped())
+        if (Plugin.ClientState.TerritoryType == configuration.ZoneId)
         {
             state = State.RunningAutoDuty;
+            AutoDutyIPC.Run(configuration.ZoneId, 1, false);
+            return;
+        }
+        
+        Plugin.Log.Debug($"Seconds elapsed: {(DateTime.UtcNow - timestamp).Seconds}, AutoDuty started: {!AutoDutyIPC.IsStopped()}");
+        if ((DateTime.UtcNow - timestamp).Seconds > 10)
+        {
+            Plugin.Log.Debug("Attempting to start auto duty for 10 seconds, stopping runner");
+            Stop();
             return;
         }
 
         Plugin.Log.Debug($"Starting auto duty for ${currentCharacter} in zone ${configuration.ZoneId}");
         AutoDutyIPC.Run(configuration.ZoneId, 1, false);
-
-        state = State.RunningAutoDuty;
-        timestamp = DateTime.UtcNow;
     }
 
     private void RunAutoDuty()
@@ -155,7 +165,6 @@ public class Runner
         foreach (var character in configuration.Characters)
         {
             var tomes = configuration.CollectedTomes.GetValueOrDefault(character, 0);
-
             if (tomes == limit)
                 continue;
 
@@ -168,7 +177,9 @@ public class Runner
             }
 
             Plugin.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
+            currentCharacter = character;
             state = State.SwitchingCharacter;
+            timestamp = DateTime.UtcNow;
             LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
 
             return;

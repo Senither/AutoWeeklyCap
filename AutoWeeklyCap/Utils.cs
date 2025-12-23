@@ -11,7 +11,11 @@ public class Utils
         if (!Plugin.PlayerState.IsLoaded)
             return null;
 
-        return Plugin.PlayerState.CharacterName + "@" + Plugin.PlayerState.HomeWorld.Value.Name.ToString();
+        var world = Plugin.PlayerState.HomeWorld.ValueNullable;
+        if (world == null)
+            return null;
+        
+        return Plugin.PlayerState.CharacterName + "@" + world.Value.Name.ToString();
     }
 
     public static int GetWeeklyAcquiredTomestoneCount()
