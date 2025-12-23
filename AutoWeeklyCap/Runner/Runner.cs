@@ -138,6 +138,9 @@ public class Runner
             return;
         }
 
+        if (Utils.IsPluginEnabled("BossModReborn"))
+            Utils.RunShellCommand("bmrai on");
+
         Plugin.Log.Debug($"Starting auto duty for ${currentCharacter} in zone ${configuration.ZoneId}");
         AutoDutyIPC.Run(configuration.ZoneId, 1, false);
     }

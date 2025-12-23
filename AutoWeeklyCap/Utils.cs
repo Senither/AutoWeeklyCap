@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.System.String;
+using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Client.UI.Shell;
 
 namespace AutoWeeklyCap;
 
@@ -14,7 +17,7 @@ public class Utils
         var world = Plugin.PlayerState.HomeWorld.ValueNullable;
         if (world == null)
             return null;
-        
+
         return Plugin.PlayerState.CharacterName + "@" + world.Value.Name.ToString();
     }
 
@@ -27,7 +30,7 @@ public class Utils
                 return InventoryManager.Instance()->GetWeeklyAcquiredTomestoneCount();
             }
         }
-        catch (Exception e)
+        catch (Exception _)
         {
             return 0;
         }
@@ -43,10 +46,44 @@ public class Utils
 
         if (configuration.CollectedTomes.GetValueOrDefault(character) == tomes)
             return false;
-        
+
         configuration.CollectedTomes[character] = tomes;
         configuration.Save();
 
         return true;
+    }
+
+    public static bool IsPluginEnabled(string name)
+    {
+        foreach (var plugin in Plugin.PluginInterface.InstalledPlugins)
+        {
+            if (plugin.InternalName == name && plugin.IsLoaded)
+                return true;
+        }
+
+        return false;
+    }
+
+    public static bool RunShellCommand(string commandString)
+    {
+        try
+        {
+            unsafe
+            {
+                var command = new Utf8String(
+                    commandString.StartsWith('/')
+                        ? commandString
+                        : "/" + commandString
+                );
+
+                RaptureShellModule.Instance()->ExecuteCommandInner(&command, UIModule.Instance());
+            }
+
+            return true;
+        }
+        catch (Exception _)
+        {
+            return false;
+        }
     }
 }
