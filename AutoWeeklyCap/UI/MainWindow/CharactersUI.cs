@@ -1,8 +1,7 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using AutoWeeklyCap.Config;
 using Dalamud.Bindings.ImGui;
-using Dalamud.Interface.Utility.Raii;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using Lumina.Excel.Sheets;
 
 namespace AutoWeeklyCap.UI.MainWindow;
 
@@ -17,16 +16,16 @@ internal static class CharactersUI
         ImGui.TableNextColumn();
         ImGui.TableHeader(" Tomes");
 
-        var charactersFound = 0;
+        var charactersEnabled = 0;
         var totalTomesCollected = 0;
         var weeklyTomeLimit = InventoryManager.GetLimitedTomestoneWeeklyLimit();
 
-        foreach (var character in Plugin.Config.Characters)
+        foreach (var (character, option) in Plugin.Config.Characters)
         {
-            if (character.Length == 0)
-                continue;
+            if (!option.Enabled)
+                return;
 
-            charactersFound++;
+            charactersEnabled++;
             var tomes = Plugin.Config.GetWeeklyTomes(character);
             totalTomesCollected += tomes;
 
@@ -42,7 +41,7 @@ internal static class CharactersUI
         ImGui.Spacing();
         ImGui.Spacing();
 
-        ImGui.Text($"Weekly tomestone cap is at {totalTomesCollected}/{weeklyTomeLimit * charactersFound}");
+        ImGui.Text($"Weekly tomestone cap is at {totalTomesCollected}/{weeklyTomeLimit * charactersEnabled}");
 
         if (ImGui.Button("Reset Weekly Tomes"))
         {

@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
+using AutoWeeklyCap.Config;
 using AutoWeeklyCap.UI.Windows;
 using AutoWeeklyCap.Windows;
 using Dalamud.Game.Command;
@@ -8,6 +10,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ECommons;
+using Newtonsoft.Json;
 
 namespace AutoWeeklyCap;
 
@@ -15,7 +18,7 @@ public sealed class Plugin : IDalamudPlugin
 {
     internal static Plugin Instance;
     internal static Configuration Config => Instance.Configuration;
-    
+
     [PluginService]
     internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
 
@@ -46,20 +49,29 @@ public sealed class Plugin : IDalamudPlugin
     public readonly WindowSystem WindowSystem = new("AutoWeeklyCap");
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
-    private FrameworkListener FrameworkListener { get; init; }
+    private FrameworkListener FrameworkListener { get; init; } = new();
 
     public Plugin()
     {
         Instance = this;
-        
+
         ECommonsMain.Init(PluginInterface, this, Module.DalamudReflector);
 
-        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        Runner = new(Configuration);
+        try
+        {
+            Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        }
+        catch (Exception e)
+        {
+            if (e is JsonSerializationException or AggregateException)
+                Configuration = new Configuration();
+            else
+                throw;
+        }
 
-        FrameworkListener = new(this);
+        Runner = new Runner.Runner();
 
-        ConfigWindow = new ConfigWindow(this);
+        ConfigWindow = new ConfigWindow();
         MainWindow = new MainWindow(this);
 
         WindowSystem.AddWindow(ConfigWindow);
@@ -75,7 +87,7 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
-        
+
         MainWindow.Toggle();
     }
 

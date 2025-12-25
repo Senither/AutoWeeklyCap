@@ -37,19 +37,22 @@ public class Utils
         }
     }
 
-    public static bool UpdateWeeklyAcquiredTomestonesForCurrentCharacter(Configuration configuration)
+    public static bool UpdateWeeklyAcquiredTomestonesForCurrentCharacter()
     {
         var character = GetFullCharacterName();
         if (character == null)
             return false;
 
-        var tomes = GetWeeklyAcquiredTomestoneCount();
-
-        if (configuration.CollectedTomes.GetValueOrDefault(character) == tomes)
+        var options = Plugin.Config.GetOrRegisterCharacterOptions(character);
+        if (!options.Enabled)
             return false;
 
-        configuration.CollectedTomes[character] = tomes;
-        configuration.Save();
+        var tomes = GetWeeklyAcquiredTomestoneCount();
+        if (Plugin.Config.CollectedTomes.GetValueOrDefault(character) == tomes)
+            return false;
+
+        Plugin.Config.CollectedTomes[character] = tomes;
+        Plugin.Config.Save();
 
         return true;
     }
@@ -58,7 +61,7 @@ public class Utils
     {
         return LifestreamIPC.IsEnabled && AutoDutyIPC.IsEnabled;
     }
-    
+
     public static bool IsPluginEnabled(string name)
     {
         foreach (var plugin in Plugin.PluginInterface.InstalledPlugins)

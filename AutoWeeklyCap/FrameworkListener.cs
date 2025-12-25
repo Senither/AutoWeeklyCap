@@ -1,18 +1,11 @@
 ﻿using System;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap;
 
 public class FrameworkListener
 {
-    protected Configuration Configuration;
     protected long enforceUpdateStateAt = 0;
-
-    public FrameworkListener(Plugin plugin)
-    {
-        Configuration = plugin.Configuration;
-    }
 
     public void OnFrameworkUpdate(IFramework _)
     {
@@ -22,7 +15,7 @@ public class FrameworkListener
 
         enforceUpdateStateAt = unixNow + 2;
 
-        Utils.UpdateWeeklyAcquiredTomestonesForCurrentCharacter(Configuration);
+        Utils.UpdateWeeklyAcquiredTomestonesForCurrentCharacter();
 
         Plugin.Runner.Tick();
     }
