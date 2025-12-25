@@ -24,6 +24,13 @@ public class Runner
             return true;
         }
 
+        var options = Plugin.Config.GetOrRegisterCharacterOptions(character);
+        if (!options.Enabled)
+        {
+            StartCharacterSwap();
+            return true;
+        }
+
         currentCharacter = character;
         state = State.CheckingTomestone;
         timestamp = DateTime.UtcNow;
