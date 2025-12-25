@@ -135,8 +135,21 @@ public class Runner
             $"Seconds elapsed: {(DateTime.UtcNow - timestamp).Seconds}, AutoDuty started: {!AutoDutyIPC.IsStopped()}");
         if ((DateTime.UtcNow - timestamp).Seconds > 10)
         {
-            Plugin.Log.Debug("Attempting to start auto duty for 10 seconds, stopping runner");
-            Stop();
+            Plugin.Log.Debug("Timed out while trying to start AutoDuty");
+
+            if (currentCharacter == null)
+            {
+                Plugin.Log.Debug("Stopping runner due to character being NULL");
+                Stop();
+                return;
+            }
+
+            Plugin.Log.Debug($"Disabling AWC for {currentCharacter} and switching character");
+
+            Plugin.Config.Characters[currentCharacter].Enabled = false;
+            Plugin.Config.Save();
+
+            state = State.StartingCharacterSwap;
             return;
         }
 
