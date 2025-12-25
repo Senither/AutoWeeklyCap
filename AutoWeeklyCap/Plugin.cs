@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
+using AutoWeeklyCap.UI.Windows;
 using AutoWeeklyCap.Windows;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
@@ -12,6 +13,9 @@ namespace AutoWeeklyCap;
 
 public sealed class Plugin : IDalamudPlugin
 {
+    internal static Plugin Instance;
+    internal static Configuration Config => Instance.Configuration;
+    
     [PluginService]
     internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
 
@@ -46,6 +50,8 @@ public sealed class Plugin : IDalamudPlugin
 
     public Plugin()
     {
+        Instance = this;
+        
         ECommonsMain.Init(PluginInterface, this, Module.DalamudReflector);
 
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
@@ -69,6 +75,8 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
+        
+        MainWindow.Toggle();
     }
 
     public void Dispose()

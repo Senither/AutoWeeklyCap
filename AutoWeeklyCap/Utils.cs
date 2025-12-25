@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoWeeklyCap.IPC;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.System.String;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -53,6 +54,11 @@ public class Utils
         return true;
     }
 
+    public static bool IsRequiredPluginsEnabled()
+    {
+        return LifestreamIPC.IsEnabled && AutoDutyIPC.IsEnabled;
+    }
+    
     public static bool IsPluginEnabled(string name)
     {
         foreach (var plugin in Plugin.PluginInterface.InstalledPlugins)
