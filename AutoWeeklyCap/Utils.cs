@@ -5,11 +5,24 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.System.String;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Shell;
+using Lumina.Excel.Sheets;
 
 namespace AutoWeeklyCap;
 
 public class Utils
 {
+    public static string? GetZoneNameFromId(uint zoneId)
+    {
+        if (Plugin.DataManager.GetExcelSheet<TerritoryType>().TryGetRow(zoneId, out var territoryRow))
+        {
+            var name = territoryRow.PlaceName.Value.Name.ExtractText();
+            
+            return name.Length == 0 ? null : name;
+        }
+
+        return null;
+    }
+
     public static string? GetFullCharacterName()
     {
         if (!Plugin.PlayerState.IsLoaded)

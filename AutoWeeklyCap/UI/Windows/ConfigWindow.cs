@@ -31,9 +31,10 @@ public class ConfigWindow : Window, IDisposable
             Plugin.Config.ZoneId = zoneId;
         }
 
-        if (Plugin.DataManager.GetExcelSheet<TerritoryType>().TryGetRow(Plugin.Config.ZoneId, out var territoryRow))
+        var zoneName = Utils.GetZoneNameFromId(Plugin.Config.ZoneId);
+        if (zoneName != null)
         {
-            ImGui.Text($"Selected duty: {territoryRow.PlaceName.Value.Name}");
+            ImGui.Text($"Selected duty: {zoneName}");
         }
         else
         {

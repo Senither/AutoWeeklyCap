@@ -18,6 +18,10 @@ public class Runner
         if (state != State.Waiting || stopGracefully)
             return false;
 
+        var zoneName = Utils.GetZoneNameFromId(Plugin.Config.ZoneId);
+        if (zoneName == null)
+            return false;
+
         var character = Utils.GetFullCharacterName();
         if (character == null)
         {
