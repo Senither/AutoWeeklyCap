@@ -5,18 +5,17 @@ namespace AutoWeeklyCap;
 
 public class FrameworkListener
 {
-    protected long enforceUpdateStateAt = 0;
+    protected long EnforceUpdateStateAt = 0;
 
     public void OnFrameworkUpdate(IFramework _)
     {
-        var unixNow = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        if (enforceUpdateStateAt > unixNow)
+        var unixNow = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        if (EnforceUpdateStateAt > unixNow)
             return;
 
-        enforceUpdateStateAt = unixNow + 2;
+        EnforceUpdateStateAt = unixNow + 500;
 
         Utils.UpdateWeeklyAcquiredTomestonesForCurrentCharacter();
-
         Plugin.Runner.Tick();
     }
 }
