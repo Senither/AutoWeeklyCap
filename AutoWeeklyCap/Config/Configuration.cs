@@ -8,7 +8,9 @@ namespace AutoWeeklyCap.Config;
 public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
-
+    
+    public WindowOptions Window { get; set; } = new();
+    
     public uint ZoneId { get; set; } = 0;
     public Dictionary<string, CharacterOptions> Characters { get; set; } = new(); 
 

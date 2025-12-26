@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoWeeklyCap.Config;
 using AutoWeeklyCap.IPC;
 using FFXIVClientStructs.FFXIV.Client.Game;
 

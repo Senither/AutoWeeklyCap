@@ -1,6 +1,5 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
+using System.Reflection;
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.UI.Windows;
 using AutoWeeklyCap.Windows;
@@ -11,13 +10,17 @@ using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ECommons;
 using Newtonsoft.Json;
+using Module = ECommons.Module;
 
 namespace AutoWeeklyCap;
 
 public sealed class Plugin : IDalamudPlugin
 {
+    internal static string Name = "Auto Weekly Cap";
     internal static Plugin Instance;
     internal static Configuration Config => Instance.Configuration;
+    public static string Version => Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
+    
 
     [PluginService]
     internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
