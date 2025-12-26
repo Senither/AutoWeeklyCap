@@ -15,6 +15,8 @@ public class Configuration : IPluginConfiguration
     public Dictionary<string, CharacterOptions> Characters { get; set; } = new(); 
 
     public Dictionary<string, int> CollectedTomes { get; set; } = new();
+    
+    public bool StopRunnerGracefully { get; set; } = false;
 
     public void Save()
     {

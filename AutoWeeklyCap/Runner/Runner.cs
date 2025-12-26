@@ -7,13 +7,15 @@ namespace AutoWeeklyCap.Runner;
 
 public class Runner
 {
+    private bool stopGracefully = false;
+
     private State state = State.Waiting;
     private string? currentCharacter = null;
     private DateTime timestamp;
 
     public bool Start()
     {
-        if (state != State.Waiting)
+        if (state != State.Waiting || stopGracefully)
             return false;
 
         var character = Utils.GetFullCharacterName();
@@ -31,7 +33,7 @@ public class Runner
         }
 
         currentCharacter = character;
-        state = State.CheckingTomestone;
+        state = State.PreparingRunner;
         timestamp = DateTime.UtcNow;
 
         Plugin.Log.Debug("Starting weekly cap runner");
@@ -41,9 +43,24 @@ public class Runner
 
     public void Stop()
     {
+        if (Plugin.Config.StopRunnerGracefully)
+        {
+            if (state is State.RunningAutoDuty or State.SwitchingCharacter || !AutoDutyIPC.IsStopped())
+            {
+                stopGracefully = true;
+                return;
+            }
+        }
+
+        Abort();
+    }
+
+    public void Abort()
+    {
         currentCharacter = null;
         state = State.Waiting;
         timestamp = DateTime.UtcNow;
+        stopGracefully = false;
 
         LifestreamIPC.Abort();
         AutoDutyIPC.Stop();
@@ -56,26 +73,24 @@ public class Runner
         return state != State.Waiting;
     }
 
+    public bool IsStopping()
+    {
+        return stopGracefully;
+    }
+
     public string GetStatus()
     {
-        switch (state)
+        return state switch
         {
-            case State.Waiting:
-                return "idle";
-            case State.CheckingTomestone:
-                return "Checking Tomestone";
-            case State.StartingAutoDuty:
-                return "Starting AutoDuty";
-            case State.RunningAutoDuty:
-                return "Running AutoDuty";
-            case State.StartingCharacterSwap:
-                return "Starting Character Swap";
-            case State.SwitchingCharacter:
-                return "Switching Character to " + currentCharacter;
-
-            default:
-                return "unknown";
-        }
+            State.Waiting => "idle",
+            State.PreparingRunner => "Preparing runner",
+            State.CheckingTomestone => "Checking Tomestone",
+            State.StartingAutoDuty => "Starting AutoDuty",
+            State.RunningAutoDuty => stopGracefully ? "Stopping when duty finishes" : "Running AutoDuty",
+            State.StartingCharacterSwap => "Starting Character Swap",
+            State.SwitchingCharacter => "Switching Character to " + currentCharacter,
+            _ => "unknown"
+        };
     }
 
     public void Tick()
@@ -83,6 +98,10 @@ public class Runner
         switch (state)
         {
             case State.Waiting:
+                break;
+
+            case State.PreparingRunner:
+                CheckPrerequisitesForRunnerPreparations();
                 break;
 
             case State.CheckingTomestone:
@@ -107,6 +126,17 @@ public class Runner
         }
     }
 
+    private void CheckPrerequisitesForRunnerPreparations()
+    {
+        if (stopGracefully)
+        {
+            Abort();
+            return;
+        }
+
+        state = State.CheckingTomestone;
+    }
+
     private void CheckTomestoneStage()
     {
         var character = Utils.GetFullCharacterName();
@@ -126,7 +156,10 @@ public class Runner
         if (Plugin.ClientState.TerritoryType == Plugin.Config.ZoneId)
         {
             state = State.RunningAutoDuty;
-            AutoDutyIPC.Run(Plugin.Config.ZoneId, 1, false);
+
+            if (AutoDutyIPC.IsStopped())
+                AutoDutyIPC.Run(Plugin.Config.ZoneId, 1, false);
+
             return;
         }
 
@@ -172,7 +205,7 @@ public class Runner
         }
 
         Plugin.Log.Debug("AutoDuty has complete a run, switching to checking tomestones");
-        state = State.CheckingTomestone;
+        state = State.PreparingRunner;
     }
 
     private void StartCharacterSwap()
@@ -219,6 +252,6 @@ public class Runner
             return;
 
         Plugin.Log.Debug("Completed character swap, checking tomestones");
-        state = State.CheckingTomestone;
+        state = State.PreparingRunner;
     }
 }

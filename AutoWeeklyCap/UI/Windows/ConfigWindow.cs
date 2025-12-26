@@ -2,6 +2,8 @@
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
+using ECommons.Configuration;
+using ECommons.ImGuiMethods;
 using Lumina.Excel.Sheets;
 
 namespace AutoWeeklyCap.Windows;
@@ -27,7 +29,6 @@ public class ConfigWindow : Window, IDisposable
         if (ImGui.InputUInt("Duty ID", ref zoneId))
         {
             Plugin.Config.ZoneId = zoneId;
-            Plugin.Config.Save();
         }
 
         if (Plugin.DataManager.GetExcelSheet<TerritoryType>().TryGetRow(Plugin.Config.ZoneId, out var territoryRow))
@@ -38,5 +39,19 @@ public class ConfigWindow : Window, IDisposable
         {
             ImGui.Text("Invalid territory.");
         }
+
+        var stopGracefully = Plugin.Config.StopRunnerGracefully;
+        if (ImGui.Checkbox("Stop gracefully", ref stopGracefully))
+        {
+            Plugin.Config.StopRunnerGracefully = stopGracefully;
+        }
+
+        ImGuiEx.Tooltip(
+            "When this is enabled and the runner is stopped, it will finish the AutoDuty run before stopping AutoDuty itself.");
+    }
+
+    public override void OnClose()
+    {
+        Plugin.Config.Save();
     }
 }

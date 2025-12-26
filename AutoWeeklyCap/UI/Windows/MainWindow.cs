@@ -134,7 +134,9 @@ public class MainWindow : Window, IDisposable
 
     protected void DrawHeaderActionButtons()
     {
-        if (!Utils.IsRequiredPluginsEnabled())
+        var isEnabled = Utils.IsRequiredPluginsEnabled() && !Plugin.Runner.IsStopping();
+
+        if (!isEnabled)
             ImGui.BeginDisabled();
 
         var buttonOffset = Plugin.Runner.IsRunning() ? 86 : 70;
@@ -158,7 +160,7 @@ public class MainWindow : Window, IDisposable
             }
         }
 
-        if (!Utils.IsRequiredPluginsEnabled())
+        if (!isEnabled)
             ImGui.EndDisabled();
     }
 }

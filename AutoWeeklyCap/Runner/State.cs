@@ -3,9 +3,10 @@
 public enum State
 {
     Waiting = 0,
-    StartingAutoDuty = 1,
-    RunningAutoDuty = 2,
-    StartingCharacterSwap = 3,
-    SwitchingCharacter = 4,
-    CheckingTomestone = 5
+    PreparingRunner = 1,
+    CheckingTomestone = 2,
+    StartingAutoDuty = 10,
+    RunningAutoDuty = 11,
+    StartingCharacterSwap = 20,
+    SwitchingCharacter = 21,
 }
