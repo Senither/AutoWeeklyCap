@@ -36,14 +36,16 @@ public static class StopActionExtensions
                 break;
 
             case StopAction.SwitchCharacter:
-                if (AutoWeeklyCap.Config.CharacterForSwap.Length > 0)
+                var characterToSwapTo = AutoWeeklyCap.Config.CharacterForSwap;
+                if (characterToSwapTo.Length == 0 || characterToSwapTo == Utils.GetFullCharacterName())
+                    break;
+
+                var parts = characterToSwapTo.Split("@");
+                if (parts.Length == 2)
                 {
-                    var parts = AutoWeeklyCap.Config.CharacterForSwap.Split("@");
-                    if (parts.Length == 2)
-                    {
-                        LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
-                    }
+                    LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
                 }
+
                 break;
 
             case StopAction.LogoutToMenu:

@@ -136,7 +136,7 @@ public class Runner
                 break;
 
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(state), state, null);
         }
     }
 
