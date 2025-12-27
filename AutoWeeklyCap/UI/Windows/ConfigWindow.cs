@@ -2,7 +2,9 @@
 using System.Numerics;
 using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Helpers;
+using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ECommons.ImGuiMethods;
 
@@ -12,12 +14,10 @@ public class ConfigWindow : Window, IDisposable
 {
     public ConfigWindow() : base("Auto Weekly Tomestone Settings")
     {
-        Flags = ImGuiWindowFlags.NoResize;
-
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(350, 420),
-            MaximumSize = new Vector2(350, 420)
+            MinimumSize = new Vector2(300, 125),
+            MaximumSize = new Vector2(9999, 9999)
         };
     }
 
@@ -25,8 +25,16 @@ public class ConfigWindow : Window, IDisposable
 
     public override void Draw()
     {
+        Card.Draw("Duty Options", DrawDutyOptions);
+        Card.Draw("Stop Actions", DrawStopActions);
+    }
+
+    private static void DrawDutyOptions()
+    {
+        ImGui.TextWrapped("Selected duty");
+
         var zoneId = AutoWeeklyCap.Config.ZoneId;
-        if (ImGui.InputUInt("Duty ID", ref zoneId))
+        if (ImGui.InputUInt("###duty-id", ref zoneId))
         {
             AutoWeeklyCap.Config.ZoneId = zoneId;
         }
@@ -41,14 +49,25 @@ public class ConfigWindow : Window, IDisposable
             ImGui.Text("Invalid territory.");
         }
 
+        ImGui.Spacing();
+        ImGui.Spacing();
+
         var stopGracefully = AutoWeeklyCap.Config.StopRunnerGracefully;
-        if (ImGui.Checkbox("Stop gracefully", ref stopGracefully))
+        if (ImGui.Checkbox("Stop runs gracefully", ref stopGracefully))
         {
             AutoWeeklyCap.Config.StopRunnerGracefully = stopGracefully;
         }
 
-        ImGuiEx.Tooltip(
-            "When this is enabled and the runner is stopped, it will finish the AutoDuty run before stopping AutoDuty itself.");
+        InformationTooltip.Draw(
+            "When stopping the runner mid duty, graceful stopping will finish the run before stopping completely");
+    }
+
+    private static void DrawStopActions()
+    {
+        ImGui.TextWrapped("Select what should happen when all characters tomes have been collected.");
+
+        ImGui.Spacing();
+        ImGui.Spacing();
 
         foreach (StopAction action in Enum.GetValues(typeof(StopAction)))
         {
@@ -58,11 +77,16 @@ public class ConfigWindow : Window, IDisposable
             }
         }
 
+        ImGui.Spacing();
+        ImGui.Spacing();
+
         if (AutoWeeklyCap.Config.StopAction != StopAction.SwitchCharacter)
             ImGui.BeginDisabled();
 
+        ImGui.TextWrapped("Switch to Character");
+
         if (ImGui.BeginCombo(
-                $"Character to swap to",
+                $"###character-selector",
                 AutoWeeklyCap.Config.CharacterForSwap.Length == 0
                     ? "Not selected"
                     : AutoWeeklyCap.Config.CharacterForSwap

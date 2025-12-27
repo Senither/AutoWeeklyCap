@@ -18,9 +18,9 @@ public static class StopActionExtensions
     {
         return action switch
         {
-            StopAction.None => "None",
+            StopAction.None => "Nothing",
             StopAction.SwitchCharacter => "Switch to Character",
-            StopAction.LogoutToMenu => "Logout To Menu",
+            StopAction.LogoutToMenu => "Logout to Menu",
             StopAction.ShutdownGame => "Shutdown Game",
             _ => action.ToString()
         };
