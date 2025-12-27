@@ -2,6 +2,7 @@
 using System.Numerics;
 using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Helpers;
+using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility.Raii;
@@ -33,20 +34,22 @@ public class ConfigWindow : Window, IDisposable
     {
         ImGui.TextWrapped("Selected duty");
 
-        var zoneId = AutoWeeklyCap.Config.ZoneId;
-        if (ImGui.InputUInt("###duty-id", ref zoneId))
+        if (ImGui.BeginCombo(
+                $"###selected-duty",
+                TomestoneZone.IsSupportedTomestoneZone(AutoWeeklyCap.Config.ZoneId)
+                    ? Utils.GetZoneNameFromId(AutoWeeklyCap.Config.ZoneId)
+                    : "Not selected"
+            ))
         {
-            AutoWeeklyCap.Config.ZoneId = zoneId;
-        }
+            foreach (var zoneId in TomestoneZone.AvailableTomestoneZones)
+            {
+                if (ImGui.Selectable(Utils.GetZoneNameFromId(zoneId), AutoWeeklyCap.Config.ZoneId == zoneId))
+                {
+                    AutoWeeklyCap.Config.ZoneId = zoneId;
+                }
+            }
 
-        var zoneName = Utils.GetZoneNameFromId(AutoWeeklyCap.Config.ZoneId);
-        if (zoneName != null)
-        {
-            ImGui.Text($"Selected duty: {zoneName}");
-        }
-        else
-        {
-            ImGui.Text("Invalid territory.");
+            ImGui.EndCombo();
         }
 
         ImGui.Spacing();

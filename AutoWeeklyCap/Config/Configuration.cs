@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoWeeklyCap.Actions;
+using AutoWeeklyCap.Runner;
 using Dalamud.Configuration;
 
 namespace AutoWeeklyCap.Config;
@@ -12,12 +13,12 @@ public class Configuration : IPluginConfiguration
 
     public WindowOptions Window { get; set; } = new();
 
-    public uint ZoneId { get; set; } = 0;
+    public uint ZoneId { get; set; } = TomestoneZone.AvailableTomestoneZones[0];
     public Dictionary<string, CharacterOptions> Characters { get; set; } = new();
 
     public Dictionary<string, int> CollectedTomes { get; set; } = new();
 
-    public bool StopRunnerGracefully { get; set; } = false;
+    public bool StopRunnerGracefully { get; set; } = true;
     public StopAction StopAction { get; set; } = StopAction.None;
     public string CharacterForSwap { get; set; } = "";
 
