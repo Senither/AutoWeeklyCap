@@ -9,4 +9,5 @@ public enum State
     RunningAutoDuty = 11,
     StartingCharacterSwap = 20,
     SwitchingCharacter = 21,
+    StoppingRunner = 999
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -94,6 +95,7 @@ public class Runner
             State.RunningAutoDuty => stopGracefully ? "Stopping when duty finishes" : "Running AutoDuty",
             State.StartingCharacterSwap => "Starting Character Swap",
             State.SwitchingCharacter => "Switching Character to " + currentCharacter,
+            State.StoppingRunner => "Stopping Runner",
             _ => "unknown"
         };
     }
@@ -128,6 +130,13 @@ public class Runner
             case State.SwitchingCharacter:
                 SwitchCharacter();
                 break;
+
+            case State.StoppingRunner:
+                StopRunner();
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
@@ -244,7 +253,7 @@ public class Runner
         }
 
         AutoWeeklyCap.Log.Debug("Found no character with missing weekly capped tomestones, stopping runner");
-        Stop();
+        state = State.StoppingRunner;
     }
 
     private void SwitchCharacter()
@@ -258,5 +267,12 @@ public class Runner
 
         AutoWeeklyCap.Log.Debug("Completed character swap, checking tomestones");
         state = State.PreparingRunner;
+    }
+
+    private void StopRunner()
+    {
+        Abort();
+
+        AutoWeeklyCap.Config.StopAction.Execute();
     }
 }

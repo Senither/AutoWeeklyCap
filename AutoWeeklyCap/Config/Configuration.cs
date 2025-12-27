@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoWeeklyCap.Actions;
 using Dalamud.Configuration;
 
 namespace AutoWeeklyCap.Config;
@@ -8,15 +9,17 @@ namespace AutoWeeklyCap.Config;
 public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
-    
+
     public WindowOptions Window { get; set; } = new();
-    
+
     public uint ZoneId { get; set; } = 0;
-    public Dictionary<string, CharacterOptions> Characters { get; set; } = new(); 
+    public Dictionary<string, CharacterOptions> Characters { get; set; } = new();
 
     public Dictionary<string, int> CollectedTomes { get; set; } = new();
-    
+
     public bool StopRunnerGracefully { get; set; } = false;
+    public StopAction StopAction { get; set; } = StopAction.None;
+    public string CharacterForSwap { get; set; } = "";
 
     public void Save()
     {
