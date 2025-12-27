@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.UI.Windows;
@@ -20,7 +20,6 @@ public sealed class Plugin : IDalamudPlugin
     internal static Plugin Instance;
     internal static Configuration Config => Instance.Configuration;
     public static string Version => Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
-    
 
     [PluginService]
     internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -91,7 +90,10 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
 
-        MainWindow.Toggle();
+#if DEBUG
+        ToggleMainUi();
+        ToggleConfigUi();
+#endif
     }
 
     public void Dispose()
