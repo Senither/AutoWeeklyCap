@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoWeeklyCap.Helpers;
 using Dalamud.Plugin.Services;
 
 namespace AutoWeeklyCap;
@@ -16,6 +17,6 @@ public class FrameworkListener
         EnforceUpdateStateAt = unixNow + 500;
 
         Utils.UpdateWeeklyAcquiredTomestonesForCurrentCharacter();
-        Plugin.Runner.Tick();
+        AutoWeeklyCap.Runner.Tick();
     }
 }

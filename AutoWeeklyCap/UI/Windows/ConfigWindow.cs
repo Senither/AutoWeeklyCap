@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Numerics;
+using AutoWeeklyCap.Helpers;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
-using ECommons.Configuration;
 using ECommons.ImGuiMethods;
-using Lumina.Excel.Sheets;
 
-namespace AutoWeeklyCap.Windows;
+namespace AutoWeeklyCap.UI.Windows;
 
 public class ConfigWindow : Window, IDisposable
 {
@@ -25,13 +24,13 @@ public class ConfigWindow : Window, IDisposable
 
     public override void Draw()
     {
-        var zoneId = Plugin.Config.ZoneId;
+        var zoneId = AutoWeeklyCap.Config.ZoneId;
         if (ImGui.InputUInt("Duty ID", ref zoneId))
         {
-            Plugin.Config.ZoneId = zoneId;
+            AutoWeeklyCap.Config.ZoneId = zoneId;
         }
 
-        var zoneName = Utils.GetZoneNameFromId(Plugin.Config.ZoneId);
+        var zoneName = Utils.GetZoneNameFromId(AutoWeeklyCap.Config.ZoneId);
         if (zoneName != null)
         {
             ImGui.Text($"Selected duty: {zoneName}");
@@ -41,10 +40,10 @@ public class ConfigWindow : Window, IDisposable
             ImGui.Text("Invalid territory.");
         }
 
-        var stopGracefully = Plugin.Config.StopRunnerGracefully;
+        var stopGracefully = AutoWeeklyCap.Config.StopRunnerGracefully;
         if (ImGui.Checkbox("Stop gracefully", ref stopGracefully))
         {
-            Plugin.Config.StopRunnerGracefully = stopGracefully;
+            AutoWeeklyCap.Config.StopRunnerGracefully = stopGracefully;
         }
 
         ImGuiEx.Tooltip(
@@ -53,6 +52,6 @@ public class ConfigWindow : Window, IDisposable
 
     public override void OnClose()
     {
-        Plugin.Config.Save();
+        AutoWeeklyCap.Config.Save();
     }
 }

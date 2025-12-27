@@ -20,7 +20,7 @@ public class Configuration : IPluginConfiguration
 
     public void Save()
     {
-        Plugin.PluginInterface.SavePluginConfig(this);
+        AutoWeeklyCap.PluginInterface.SavePluginConfig(this);
     }
 
     public int GetWeeklyTomes(string character)

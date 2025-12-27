@@ -7,16 +7,16 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Shell;
 using Lumina.Excel.Sheets;
 
-namespace AutoWeeklyCap;
+namespace AutoWeeklyCap.Helpers;
 
-public class Utils
+public static class Utils
 {
     public static string? GetZoneNameFromId(uint zoneId)
     {
-        if (Plugin.DataManager.GetExcelSheet<TerritoryType>().TryGetRow(zoneId, out var territoryRow))
+        if (AutoWeeklyCap.DataManager.GetExcelSheet<TerritoryType>().TryGetRow(zoneId, out var territoryRow))
         {
             var name = territoryRow.PlaceName.Value.Name.ExtractText();
-            
+
             return name.Length == 0 ? null : name;
         }
 
@@ -25,14 +25,14 @@ public class Utils
 
     public static string? GetFullCharacterName()
     {
-        if (!Plugin.PlayerState.IsLoaded)
+        if (!AutoWeeklyCap.PlayerState.IsLoaded)
             return null;
 
-        var world = Plugin.PlayerState.HomeWorld.ValueNullable;
+        var world = AutoWeeklyCap.PlayerState.HomeWorld.ValueNullable;
         if (world == null)
             return null;
 
-        return Plugin.PlayerState.CharacterName + "@" + world.Value.Name.ToString();
+        return AutoWeeklyCap.PlayerState.CharacterName + "@" + world.Value.Name.ToString();
     }
 
     public static int GetWeeklyAcquiredTomestoneCount()
@@ -56,16 +56,16 @@ public class Utils
         if (character == null)
             return false;
 
-        var options = Plugin.Config.GetOrRegisterCharacterOptions(character);
+        var options = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
         if (!options.Enabled)
             return false;
 
         var tomes = GetWeeklyAcquiredTomestoneCount();
-        if (Plugin.Config.CollectedTomes.GetValueOrDefault(character) == tomes)
+        if (AutoWeeklyCap.Config.CollectedTomes.GetValueOrDefault(character) == tomes)
             return false;
 
-        Plugin.Config.CollectedTomes[character] = tomes;
-        Plugin.Config.Save();
+        AutoWeeklyCap.Config.CollectedTomes[character] = tomes;
+        AutoWeeklyCap.Config.Save();
 
         return true;
     }
@@ -77,7 +77,7 @@ public class Utils
 
     public static bool IsPluginEnabled(string name)
     {
-        foreach (var plugin in Plugin.PluginInterface.InstalledPlugins)
+        foreach (var plugin in AutoWeeklyCap.PluginInterface.InstalledPlugins)
         {
             if (plugin.InternalName == name && plugin.IsLoaded)
                 return true;

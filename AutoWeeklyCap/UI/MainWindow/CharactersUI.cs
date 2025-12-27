@@ -15,10 +15,10 @@ internal static class CharactersUI
         var totalTomesCollected = 0;
         var weeklyTomeLimit = InventoryManager.GetLimitedTomestoneWeeklyLimit();
 
-        foreach (var character in Plugin.Config.Characters.Keys)
+        foreach (var character in AutoWeeklyCap.Config.Characters.Keys)
         {
-            var option = Plugin.Config.Characters[character];
-            var characterTomes = Plugin.Config.GetWeeklyTomes(character);
+            var option = AutoWeeklyCap.Config.Characters[character];
+            var characterTomes = AutoWeeklyCap.Config.GetWeeklyTomes(character);
             totalTomesCollected += characterTomes;
 
             if (option.Enabled)
@@ -37,15 +37,15 @@ internal static class CharactersUI
 
         if (ImGui.Button("Reset Weekly Tomes"))
         {
-            Plugin.Config.CollectedTomes.Clear();
-            Plugin.Config.Save();
+            AutoWeeklyCap.Config.CollectedTomes.Clear();
+            AutoWeeklyCap.Config.Save();
         }
     }
 
     internal static void SaveCharacterConfigurationOption(string character, CharacterOptions options)
     {
-        Plugin.Config.Characters[character] = options;
-        Plugin.Config.Save();
+        AutoWeeklyCap.Config.Characters[character] = options;
+        AutoWeeklyCap.Config.Save();
     }
 
     internal static void DrawCharacterStatusIcon(string character, CharacterOptions option)
@@ -71,7 +71,7 @@ internal static class CharactersUI
 
         if (ImGuiEx.IconButton(FontAwesomeIcon.UserCog))
         {
-            Plugin.Log.Debug($"Character settings for {character} will be rendered in the future...");
+            AutoWeeklyCap.Log.Debug($"Character settings for {character} will be rendered in the future...");
             // TODO: Open a tab or window where it's possible to configure the user settings   
         }
 

@@ -1,8 +1,8 @@
 using System;
 using System.Reflection;
+using AutoWeeklyCap.Commands;
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.UI.Windows;
-using AutoWeeklyCap.Windows;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
@@ -14,12 +14,13 @@ using Module = ECommons.Module;
 
 namespace AutoWeeklyCap;
 
-public sealed class Plugin : IDalamudPlugin
+public sealed class AutoWeeklyCap : IDalamudPlugin
 {
-    internal static string Name = "Auto Weekly Cap";
-    internal static Plugin Instance;
+    internal const string Name = "Auto Weekly Cap";
+    internal static AutoWeeklyCap Instance = null!;
     internal static Configuration Config => Instance.Configuration;
-    public static string Version => Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
+    internal static Runner.Runner Runner { get; set; } = null!;
+    internal static string Version => Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
 
     [PluginService]
     internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -42,18 +43,17 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService]
     internal static IPluginLog Log { get; private set; } = null!;
 
-    public static Runner.Runner Runner { get; set; }
-
-    private const string CommandName = "/awc";
-
     public Configuration Configuration { get; init; }
 
     public readonly WindowSystem WindowSystem = new("AutoWeeklyCap");
-    private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
+    private ConfigWindow ConfigWindow { get; init; }
     private FrameworkListener FrameworkListener { get; init; } = new();
 
-    public Plugin()
+    private const string CommandNameShort = "/awc";
+    private const string CommandNameLong = "/autoweeklycap";
+
+    public AutoWeeklyCap()
     {
         Instance = this;
 
@@ -79,9 +79,15 @@ public sealed class Plugin : IDalamudPlugin
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);
 
-        CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
+        CommandManager.AddHandler(CommandNameLong, new CommandInfo(OnCommand)
         {
-            HelpMessage = "Toggles the Auto Weekly Cap main window"
+            HelpMessage = "Toggles the Auto Weekly Cap main window",
+            ShowInHelp = true,
+        });
+
+        CommandManager.AddHandler(CommandNameShort, new CommandInfo(OnCommand)
+        {
+            ShowInHelp = false,
         });
 
         Framework.Update += FrameworkListener.OnFrameworkUpdate;
@@ -107,12 +113,15 @@ public sealed class Plugin : IDalamudPlugin
         ConfigWindow.Dispose();
         MainWindow.Dispose();
 
-        CommandManager.RemoveHandler(CommandName);
+        ECommonsMain.Dispose();
+
+        CommandManager.RemoveHandler(CommandNameShort);
+        CommandManager.RemoveHandler(CommandNameLong);
     }
 
-    private void OnCommand(string command, string args)
+    private static void OnCommand(string command, string args)
     {
-        MainWindow.Toggle();
+        CommandHandler.HandleCommand(args.Split(" "));
     }
 
     public void ToggleConfigUi() => ConfigWindow.Toggle();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -18,7 +19,7 @@ public class Runner
         if (state != State.Waiting || stopGracefully)
             return false;
 
-        var zoneName = Utils.GetZoneNameFromId(Plugin.Config.ZoneId);
+        var zoneName = Utils.GetZoneNameFromId(AutoWeeklyCap.Config.ZoneId);
         if (zoneName == null)
             return false;
 
@@ -29,7 +30,7 @@ public class Runner
             return true;
         }
 
-        var options = Plugin.Config.GetOrRegisterCharacterOptions(character);
+        var options = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
         if (!options.Enabled)
         {
             StartCharacterSwap();
@@ -40,14 +41,14 @@ public class Runner
         state = State.PreparingRunner;
         timestamp = DateTime.UtcNow;
 
-        Plugin.Log.Debug("Starting weekly cap runner");
+        AutoWeeklyCap.Log.Debug("Starting weekly cap runner");
 
         return true;
     }
 
     public void Stop()
     {
-        if (Plugin.Config.StopRunnerGracefully)
+        if (AutoWeeklyCap.Config.StopRunnerGracefully)
         {
             if (state is State.RunningAutoDuty or State.SwitchingCharacter || !AutoDutyIPC.IsStopped())
             {
@@ -69,7 +70,7 @@ public class Runner
         LifestreamIPC.Abort();
         AutoDutyIPC.Stop();
 
-        Plugin.Log.Debug("Stopped weekly cap runner");
+        AutoWeeklyCap.Log.Debug("Stopped weekly cap runner");
     }
 
     public bool IsRunning()
@@ -157,33 +158,33 @@ public class Runner
 
     private void StartAutoDuty()
     {
-        if (Plugin.ClientState.TerritoryType == Plugin.Config.ZoneId)
+        if (AutoWeeklyCap.ClientState.TerritoryType == AutoWeeklyCap.Config.ZoneId)
         {
             state = State.RunningAutoDuty;
 
             if (AutoDutyIPC.IsStopped())
-                AutoDutyIPC.Run(Plugin.Config.ZoneId, 1, false);
+                AutoDutyIPC.Run(AutoWeeklyCap.Config.ZoneId, 1, false);
 
             return;
         }
 
-        Plugin.Log.Debug(
+        AutoWeeklyCap.Log.Debug(
             $"Seconds elapsed: {(DateTime.UtcNow - timestamp).Seconds}, AutoDuty started: {!AutoDutyIPC.IsStopped()}");
         if ((DateTime.UtcNow - timestamp).Seconds > 10)
         {
-            Plugin.Log.Debug("Timed out while trying to start AutoDuty");
+            AutoWeeklyCap.Log.Debug("Timed out while trying to start AutoDuty");
 
             if (currentCharacter == null)
             {
-                Plugin.Log.Debug("Stopping runner due to character being NULL");
+                AutoWeeklyCap.Log.Debug("Stopping runner due to character being NULL");
                 Stop();
                 return;
             }
 
-            Plugin.Log.Debug($"Disabling AWC for {currentCharacter} and switching character");
+            AutoWeeklyCap.Log.Debug($"Disabling AWC for {currentCharacter} and switching character");
 
-            Plugin.Config.Characters[currentCharacter].Enabled = false;
-            Plugin.Config.Save();
+            AutoWeeklyCap.Config.Characters[currentCharacter].Enabled = false;
+            AutoWeeklyCap.Config.Save();
 
             state = State.StartingCharacterSwap;
             return;
@@ -192,8 +193,8 @@ public class Runner
         if (Utils.IsPluginEnabled("BossModReborn"))
             Utils.RunShellCommand("bmrai on");
 
-        Plugin.Log.Debug($"Starting auto duty for ${currentCharacter} in zone ${Plugin.Config.ZoneId}");
-        AutoDutyIPC.Run(Plugin.Config.ZoneId, 1, false);
+        AutoWeeklyCap.Log.Debug($"Starting auto duty for ${currentCharacter} in zone ${AutoWeeklyCap.Config.ZoneId}");
+        AutoDutyIPC.Run(AutoWeeklyCap.Config.ZoneId, 1, false);
     }
 
     private void RunAutoDuty()
@@ -203,12 +204,12 @@ public class Runner
 
         if ((DateTime.UtcNow - timestamp).Seconds > 30)
         {
-            Plugin.Log.Debug("Tried to run auto duty but timed out, stopping weekly cap runner");
+            AutoWeeklyCap.Log.Debug("Tried to run auto duty but timed out, stopping weekly cap runner");
 
             Stop();
         }
 
-        Plugin.Log.Debug("AutoDuty has complete a run, switching to checking tomestones");
+        AutoWeeklyCap.Log.Debug("AutoDuty has complete a run, switching to checking tomestones");
         state = State.PreparingRunner;
     }
 
@@ -216,24 +217,24 @@ public class Runner
     {
         var limit = InventoryManager.GetLimitedTomestoneWeeklyLimit();
 
-        foreach (var (character, option) in Plugin.Config.Characters)
+        foreach (var (character, option) in AutoWeeklyCap.Config.Characters)
         {
             if (!option.Enabled)
                 continue;
 
-            var tomes = Plugin.Config.CollectedTomes.GetValueOrDefault(character, 0);
+            var tomes = AutoWeeklyCap.Config.CollectedTomes.GetValueOrDefault(character, 0);
             if (tomes == limit)
                 continue;
 
             var parts = character.Split("@");
             if (parts.Length != 2)
             {
-                Plugin.Log.Error($"Character {character} is not a valid character name, stopping runner");
+                AutoWeeklyCap.Log.Error($"Character {character} is not a valid character name, stopping runner");
                 Stop();
                 return;
             }
 
-            Plugin.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
+            AutoWeeklyCap.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
             currentCharacter = character;
             state = State.SwitchingCharacter;
             timestamp = DateTime.UtcNow;
@@ -242,7 +243,7 @@ public class Runner
             return;
         }
 
-        Plugin.Log.Debug("Found no character with missing weekly capped tomestones, stopping runner");
+        AutoWeeklyCap.Log.Debug("Found no character with missing weekly capped tomestones, stopping runner");
         Stop();
     }
 
@@ -255,7 +256,7 @@ public class Runner
         if (character == null || character != currentCharacter)
             return;
 
-        Plugin.Log.Debug("Completed character swap, checking tomestones");
+        AutoWeeklyCap.Log.Debug("Completed character swap, checking tomestones");
         state = State.PreparingRunner;
     }
 }

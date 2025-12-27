@@ -19,7 +19,7 @@ public class IPCSubscriber
             }
             catch (Exception ex)
             {
-                Plugin.Log.Error($"Error while unregistering IPC: {ex}");
+                AutoWeeklyCap.Log.Error($"Error while unregistering IPC: {ex}");
             }
         }
     }

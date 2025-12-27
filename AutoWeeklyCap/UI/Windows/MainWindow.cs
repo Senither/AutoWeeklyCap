@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using AutoWeeklyCap.UI.MainWindow;
 using Dalamud.Bindings.ImGui;
@@ -16,7 +17,7 @@ public class MainWindow : Window, IDisposable
 {
     private TitleBarButton LockButton;
 
-    public MainWindow(Plugin plugin) : base("Auto Weekly Tomestone Capper##main-window")
+    public MainWindow(AutoWeeklyCap autoWeeklyCap) : base("Auto Weekly Tomestone Capper##main-window")
     {
         SizeConstraints = new WindowSizeConstraints
         {
@@ -28,7 +29,7 @@ public class MainWindow : Window, IDisposable
         {
             Click = (m) =>
             {
-                if (m == ImGuiMouseButton.Left) plugin.ToggleConfigUi();
+                if (m == ImGuiMouseButton.Left) autoWeeklyCap.ToggleConfigUi();
             },
             Icon = FontAwesomeIcon.Cog,
             IconOffset = new Vector2(2, 2),
@@ -41,11 +42,11 @@ public class MainWindow : Window, IDisposable
             {
                 if (m == ImGuiMouseButton.Left)
                 {
-                    Plugin.Config.Window.Pin = !Plugin.Config.Window.Pin;
-                    LockButton?.Icon = Plugin.Config.Window.Pin ? FontAwesomeIcon.Lock : FontAwesomeIcon.LockOpen;
+                    AutoWeeklyCap.Config.Window.Pin = !AutoWeeklyCap.Config.Window.Pin;
+                    LockButton?.Icon = AutoWeeklyCap.Config.Window.Pin ? FontAwesomeIcon.Lock : FontAwesomeIcon.LockOpen;
                 }
             },
-            Icon = Plugin.Config.Window.Pin ? FontAwesomeIcon.Lock : FontAwesomeIcon.LockOpen,
+            Icon = AutoWeeklyCap.Config.Window.Pin ? FontAwesomeIcon.Lock : FontAwesomeIcon.LockOpen,
             IconOffset = new Vector2(3, 2),
             ShowTooltip = () => ImGui.SetTooltip("Lock window position and size"),
         };
@@ -62,21 +63,21 @@ public class MainWindow : Window, IDisposable
 
     public override void PreDraw()
     {
-        var name = $"{Plugin.Name} {Plugin.Version}";
-        if (Plugin.Runner.IsRunning())
+        var name = $"{AutoWeeklyCap.Name} {AutoWeeklyCap.Version}";
+        if (AutoWeeklyCap.Runner.IsRunning())
         {
-            name += $" | {Plugin.Runner.GetStatus()}";
+            name += $" | {AutoWeeklyCap.Runner.GetStatus()}";
         }
 
         WindowName = $"{name}###AutoWeeklyCap";
 
-        if (Plugin.Config.Window.Pin)
+        if (AutoWeeklyCap.Config.Window.Pin)
         {
-            ImGuiHelpers.SetNextWindowPosRelativeMainViewport(Plugin.Config.Window.Position);
-            ImGui.SetNextWindowSize(Plugin.Config.Window.Size);
+            ImGuiHelpers.SetNextWindowPosRelativeMainViewport(AutoWeeklyCap.Config.Window.Position);
+            ImGui.SetNextWindowSize(AutoWeeklyCap.Config.Window.Size);
         }
 
-        Flags = Plugin.Config.Window.Pin ? ImGuiWindowFlags.NoResize : ImGuiWindowFlags.None;
+        Flags = AutoWeeklyCap.Config.Window.Pin ? ImGuiWindowFlags.NoResize : ImGuiWindowFlags.None;
     }
 
     public override void Draw()
@@ -89,10 +90,10 @@ public class MainWindow : Window, IDisposable
                          ("About", AboutTabUi.Draw, null, true)
         );
 
-        if (!Plugin.Config.Window.Pin)
+        if (!AutoWeeklyCap.Config.Window.Pin)
         {
-            Plugin.Config.Window.Position = ImGui.GetWindowPos();
-            Plugin.Config.Window.Size = ImGui.GetWindowSize();
+            AutoWeeklyCap.Config.Window.Position = ImGui.GetWindowPos();
+            AutoWeeklyCap.Config.Window.Size = ImGui.GetWindowSize();
         }
     }
 
@@ -134,19 +135,19 @@ public class MainWindow : Window, IDisposable
 
     protected void DrawHeaderActionButtons()
     {
-        var isEnabled = Utils.IsRequiredPluginsEnabled() && !Plugin.Runner.IsStopping();
+        var isEnabled = Utils.IsRequiredPluginsEnabled() && !AutoWeeklyCap.Runner.IsStopping();
 
         if (!isEnabled)
             ImGui.BeginDisabled();
 
-        var buttonOffset = Plugin.Runner.IsRunning() ? 86 : 70;
+        var buttonOffset = AutoWeeklyCap.Runner.IsRunning() ? 86 : 70;
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - buttonOffset + ImGui.GetStyle().ItemSpacing.X);
 
-        if (Plugin.Runner.IsRunning())
+        if (AutoWeeklyCap.Runner.IsRunning())
         {
             if (ImGui.Button(" Stop Runner "))
             {
-                Plugin.Runner.Stop();
+                AutoWeeklyCap.Runner.Stop();
             }
         }
         else
@@ -155,7 +156,7 @@ public class MainWindow : Window, IDisposable
             {
                 if (Utils.IsRequiredPluginsEnabled())
                 {
-                    Plugin.Runner.Start();
+                    AutoWeeklyCap.Runner.Start();
                 }
             }
         }

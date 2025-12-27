@@ -9,15 +9,15 @@ internal static class AboutTabUi
     {
         ImGui.Text("About section");
         ImGui.Text("More information is coming soon...");
-        ImGui.Text("Also... The plugin status is: " + Plugin.Runner.GetStatus());
+        ImGui.Text("Also... The plugin status is: " + AutoWeeklyCap.Runner.GetStatus());
         ImGui.Text("and the selected duty is: ");
         ImGui.SameLine(0f, 0f);
 
-        if (Plugin.DataManager.GetExcelSheet<TerritoryType>()
-                  .TryGetRow(Plugin.Config.ZoneId, out var territoryRow))
+        if (AutoWeeklyCap.DataManager.GetExcelSheet<TerritoryType>()
+                  .TryGetRow(AutoWeeklyCap.Config.ZoneId, out var territoryRow))
         {
             ImGui.Text(
-                $"{territoryRow.PlaceName.Value.Name} ({Plugin.Config.ZoneId})");
+                $"{territoryRow.PlaceName.Value.Name} ({AutoWeeklyCap.Config.ZoneId})");
         }
         else
         {
