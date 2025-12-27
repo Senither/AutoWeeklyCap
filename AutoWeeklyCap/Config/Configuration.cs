@@ -39,4 +39,9 @@ public class Configuration : IPluginConfiguration
 
         return Characters[character] = new CharacterOptions();
     }
+
+    public bool IsRequiredSettingsSetup()
+    {
+        return TomestoneZone.IsSupportedTomestoneZone(ZoneId);
+    }
 }

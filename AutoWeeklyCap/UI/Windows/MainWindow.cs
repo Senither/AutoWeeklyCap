@@ -43,7 +43,9 @@ public class MainWindow : Window, IDisposable
                 if (m == ImGuiMouseButton.Left)
                 {
                     AutoWeeklyCap.Config.Window.Pin = !AutoWeeklyCap.Config.Window.Pin;
-                    LockButton?.Icon = AutoWeeklyCap.Config.Window.Pin ? FontAwesomeIcon.Lock : FontAwesomeIcon.LockOpen;
+                    LockButton?.Icon = AutoWeeklyCap.Config.Window.Pin
+                                           ? FontAwesomeIcon.Lock
+                                           : FontAwesomeIcon.LockOpen;
                 }
             },
             Icon = AutoWeeklyCap.Config.Window.Pin ? FontAwesomeIcon.Lock : FontAwesomeIcon.LockOpen,
@@ -135,7 +137,9 @@ public class MainWindow : Window, IDisposable
 
     protected void DrawHeaderActionButtons()
     {
-        var isEnabled = Utils.IsRequiredPluginsEnabled() && !AutoWeeklyCap.Runner.IsStopping();
+        var isEnabled = Utils.IsRequiredPluginsEnabled()
+                        && !AutoWeeklyCap.Runner.IsStopping()
+                        && AutoWeeklyCap.Config.IsRequiredSettingsSetup();
 
         if (!isEnabled)
             ImGui.BeginDisabled();
