@@ -13,10 +13,27 @@ public static class Card
     internal static readonly Vector2 TitlePadding = new(10, 6);
     internal static readonly Vector2 ContentPadding = new(10, 10);
 
-    internal static readonly uint ColorBg = ColorUtils.HexToUInt(0xAA, 0xAA, 0xAA, 0.2f);
-    internal static readonly uint BorderBg = ColorUtils.HexToUInt(0x5A, 0x5A, 0x59);
-
     public static void Draw(string title, Action bodyContent)
+    {
+        DrawWithColors(
+            title,
+            bodyContent,
+            ColorUtils.HexToUInt(0xAA, 0xAA, 0xAA, 0.2f),
+            ColorUtils.HexToUInt(0x5A, 0x5A, 0x59)
+        );
+    }
+
+    public static void DrawDanger(string title, Action bodyContent)
+    {
+        DrawWithColors(
+            title,
+            bodyContent,
+            ColorUtils.HexToUInt(0xFF, 0x3C, 0x3C, 0.3f),
+            ColorUtils.HexToUInt(0xAB, 0x1B, 0x1B, 0.8f)
+        );
+    }
+
+    public static void DrawWithColors(string title, Action bodyContent, uint backgroundColor, uint borderColor)
     {
         using var id = ImRaii.PushId(title);
         using var color = ImRaii.PushColor(ImGuiCol.ChildBg, new Vector4(0.05f, 0.05f, 0.05f, 0.2f));
@@ -56,13 +73,13 @@ public static class Card
         drawList.AddRectFilled(cardMin, cardMax, cardBgU32, Rounding, ImDrawFlags.RoundCornersBottom);
         drawList.AddRectFilled(
             cardMin, cardMax with { Y = cardMin.Y + titleBarHeight },
-            ColorBg, Rounding,
+            backgroundColor, Rounding,
             ImDrawFlags.RoundCornersNone
         );
 
         drawList.AddRect(
             cardMin, cardMax,
-            BorderBg, Rounding,
+            borderColor, Rounding,
             ImDrawFlags.RoundCornersBottom,
             BorderSize
         );

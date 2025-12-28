@@ -55,6 +55,7 @@ public class CharacterOptionWindow : Window, IDisposable
         var options = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
 
         Card.Draw("Character visibility", () => DrawCharacterVisibility(options));
+        Card.DrawDanger("Remove Character", DrawCharacterRemoval);
     }
 
     private void DrawCharacterVisibility(CharacterOptions options)
@@ -66,5 +67,23 @@ public class CharacterOptionWindow : Window, IDisposable
         }
 
         InformationTooltip.Draw("Hides the character from the list, and disables it for tome runs");
+    }
+
+    private void DrawCharacterRemoval()
+    {
+        ImGui.TextWrapped("Removing the character will delete any information about the character in the plugin.");
+        ImGui.TextWrapped("You'll need to login to the character again after it's removed to re-add it back.");
+
+        ImGui.Spacing();
+        ImGui.Spacing();
+
+        if (ImGui.Button("Remove Character"))
+        {
+            if (character == null)
+                return;
+
+            AutoWeeklyCap.Config.Characters.Remove(character);
+            OnClose();
+        }
     }
 }
