@@ -9,6 +9,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ECommons;
+using ECommons.Automation.NeoTaskManager;
 using Newtonsoft.Json;
 using Module = ECommons.Module;
 

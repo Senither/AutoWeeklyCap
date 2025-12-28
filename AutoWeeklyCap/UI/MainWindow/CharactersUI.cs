@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Helpers;
+using AutoWeeklyCap.Runner;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using ECommons.ImGuiMethods;
@@ -31,7 +33,7 @@ internal static class CharactersUI
 
             DrawCharacterStatusIcon(character, option);
             DrawCharacterSettingsIcon(character, option);
-            DrawCharacterDetails(character, characterTomes, weeklyTomeLimit);
+            DrawCharacterDetails(character, option, characterTomes, weeklyTomeLimit);
 
             ImGui.PopID();
         }
@@ -80,7 +82,7 @@ internal static class CharactersUI
         ImGuiEx.Tooltip("Configure Character");
     }
 
-    internal static void DrawCharacterDetails(string character, int tomes, int weeklyLimit)
+    internal static void DrawCharacterDetails(string character, CharacterOptions options, int tomes, int weeklyLimit)
     {
         ImGui.SameLine(0f, 4f);
 
@@ -91,7 +93,11 @@ internal static class CharactersUI
         cursorPos.X += 8;
         ImGui.SetCursorPos(cursorPos);
 
-        ImGui.TextWrapped(character);
+        var characterText = character;
+        if (options.PreferredJob != PlayerJob.None)
+            characterText += $"  ({options.PreferredJob.GetName()})";
+
+        ImGui.TextWrapped(characterText);
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - 64 + ImGui.GetStyle().ItemSpacing.X);
 
         ImGui.TextUnformatted($"{tomes}/{weeklyLimit}");

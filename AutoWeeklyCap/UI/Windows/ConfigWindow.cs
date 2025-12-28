@@ -93,18 +93,18 @@ public class ConfigWindow : Window, IDisposable
         ImGui.Spacing();
         ImGui.Spacing();
 
-        foreach (var (character, options) in AutoWeeklyCap.Config.Characters)
+        foreach (var (characterAndWorld, options) in AutoWeeklyCap.Config.Characters)
         {
             if (!options.IsHidden())
                 continue;
 
-            if (ImGuiEx.IconButton(FontAwesomeIcon.Eye, "###show-hidden-character" + character))
+            if (ImGuiEx.IconButton(FontAwesomeIcon.Eye, "###show-hidden-character" + characterAndWorld))
             {
                 options.Hidden = false;
             }
 
             ImGui.SameLine();
-            ImGui.TextWrapped(character);
+            ImGui.TextWrapped(characterAndWorld);
         }
     }
 

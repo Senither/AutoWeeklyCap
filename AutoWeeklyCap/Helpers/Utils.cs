@@ -85,27 +85,4 @@ public static class Utils
 
         return false;
     }
-
-    public static bool RunShellCommand(string commandString)
-    {
-        try
-        {
-            unsafe
-            {
-                var command = new Utf8String(
-                    commandString.StartsWith('/')
-                        ? commandString
-                        : "/" + commandString
-                );
-
-                RaptureShellModule.Instance()->ExecuteCommandInner(&command, UIModule.Instance());
-            }
-
-            return true;
-        }
-        catch (Exception _)
-        {
-            return false;
-        }
-    }
 }

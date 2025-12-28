@@ -141,6 +141,15 @@ public class Runner
             return;
         }
 
+        if (currentCharacter == null)
+        {
+            AutoWeeklyCap.Log.Debug("Stopping runner due to character being NULL");
+            Stop();
+            return;
+        }
+
+        AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(currentCharacter).PreferredJob.SwitchToJob();
+
         state = State.CheckingTomestone;
     }
 
@@ -193,7 +202,7 @@ public class Runner
         }
 
         if (AutoWeeklyCap.Config.UseBossModRebornAI && Utils.IsPluginEnabled("BossModReborn"))
-            Utils.RunShellCommand("bmrai on");
+            Chat.RunCommand("bmrai on");
 
         AutoWeeklyCap.Log.Debug($"Starting auto duty for ${currentCharacter} in zone ${AutoWeeklyCap.Config.ZoneId}");
         AutoDutyIPC.Run(AutoWeeklyCap.Config.ZoneId, 1, false);

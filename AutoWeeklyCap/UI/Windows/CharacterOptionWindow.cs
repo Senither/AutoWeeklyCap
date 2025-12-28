@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
@@ -22,15 +23,15 @@ public class CharacterOptionWindow : Window, IDisposable
 
     public void Dispose() { }
 
-    public void ToggleForCharacterWithOptions(string character)
+    public void ToggleForCharacterWithOptions(string characterAndWorld)
     {
-        if (IsOpen && this.character == character)
+        if (IsOpen && character == characterAndWorld)
         {
             OnClose();
             return;
         }
 
-        this.character = character;
+        character = characterAndWorld;
         IsOpen = true;
     }
 
@@ -55,6 +56,7 @@ public class CharacterOptionWindow : Window, IDisposable
         var options = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
 
         Card.Draw("Character visibility", () => DrawCharacterVisibility(options));
+        Card.Draw("Character Preferences", () => DrawCharacterPreferences(options));
         Card.DrawDanger("Remove Character", DrawCharacterRemoval);
     }
 
@@ -67,6 +69,27 @@ public class CharacterOptionWindow : Window, IDisposable
         }
 
         InformationTooltip.Draw("Hides the character from the list, and disables it for tome runs");
+    }
+
+    private void DrawCharacterPreferences(CharacterOptions options)
+    {
+        ImGui.TextWrapped("Preferred job");
+
+        if (ImGui.BeginCombo($"###selected-duty", options.PreferredJob.GetName()))
+        {
+            foreach (var job in PlayerJobExtensions.GetValues())
+            {
+                if (ImGui.Selectable(job.GetName(), options.PreferredJob == job))
+                {
+                    options.PreferredJob = job;
+                }
+            }
+
+            ImGui.EndCombo();
+        }
+
+        InformationTooltip.Draw(
+            "Automatically swaps to your preferred job before starting AutoDuty, if none is selected your job will not be changed");
     }
 
     private void DrawCharacterRemoval()

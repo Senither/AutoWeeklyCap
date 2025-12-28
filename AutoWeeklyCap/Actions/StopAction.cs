@@ -54,7 +54,7 @@ public static class StopActionExtensions
                 break;
 
             case StopAction.ShutdownGame:
-                Utils.RunShellCommand("xlkill");
+                Chat.RunCommand("xlkill");
                 break;
 
             default:
