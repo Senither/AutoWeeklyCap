@@ -5,7 +5,7 @@ using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
-using Dalamud.Interface.Utility.Raii;
+using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using ECommons.ImGuiMethods;
 
@@ -26,7 +26,20 @@ public class ConfigWindow : Window, IDisposable
 
     public override void Draw()
     {
+        var hasHiddenCharacters = false;
+        foreach (var option in AutoWeeklyCap.Config.Characters.Values)
+        {
+            if (option.IsHidden())
+            {
+                hasHiddenCharacters = true;
+            }
+        }
+
         Card.Draw("Duty Options", DrawDutyOptions);
+
+        if (hasHiddenCharacters)
+            Card.Draw("Hidden Characters", DrawHiddenCharacters);
+
         Card.Draw("Stop Actions", DrawStopActions);
     }
 
@@ -71,6 +84,28 @@ public class ConfigWindow : Window, IDisposable
         }
 
         InformationTooltip.Draw("When enabled, the BossMod Reborn is will be used for AutoDuty over the default AI");
+    }
+
+    private static void DrawHiddenCharacters()
+    {
+        ImGui.TextWrapped("Hidden characters don't show in the character list, and are ignored for totem runs");
+
+        ImGui.Spacing();
+        ImGui.Spacing();
+
+        foreach (var (character, options) in AutoWeeklyCap.Config.Characters)
+        {
+            if (!options.IsHidden())
+                continue;
+
+            if (ImGuiEx.IconButton(FontAwesomeIcon.Eye, "###show-hidden-character" + character))
+            {
+                options.Hidden = false;
+            }
+
+            ImGui.SameLine();
+            ImGui.TextWrapped(character);
+        }
     }
 
     private static void DrawStopActions()

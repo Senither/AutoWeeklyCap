@@ -25,14 +25,7 @@ public class Runner
             return false;
 
         var character = Utils.GetFullCharacterName();
-        if (character == null)
-        {
-            StartCharacterSwap();
-            return true;
-        }
-
-        var options = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
-        if (!options.Enabled)
+        if (character == null || !AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character).IsEnabled())
         {
             StartCharacterSwap();
             return true;
@@ -228,7 +221,7 @@ public class Runner
 
         foreach (var (character, option) in AutoWeeklyCap.Config.Characters)
         {
-            if (!option.Enabled)
+            if (!option.IsEnabled())
                 continue;
 
             var tomes = AutoWeeklyCap.Config.CollectedTomes.GetValueOrDefault(character, 0);

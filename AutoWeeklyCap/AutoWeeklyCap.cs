@@ -48,6 +48,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     public readonly WindowSystem WindowSystem = new("AutoWeeklyCap");
     private MainWindow MainWindow { get; init; }
     private ConfigWindow ConfigWindow { get; init; }
+    private CharacterOptionWindow CharacterOptionWindow { get; init; }
     private FrameworkListener FrameworkListener { get; init; } = new();
 
     private const string CommandNameShort = "/awc";
@@ -75,9 +76,11 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
         ConfigWindow = new ConfigWindow();
         MainWindow = new MainWindow(this);
+        CharacterOptionWindow = new CharacterOptionWindow();
 
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);
+        WindowSystem.AddWindow(CharacterOptionWindow);
 
         CommandManager.AddHandler(CommandNameLong, new CommandInfo(OnCommand)
         {
@@ -126,4 +129,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
     public void ToggleConfigUi() => ConfigWindow.Toggle();
     public void ToggleMainUi() => MainWindow.Toggle();
+
+    public void OpenCharacterOptionsUi(string character) =>
+        CharacterOptionWindow.ToggleForCharacterWithOptions(character);
 }

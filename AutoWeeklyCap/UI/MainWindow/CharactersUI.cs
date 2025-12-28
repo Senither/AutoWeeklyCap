@@ -18,10 +18,13 @@ internal static class CharactersUI
         foreach (var character in AutoWeeklyCap.Config.Characters.Keys)
         {
             var option = AutoWeeklyCap.Config.Characters[character];
+            if (option.IsHidden())
+                continue;
+
             var characterTomes = AutoWeeklyCap.Config.GetWeeklyTomes(character);
             totalTomesCollected += characterTomes;
 
-            if (option.Enabled)
+            if (option.IsEnabled())
                 charactersEnabled++;
 
             ImGui.PushID(character);
@@ -50,29 +53,28 @@ internal static class CharactersUI
 
     internal static void DrawCharacterStatusIcon(string character, CharacterOptions option)
     {
-        if (option.Enabled)
+        if (option.IsEnabled())
             ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
 
         if (ImGuiEx.IconButton(FontAwesomeIcon.Rocket))
         {
-            option.Enabled = !option.Enabled;
+            option.Enabled = !option.IsEnabled();
             SaveCharacterConfigurationOption(character, option);
         }
 
-        ImGuiEx.Tooltip($"Click to {(option.Enabled ? "disable" : "enable")} auto weekly cap for the character");
+        ImGuiEx.Tooltip($"Click to {(option.IsEnabled() ? "disable" : "enable")} auto weekly cap for the character");
 
-        if (option.Enabled)
+        if (option.IsEnabled())
             ImGui.PopStyleColor();
     }
 
     internal static void DrawCharacterSettingsIcon(string character, CharacterOptions options)
     {
-        ImGui.SameLine();
+        ImGui.SameLine(0f, 4f);
 
         if (ImGuiEx.IconButton(FontAwesomeIcon.UserCog))
         {
-            AutoWeeklyCap.Log.Debug($"Character settings for {character} will be rendered in the future...");
-            // TODO: Open a tab or window where it's possible to configure the user settings   
+            AutoWeeklyCap.Instance.OpenCharacterOptionsUi(character);
         }
 
         ImGuiEx.Tooltip("Configure Character");
@@ -80,7 +82,7 @@ internal static class CharactersUI
 
     internal static void DrawCharacterDetails(string character, int tomes, int weeklyLimit)
     {
-        ImGui.SameLine();
+        ImGui.SameLine(0f, 4f);
 
         var cursorPos = ImGui.GetCursorPos();
         ImGui.ProgressBar(0, new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetFrameHeight()), "");

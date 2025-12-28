@@ -57,7 +57,7 @@ public static class Utils
             return false;
 
         var options = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
-        if (!options.Enabled)
+        if (!options.IsEnabled())
             return false;
 
         var tomes = GetWeeklyAcquiredTomestoneCount();
