@@ -63,6 +63,14 @@ public class ConfigWindow : Window, IDisposable
 
         InformationTooltip.Draw(
             "When stopping the runner mid duty, graceful stopping will finish the run before stopping completely");
+
+        var useBossModRebornAI = AutoWeeklyCap.Config.UseBossModRebornAI;
+        if (ImGui.Checkbox("Use BossMod Reborn AI", ref useBossModRebornAI))
+        {
+            AutoWeeklyCap.Config.UseBossModRebornAI = useBossModRebornAI;
+        }
+
+        InformationTooltip.Draw("When enabled, the BossMod Reborn is will be used for AutoDuty over the default AI");
     }
 
     private static void DrawStopActions()

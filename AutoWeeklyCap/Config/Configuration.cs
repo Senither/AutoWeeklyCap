@@ -15,10 +15,10 @@ public class Configuration : IPluginConfiguration
 
     public uint ZoneId { get; set; } = TomestoneZone.AvailableTomestoneZones[0];
     public Dictionary<string, CharacterOptions> Characters { get; set; } = new();
-
     public Dictionary<string, int> CollectedTomes { get; set; } = new();
 
     public bool StopRunnerGracefully { get; set; } = true;
+    public bool UseBossModRebornAI { get; set; } = true;
     public StopAction StopAction { get; set; } = StopAction.None;
     public string CharacterForSwap { get; set; } = "";
 
