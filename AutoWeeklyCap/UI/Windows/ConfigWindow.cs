@@ -98,9 +98,9 @@ public class ConfigWindow : Window, IDisposable
 
         if (ImGui.BeginCombo(
                 $"###character-selector",
-                AutoWeeklyCap.Config.CharacterForSwap.Length == 0
-                    ? "Not selected"
-                    : AutoWeeklyCap.Config.CharacterForSwap
+                AutoWeeklyCap.Config.Characters.ContainsKey(AutoWeeklyCap.Config.CharacterForSwap)
+                    ? AutoWeeklyCap.Config.CharacterForSwap
+                    : "Not selected"
             ))
         {
             foreach (var character in AutoWeeklyCap.Config.Characters.Keys)
