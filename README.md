@@ -4,8 +4,6 @@ Auto Weekly Cap is a plugin for Dalamud that will use [Lifestream](https://githu
 
 ## Installation
 
-> **Note:** The plugin is currently in development, so to use the plugin you'll need to build it manually, in the future you'll be able to use the steps below to install the plugin officially.
-
 To use Auto Weekly Cap you'll need to add the plugin repository to Dalamud by following the steps below:
 
 * Open Dalamud's settings (`/xlsettings`)
