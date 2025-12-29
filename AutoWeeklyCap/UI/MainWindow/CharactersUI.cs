@@ -39,12 +39,6 @@ internal static class CharactersUI
         }
 
         ImGui.Text($"Weekly tomestone cap is at {totalTomesCollected}/{weeklyTomeLimit * charactersEnabled}");
-
-        if (ImGui.Button("Reset Weekly Tomes"))
-        {
-            AutoWeeklyCap.Config.CollectedTomes.Clear();
-            AutoWeeklyCap.Config.Save();
-        }
     }
 
     internal static void SaveCharacterConfigurationOption(string character, CharacterOptions options)

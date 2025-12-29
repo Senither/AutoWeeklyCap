@@ -7,6 +7,7 @@ using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
+using ECommons;
 using ECommons.ImGuiMethods;
 
 namespace AutoWeeklyCap.UI.Windows;
@@ -41,6 +42,7 @@ public class ConfigWindow : Window, IDisposable
             Card.Draw("Hidden Characters", DrawHiddenCharacters);
 
         Card.Draw("Stop Actions", DrawStopActions);
+        Card.DrawWarning("Manually reset Tomestones", DrawResetWeeklyTomestones);
     }
 
     private static void DrawDutyOptions()
@@ -151,6 +153,24 @@ public class ConfigWindow : Window, IDisposable
 
         if (AutoWeeklyCap.Config.StopAction != StopAction.SwitchCharacter)
             ImGui.EndDisabled();
+    }
+
+    private static void DrawResetWeeklyTomestones()
+    {
+        ImGui.TextWrapped(new[]
+        {
+            "The weekly tomestones will reset automatically during the weekly reset, however,",
+            "if you want to reset the tomes manually you can use the button below"
+        }.Join(" "));
+
+        ImGui.Spacing();
+        ImGui.Spacing();
+
+        if (ImGui.Button("Reset Weekly Tomes"))
+        {
+            AutoWeeklyCap.Config.CollectedTomes.Clear();
+            AutoWeeklyCap.Config.Save();
+        }
     }
 
     public override void OnClose()

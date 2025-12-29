@@ -52,19 +52,26 @@ public static class Utils
 
     public static bool UpdateWeeklyAcquiredTomestonesForCurrentCharacter()
     {
-        var character = GetFullCharacterName();
-        if (character == null)
+        var characterAndWorld = GetFullCharacterName();
+        if (characterAndWorld == null)
             return false;
 
-        var options = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
+        var options = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(characterAndWorld);
         if (!options.IsEnabled())
             return false;
 
-        var tomes = GetWeeklyAcquiredTomestoneCount();
-        if (AutoWeeklyCap.Config.CollectedTomes.GetValueOrDefault(character) == tomes)
-            return false;
+        var weeklyTomes = GetWeeklyAcquiredTomestoneCount();
+        var storedTomes = AutoWeeklyCap.Config.CollectedTomes.GetValueOrDefault(characterAndWorld);
 
-        AutoWeeklyCap.Config.CollectedTomes[character] = tomes;
+        if (weeklyTomes == storedTomes)
+            return false;
+        
+        if (storedTomes > weeklyTomes)
+        {
+            AutoWeeklyCap.Config.CollectedTomes.Clear();
+        }
+
+        AutoWeeklyCap.Config.CollectedTomes[characterAndWorld] = weeklyTomes;
         AutoWeeklyCap.Config.Save();
 
         return true;

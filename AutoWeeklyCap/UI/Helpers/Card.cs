@@ -22,6 +22,16 @@ public static class Card
             ColorUtils.HexToUInt(0x5A, 0x5A, 0x59)
         );
     }
+    
+    public static void DrawWarning(string title, Action bodyContent)
+    {
+        DrawWithColors(
+            title,
+            bodyContent,
+            ColorUtils.HexToUInt(0xFF, 0xC6, 0x3C, 0.3f),
+            ColorUtils.HexToUInt(0xAB, 0x8E, 0x1B, 0.8f)
+        );
+    }
 
     public static void DrawDanger(string title, Action bodyContent)
     {
