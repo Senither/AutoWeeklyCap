@@ -100,13 +100,17 @@ public class CharacterOptionWindow : Window, IDisposable
         ImGui.Spacing();
         ImGui.Spacing();
 
-        if (ImGui.Button("Remove Character"))
-        {
-            if (character == null)
-                return;
+        ActionButton.Draw(
+            "Remove Character",
+            "Hold down CTRL to remove " + character,
+            () =>
+            {
+                if (character == null)
+                    return;
 
-            AutoWeeklyCap.Config.Characters.Remove(character);
-            OnClose();
-        }
+                AutoWeeklyCap.Config.Characters.Remove(character);
+                OnClose();
+            }
+        );
     }
 }

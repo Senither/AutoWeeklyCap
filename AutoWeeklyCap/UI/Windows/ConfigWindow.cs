@@ -166,11 +166,11 @@ public class ConfigWindow : Window, IDisposable
         ImGui.Spacing();
         ImGui.Spacing();
 
-        if (ImGui.Button("Reset Weekly Tomes"))
-        {
-            AutoWeeklyCap.Config.CollectedTomes.Clear();
-            AutoWeeklyCap.Config.Save();
-        }
+        ActionButton.Draw(
+            "Reset Weekly Tomestones",
+            "Hold down CTRL to reset your weekly tomestones",
+            () => AutoWeeklyCap.Config.CollectedTomes.Clear()
+        );
     }
 
     public override void OnClose()
