@@ -85,12 +85,12 @@ public class ConfigWindow : Window, IDisposable
             AutoWeeklyCap.Config.UseBossModRebornAI = useBossModRebornAI;
         }
 
-        InformationTooltip.Draw("When enabled, the BossMod Reborn is will be used for AutoDuty over the default AI");
+        InformationTooltip.Draw("When enabled, the BossMod Reborn AI will be used for AutoDuty over the default AI");
     }
 
     private static void DrawHiddenCharacters()
     {
-        ImGui.TextWrapped("Hidden characters don't show in the character list, and are ignored for totem runs");
+        ImGui.TextWrapped("Hidden characters don't show in the character list, and are ignored for tomestone runs.");
 
         ImGui.Spacing();
         ImGui.Spacing();
@@ -112,7 +112,7 @@ public class ConfigWindow : Window, IDisposable
 
     private static void DrawStopActions()
     {
-        ImGui.TextWrapped("Select what should happen when all characters tomes have been collected.");
+        ImGui.TextWrapped("Select what should happen when all characters have been tomestone capped.");
 
         ImGui.Spacing();
         ImGui.Spacing();
@@ -157,11 +157,10 @@ public class ConfigWindow : Window, IDisposable
 
     private static void DrawResetWeeklyTomestones()
     {
-        ImGui.TextWrapped(new[]
-        {
-            "The weekly tomestones will reset automatically during the weekly reset, however,",
-            "if you want to reset the tomes manually you can use the button below"
-        }.Join(" "));
+        ImGui.TextWrapped(
+            "The tomestones will reset automatically during the weekly reset, however, " +
+            "if you want to reset the tomes manually you can use the button below."
+        );
 
         ImGui.Spacing();
         ImGui.Spacing();

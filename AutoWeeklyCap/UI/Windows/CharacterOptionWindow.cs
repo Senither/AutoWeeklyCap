@@ -68,7 +68,7 @@ public class CharacterOptionWindow : Window, IDisposable
             options.Hidden = hidden;
         }
 
-        InformationTooltip.Draw("Hides the character from the list, and disables it for tome runs");
+        InformationTooltip.Draw("Hides the character from the list, and disables it for tomestone runs");
     }
 
     private void DrawCharacterPreferences(CharacterOptions options)
@@ -89,7 +89,9 @@ public class CharacterOptionWindow : Window, IDisposable
         }
 
         InformationTooltip.Draw(
-            "Automatically swaps to your preferred job before starting AutoDuty, if none is selected your job will not be changed");
+            "Automatically swaps to your preferred job before starting AutoDuty\n" +
+            "If none is selected your job will not be changed"
+        );
     }
 
     private void DrawCharacterRemoval()
