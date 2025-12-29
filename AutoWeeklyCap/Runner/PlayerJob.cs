@@ -1,5 +1,4 @@
-﻿using System;
-using AutoWeeklyCap.Helpers;
+﻿using AutoWeeklyCap.Helpers;
 
 // ReSharper disable InconsistentNaming
 

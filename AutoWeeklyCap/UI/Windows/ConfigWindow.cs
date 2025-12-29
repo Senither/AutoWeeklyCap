@@ -7,7 +7,6 @@ using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
-using ECommons;
 using ECommons.ImGuiMethods;
 
 namespace AutoWeeklyCap.UI.Windows;

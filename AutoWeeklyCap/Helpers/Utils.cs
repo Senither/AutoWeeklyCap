@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using AutoWeeklyCap.IPC;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.System.String;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using FFXIVClientStructs.FFXIV.Client.UI.Shell;
 using Lumina.Excel.Sheets;
 
 namespace AutoWeeklyCap.Helpers;
@@ -44,7 +41,7 @@ public static class Utils
                 return InventoryManager.Instance()->GetWeeklyAcquiredTomestoneCount();
             }
         }
-        catch (Exception _)
+        catch (Exception)
         {
             return 0;
         }

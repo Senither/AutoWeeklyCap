@@ -25,7 +25,7 @@ public static class Chat
 
             return true;
         }
-        catch (Exception _)
+        catch (Exception)
         {
             return false;
         }
