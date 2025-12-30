@@ -47,16 +47,18 @@ public static class PlayerJobExtensions
         return job.ToString();
     }
 
-    public static void SwitchToJob(this PlayerJob job)
+    public static bool SwitchToJob(this PlayerJob job)
     {
         switch (job)
         {
             case PlayerJob.None:
-                break;
+                return true;
 
             default:
-                Character.SwitchJob((uint)job);
-                break;
+                var status = Character.SwitchJob((uint)job);
+
+                AutoWeeklyCap.Log.Debug($"Attempted to switch to job {job}, got status: {status}");
+                return status == CharacterSwapStatus.AlreadyOnTargetJob;
         }
     }
 

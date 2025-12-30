@@ -148,7 +148,11 @@ public class Runner
             return;
         }
 
-        AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(currentCharacter).PreferredJob.SwitchToJob();
+        var switchToJobStatus = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(currentCharacter)
+                                             .PreferredJob.SwitchToJob();
+
+        if (!switchToJobStatus)
+            return;
 
         state = State.CheckingTomestone;
     }

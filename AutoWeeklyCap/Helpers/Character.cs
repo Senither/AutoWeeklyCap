@@ -2,22 +2,29 @@
 
 namespace AutoWeeklyCap.Helpers;
 
+public enum CharacterSwapStatus
+{
+    FailedToSwitchJob = 0,
+    SwitchedJob = 1,
+    AlreadyOnTargetJob = 2
+}
+
 public static class Character
 {
-    public static bool SwitchJob(uint targetJobId)
+    public static CharacterSwapStatus SwitchJob(uint targetJobId)
     {
         if (!AutoWeeklyCap.PlayerState.IsLoaded)
-            return false;
+            return CharacterSwapStatus.FailedToSwitchJob;
 
         var currentJobId = AutoWeeklyCap.PlayerState.ClassJob.RowId;
         if (currentJobId == targetJobId)
-            return false;
+            return CharacterSwapStatus.AlreadyOnTargetJob;
 
         unsafe
         {
             var gearsetModule = RaptureGearsetModule.Instance();
             if (gearsetModule == null)
-                return false;
+                return CharacterSwapStatus.FailedToSwitchJob;
 
             for (byte i = 0; i < 100; i++)
             {
@@ -25,10 +32,10 @@ public static class Character
                     continue;
 
                 Chat.RunCommand($"gs change {i + 1}");
-                return true;
+                return CharacterSwapStatus.SwitchedJob;
             }
         }
 
-        return false;
+        return CharacterSwapStatus.FailedToSwitchJob;
     }
 }
