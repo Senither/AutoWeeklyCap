@@ -201,7 +201,7 @@ public class Runner
             return;
         }
 
-        if (AutoWeeklyCap.Config.UseBossModRebornAI && Utils.IsPluginEnabled("BossModReborn"))
+        if (AutoWeeklyCap.Config.UseBossModRebornAI && BossModReborn.IsEnabled)
             Chat.RunCommand("bmrai on");
 
         AutoWeeklyCap.Log.Debug($"Starting auto duty for ${currentCharacter} in zone ${AutoWeeklyCap.Config.ZoneId}");

@@ -78,15 +78,4 @@ public static class Utils
     {
         return LifestreamIPC.IsEnabled && AutoDutyIPC.IsEnabled;
     }
-
-    public static bool IsPluginEnabled(string name)
-    {
-        foreach (var plugin in AutoWeeklyCap.PluginInterface.InstalledPlugins)
-        {
-            if (plugin.InternalName == name && plugin.IsLoaded)
-                return true;
-        }
-
-        return false;
-    }
 }
