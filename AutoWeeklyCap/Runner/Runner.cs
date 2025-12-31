@@ -54,6 +54,17 @@ public class Runner
         Abort();
     }
 
+    public void Resume()
+    {
+        if (!AutoWeeklyCap.Config.StopRunnerGracefully || !stopGracefully || AutoDutyIPC.IsStopped())
+            return;
+
+        if (state is not (State.RunningAutoDuty or State.SwitchingCharacter))
+            return;
+
+        stopGracefully = false;
+    }
+
     public void Abort()
     {
         currentCharacter = null;
@@ -186,7 +197,7 @@ public class Runner
             { "Current zone", AutoWeeklyCap.ClientState.TerritoryType },
             { "Duty zone", AutoWeeklyCap.Config.ZoneId },
         });
-        
+
         if (AutoWeeklyCap.ClientState.TerritoryType == AutoWeeklyCap.Config.ZoneId)
         {
             state = State.RunningAutoDuty;

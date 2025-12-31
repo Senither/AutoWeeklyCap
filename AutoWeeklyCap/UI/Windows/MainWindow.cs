@@ -2,6 +2,7 @@
 using System.Numerics;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
+using AutoWeeklyCap.UI.Helpers;
 using AutoWeeklyCap.UI.MainWindow;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
@@ -138,25 +139,31 @@ public class MainWindow : Window, IDisposable
     protected void DrawHeaderActionButtons()
     {
         var isEnabled = Utils.IsRequiredPluginsEnabled()
-                        && !AutoWeeklyCap.Runner.IsStopping()
                         && AutoWeeklyCap.Config.IsRequiredSettingsSetup();
 
         if (!isEnabled)
             ImGui.BeginDisabled();
 
-        var buttonOffset = AutoWeeklyCap.Runner.IsRunning() ? 86 : 70;
-        ImGui.SameLine(ImGui.GetContentRegionAvail().X - buttonOffset + ImGui.GetStyle().ItemSpacing.X);
-
         if (AutoWeeklyCap.Runner.IsRunning())
         {
-            if (ImGui.Button(" Stop Runner "))
+            if (AutoWeeklyCap.Runner.IsStopping())
             {
-                AutoWeeklyCap.Runner.Stop();
+                if (RightAlignedButton.Draw(" Resume Runner "))
+                {
+                    AutoWeeklyCap.Runner.Resume();
+                }
+            }
+            else
+            {
+                if (RightAlignedButton.Draw(" Stop Runner "))
+                {
+                    AutoWeeklyCap.Runner.Stop();
+                }
             }
         }
         else
         {
-            if (ImGui.Button(" Start Run "))
+            if (RightAlignedButton.Draw(" Start Run "))
             {
                 if (Utils.IsRequiredPluginsEnabled())
                 {
