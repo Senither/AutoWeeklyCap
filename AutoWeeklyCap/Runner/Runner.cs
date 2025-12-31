@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Helpers;
@@ -63,6 +63,7 @@ public class Runner
 
         LifestreamIPC.Abort();
         AutoDutyIPC.Stop();
+        AutoWeeklyCap.TaskManager.Abort();
 
         AutoWeeklyCap.Log.Debug("Stopped weekly cap runner");
     }
@@ -95,6 +96,9 @@ public class Runner
 
     public void Tick()
     {
+        if (AutoWeeklyCap.TaskManager.IsBusy)
+            return;
+
         switch (state)
         {
             case State.Waiting:
@@ -148,13 +152,15 @@ public class Runner
             return;
         }
 
-        var switchToJobStatus = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(currentCharacter)
-                                             .PreferredJob.SwitchToJob();
+        AutoWeeklyCap.TaskManager.Enqueue(() => AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(currentCharacter)
+                                                             .PreferredJob.SwitchToJob(),
+                                          "switch to preferred job"
+        );
 
-        if (!switchToJobStatus)
-            return;
-
-        state = State.CheckingTomestone;
+        AutoWeeklyCap.TaskManager.Enqueue(
+            () => state = State.CheckingTomestone,
+            "next stage: checking tomestone"
+        );
     }
 
     private void CheckTomestoneStage()
@@ -173,6 +179,14 @@ public class Runner
 
     private void StartAutoDuty()
     {
+        AutoWeeklyCap.Log.Debug("Attempting to start auto duty: {@Stats}", new Dictionary<string, object>
+        {
+            { "Seconds elapsed", (DateTime.UtcNow - timestamp).Seconds },
+            { "AutoDuty started", !AutoDutyIPC.IsStopped() },
+            { "Current zone", AutoWeeklyCap.ClientState.TerritoryType },
+            { "Duty zone", AutoWeeklyCap.Config.ZoneId },
+        });
+        
         if (AutoWeeklyCap.ClientState.TerritoryType == AutoWeeklyCap.Config.ZoneId)
         {
             state = State.RunningAutoDuty;
@@ -183,9 +197,7 @@ public class Runner
             return;
         }
 
-        AutoWeeklyCap.Log.Debug(
-            $"Seconds elapsed: {(DateTime.UtcNow - timestamp).Seconds}, AutoDuty started: {!AutoDutyIPC.IsStopped()}");
-        if ((DateTime.UtcNow - timestamp).Seconds > 10)
+        if ((DateTime.UtcNow - timestamp).Seconds > 15)
         {
             AutoWeeklyCap.Log.Debug("Timed out while trying to start AutoDuty");
 
@@ -206,7 +218,10 @@ public class Runner
         }
 
         if (AutoWeeklyCap.Config.UseBossModRebornAI && BossModReborn.IsEnabled)
+        {
+            AutoWeeklyCap.Log.Debug("UseBossModRebornAI is enabled and BossMod Reborn is disabled, enabling AI");
             Chat.RunCommand("bmrai on");
+        }
 
         AutoWeeklyCap.Log.Debug($"Starting auto duty for ${currentCharacter} in zone ${AutoWeeklyCap.Config.ZoneId}");
         AutoDutyIPC.Run(AutoWeeklyCap.Config.ZoneId, 1, false);
@@ -279,6 +294,10 @@ public class Runner
     {
         Abort();
 
-        AutoWeeklyCap.Config.StopAction.Execute();
+        AutoWeeklyCap.TaskManager.EnqueueDelay(500);
+        AutoWeeklyCap.TaskManager.Enqueue(
+            () => AutoWeeklyCap.Config.StopAction.Execute(),
+            "executing stop action"
+        );
     }
 }

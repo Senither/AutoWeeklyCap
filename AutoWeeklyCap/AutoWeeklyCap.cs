@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using AutoWeeklyCap.Commands;
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.UI.Windows;
@@ -9,6 +10,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ECommons;
+using ECommons.Automation.NeoTaskManager;
 using Newtonsoft.Json;
 using Module = ECommons.Module;
 
@@ -20,6 +22,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     internal static AutoWeeklyCap Instance = null!;
     internal static Configuration Config => Instance.Configuration;
     internal static Runner.Runner Runner { get; set; } = null!;
+    internal static TaskManager TaskManager { get; set; } = null!;
     internal static string Version => Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
 
     [PluginService]
@@ -59,6 +62,9 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         Instance = this;
 
         ECommonsMain.Init(PluginInterface, this, Module.DalamudReflector);
+
+        TaskManager =
+            new TaskManager(new TaskManagerConfiguration(abortOnTimeout: true, timeLimitMS: 20000, showDebug: true));
 
         try
         {
@@ -115,6 +121,8 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
         ConfigWindow.Dispose();
         MainWindow.Dispose();
+
+        TaskManager.Dispose();
 
         ECommonsMain.Dispose();
 
