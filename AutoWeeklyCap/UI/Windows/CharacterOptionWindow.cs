@@ -55,9 +55,9 @@ public class CharacterOptionWindow : Window, IDisposable
 
         var options = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
 
-        Card.Draw("Character visibility", () => DrawCharacterVisibility(options));
-        Card.Draw("Character Preferences", () => DrawCharacterPreferences(options));
-        Card.DrawDanger("Remove Character", DrawCharacterRemoval);
+        Card.Draw("Character visibility", () => DrawCharacterVisibility(options), collapsible: false);
+        Card.Draw("Character Preferences", () => DrawCharacterPreferences(options), collapsible: false);
+        Card.DrawDanger("Remove Character", DrawCharacterRemoval, collapsible: false);
     }
 
     private void DrawCharacterVisibility(CharacterOptions options)
