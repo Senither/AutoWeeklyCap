@@ -163,6 +163,19 @@ public class Runner
             return;
         }
 
+        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        {
+            if (AutoRetainerIPC.IsEnabled && AutoRetainerIPC.GetMultiModeStatus())
+            {
+                if (!AutoRetainerIPC.IsBusy())
+                    AutoRetainerIPC.DisableMultiMode();
+
+                return false;
+            }
+
+            return true;
+        }, "disable AutoRetainer multi mode when it's not busy");
+
         AutoWeeklyCap.TaskManager.Enqueue(() => AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(currentCharacter)
                                                              .PreferredJob.SwitchToJob(),
                                           "switch to preferred job"
