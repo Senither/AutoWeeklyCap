@@ -232,14 +232,10 @@ public class Runner
         if (!AutoDutyIPC.IsStopped())
             return;
 
-        if ((DateTime.UtcNow - timestamp).Seconds > 30)
-        {
-            AutoWeeklyCap.Log.Debug("Tried to run auto duty but timed out, stopping weekly cap runner");
+        if (AutoWeeklyCap.ClientState.TerritoryType == AutoWeeklyCap.Config.ZoneId)
+            return;
 
-            Stop();
-        }
-
-        AutoWeeklyCap.Log.Debug("AutoDuty has complete a run, switching to checking tomestones");
+        AutoWeeklyCap.Log.Debug("AutoDuty has complete a run, switching to preparations stage");
         state = State.PreparingRunner;
     }
 
