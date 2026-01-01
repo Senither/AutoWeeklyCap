@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using System.Threading.Tasks;
 using AutoWeeklyCap.Commands;
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.UI.Windows;
@@ -54,8 +53,8 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     private CharacterOptionWindow CharacterOptionWindow { get; init; }
     private FrameworkListener FrameworkListener { get; init; } = new();
 
-    private const string CommandNameShort = "/awc";
-    private const string CommandNameLong = "/autoweeklycap";
+    internal const string CommandNameShort = "/awc";
+    internal const string CommandNameLong = "/autoweeklycap";
 
     public AutoWeeklyCap()
     {
@@ -132,7 +131,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
     private static void OnCommand(string command, string args)
     {
-        CommandHandler.HandleCommand(args.Split(" "));
+        CommandHandler.HandleCommand(args);
     }
 
     public void ToggleConfigUi() => ConfigWindow.Toggle();
