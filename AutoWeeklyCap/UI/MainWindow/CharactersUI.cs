@@ -1,10 +1,12 @@
-using System.Numerics;
+﻿using System.Numerics;
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Runner;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
+using ECommons.Automation;
 using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using Chat = AutoWeeklyCap.Helpers.Chat;
 
 namespace AutoWeeklyCap.UI.MainWindow;
 
@@ -31,6 +33,7 @@ internal static class CharactersUI
             ImGui.PushID(character);
 
             DrawCharacterStatusIcon(character, option);
+            DrawCharacterRelogIcon(character);
             DrawCharacterSettingsIcon(character, option);
             DrawCharacterDetails(character, option, characterTomes, weeklyTomeLimit);
 
@@ -63,6 +66,26 @@ internal static class CharactersUI
 
         if (option.IsEnabled())
             ImGui.PopStyleColor();
+    }
+
+    internal static void DrawCharacterRelogIcon(string character)
+    {
+        var command = $"{AutoWeeklyCap.CommandNameShort} relog {character}";
+
+        ImGui.SameLine(0f, 4f);
+        ImGuiEx.IconButton(FontAwesomeIcon.DoorOpen);
+
+        if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+        {
+            ImGui.SetClipboardText(command);
+            Notify.Success("Link copied to clipboard");
+        }
+        else if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
+        {
+            Chat.RunCommand(command);
+        }
+
+        ImGuiEx.Tooltip("Left click:   relog to this character\nRight click: copy relog command to clipboard");
     }
 
     internal static void DrawCharacterSettingsIcon(string character, CharacterOptions options)
