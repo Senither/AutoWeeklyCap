@@ -10,6 +10,7 @@ public enum StopAction
     SwitchCharacter = 1,
     LogoutToMenu = 2,
     ShutdownGame = 3,
+    AutoRetainerMultimode = 4
 }
 
 public static class StopActionExtensions
@@ -22,6 +23,7 @@ public static class StopActionExtensions
             StopAction.SwitchCharacter => "Switch to Character",
             StopAction.LogoutToMenu => "Logout to Menu",
             StopAction.ShutdownGame => "Shutdown Game",
+            StopAction.AutoRetainerMultimode => "Start AutoRetainer multimode",
             _ => action.ToString()
         };
     }
@@ -55,6 +57,10 @@ public static class StopActionExtensions
 
             case StopAction.ShutdownGame:
                 Chat.RunCommand("xlkill");
+                break;
+
+            case StopAction.AutoRetainerMultimode:
+                AutoRetainerIPC.EnableMultiMode();
                 break;
 
             default:
