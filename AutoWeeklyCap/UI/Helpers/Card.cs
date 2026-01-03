@@ -5,6 +5,7 @@ using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
+using ECommons.ImGuiMethods;
 
 namespace AutoWeeklyCap.UI.Helpers;
 
@@ -15,6 +16,8 @@ public static class Card
 
     internal static readonly Vector2 TitlePadding = new(10, 6);
     internal static readonly Vector2 ContentPadding = new(10, 10);
+
+    internal static uint? LatestDrawnCardBorderColor = null;
 
     private static readonly Dictionary<uint, bool> OpenStateById = new();
 
@@ -62,6 +65,9 @@ public static class Card
         bool collapsible = true,
         bool defaultOpen = false)
     {
+        var previousBorderColor = LatestDrawnCardBorderColor;
+        LatestDrawnCardBorderColor = borderColor;
+
         using var id = ImRaii.PushId(title);
         using var color = ImRaii.PushColor(ImGuiCol.ChildBg, new Vector4(0.05f, 0.05f, 0.05f, 0.2f));
 
@@ -101,7 +107,7 @@ public static class Card
         }
 
         ImGui.SetCursorScreenPos(cardMin + new Vector2((titleBarHeight - titleLineHeight) / 2f));
-        
+
         if (collapsible)
         {
             var icon = isOpen ? FontAwesomeIcon.ChevronDown : FontAwesomeIcon.ChevronRight;
@@ -153,5 +159,32 @@ public static class Card
         drawList.ChannelsMerge();
 
         ImGui.Spacing();
+
+        LatestDrawnCardBorderColor = previousBorderColor;
+    }
+
+    public static void Separator() => Separator(null);
+
+    private static void Separator(uint? borderColor)
+    {
+        var drawList = ImGui.GetWindowDrawList();
+
+        var color = borderColor
+                  ?? LatestDrawnCardBorderColor
+                  ?? throw new NullReferenceException("expected Card#Separator to be called inside a card body");
+
+        var cursor = ImGui.GetCursorScreenPos();
+        var width = ImGui.GetContentRegionAvail().X;
+
+        var paddingY = ImGui.GetStyle().ItemSpacing.Y * 1.5f;
+        var lineY = cursor.Y + paddingY;
+
+        drawList.AddLine(
+            new Vector2(cursor.X - ContentPadding.X, lineY),
+            new Vector2(cursor.X + width, lineY),
+            color, BorderSize
+        );
+
+        ImGui.Dummy(new Vector2(0f, paddingY * 2f));
     }
 }

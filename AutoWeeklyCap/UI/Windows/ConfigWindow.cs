@@ -3,6 +3,7 @@ using System.Numerics;
 using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.Runner;
+using AutoWeeklyCap.UI.ConfigWindow;
 using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
@@ -40,6 +41,8 @@ public class ConfigWindow : Window, IDisposable
         if (hasHiddenCharacters)
             Card.Draw("Hidden Characters", DrawHiddenCharacters);
 
+        Card.Draw("Between Runs Options", BetweenRunOptionsUi.Draw);
+        
         Card.Draw("Stop Actions", DrawStopActions);
         Card.DrawWarning("Manually reset Tomestones", DrawResetWeeklyTomestones);
     }
