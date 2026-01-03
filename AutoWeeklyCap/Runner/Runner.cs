@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
+using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Runner;
@@ -176,11 +177,6 @@ public class Runner
             return true;
         }, "disable AutoRetainer multi mode when it's not busy");
 
-        AutoWeeklyCap.TaskManager.Enqueue(() => AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(currentCharacter)
-                                                             .PreferredJob.SwitchToJob(),
-                                          "switch to preferred job"
-        );
-
         AutoWeeklyCap.TaskManager.Enqueue(
             () => state = State.CheckingTomestone,
             "next stage: checking tomestone"
@@ -203,52 +199,81 @@ public class Runner
 
     private void StartAutoDuty()
     {
-        AutoWeeklyCap.Log.Debug("Attempting to start auto duty: {@Stats}", new Dictionary<string, object>
+        if (currentCharacter == null)
         {
-            { "Seconds elapsed", (DateTime.UtcNow - timestamp).Seconds },
-            { "AutoDuty started", !AutoDutyIPC.IsStopped() },
-            { "Current zone", AutoWeeklyCap.ClientState.TerritoryType },
-            { "Duty zone", AutoWeeklyCap.Config.ZoneId },
-        });
-
-        if (AutoWeeklyCap.ClientState.TerritoryType == AutoWeeklyCap.Config.ZoneId)
-        {
-            state = State.RunningAutoDuty;
-
-            if (AutoDutyIPC.IsStopped())
-                AutoDutyIPC.Run(AutoWeeklyCap.Config.ZoneId, 1, false);
-
+            AutoWeeklyCap.Log.Debug("Stopping runner due to character being NULL");
+            Stop();
             return;
         }
 
-        if ((DateTime.UtcNow - timestamp).Seconds > 15)
-        {
-            AutoWeeklyCap.Log.Debug("Timed out while trying to start AutoDuty");
+        AutoWeeklyCap.TaskManager.Enqueue(
+            () => AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(currentCharacter)
+                               .PreferredJob.SwitchToJob(),
+            "switch to preferred job"
+        );
 
-            if (currentCharacter == null)
+        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        {
+            if (AutoWeeklyCap.Config.UseBossModRebornAI && BossModReborn.IsEnabled)
             {
-                AutoWeeklyCap.Log.Debug("Stopping runner due to character being NULL");
-                Stop();
-                return;
+                AutoWeeklyCap.Log.Debug("UseBossModRebornAI is enabled and BossMod Reborn is disabled, enabling AI");
+                Chat.RunCommand("bmrai on");
             }
+        }, "enable BossMod Reborn AI if option is enabled");
 
-            AutoWeeklyCap.Log.Debug($"Disabling AWC for {currentCharacter} and switching character");
+        AutoWeeklyCap.TaskManager.Enqueue(
+            () =>
+            {
+                if (!EzThrottler.Throttle("RunnerStartingDuty", 250))
+                    return false;
 
-            AutoWeeklyCap.Config.Characters[currentCharacter].Enabled = false;
-            AutoWeeklyCap.Config.Save();
+                if (AutoWeeklyCap.ClientState.TerritoryType == AutoWeeklyCap.Config.ZoneId)
+                {
+                    state = State.RunningAutoDuty;
 
-            state = State.StartingCharacterSwap;
-            return;
-        }
+                    if (AutoDutyIPC.IsStopped())
+                        AutoDutyIPC.Run(AutoWeeklyCap.Config.ZoneId, 1, false);
 
-        if (AutoWeeklyCap.Config.UseBossModRebornAI && BossModReborn.IsEnabled)
-        {
-            AutoWeeklyCap.Log.Debug("UseBossModRebornAI is enabled and BossMod Reborn is disabled, enabling AI");
-            Chat.RunCommand("bmrai on");
-        }
+                    return true;
+                }
 
-        AutoWeeklyCap.Log.Debug($"Starting auto duty for ${currentCharacter} in zone ${AutoWeeklyCap.Config.ZoneId}");
-        AutoDutyIPC.Run(AutoWeeklyCap.Config.ZoneId, 1, false);
+                AutoWeeklyCap.Log.Debug("Attempting to start auto duty: {@Stats}", new Dictionary<string, object>
+                {
+                    { "Seconds elapsed", (DateTime.UtcNow - timestamp).Seconds },
+                    { "AutoDuty started", !AutoDutyIPC.IsStopped() },
+                    { "Current zone", AutoWeeklyCap.ClientState.TerritoryType },
+                    { "Duty zone", AutoWeeklyCap.Config.ZoneId },
+                });
+
+                if ((DateTime.UtcNow - timestamp).Seconds > 15)
+                {
+                    AutoWeeklyCap.Log.Debug("Timed out while trying to start AutoDuty");
+
+                    if (currentCharacter == null)
+                    {
+                        AutoWeeklyCap.Log.Debug("Stopping runner due to character being NULL");
+                        Stop();
+                        return true;
+                    }
+
+                    AutoWeeklyCap.Log.Debug($"Disabling AWC for {currentCharacter} and switching character");
+
+                    AutoWeeklyCap.Config.Characters[currentCharacter].Enabled = false;
+                    AutoWeeklyCap.Config.Save();
+
+                    AutoWeeklyCap.TaskManager.Enqueue(
+                        () => state = State.StartingCharacterSwap,
+                        "next stage: starting character swap"
+                    );
+
+                    return true;
+                }
+
+                AutoDutyIPC.Run(AutoWeeklyCap.Config.ZoneId, 1, false);
+                return false;
+            },
+            "starting AutoDuty"
+        );
     }
 
     private void RunAutoDuty()
