@@ -121,6 +121,7 @@ public class MainWindow : Window, IDisposable
 
             ImGui.TextUnformatted("Optional plugins to enhance AWC:");
 
+            DrawPluginStatusTooltipWithContent(AutoRetainerIPC.IsEnabled, "AutoRetainer");
             DrawPluginStatusTooltipWithContent(BossModReborn.IsEnabled, "BossMod Reborn");
 
             ImGui.EndTooltip();
