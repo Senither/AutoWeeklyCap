@@ -1,5 +1,7 @@
-﻿using AutoWeeklyCap.IPC;
+﻿using AutoWeeklyCap.Helpers;
+using AutoWeeklyCap.IPC;
 using ECommons;
+using ECommons.ImGuiMethods;
 using ECommons.Logging;
 
 namespace AutoWeeklyCap.Commands;
@@ -37,6 +39,9 @@ public class RelogCommand : ICommand
             DuoLog.Warning($"Unknown character '{characterAndWorld}', please specify a valid character");
             return;
         }
+
+        if (characterAndWorld.Equals(Utils.GetFullCharacterName()))
+            return;
 
         var parts = characterAndWorld.Split("@");
         if (parts.Length == 2)
