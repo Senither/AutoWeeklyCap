@@ -4,7 +4,9 @@ using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
+using ECommons.ImGuiMethods;
 
 namespace AutoWeeklyCap.UI.Windows;
 
@@ -69,6 +71,59 @@ public class CharacterOptionWindow : Window, IDisposable
         }
 
         InformationTooltip.Draw("Hides the character from the list, and disables it for tomestone runs");
+
+        ImGui.Spacing();
+        ImGui.Spacing();
+
+        ImGui.Text("Character Position");
+
+        Disabled.Draw(options.Position == 0, () =>
+        {
+            if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowUp))
+                MoveCharacterPosition(-1);
+
+            ImGuiEx.Tooltip("Move character up");
+        });
+
+        ImGui.SameLine(0f, 4f);
+
+        Disabled.Draw(options.Position == AutoWeeklyCap.Config.Characters.Count - 1, () =>
+        {
+            if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowDown))
+                MoveCharacterPosition(1);
+
+            ImGuiEx.Tooltip("Move character down");
+        });
+
+        InformationTooltip.Draw(
+            "The order of the characters are used when checking tomestones in the runner, so the\n"
+            + "first character with missing tomestones is selected searching from top to bottom."
+        );
+    }
+
+    private void MoveCharacterPosition(int direction)
+    {
+        if (character == null)
+            return;
+
+        AutoWeeklyCap.Config.NormalizeCharacterPositions();
+
+        var sortedCharacters = AutoWeeklyCap.Config.GetSortedCharacters();
+        var currentIndex = sortedCharacters.IndexOf(character);
+        if (currentIndex == -1)
+            return;
+
+        var targetIndex = currentIndex + direction;
+        if (targetIndex < 0 || targetIndex >= sortedCharacters.Count)
+            return;
+
+        var otherCharacter = sortedCharacters[targetIndex];
+        var currentOptions = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
+        var otherOptions = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(otherCharacter);
+
+        (currentOptions.Position, otherOptions.Position) = (otherOptions.Position, currentOptions.Position);
+
+        AutoWeeklyCap.Config.NormalizeCharacterPositions();
     }
 
     private void DrawCharacterPreferences(CharacterOptions options)
@@ -110,7 +165,11 @@ public class CharacterOptionWindow : Window, IDisposable
                 if (character == null)
                     return;
 
-                AutoWeeklyCap.Config.Characters.Remove(character);
+                var removedCharacter = character;
+
+                AutoWeeklyCap.Config.Characters.Remove(removedCharacter);
+                AutoWeeklyCap.Config.CollectedTomes.Remove(removedCharacter);
+                AutoWeeklyCap.Config.NormalizeCharacterPositions();
                 OnClose();
             }
         );

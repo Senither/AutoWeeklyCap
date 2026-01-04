@@ -68,6 +68,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         try
         {
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            Configuration.NormalizeCharacterPositions();
         }
         catch (Exception e)
         {

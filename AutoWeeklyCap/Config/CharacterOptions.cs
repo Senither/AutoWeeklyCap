@@ -9,6 +9,7 @@ public class CharacterOptions
     public bool Enabled { get; set; } = true;
     public bool Hidden { get; set; } = false;
     public PlayerJob PreferredJob { get; set; } = PlayerJob.None;
+    public uint Position { get; set; } = 0;
 
     /**
      * Checks if the character is both enabled and not hidden.

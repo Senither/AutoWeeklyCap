@@ -292,8 +292,9 @@ public class Runner
     {
         var limit = InventoryManager.GetLimitedTomestoneWeeklyLimit();
 
-        foreach (var (character, option) in AutoWeeklyCap.Config.Characters)
+        foreach (var character in AutoWeeklyCap.Config.GetSortedCharacters())
         {
+            var option = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
             if (!option.IsEnabled())
                 continue;
 

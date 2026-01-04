@@ -13,8 +13,9 @@ public static class HiddenCharactersUi
         ImGui.Spacing();
         ImGui.Spacing();
 
-        foreach (var (characterAndWorld, options) in AutoWeeklyCap.Config.Characters)
+        foreach (var characterAndWorld in AutoWeeklyCap.Config.GetSortedCharacters())
         {
+            var options = AutoWeeklyCap.Config.Characters[characterAndWorld];
             if (!options.IsHidden())
                 continue;
 

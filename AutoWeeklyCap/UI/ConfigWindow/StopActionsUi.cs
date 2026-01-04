@@ -43,7 +43,7 @@ public static class StopActionsUi
                     : "Not selected"
             ))
         {
-            foreach (var character in AutoWeeklyCap.Config.Characters.Keys)
+            foreach (var character in AutoWeeklyCap.Config.GetSortedCharacters())
             {
                 if (ImGui.Selectable(character, AutoWeeklyCap.Config.CharacterForSwap == character))
                 {

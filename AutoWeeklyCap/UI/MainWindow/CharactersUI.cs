@@ -17,7 +17,7 @@ internal static class CharactersUI
         var totalTomesCollected = 0;
         var weeklyTomeLimit = InventoryManager.GetLimitedTomestoneWeeklyLimit();
 
-        foreach (var character in AutoWeeklyCap.Config.Characters.Keys)
+        foreach (var character in AutoWeeklyCap.Config.GetSortedCharacters())
         {
             var option = AutoWeeklyCap.Config.Characters[character];
             if (option.IsHidden())
