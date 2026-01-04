@@ -23,20 +23,21 @@ public static class RunnerPrerequisitesUi
     {
         ImGuiEx.TextCentered(ColorUtils.HexToVector(0x59, 0x69, 0xFF), "General Options");
 
-        var autoRepairStatus = false;
-        ImGui.Checkbox("Auto Repair", ref autoRepairStatus);
+        var repairStatus = AutoWeeklyCap.Config.Repair;
+        if (ImGui.Checkbox("Repair Gear", ref repairStatus))
+            AutoWeeklyCap.Config.Repair = repairStatus;
 
-        Disabled.Draw(!autoRepairStatus, () =>
+        Disabled.Draw(!AutoWeeklyCap.Config.Repair, () =>
         {
             ImGui.SameLine();
-            if (ImGui.RadioButton("Self", true)) { }
+            if (ImGui.RadioButton("Self", AutoWeeklyCap.Config.RepairSelf))
+                AutoWeeklyCap.Config.RepairSelf = true;
 
-            InformationTooltip.Draw("Will use DarkMatter to Self Repair (Requires Leveled Crafters!)");
+            InformationTooltip.Draw("Will use Dark Matter to Self Repair (Requires Leveled Crafters!)");
 
             ImGui.SameLine();
-            if (ImGui.RadioButton("City NPC", false)) { }
-
-            InformationTooltip.Draw("Will use preferred repair npc to repair.");
+            if (ImGui.RadioButton("City NPC", !AutoWeeklyCap.Config.RepairSelf))
+                AutoWeeklyCap.Config.RepairSelf = false;
 
             ImGui.Text("Trigger @");
             ImGui.SameLine();
@@ -44,8 +45,9 @@ public static class RunnerPrerequisitesUi
             var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 1.5);
             ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
 
-            var autoRepairPct = 80;
-            if (ImGui.SliderInt("##Repair@", ref autoRepairPct, 1, 99, "%d%%")) { }
+            var autoRepairPercentage = AutoWeeklyCap.Config.RepairPercentage;
+            if (ImGui.SliderUInt("##Repair@", ref autoRepairPercentage, 1, 99, "%d%%"))
+                AutoWeeklyCap.Config.RepairPercentage = Math.Min(100, Math.Max(1, autoRepairPercentage));
 
             ImGui.PopItemWidth();
 
@@ -53,22 +55,26 @@ public static class RunnerPrerequisitesUi
             ImGui.Spacing();
         });
 
-        var autoExtract = false;
-        ImGui.Checkbox("Auto Extract", ref autoExtract);
+        var autoExtract = AutoWeeklyCap.Config.Extract;
+        if (ImGui.Checkbox("Extract Materia", ref autoExtract))
+            AutoWeeklyCap.Config.Extract = autoExtract;
 
-        Disabled.Draw(!autoExtract, () =>
+        Disabled.Draw(!AutoWeeklyCap.Config.Extract, () =>
         {
             ImGui.SameLine(0, 10);
-            if (ImGui.RadioButton("Equipped", true)) { }
+            if (ImGui.RadioButton("Equipped", !AutoWeeklyCap.Config.ExtractAll))
+                AutoWeeklyCap.Config.ExtractAll = false;
 
             ImGui.SameLine(0, 5);
-            if (ImGui.RadioButton("All", false)) { }
+            if (ImGui.RadioButton("All", AutoWeeklyCap.Config.ExtractAll))
+                AutoWeeklyCap.Config.ExtractAll = true;
         });
 
-        var autoSpendUncappedTomestones = false;
-        ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones);
+        var autoSpendUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestones;
+        if (ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones))
+            AutoWeeklyCap.Config.SpendUncappedTomestones = autoSpendUncappedTomestones;
 
-        Disabled.Draw(!autoSpendUncappedTomestones, () =>
+        Disabled.Draw(!AutoWeeklyCap.Config.SpendUncappedTomestones, () =>
         {
             ImGui.Text("Buy @");
             ImGui.SameLine();
@@ -76,13 +82,14 @@ public static class RunnerPrerequisitesUi
             var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 1.5);
             ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
 
-            var autoBuyWithUncappedTomestones = 1800;
-            if (ImGui.SliderInt("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000)) { }
+            var autoBuyWithUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold;
+            if (ImGui.SliderUInt("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000))
+                AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold = autoBuyWithUncappedTomestones;
 
             ImGui.Text("Item to buy");
-            if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", "Some nice item"))
+            if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", "Turali Pigment"))
             {
-                if (ImGui.Selectable("Some nice item")) { }
+                if (ImGui.Selectable("Turali Pigment")) { }
 
                 if (ImGui.Selectable("Test #1")) { }
 
@@ -99,11 +106,9 @@ public static class RunnerPrerequisitesUi
     {
         ImGuiEx.TextCentered(ColorUtils.HexToVector(0xFF, 0x73, 0x59), "Auto Retainer");
 
-        var useAutoRetainer = false;
+        var useAutoRetainer = AutoWeeklyCap.Config.AutoRetainerEnabled;
         if (ImGui.Checkbox("Use Auto Retainer", ref useAutoRetainer))
-        {
-            // ...
-        }
+            AutoWeeklyCap.Config.AutoRetainerEnabled = useAutoRetainer;
 
         ImGui.Text("Preferred summoning bell location:");
         InformationTooltip.Draw(
@@ -130,8 +135,9 @@ public static class RunnerPrerequisitesUi
         ImGui.Text("Wait for up to");
         ImGui.SameLine();
 
-        var autoRetainerRemainingTime = 90L;
-        ImGui.SliderLong("###AutoRetainerTimeWaitingSlider", ref autoRetainerRemainingTime, 0L, 300L);
+        var autoRetainerRemainingTime = AutoWeeklyCap.Config.AutoRetainerThreshold;
+        if (ImGui.SliderUInt("###AutoRetainerTimeWaitingSlider", ref autoRetainerRemainingTime, 0, 300))
+            AutoWeeklyCap.Config.AutoRetainerThreshold = autoRetainerRemainingTime;
 
         ImGui.SameLine();
         ImGui.Text("seconds");

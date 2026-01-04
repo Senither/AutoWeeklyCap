@@ -11,16 +11,34 @@ public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
 
+    // Character & Window storages
     public WindowOptions Window { get; set; } = new();
-
-    public uint ZoneId { get; set; } = TomestoneZone.AvailableTomestoneZones[0];
     public Dictionary<string, CharacterOptions> Characters { get; set; } = new();
     public Dictionary<string, int> CollectedTomes { get; set; } = new();
 
+    // Duty Options
+    public uint ZoneId { get; set; } = TomestoneZone.AvailableTomestoneZones[0];
     public bool StopRunnerGracefully { get; set; } = true;
     public bool UseBossModRebornAI { get; set; } = true;
+
+    // Stop Actions
     public StopAction StopAction { get; set; } = StopAction.None;
     public string CharacterForSwap { get; set; } = "";
+
+    // Runner Options (General)
+    public bool Repair { get; set; } = false;
+    public bool RepairSelf { get; set; } = false;
+    public uint RepairPercentage { get; set; } = 80;
+    public bool Extract { get; set; } = false;
+    public bool ExtractAll { get; set; } = false;
+    public bool SpendUncappedTomestones { get; set; } = false;
+    public uint SpendUncappedTomestoneThreshold { get; set; } = 1800;
+    // TODO: Add the item that should be bought using uncapped tomestones here...
+
+    // Runner Options (AutoRetainer)
+    public bool AutoRetainerEnabled { get; set; } = false;
+    public uint AutoRetainerThreshold { get; set; } = 90;
+    // TODO: Add summoning bell location here...
 
     public void Save()
     {
