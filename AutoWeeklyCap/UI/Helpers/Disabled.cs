@@ -11,6 +11,8 @@ public static class Disabled
 
     public static void Draw(bool isDisabled, Action content)
     {
+        var previousState = IsDisabled;
+
         if (isDisabled)
         {
             ImGui.BeginDisabled();
@@ -20,10 +22,9 @@ public static class Disabled
         content.Invoke();
 
         if (isDisabled)
-        {
             ImGui.EndDisabled();
-            IsDisabled = false;
-        }
+
+        IsDisabled = previousState;
     }
 
     public static void Exempt(Action content)
