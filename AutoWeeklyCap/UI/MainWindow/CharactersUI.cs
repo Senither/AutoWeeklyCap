@@ -3,7 +3,6 @@ using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Runner;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
-using ECommons.Automation;
 using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Chat = AutoWeeklyCap.Helpers.Chat;

@@ -62,7 +62,7 @@ public static class Utils
 
         if (weeklyTomes == storedTomes)
             return false;
-        
+
         if (storedTomes > weeklyTomes)
         {
             AutoWeeklyCap.Config.CollectedTomes.Clear();

@@ -5,7 +5,6 @@ using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
-using ECommons.ImGuiMethods;
 
 namespace AutoWeeklyCap.UI.Helpers;
 
@@ -170,8 +169,8 @@ public static class Card
         var drawList = ImGui.GetWindowDrawList();
 
         var color = borderColor
-                  ?? LatestDrawnCardBorderColor
-                  ?? throw new NullReferenceException("expected Card#Separator to be called inside a card body");
+                    ?? LatestDrawnCardBorderColor
+                    ?? throw new NullReferenceException("expected Card#Separator to be called inside a card body");
 
         var cursor = ImGui.GetCursorScreenPos();
         var width = ImGui.GetContentRegionAvail().X;
