@@ -6,12 +6,14 @@ using ECommons.ImGuiMethods;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
 
-public static class BetweenRunOptionsUi
+public static class RunnerPrerequisitesUi
 {
     public static void Draw()
     {
-        Disabled.Draw(true, DrawGeneralOptions);
+        ImGui.Text("Select what should happen before and between runs.");
+        Card.Separator();
 
+        Disabled.Draw(true, DrawGeneralOptions);
         Card.Separator();
 
         Disabled.Draw(true, DrawAutoRetainer);

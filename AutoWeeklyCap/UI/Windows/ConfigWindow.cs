@@ -35,7 +35,9 @@ public class ConfigWindow : Window, IDisposable
         if (hasHiddenCharacters)
             Card.Draw("Hidden Characters", HiddenCharactersUi.Draw);
 
-        Card.Draw("Between Runs Options", BetweenRunOptionsUi.Draw);
+#if DEBUG
+        Card.Draw("Runner Options", RunnerPrerequisitesUi.Draw);
+#endif
 
         Card.Draw("Stop Actions", StopActionsUi.Draw);
         Card.DrawWarning("Manually reset Tomestones", ResetWeeklyTomestonesUi.Draw);
