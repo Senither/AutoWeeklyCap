@@ -28,6 +28,17 @@ public static class StopActionExtensions
         };
     }
 
+    public static string? GetTooltip(this StopAction action)
+    {
+        return action switch
+        {
+            StopAction.SwitchCharacter => "If the runner finished on your selected character, nothing will happen.",
+            StopAction.AutoRetainerMultimode =>
+                "This requires AutoRetainer to be enabled, if it's not enabled it will do nothing.",
+            _ => null
+        };
+    }
+
     public static void Execute(this StopAction action)
     {
         AutoWeeklyCap.Log.Debug($"Executing action: {action.GetName()}");

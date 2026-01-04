@@ -20,6 +20,10 @@ public static class StopActionsUi
             {
                 AutoWeeklyCap.Config.StopAction = action;
             }
+
+            var tooltip = action.GetTooltip();
+            if (tooltip != null)
+                InformationTooltip.Draw(tooltip);
         }
 
         ImGui.Spacing();
