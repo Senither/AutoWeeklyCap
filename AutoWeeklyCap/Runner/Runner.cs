@@ -177,6 +177,14 @@ public class Runner
             return true;
         }, "disable AutoRetainer multi mode when it's not busy");
 
+        if (AutoWeeklyCap.Config.Repair)
+        {
+            if (AutoWeeklyCap.Config.RepairSelf)
+                RepairHelper.Repair();
+
+            // TODO: Call RepairNpcHelper.Repair(); to repair using NPCs if RepairSelf is false
+        }
+
         AutoWeeklyCap.TaskManager.Enqueue(
             () => state = State.CheckingTomestone,
             "next stage: checking tomestone"

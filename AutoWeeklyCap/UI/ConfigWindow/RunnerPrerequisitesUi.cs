@@ -13,7 +13,7 @@ public static class RunnerPrerequisitesUi
         ImGui.Text("Select what should happen before and between runs.");
         Card.Separator();
 
-        Disabled.Draw(true, DrawGeneralOptions);
+        Disabled.Draw(false, DrawGeneralOptions);
         Card.Separator();
 
         Disabled.Draw(true, DrawAutoRetainer);
