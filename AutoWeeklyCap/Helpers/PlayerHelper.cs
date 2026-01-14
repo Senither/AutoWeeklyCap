@@ -1,4 +1,6 @@
-﻿using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+﻿using ECommons.ExcelServices;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
 namespace AutoWeeklyCap.Helpers;
 
@@ -9,7 +11,7 @@ public enum CharacterSwapStatus
     AlreadyOnTargetJob = 2
 }
 
-public static class Character
+public static class PlayerHelper
 {
     public static CharacterSwapStatus SwitchJob(uint targetJobId)
     {
@@ -38,4 +40,13 @@ public static class Character
 
         return CharacterSwapStatus.FailedToSwitchJob;
     }
+    
+    internal static unsafe uint GetGrandCompanyTerritoryType(GrandCompany grandCompany) => grandCompany switch
+    {
+        GrandCompany.Maelstrom => 128u,
+        GrandCompany.TwinAdder => 132u,
+        _ => 130u
+    };
+
+    internal static unsafe GrandCompany GetGrandCompany() => (GrandCompany) PlayerState.Instance()->GrandCompany;
 }

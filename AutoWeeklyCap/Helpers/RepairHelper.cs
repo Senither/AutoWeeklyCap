@@ -13,11 +13,17 @@ public static class RepairHelper
         if (!InventoryHelper.CanRepair(percent))
             return false;
 
+        if (InventoryHelper.GetItemsNeedingRepairCount(percent) > InventoryHelper.GetDarkMatterCount())
+        {
+            AutoWeeklyCap.Log.Debug($"Repair attempt reverting to NPC due to lack of dark matter");
+            return RepairNPCHelper.Repair(percent);
+        }
+
         AutoWeeklyCap.TaskManager.Enqueue(() =>
         {
             if (!EzThrottler.Throttle("RepairOpen", 250))
                 return false;
-
+            
             try
             {
                 unsafe
@@ -70,7 +76,7 @@ public static class RepairHelper
         {
             if (!EzThrottler.Throttle("RepairClose", 250))
                 return false;
-            
+
             try
             {
                 unsafe

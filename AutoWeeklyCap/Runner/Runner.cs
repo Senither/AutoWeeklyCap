@@ -181,14 +181,16 @@ public class Runner
         {
             if (AutoWeeklyCap.Config.RepairSelf)
                 RepairHelper.Repair();
-
-            // TODO: Call RepairNpcHelper.Repair(); to repair using NPCs if RepairSelf is false
+            else
+                RepairNPCHelper.Repair();
         }
 
-        AutoWeeklyCap.TaskManager.Enqueue(
-            () => state = State.CheckingTomestone,
-            "next stage: checking tomestone"
-        );
+        AutoWeeklyCap.TaskManager.Enqueue(Stop, "stopping runner");
+
+        // AutoWeeklyCap.TaskManager.Enqueue(
+        //     () => state = State.CheckingTomestone,
+        //     "next stage: checking tomestone"
+        // );
     }
 
     private void CheckTomestoneStage()
