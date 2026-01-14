@@ -1,7 +1,14 @@
 ﻿using System;
-using ECommons.ExcelServices;
+using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Utility;
+using ECommons;
+using ECommons.DalamudServices;
+using ECommons.GameHelpers;
+using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using GrandCompany = ECommons.ExcelServices.GrandCompany;
 
 namespace AutoWeeklyCap.Helpers;
 
@@ -60,6 +67,25 @@ public enum PlayerJobType
 
 public static class PlayerHelper
 {
+    internal static bool IsReady => IsValid && !IsOccupied;
+
+    internal static bool IsOccupied => GenericHelpers.IsOccupied() || Svc.Condition[ConditionFlag.Jumping61];
+
+    public static unsafe bool IsValid =>
+        Control.GetLocalPlayer() != null
+        && ThreadSafety.IsMainThread
+        && Svc.Condition.Any()
+        && !Svc.Condition[ConditionFlag.BetweenAreas]
+        && !Svc.Condition[ConditionFlag.BetweenAreas51]
+        && Player.Available
+        && Player.Interactable;
+
+    public static unsafe bool IsCasting => Player.Character->IsCasting;
+    public static unsafe bool IsMoving => AgentMap.Instance()->IsPlayerMoving;
+
+    public static bool IsJumping => Svc.Condition.Any() && (Svc.Condition[ConditionFlag.Jumping]
+                                                            || Svc.Condition[ConditionFlag.Jumping61]);
+
     public static bool CanSelfRepairWithCrafters =>
         HasMaxJobLevel(PlayerJobType.Carpenter) &&
         HasMaxJobLevel(PlayerJobType.Blacksmith) &&

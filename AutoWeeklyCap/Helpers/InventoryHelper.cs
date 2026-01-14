@@ -41,7 +41,7 @@ public static unsafe class InventoryHelper
             if (item.Condition / 300f <= percent)
                 itemsNeedingRepair++;
         }
-        
+
         return itemsNeedingRepair;
     }
 

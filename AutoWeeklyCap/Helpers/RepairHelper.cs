@@ -1,5 +1,6 @@
 ﻿using System;
-using ECommons;
+using Dalamud.Game.ClientState.Conditions;
+using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -11,6 +12,9 @@ public static class RepairHelper
 
     public static bool Repair(uint percent)
     {
+        if (Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51])
+            return false;
+
         if (!InventoryHelper.CanRepair(percent))
             return false;
 

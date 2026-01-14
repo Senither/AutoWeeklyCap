@@ -17,7 +17,7 @@ public static unsafe class AddonHelper
             return false;
 
         var selectYesno = new AddonMaster.SelectYesno(addon);
-        
+
         if (yes)
             selectYesno.Yes();
         else
@@ -32,7 +32,43 @@ public static unsafe class AddonHelper
             return false;
 
         new AddonMaster.Repair(addon).RepairAll();
-        
+
+        return true;
+    }
+
+    internal static bool ClickSelectString(int index)
+    {
+        if (!EzThrottler.Throttle(nameof(ClickSelectString), 500))
+            return false;
+
+        if (!TryGetReadyAddon("SelectString", out var addon))
+            return false;
+
+        var values = stackalloc AtkValue[2];
+        values[0].Type = ValueType.Int;
+        values[0].Int = index;
+        values[1].Type = ValueType.Int;
+        values[1].Int = 0;
+
+        addon->FireCallback(2, values);
+        return true;
+    }
+
+    internal static bool ClickSelectIconString(int index)
+    {
+        if (!EzThrottler.Throttle(nameof(ClickSelectIconString), 500))
+            return false;
+
+        if (!TryGetReadyAddon("SelectIconString", out var addon))
+            return false;
+
+        var values = stackalloc AtkValue[2];
+        values[0].Type = ValueType.Int;
+        values[0].Int = index;
+        values[1].Type = ValueType.Int;
+        values[1].Int = 0;
+
+        addon->FireCallback(2, values);
         return true;
     }
 

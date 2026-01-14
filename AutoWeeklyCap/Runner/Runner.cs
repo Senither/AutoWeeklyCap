@@ -185,12 +185,10 @@ public class Runner
                 RepairNPCHelper.Repair();
         }
 
-        AutoWeeklyCap.TaskManager.Enqueue(Stop, "stopping runner");
-
-        // AutoWeeklyCap.TaskManager.Enqueue(
-        //     () => state = State.CheckingTomestone,
-        //     "next stage: checking tomestone"
-        // );
+        AutoWeeklyCap.TaskManager.Enqueue(
+            () => state = State.CheckingTomestone,
+            "next stage: checking tomestone"
+        );
     }
 
     private void CheckTomestoneStage()

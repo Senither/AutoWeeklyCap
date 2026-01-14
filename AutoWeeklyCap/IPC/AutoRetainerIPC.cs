@@ -20,7 +20,7 @@ public class AutoRetainerIPC
         if (IsEnabled && !GetMultiModeStatus())
             Chat.RunCommand("autoretainer multi enable");
     }
-    
+
     internal static void DisableMultiMode()
     {
         if (IsEnabled && GetMultiModeStatus())

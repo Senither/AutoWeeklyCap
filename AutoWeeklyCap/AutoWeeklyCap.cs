@@ -21,7 +21,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     internal const string Name = "Auto Weekly Cap";
     internal static AutoWeeklyCap Instance = null!;
     internal const int CurrentMaxLevel = 100;
-    
+
     internal static Configuration Config => Instance.Configuration;
     internal static Runner.Runner Runner { get; set; } = null!;
     internal static TaskManager TaskManager { get; set; } = null!;

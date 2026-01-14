@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.Runner;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
@@ -44,7 +45,12 @@ internal static class CharactersUI
         );
 
         if (ImGui.Button("START TEST"))
-            AutoWeeklyCap.Runner.Start();
+            RepairNPCHelper.Repair();
+
+        ImGui.SameLine();
+
+        if (ImGui.Button("ABORT TEST"))
+            AutoWeeklyCap.TaskManager.Abort();
     }
 
     internal static void SaveCharacterConfigurationOption(string character, CharacterOptions options)
