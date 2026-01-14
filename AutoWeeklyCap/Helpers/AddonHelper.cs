@@ -1,13 +1,32 @@
-﻿using ECommons;
+﻿using System;
+using ECommons;
+using ECommons.Automation;
+using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using ValueType = FFXIVClientStructs.FFXIV.Component.GUI.ValueType;
 
 namespace AutoWeeklyCap.Helpers;
 
 public static unsafe class AddonHelper
 {
+    internal static void FireCallBack(AtkUnitBase* addon, bool boolValue, params object[] args)
+    {
+        if (addon == null)
+            return;
+
+        try
+        {
+            Callback.Fire(addon, boolValue, args);
+        }
+        catch (Exception ex)
+        {
+            AutoWeeklyCap.Log.Error($"{ex}");
+        }
+    }
+
     internal static bool ClickSelectYesno(bool yes = true)
     {
         if (!EzThrottler.Throttle(nameof(ClickSelectYesno), 500))

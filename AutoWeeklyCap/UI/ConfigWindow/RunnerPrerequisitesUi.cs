@@ -23,6 +23,7 @@ public static class RunnerPrerequisitesUi
     {
         ImGuiEx.TextCentered(ColorUtils.HexToVector(0x59, 0x69, 0xFF), "General Options");
 
+        // Repair (Self & NPC)
         var repairStatus = AutoWeeklyCap.Config.Repair;
         if (ImGui.Checkbox("Repair Gear", ref repairStatus))
             AutoWeeklyCap.Config.Repair = repairStatus;
@@ -62,22 +63,19 @@ public static class RunnerPrerequisitesUi
         });
 
         // Auto Extract
-        Disabled.Draw(() =>
+        var autoExtract = AutoWeeklyCap.Config.Extract;
+        if (ImGui.Checkbox("Extract Materia", ref autoExtract))
+            AutoWeeklyCap.Config.Extract = autoExtract;
+
+        Disabled.Draw(!AutoWeeklyCap.Config.Extract, () =>
         {
-            var autoExtract = AutoWeeklyCap.Config.Extract;
-            if (ImGui.Checkbox("Extract Materia", ref autoExtract))
-                AutoWeeklyCap.Config.Extract = autoExtract;
+            ImGui.SameLine(0, 10);
+            if (ImGui.RadioButton("Equipped", !AutoWeeklyCap.Config.ExtractAll))
+                AutoWeeklyCap.Config.ExtractAll = false;
 
-            Disabled.Draw(!AutoWeeklyCap.Config.Extract, () =>
-            {
-                ImGui.SameLine(0, 10);
-                if (ImGui.RadioButton("Equipped", !AutoWeeklyCap.Config.ExtractAll))
-                    AutoWeeklyCap.Config.ExtractAll = false;
-
-                ImGui.SameLine(0, 5);
-                if (ImGui.RadioButton("All", AutoWeeklyCap.Config.ExtractAll))
-                    AutoWeeklyCap.Config.ExtractAll = true;
-            });
+            ImGui.SameLine(0, 5);
+            if (ImGui.RadioButton("All", AutoWeeklyCap.Config.ExtractAll))
+                AutoWeeklyCap.Config.ExtractAll = true;
         });
 
         // Auto Spend Tomestones

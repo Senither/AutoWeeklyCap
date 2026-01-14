@@ -177,6 +177,9 @@ public class Runner
             return true;
         }, "disable AutoRetainer multi mode when it's not busy");
 
+        if (AutoWeeklyCap.Config.Extract)
+            ExtractHelper.ExtractMateria();
+
         if (AutoWeeklyCap.Config.Repair)
         {
             if (AutoWeeklyCap.Config.RepairSelf)
