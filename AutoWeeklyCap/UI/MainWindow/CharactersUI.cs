@@ -43,14 +43,6 @@ internal static class CharactersUI
         ImGuiEx.LineCentered("TomestoneCap", () => ImGuiEx.Text(
                                  $"Weekly tomestone cap is at {totalTomesCollected}/{weeklyTomeLimit * charactersEnabled}")
         );
-
-        if (ImGui.Button("START TEST"))
-            RepairNPCHelper.Repair();
-
-        ImGui.SameLine();
-
-        if (ImGui.Button("ABORT TEST"))
-            AutoWeeklyCap.TaskManager.Abort();
     }
 
     internal static void SaveCharacterConfigurationOption(string character, CharacterOptions options)
