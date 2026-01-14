@@ -55,7 +55,7 @@ public static class PlayerJobExtensions
                 return true;
 
             default:
-                var status = Character.SwitchJob((uint)job);
+                var status = PlayerHelper.SwitchJob((uint)job);
 
                 AutoWeeklyCap.Log.Debug($"Attempted to switch to job {job}, got status: {status}");
                 return status == CharacterSwapStatus.AlreadyOnTargetJob;

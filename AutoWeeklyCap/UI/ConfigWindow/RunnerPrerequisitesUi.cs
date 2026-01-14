@@ -13,7 +13,7 @@ public static class RunnerPrerequisitesUi
         ImGui.Text("Select what should happen before and between runs.");
         Card.Separator();
 
-        Disabled.Draw(true, DrawGeneralOptions);
+        Disabled.Draw(false, DrawGeneralOptions);
         Card.Separator();
 
         Disabled.Draw(true, DrawAutoRetainer);
@@ -35,9 +35,15 @@ public static class RunnerPrerequisitesUi
 
             InformationTooltip.Draw("Will use Dark Matter to Self Repair (Requires Leveled Crafters!)");
 
-            ImGui.SameLine();
-            if (ImGui.RadioButton("City NPC", !AutoWeeklyCap.Config.RepairSelf))
-                AutoWeeklyCap.Config.RepairSelf = false;
+            Disabled.Draw(() =>
+            {
+                ImGui.SameLine();
+                if (ImGui.RadioButton("City NPC", !AutoWeeklyCap.Config.RepairSelf))
+                    AutoWeeklyCap.Config.RepairSelf = false;
+
+                InformationTooltip.Draw(
+                    "City NPC repairs are currently still in development, it will be implemented in the future");
+            });
 
             ImGui.Text("Trigger @");
             ImGui.SameLine();
@@ -55,50 +61,58 @@ public static class RunnerPrerequisitesUi
             ImGui.Spacing();
         });
 
-        var autoExtract = AutoWeeklyCap.Config.Extract;
-        if (ImGui.Checkbox("Extract Materia", ref autoExtract))
-            AutoWeeklyCap.Config.Extract = autoExtract;
-
-        Disabled.Draw(!AutoWeeklyCap.Config.Extract, () =>
+        // Auto Extract
+        Disabled.Draw(() =>
         {
-            ImGui.SameLine(0, 10);
-            if (ImGui.RadioButton("Equipped", !AutoWeeklyCap.Config.ExtractAll))
-                AutoWeeklyCap.Config.ExtractAll = false;
+            var autoExtract = AutoWeeklyCap.Config.Extract;
+            if (ImGui.Checkbox("Extract Materia", ref autoExtract))
+                AutoWeeklyCap.Config.Extract = autoExtract;
 
-            ImGui.SameLine(0, 5);
-            if (ImGui.RadioButton("All", AutoWeeklyCap.Config.ExtractAll))
-                AutoWeeklyCap.Config.ExtractAll = true;
+            Disabled.Draw(!AutoWeeklyCap.Config.Extract, () =>
+            {
+                ImGui.SameLine(0, 10);
+                if (ImGui.RadioButton("Equipped", !AutoWeeklyCap.Config.ExtractAll))
+                    AutoWeeklyCap.Config.ExtractAll = false;
+
+                ImGui.SameLine(0, 5);
+                if (ImGui.RadioButton("All", AutoWeeklyCap.Config.ExtractAll))
+                    AutoWeeklyCap.Config.ExtractAll = true;
+            });
         });
 
-        var autoSpendUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestones;
-        if (ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones))
-            AutoWeeklyCap.Config.SpendUncappedTomestones = autoSpendUncappedTomestones;
-
-        Disabled.Draw(!AutoWeeklyCap.Config.SpendUncappedTomestones, () =>
+        // Auto Spend Tomestones
+        Disabled.Draw(() =>
         {
-            ImGui.Text("Buy @");
-            ImGui.SameLine();
+            var autoSpendUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestones;
+            if (ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones))
+                AutoWeeklyCap.Config.SpendUncappedTomestones = autoSpendUncappedTomestones;
 
-            var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 1.5);
-            ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
-
-            var autoBuyWithUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold;
-            if (ImGui.SliderUInt("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000))
-                AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold = autoBuyWithUncappedTomestones;
-
-            ImGui.Text("Item to buy");
-            if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", "Turali Pigment"))
+            Disabled.Draw(!AutoWeeklyCap.Config.SpendUncappedTomestones, () =>
             {
-                if (ImGui.Selectable("Turali Pigment")) { }
+                ImGui.Text("Buy @");
+                ImGui.SameLine();
 
-                if (ImGui.Selectable("Test #1")) { }
+                var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 1.5);
+                ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
 
-                if (ImGui.Selectable("Test #2")) { }
+                var autoBuyWithUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold;
+                if (ImGui.SliderUInt("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000))
+                    AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold = autoBuyWithUncappedTomestones;
 
-                if (ImGui.Selectable("Test #3")) { }
+                ImGui.Text("Item to buy");
+                if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", "Turali Pigment"))
+                {
+                    if (ImGui.Selectable("Turali Pigment")) { }
 
-                ImGui.EndCombo();
-            }
+                    if (ImGui.Selectable("Test #1")) { }
+
+                    if (ImGui.Selectable("Test #2")) { }
+
+                    if (ImGui.Selectable("Test #3")) { }
+
+                    ImGui.EndCombo();
+                }
+            });
         });
     }
 

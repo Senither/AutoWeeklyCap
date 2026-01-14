@@ -1,7 +1,6 @@
 ﻿using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using ECommons;
-using ECommons.ImGuiMethods;
 using ECommons.Logging;
 
 namespace AutoWeeklyCap.Commands;
