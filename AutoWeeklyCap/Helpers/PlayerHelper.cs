@@ -1,4 +1,5 @@
-﻿using ECommons.ExcelServices;
+﻿using System;
+using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
@@ -11,8 +12,85 @@ public enum CharacterSwapStatus
     AlreadyOnTargetJob = 2
 }
 
+public enum PlayerJobType
+{
+    Adventurer = 0,
+    Gladiator = 1,
+    Pugilist = 2,
+    Marauder = 3,
+    Lancer = 4,
+    Archer = 5,
+    Conjurer = 6,
+    Thaumaturge = 7,
+    Carpenter = 8,
+    Blacksmith = 9,
+    Armorer = 10,
+    Goldsmith = 11,
+    Leatherworker = 12,
+    Weaver = 13,
+    Alchemist = 14,
+    Culinarian = 15,
+    Miner = 16,
+    Botanist = 17,
+    Fisher = 18,
+    Paladin = 19,
+    Monk = 20,
+    Warrior = 21,
+    Dragoon = 22,
+    Bard = 23,
+    WhiteMage = 24,
+    BlackMage = 25,
+    Arcanist = 26,
+    Summoner = 27,
+    Scholar = 28,
+    Rogue = 29,
+    Ninja = 30,
+    Machinist = 31,
+    DarkKnight = 32,
+    Astrologian = 33,
+    Samurai = 34,
+    RedMage = 35,
+    BlueMage = 36,
+    Gunbreaker = 37,
+    Dancer = 38,
+    Reaper = 39,
+    Sage = 40,
+    Pictomancer = 42
+}
+
 public static class PlayerHelper
 {
+    public static bool CanSelfRepairWithCrafters =>
+        HasMaxJobLevel(PlayerJobType.Carpenter) &&
+        HasMaxJobLevel(PlayerJobType.Blacksmith) &&
+        HasMaxJobLevel(PlayerJobType.Armorer) &&
+        HasMaxJobLevel(PlayerJobType.Goldsmith) &&
+        HasMaxJobLevel(PlayerJobType.Leatherworker) &&
+        HasMaxJobLevel(PlayerJobType.Weaver);
+
+    public static bool HasMaxJobLevel(PlayerJobType jobType)
+    {
+        return GetJobLevel(jobType) == AutoWeeklyCap.CurrentMaxLevel;
+    }
+
+    public static int GetJobLevel(PlayerJobType jobType)
+    {
+        if (!AutoWeeklyCap.PlayerState.IsLoaded)
+            return 0;
+
+        try
+        {
+            unsafe
+            {
+                return PlayerState.Instance()->GetClassJobLevel((int)jobType);
+            }
+        }
+        catch (Exception)
+        {
+            return 0;
+        }
+    }
+
     public static CharacterSwapStatus SwitchJob(uint targetJobId)
     {
         if (!AutoWeeklyCap.PlayerState.IsLoaded)
@@ -40,7 +118,7 @@ public static class PlayerHelper
 
         return CharacterSwapStatus.FailedToSwitchJob;
     }
-    
+
     internal static unsafe uint GetGrandCompanyTerritoryType(GrandCompany grandCompany) => grandCompany switch
     {
         GrandCompany.Maelstrom => 128u,
@@ -48,5 +126,5 @@ public static class PlayerHelper
         _ => 130u
     };
 
-    internal static unsafe GrandCompany GetGrandCompany() => (GrandCompany) PlayerState.Instance()->GrandCompany;
+    internal static unsafe GrandCompany GetGrandCompany() => (GrandCompany)PlayerState.Instance()->GrandCompany;
 }

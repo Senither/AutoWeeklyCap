@@ -1,4 +1,5 @@
 ﻿using System;
+using ECommons;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -13,9 +14,16 @@ public static class RepairHelper
         if (!InventoryHelper.CanRepair(percent))
             return false;
 
+        if (!PlayerHelper.CanSelfRepairWithCrafters)
+        {
+            AutoWeeklyCap.Log.Debug(
+                "switching to NPC repair, reason: player does not have all the required crafters leveled");
+            return RepairNPCHelper.Repair(percent);
+        }
+
         if (InventoryHelper.GetItemsNeedingRepairCount(percent) > InventoryHelper.GetDarkMatterCount())
         {
-            AutoWeeklyCap.Log.Debug($"Repair attempt reverting to NPC due to lack of dark matter");
+            AutoWeeklyCap.Log.Debug("switching to NPC repair, reason: too low quantity of dark matter");
             return RepairNPCHelper.Repair(percent);
         }
 
@@ -23,7 +31,7 @@ public static class RepairHelper
         {
             if (!EzThrottler.Throttle("RepairOpen", 250))
                 return false;
-            
+
             try
             {
                 unsafe
