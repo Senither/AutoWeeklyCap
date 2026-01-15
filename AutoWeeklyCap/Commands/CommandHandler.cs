@@ -79,7 +79,6 @@ public static class CommandHandler
 
     private static void PrintUnknownCommand(string command)
     {
-        DuoLog.Information(
-            $"Unknown command '{command}', use `{AutoWeeklyCap.CommandNameShort} help` for a list of commands");
+        DuoLog.Information($"Unknown command '{command}', use `{AutoWeeklyCap.CommandNameShort} help` for a list of commands");
     }
 }

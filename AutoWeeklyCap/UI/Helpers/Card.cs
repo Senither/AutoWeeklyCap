@@ -62,7 +62,8 @@ public static class Card
         uint backgroundColor,
         uint borderColor,
         bool collapsible = true,
-        bool defaultOpen = false)
+        bool defaultOpen = false
+    )
     {
         var previousBorderColor = LatestDrawnCardBorderColor;
         LatestDrawnCardBorderColor = borderColor;

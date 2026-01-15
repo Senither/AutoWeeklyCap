@@ -38,8 +38,7 @@ public static class DutyOptionsUi
             AutoWeeklyCap.Config.StopRunnerGracefully = stopGracefully;
         }
 
-        InformationTooltip.Draw(
-            "When stopping the runner mid duty, graceful stopping will finish the run before stopping completely");
+        InformationTooltip.Draw("When stopping the runner mid duty, graceful stopping will finish the run before stopping completely");
 
         var useBossModRebornAi = AutoWeeklyCap.Config.UseBossModRebornAI;
         if (ImGui.Checkbox("Use BossMod Reborn AI", ref useBossModRebornAi))

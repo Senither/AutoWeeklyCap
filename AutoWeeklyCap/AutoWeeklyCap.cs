@@ -65,8 +65,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
         ECommonsMain.Init(PluginInterface, this, Module.DalamudReflector);
 
-        TaskManager =
-            new TaskManager(new TaskManagerConfiguration(abortOnTimeout: true, timeLimitMS: 20000, showDebug: true));
+        TaskManager = new TaskManager(new TaskManagerConfiguration(abortOnTimeout: true, timeLimitMS: 20000, showDebug: true));
 
         try
         {

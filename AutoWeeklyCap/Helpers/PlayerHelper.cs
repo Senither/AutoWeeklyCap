@@ -82,9 +82,7 @@ public static class PlayerHelper
 
     public static unsafe bool IsCasting => Player.Character->IsCasting;
     public static unsafe bool IsMoving => AgentMap.Instance()->IsPlayerMoving;
-
-    public static bool IsJumping => Svc.Condition.Any() && (Svc.Condition[ConditionFlag.Jumping]
-                                                            || Svc.Condition[ConditionFlag.Jumping61]);
+    public static bool IsJumping => Svc.Condition.Any() && (Svc.Condition[ConditionFlag.Jumping] || Svc.Condition[ConditionFlag.Jumping61]);
 
     public static bool CanSelfRepairWithCrafters =>
         HasMaxJobLevel(PlayerJobType.Carpenter) &&

@@ -60,11 +60,9 @@ public static class ExtractHelper
                     if (list == null)
                         return false;
 
-                    AtkTextNode* spiritbondTextNode =
-                        list->UldManager.NodeList[2]->GetComponent()->GetTextNodeById(5)->GetAsAtkTextNode();
-                    AtkTextNode* categoryTextNode =
-                        addonMaterialize->GetNodeById(4)->GetAsAtkComponentDropdownList()->UldManager.NodeList[1]->
-                            GetAsAtkComponentCheckBox()->GetTextNodeById(3)->GetAsAtkTextNode();
+                    AtkTextNode* spiritbondTextNode = list->UldManager.NodeList[2]->GetComponent()->GetTextNodeById(5)->GetAsAtkTextNode();
+                    AtkTextNode* categoryTextNode = addonMaterialize->GetNodeById(4)->GetAsAtkComponentDropdownList()->UldManager.NodeList[1]
+                        ->GetAsAtkComponentCheckBox()->GetTextNodeById(3)->GetAsAtkTextNode();
 
                     if (spiritbondTextNode == null || categoryTextNode == null)
                         return false;

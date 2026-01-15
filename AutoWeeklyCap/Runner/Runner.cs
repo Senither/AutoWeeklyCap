@@ -293,8 +293,7 @@ public class Runner
         }
 
         AutoWeeklyCap.TaskManager.Enqueue(
-            () => AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(currentCharacter)
-                               .PreferredJob.SwitchToJob(),
+            () => AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(currentCharacter).PreferredJob.SwitchToJob(),
             "switch to preferred job"
         );
 

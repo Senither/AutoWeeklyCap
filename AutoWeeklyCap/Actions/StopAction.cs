@@ -33,8 +33,7 @@ public static class StopActionExtensions
         return action switch
         {
             StopAction.SwitchCharacter => "If the runner finished on your selected character, nothing will happen.",
-            StopAction.AutoRetainerMultimode =>
-                "This requires AutoRetainer to be enabled, if it's not enabled it will do nothing.",
+            StopAction.AutoRetainerMultimode => "This requires AutoRetainer to be enabled, if it's not enabled it will do nothing.",
             _ => null
         };
     }

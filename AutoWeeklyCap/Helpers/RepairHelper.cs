@@ -20,8 +20,7 @@ public static class RepairHelper
 
         if (!PlayerHelper.CanSelfRepairWithCrafters)
         {
-            AutoWeeklyCap.Log.Debug(
-                "switching to NPC repair, reason: player does not have all the required crafters leveled");
+            AutoWeeklyCap.Log.Debug("switching to NPC repair, reason: player does not have all the required crafters leveled");
             return RepairNPCHelper.Repair(percent);
         }
 

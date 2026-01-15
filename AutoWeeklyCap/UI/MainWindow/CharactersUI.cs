@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using AutoWeeklyCap.Config;
-using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.Runner;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
@@ -40,8 +39,10 @@ internal static class CharactersUI
             ImGui.PopID();
         }
 
-        ImGuiEx.LineCentered("TomestoneCap", () => ImGuiEx.Text(
-                                 $"Weekly tomestone cap is at {totalTomesCollected}/{weeklyTomeLimit * charactersEnabled}")
+        ImGuiEx.LineCentered(
+            "TomestoneCap",
+            () => ImGuiEx.Text($"Weekly tomestone cap is at {totalTomesCollected}/{weeklyTomeLimit * charactersEnabled}"
+            )
         );
     }
 
