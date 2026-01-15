@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
@@ -88,10 +89,16 @@ public class MainWindow : Window, IDisposable
         DrawPluginStatus();
         DrawHeaderActionButtons();
 
-        ImGuiEx.EzTabBar("tabbar", "Test",
-                         ("Characters", CharactersUI.Draw, null, true),
-                         ("About", AboutTabUi.Draw, null, true)
-        );
+        var tabs = new List<(string name, Action function, Vector4? color, bool child)>
+        {
+            ("Characters", CharactersUI.Draw, null, true),
+            ("About", AboutTabUi.Draw, null, true)
+        };
+
+        if (AutoWeeklyCap.PluginInterface.IsDev)
+            tabs.Add(("Debug", DebugUI.Draw, null, true));
+
+        ImGuiEx.EzTabBar("main-awc-tabbar", "Test", tabs.ToArray());
 
         if (!AutoWeeklyCap.Config.Window.Pin)
         {
