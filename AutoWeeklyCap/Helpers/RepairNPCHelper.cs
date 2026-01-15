@@ -3,17 +3,25 @@ using System.Numerics;
 using AutoWeeklyCap.IPC;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Types;
+using ECommons;
 using ECommons.Automation.NeoTaskManager;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using ECommons.Throttlers;
+using FFXIVClientStructs.FFXIV.Client.Game.Control;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 
 namespace AutoWeeklyCap.Helpers;
 
 public class RepairNPCHelper
 {
+    private static bool seenAddon = false;
+    private static unsafe AtkUnitBase* addonRepair = null;
+    private static unsafe AtkUnitBase* addonSelectYesno = null;
+    private static unsafe AtkUnitBase* addonSelectIconString = null;
+
     public static bool Repair() => Repair(AutoWeeklyCap.Config.RepairPercentage);
 
     public static bool Repair(uint percent)
@@ -31,6 +39,7 @@ public class RepairNPCHelper
             return false;
 
         var longTask = new TaskManagerConfiguration(timeLimitMS: 120_000);
+        ResetRepairState();
 
         AutoWeeklyCap.TaskManager.Enqueue(() =>
         {
@@ -73,7 +82,7 @@ public class RepairNPCHelper
         AutoWeeklyCap.TaskManager.Enqueue(() =>
         {
             var distance = Vector3.Distance(RepairVendorLocation, Player.Position);
-            if (distance > 2.5)
+            if (distance > 1.25)
                 return false;
 
             VNavMeshIPC.Stop();
@@ -83,14 +92,76 @@ public class RepairNPCHelper
 
         AutoWeeklyCap.TaskManager.Enqueue(() =>
         {
-            var distance = Vector3.Distance(RepairVendorLocation, Player.Position);
-            if (distance > 2.5)
+            if (EzThrottler.Throttle("RepairingGearViaNPC", 250))
                 return false;
 
-            VNavMeshIPC.Stop();
+            try
+            {
+                unsafe
+                {
+                    var vendor = RepairVendorGameObject();
+                    if (vendor == null)
+                        return false;
 
-            return true;
+                    if (GenericHelpers.TryGetAddonByName("SelectIconString", out addonSelectIconString) && GenericHelpers.IsAddonReady(addonSelectIconString))
+                    {
+                        AddonHelper.ClickSelectIconString(0);
+                    }
+                    else if (!GenericHelpers.TryGetAddonByName("Repair", out addonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno))
+                    {
+                        ObjectHelper.InteractWithObject(vendor);
+                    }
+                    else if (!seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !GenericHelpers.IsAddonReady(addonSelectYesno)))
+                    {
+                        AddonHelper.ClickRepair();
+                    }
+                    else if (GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno))
+                    {
+                        AddonHelper.ClickSelectYesno();
+                        seenAddon = true;
+                    }
+                    else if (seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !GenericHelpers.IsAddonReady(addonSelectYesno)))
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return false;
         }, "npc repair: repair gear");
+
+        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        {
+            if (!EzThrottler.Throttle("RepairClose", 250))
+                return false;
+
+            try
+            {
+                unsafe
+                {
+                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _))
+                        return false;
+
+                    if (!AddonHelper.TryGetReadyAddon("Repair", out var repairAddon))
+                    {
+                        ResetRepairState();
+                        return true;
+                    }
+
+                    repairAddon->Close(true);
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return false;
+        }, "npc repair: close window");
 
         return true;
     }
@@ -168,5 +239,13 @@ public class RepairNPCHelper
         }
 
         return null;
+    }
+
+    private static unsafe void ResetRepairState()
+    {
+        seenAddon = false;
+        addonRepair = null;
+        addonSelectYesno = null;
+        addonSelectIconString = null;
     }
 }
