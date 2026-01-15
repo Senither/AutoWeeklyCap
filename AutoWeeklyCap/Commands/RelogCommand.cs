@@ -45,6 +45,7 @@ public class RelogCommand : ICommand
         var parts = characterAndWorld.Split("@");
         if (parts.Length == 2)
         {
+            AutoRetainerIPC.DisableMultiMode();
             LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
         }
     }
