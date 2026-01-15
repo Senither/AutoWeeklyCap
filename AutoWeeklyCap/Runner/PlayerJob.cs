@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.Helpers;
+using ECommons.Throttlers;
 
 // ReSharper disable InconsistentNaming
 
@@ -49,6 +50,9 @@ public static class PlayerJobExtensions
 
     public static bool SwitchToJob(this PlayerJob job)
     {
+        if (!EzThrottler.Throttle("SwitchToPreferredJob", 250))
+            return false;
+
         switch (job)
         {
             case PlayerJob.None:
