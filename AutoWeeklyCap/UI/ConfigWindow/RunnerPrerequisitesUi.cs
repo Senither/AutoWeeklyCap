@@ -16,7 +16,7 @@ public static class RunnerPrerequisitesUi
         Disabled.Draw(false, DrawGeneralOptions);
         Card.Separator();
 
-        Disabled.Draw(true, DrawAutoRetainer);
+        DrawAutoRetainer();
     }
 
     private static void DrawGeneralOptions()
@@ -122,38 +122,22 @@ public static class RunnerPrerequisitesUi
         if (ImGui.Checkbox("Use Auto Retainer", ref useAutoRetainer))
             AutoWeeklyCap.Config.AutoRetainerEnabled = useAutoRetainer;
 
-        ImGui.Text("Preferred summoning bell location:");
-        InformationTooltip.Draw(
-            "No matter what location is chosen, if there is a retainer bell"
-            + "\nnear the location you're in, that bell will be used instead."
-        );
-
-        if (ImGui.BeginCombo("##PreferredBell", "Inn"))
+        Disabled.Draw(!AutoWeeklyCap.Config.AutoRetainerEnabled, () =>
         {
-            if (ImGui.Selectable("Inn")) { }
+            var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 2.5);
+            ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
 
-            if (ImGui.Selectable("Test #1")) { }
+            ImGui.Text("Wait for up to");
+            ImGui.SameLine();
 
-            if (ImGui.Selectable("Test #2")) { }
+            var autoRetainerRemainingTime = AutoWeeklyCap.Config.AutoRetainerThreshold;
+            if (ImGui.SliderUInt("###AutoRetainerTimeWaitingSlider", ref autoRetainerRemainingTime, 0, 300))
+                AutoWeeklyCap.Config.AutoRetainerThreshold = autoRetainerRemainingTime;
 
-            if (ImGui.Selectable("Test #3")) { }
+            ImGui.SameLine();
+            ImGui.Text("seconds");
 
-            ImGui.EndCombo();
-        }
-
-        var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 2.5);
-        ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
-
-        ImGui.Text("Wait for up to");
-        ImGui.SameLine();
-
-        var autoRetainerRemainingTime = AutoWeeklyCap.Config.AutoRetainerThreshold;
-        if (ImGui.SliderUInt("###AutoRetainerTimeWaitingSlider", ref autoRetainerRemainingTime, 0, 300))
-            AutoWeeklyCap.Config.AutoRetainerThreshold = autoRetainerRemainingTime;
-
-        ImGui.SameLine();
-        ImGui.Text("seconds");
-
-        ImGui.PopItemWidth();
+            ImGui.PopItemWidth();
+        });
     }
 }

@@ -4,7 +4,8 @@ public enum State
 {
     Waiting = 0,
     PreparingRunner = 1,
-    CheckingTomestone = 2,
+    WaitingForAutoRetainer = 2,
+    CheckingTomestone = 3,
     StartingAutoDuty = 10,
     RunningAutoDuty = 11,
     StartingCharacterSwap = 20,

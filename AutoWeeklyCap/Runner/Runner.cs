@@ -96,6 +96,7 @@ public class Runner
         {
             State.Waiting => "idle",
             State.PreparingRunner => "Preparing runner",
+            State.WaitingForAutoRetainer => "Waiting for AutoRetainer",
             State.CheckingTomestone => "Checking Tomestone",
             State.StartingAutoDuty => "Starting AutoDuty",
             State.RunningAutoDuty => stopGracefully ? "Stopping when duty finishes" : "Running AutoDuty",
@@ -118,6 +119,10 @@ public class Runner
 
             case State.PreparingRunner:
                 CheckPrerequisitesForRunnerPreparations();
+                break;
+
+            case State.WaitingForAutoRetainer:
+                WaitForAutoRetainer();
                 break;
 
             case State.CheckingTomestone:
@@ -164,6 +169,17 @@ public class Runner
             return;
         }
 
+        if (AutoRetainerHelper.HasRetainerWithinThreshold())
+        {
+            timestamp = DateTime.UtcNow;
+
+            AutoWeeklyCap.TaskManager.Enqueue(
+                () => state = State.WaitingForAutoRetainer,
+                "next stage: waiting for auto retainer"
+            );
+            return;
+        }
+
         AutoWeeklyCap.TaskManager.Enqueue(() =>
         {
             if (AutoRetainerIPC.IsEnabled && AutoRetainerIPC.GetMultiModeStatus())
@@ -192,6 +208,55 @@ public class Runner
             () => state = State.CheckingTomestone,
             "next stage: checking tomestone"
         );
+    }
+
+    private void WaitForAutoRetainer()
+    {
+        if (!AutoRetainerIPC.GetMultiModeStatus())
+            AutoRetainerIPC.EnableMultiMode();
+
+        if (AutoRetainerIPC.IsBusy() || LifestreamIPC.IsBusy())
+        {
+            timestamp = DateTime.UtcNow;
+            return;
+        }
+
+        var elapsed = (DateTime.UtcNow - timestamp).Seconds;
+
+        switch (PlayerHelper.IsValid)
+        {
+            case true when elapsed < 15:
+            case false when elapsed < 30:
+                return;
+        }
+
+        // From this point onwards we're assuming that AutoRetainer has completed its run, next we'll return the original player
+
+        var character = Utils.GetFullCharacterName();
+        if (character == currentCharacter)
+        {
+            AutoWeeklyCap.TaskManager.Enqueue(
+                () => state = State.PreparingRunner,
+                "next stage: checking tomestone"
+            );
+            return;
+        }
+
+        if (currentCharacter == null)
+        {
+            AutoWeeklyCap.TaskManager.Enqueue(
+                () => state = State.StartingCharacterSwap,
+                "next stage: starting character swap"
+            );
+            return;
+        }
+
+        var parts = currentCharacter.Split("@");
+
+        AutoWeeklyCap.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
+        state = State.SwitchingCharacter;
+        timestamp = DateTime.UtcNow;
+        LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
     }
 
     private void CheckTomestoneStage()
