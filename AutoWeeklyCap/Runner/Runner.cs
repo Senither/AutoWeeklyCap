@@ -232,8 +232,7 @@ public class Runner
 
         // From this point onwards we're assuming that AutoRetainer has completed its run, next we'll return the original player
 
-        var character = Utils.GetFullCharacterName();
-        if (character == currentCharacter)
+        if (Utils.GetFullCharacterName() == currentCharacter)
         {
             AutoWeeklyCap.TaskManager.Enqueue(
                 () => state = State.PreparingRunner,
@@ -243,6 +242,17 @@ public class Runner
         }
 
         if (currentCharacter == null)
+        {
+            AutoWeeklyCap.TaskManager.Enqueue(
+                () => state = State.StartingCharacterSwap,
+                "next stage: starting character swap"
+            );
+            return;
+        }
+
+        var limit = InventoryManager.GetLimitedTomestoneWeeklyLimit();
+        var tomes = AutoWeeklyCap.Config.CollectedTomes.GetValueOrDefault(currentCharacter, 0);
+        if (tomes == limit)
         {
             AutoWeeklyCap.TaskManager.Enqueue(
                 () => state = State.StartingCharacterSwap,
