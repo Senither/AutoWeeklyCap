@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using AutoWeeklyCap.Helpers;
+using AutoWeeklyCap.Runner;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
 using ECommons.GameHelpers;
@@ -24,11 +25,11 @@ public class DebugUI
 
         ImGui.Separator();
 
-        ImGui.Text($"Task Helpers action buttons:");
-        DebugButton("Extract", () => ExtractHelper.ExtractMateria(), false);
-        DebugButton("Self Repair", () => RepairHelper.Repair());
-        DebugButton("NPC Repair", () => RepairNPCHelper.Repair());
-        DebugButton("Spend Tomestones", () => AutoSpendTomestoneHelper.SpendTomestones());
+        ImGui.Text($"Runner actions:");
+        DebugButton("Extract", () => ActionInstance.Extract.Invoke(), false);
+        DebugButton("Self Repair", () => ActionInstance.SelfRepair.Invoke());
+        DebugButton("NPC Repair", () => ActionInstance.NpcRepair.Invoke());
+        DebugButton("Spend Tomestones", () => ActionInstance.SpendTomestone.Invoke());
 
         ImGui.Separator();
         ImGui.Text("Game data state:");

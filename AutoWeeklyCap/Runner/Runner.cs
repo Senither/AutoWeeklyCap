@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
+using AutoWeeklyCap.Runner.Actions;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -194,14 +195,14 @@ public class Runner
         }, "disable AutoRetainer multi mode when it's not busy");
 
         if (AutoWeeklyCap.Config.Extract)
-            ExtractHelper.ExtractMateria();
+            ActionInstance.Extract.Invoke();
 
         if (AutoWeeklyCap.Config.Repair)
         {
             if (AutoWeeklyCap.Config.RepairSelf)
-                RepairHelper.Repair();
+                ActionInstance.SelfRepair.Invoke();
             else
-                RepairNPCHelper.Repair();
+                ActionInstance.NpcRepair.Invoke();
         }
 
         AutoWeeklyCap.TaskManager.Enqueue(

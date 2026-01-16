@@ -1,33 +1,30 @@
 ﻿using System;
+using AutoWeeklyCap.Helpers;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
-namespace AutoWeeklyCap.Helpers;
+namespace AutoWeeklyCap.Runner.Actions;
 
-public static class RepairHelper
+public class SelfRepairAction : BaseAction
 {
-    public static bool Repair() => Repair(AutoWeeklyCap.Config.RepairPercentage);
-
-    public static bool Repair(uint percent)
+    protected override bool Run()
     {
-        if (Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51])
-            return false;
-
+        var percent = AutoWeeklyCap.Config.RepairPercentage;
         if (!InventoryHelper.CanRepair(percent))
             return false;
 
         if (!PlayerHelper.CanSelfRepairWithCrafters)
         {
             AutoWeeklyCap.Log.Debug("switching to NPC repair, reason: player does not have all the required crafters leveled");
-            return RepairNPCHelper.Repair(percent);
+            return ActionInstance.NpcRepair.Invoke();
         }
 
         if (InventoryHelper.GetItemsNeedingRepairCount(percent) > InventoryHelper.GetDarkMatterCount())
         {
             AutoWeeklyCap.Log.Debug("switching to NPC repair, reason: too low quantity of dark matter");
-            return RepairNPCHelper.Repair(percent);
+            return ActionInstance.NpcRepair.Invoke();
         }
 
         AutoWeeklyCap.TaskManager.Enqueue(() =>

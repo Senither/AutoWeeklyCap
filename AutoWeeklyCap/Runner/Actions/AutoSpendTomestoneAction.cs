@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons;
@@ -10,9 +11,9 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 // ReSharper disable InconsistentNaming
 
-namespace AutoWeeklyCap.Helpers;
+namespace AutoWeeklyCap.Runner.Actions;
 
-public static class AutoSpendTomestoneHelper
+public class AutoSpendTomestoneAction : BaseAction
 {
     // Path 7.4 - Zircon @ Solution Nine (Nexus Arcade)
     private static readonly Vector3 VendorPosition = new(-185.5f, 0.6600001f, -28.45f);
@@ -22,17 +23,11 @@ public static class AutoSpendTomestoneHelper
     private const string VendorAetheriteName = "Nexus Arcade";
 
     // Pointers for game instances to open and interact with windows 
-    private static unsafe AtkUnitBase* AddonSelectIconString = null;
-    private static unsafe AtkUnitBase* AddonShopExchangeCurrency = null;
+    private unsafe AtkUnitBase* AddonSelectIconString = null;
+    private unsafe AtkUnitBase* AddonShopExchangeCurrency = null;
 
-    public static bool SpendTomestones()
+    protected override bool Run()
     {
-        if (Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51])
-            return false;
-
-        if (!AutoWeeklyCap.PlayerState.IsLoaded || !Player.Available)
-            return false;
-
         if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled)
             return false;
 

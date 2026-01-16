@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons;
@@ -10,19 +11,18 @@ using ECommons.GameHelpers;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
-namespace AutoWeeklyCap.Helpers;
+namespace AutoWeeklyCap.Runner.Actions;
 
-public class RepairNPCHelper
+public class NpcRepairAction : BaseAction
 {
-    private static bool seenAddon = false;
-    private static unsafe AtkUnitBase* addonRepair = null;
-    private static unsafe AtkUnitBase* addonSelectYesno = null;
-    private static unsafe AtkUnitBase* addonSelectIconString = null;
+    private static bool SeenAddon = false;
+    private static unsafe AtkUnitBase* AddonRepair = null;
+    private static unsafe AtkUnitBase* AddonSelectYesno = null;
+    private static unsafe AtkUnitBase* AddonSelectIconString = null;
 
-    public static bool Repair() => Repair(AutoWeeklyCap.Config.RepairPercentage);
-
-    public static bool Repair(uint percent)
+    protected override bool Run()
     {
+        var percent = AutoWeeklyCap.Config.RepairPercentage;
         if (InventoryHelper.GetItemsNeedingRepairCount(percent) == 0)
             return false;
 
@@ -100,24 +100,24 @@ public class RepairNPCHelper
                     if (vendor == null)
                         return false;
 
-                    if (GenericHelpers.TryGetAddonByName("SelectIconString", out addonSelectIconString) && GenericHelpers.IsAddonReady(addonSelectIconString))
+                    if (GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString))
                     {
                         AddonHelper.ClickSelectIconString(0);
                     }
-                    else if (!GenericHelpers.TryGetAddonByName("Repair", out addonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno))
+                    else if (!GenericHelpers.TryGetAddonByName("Repair", out AddonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectYesno))
                     {
                         ObjectHelper.InteractWithObject(vendor);
                     }
-                    else if (!seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !GenericHelpers.IsAddonReady(addonSelectYesno)))
+                    else if (!SeenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectYesno) || !GenericHelpers.IsAddonReady(AddonSelectYesno)))
                     {
                         AddonHelper.ClickRepair();
                     }
-                    else if (GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) && GenericHelpers.IsAddonReady(addonSelectYesno))
+                    else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectYesno) && GenericHelpers.IsAddonReady(AddonSelectYesno))
                     {
                         AddonHelper.ClickSelectYesno();
-                        seenAddon = true;
+                        SeenAddon = true;
                     }
-                    else if (seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out addonSelectYesno) || !GenericHelpers.IsAddonReady(addonSelectYesno)))
+                    else if (SeenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectYesno) || !GenericHelpers.IsAddonReady(AddonSelectYesno)))
                     {
                         return true;
                     }
@@ -182,7 +182,7 @@ public class RepairNPCHelper
         _ => 1004416u,
     };
 
-    public static string RepairVendorAetheriteName => PlayerHelper.GetGrandCompany() switch
+    private static string RepairVendorAetheriteName => PlayerHelper.GetGrandCompany() switch
     {
         GrandCompany.Maelstrom => "The Aftcastle",
         GrandCompany.TwinAdder => "New Gridania",
@@ -191,9 +191,9 @@ public class RepairNPCHelper
 
     private static unsafe void ResetRepairState()
     {
-        seenAddon = false;
-        addonRepair = null;
-        addonSelectYesno = null;
-        addonSelectIconString = null;
+        SeenAddon = false;
+        AddonRepair = null;
+        AddonSelectYesno = null;
+        AddonSelectIconString = null;
     }
 }

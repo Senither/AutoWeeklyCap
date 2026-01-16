@@ -9,7 +9,7 @@ using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 
 namespace AutoWeeklyCap.Helpers;
 
-public class ObjectHelper
+public static class ObjectHelper
 {
     internal static unsafe void InteractWithObject(IGameObject? gameObject, bool face = true)
     {
