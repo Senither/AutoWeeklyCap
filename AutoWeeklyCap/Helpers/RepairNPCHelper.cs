@@ -99,7 +99,7 @@ public class RepairNPCHelper
             {
                 unsafe
                 {
-                    var vendor = RepairVendorGameObject();
+                    var vendor = ObjectHelper.FindGameObject(RepairVendorDataId, RepairVendorLocation);
                     if (vendor == null)
                         return false;
 
@@ -191,55 +191,6 @@ public class RepairNPCHelper
         GrandCompany.TwinAdder => "New Gridania",
         _ => "Steps of Nald",
     };
-
-    private static IGameObject? RepairVendorGameObject()
-    {
-        try
-        {
-            var wantedDataId = RepairVendorDataId;
-            IGameObject? closest = null;
-            var closestDistance = float.MaxValue;
-
-            foreach (var obj in Svc.Objects)
-            {
-                if (obj.ObjectKind is not (ObjectKind.EventNpc or ObjectKind.BattleNpc or ObjectKind.EventObj))
-                    continue;
-
-                if (obj.BaseId != wantedDataId)
-                    continue;
-
-                var d = Vector3.Distance(Player.Position, obj.Position);
-                if (d < closestDistance)
-                {
-                    closest = obj;
-                    closestDistance = d;
-                }
-            }
-
-            if (closest != null)
-                return closest;
-
-            // Fallback: nearest object around the expected mender location.
-            foreach (var obj in Svc.Objects)
-            {
-                if (obj == null)
-                    continue;
-
-                if (obj.ObjectKind is not (ObjectKind.EventNpc or ObjectKind.BattleNpc or ObjectKind.EventObj))
-                    continue;
-
-                var d = Vector3.Distance(RepairVendorLocation, obj.Position);
-                if (d <= 6f)
-                    return obj;
-            }
-        }
-        catch (Exception)
-        {
-            // ignored
-        }
-
-        return null;
-    }
 
     private static unsafe void ResetRepairState()
     {

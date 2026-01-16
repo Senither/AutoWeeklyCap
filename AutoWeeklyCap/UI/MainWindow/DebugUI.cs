@@ -28,6 +28,7 @@ public class DebugUI
         DebugButton("Extract", () => ExtractHelper.ExtractMateria(), false);
         DebugButton("Self Repair", () => RepairHelper.Repair());
         DebugButton("NPC Repair", () => RepairNPCHelper.Repair());
+        DebugButton("Spend Tomestones", () => AutoSpendTomestoneHelper.SpendTomestones());
 
         ImGui.Separator();
         ImGui.Text("Game data state:");
