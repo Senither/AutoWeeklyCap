@@ -32,6 +32,21 @@ public static class Utils
         return AutoWeeklyCap.PlayerState.CharacterName + "@" + world.Value.Name.ToString();
     }
 
+    public static int GetUncappedAcquiredTomestoneCount()
+    {
+        try
+        {
+            unsafe
+            {
+                return InventoryManager.Instance()->GetInventoryItemCount(48);
+            }
+        }
+        catch (Exception)
+        {
+            return 0;
+        }
+    }
+
     public static int GetWeeklyAcquiredTomestoneCount()
     {
         try
