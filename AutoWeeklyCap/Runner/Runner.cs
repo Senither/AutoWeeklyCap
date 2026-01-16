@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
-using AutoWeeklyCap.Runner.Actions;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -22,11 +21,11 @@ public class Runner
         if (state != State.Waiting || stopGracefully)
             return false;
 
-        var zoneName = Utils.GetZoneNameFromId(AutoWeeklyCap.Config.ZoneId);
+        var zoneName = MapHelper.GetZoneNameFromId(AutoWeeklyCap.Config.ZoneId);
         if (zoneName == null)
             return false;
 
-        var character = Utils.GetFullCharacterName();
+        var character = PlayerHelper.GetFullCharacterName();
         if (character == null || !AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character).IsEnabled())
         {
             StartCharacterSwap();
@@ -233,7 +232,7 @@ public class Runner
 
         // From this point onwards we're assuming that AutoRetainer has completed its run, next we'll return the original player
 
-        if (Utils.GetFullCharacterName() == currentCharacter)
+        if (PlayerHelper.GetFullCharacterName() == currentCharacter)
         {
             AutoWeeklyCap.TaskManager.Enqueue(
                 () => state = State.PreparingRunner,
@@ -272,11 +271,11 @@ public class Runner
 
     private void CheckTomestoneStage()
     {
-        var character = Utils.GetFullCharacterName();
+        var character = PlayerHelper.GetFullCharacterName();
         if (character == null)
             return;
 
-        var tomes = Utils.GetWeeklyAcquiredTomestoneCount();
+        var tomes = CurrencyHelper.GetWeeklyAcquiredTomestoneCount();
 
         timestamp = DateTime.UtcNow;
         state = InventoryManager.GetLimitedTomestoneWeeklyLimit() == tomes
@@ -414,7 +413,7 @@ public class Runner
         if (LifestreamIPC.IsBusy())
             return;
 
-        var character = Utils.GetFullCharacterName();
+        var character = PlayerHelper.GetFullCharacterName();
         if (character == null || character != currentCharacter)
             return;
 

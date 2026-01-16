@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using AutoWeeklyCap.UI.Helpers;
 using AutoWeeklyCap.UI.MainWindow;
@@ -112,7 +111,7 @@ public class MainWindow : Window, IDisposable
         ImGui.TextUnformatted("AWC is");
         ImGui.SameLine(0f, 6f);
 
-        if (Utils.IsRequiredPluginsEnabled())
+        if (AutoWeeklyCap.IsRequiredPluginsEnabled())
             ImGui.TextColored(ImGuiColors.HealerGreen, "✓ Ready");
         else
             ImGui.TextColored(ImGuiColors.DalamudOrange, "X Unavailable");
@@ -146,7 +145,7 @@ public class MainWindow : Window, IDisposable
 
     protected void DrawHeaderActionButtons()
     {
-        var isEnabled = Utils.IsRequiredPluginsEnabled()
+        var isEnabled = AutoWeeklyCap.IsRequiredPluginsEnabled()
                         && AutoWeeklyCap.Config.IsRequiredSettingsSetup();
 
         if (!isEnabled)
@@ -173,7 +172,7 @@ public class MainWindow : Window, IDisposable
         {
             if (RightAlignedButton.Draw(" Start Run "))
             {
-                if (Utils.IsRequiredPluginsEnabled())
+                if (AutoWeeklyCap.IsRequiredPluginsEnabled())
                 {
                     AutoWeeklyCap.Runner.Start();
                 }

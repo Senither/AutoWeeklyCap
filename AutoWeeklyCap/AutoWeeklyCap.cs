@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using AutoWeeklyCap.Commands;
 using AutoWeeklyCap.Config;
+using AutoWeeklyCap.IPC;
 using AutoWeeklyCap.UI.Windows;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
@@ -142,4 +143,9 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
     public void OpenCharacterOptionsUi(string character) =>
         CharacterOptionWindow.ToggleForCharacterWithOptions(character);
+
+    public static bool IsRequiredPluginsEnabled()
+    {
+        return LifestreamIPC.IsEnabled && AutoDutyIPC.IsEnabled;
+    }
 }

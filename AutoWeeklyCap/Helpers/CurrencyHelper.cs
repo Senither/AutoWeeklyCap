@@ -1,37 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoWeeklyCap.IPC;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using Lumina.Excel.Sheets;
 
 namespace AutoWeeklyCap.Helpers;
 
-public static class Utils
+public static class CurrencyHelper
 {
-    public static string? GetZoneNameFromId(uint zoneId)
-    {
-        if (AutoWeeklyCap.DataManager.GetExcelSheet<TerritoryType>().TryGetRow(zoneId, out var territoryRow))
-        {
-            var name = territoryRow.PlaceName.Value.Name.ExtractText();
-
-            return name.Length == 0 ? null : name;
-        }
-
-        return null;
-    }
-
-    public static string? GetFullCharacterName()
-    {
-        if (!AutoWeeklyCap.PlayerState.IsLoaded)
-            return null;
-
-        var world = AutoWeeklyCap.PlayerState.HomeWorld.ValueNullable;
-        if (world == null)
-            return null;
-
-        return AutoWeeklyCap.PlayerState.CharacterName + "@" + world.Value.Name.ToString();
-    }
-
     public static int GetUncappedAcquiredTomestoneCount()
     {
         try
@@ -64,7 +38,7 @@ public static class Utils
 
     public static bool UpdateWeeklyAcquiredTomestonesForCurrentCharacter()
     {
-        var characterAndWorld = GetFullCharacterName();
+        var characterAndWorld = PlayerHelper.GetFullCharacterName();
         if (characterAndWorld == null)
             return false;
 
@@ -87,10 +61,5 @@ public static class Utils
         AutoWeeklyCap.Config.Save();
 
         return true;
-    }
-
-    public static bool IsRequiredPluginsEnabled()
-    {
-        return LifestreamIPC.IsEnabled && AutoDutyIPC.IsEnabled;
     }
 }

@@ -39,7 +39,7 @@ public class RelogCommand : ICommand
             return;
         }
 
-        if (characterAndWorld.Equals(Utils.GetFullCharacterName()))
+        if (characterAndWorld.Equals(PlayerHelper.GetFullCharacterName()))
             return;
 
         var parts = characterAndWorld.Split("@");

@@ -1,7 +1,5 @@
 ﻿using System;
 using AutoWeeklyCap.Helpers;
-using Dalamud.Game.ClientState.Conditions;
-using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 

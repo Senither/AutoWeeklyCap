@@ -1,10 +1,8 @@
 ﻿using System;
 using AutoWeeklyCap.Helpers;
-using Dalamud.Game.ClientState.Conditions;
 using ECommons;
 using ECommons.Automation.NeoTaskManager;
 using ECommons.DalamudServices;
-using ECommons.GameHelpers;
 using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.Game;

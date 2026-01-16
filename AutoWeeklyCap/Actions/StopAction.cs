@@ -49,7 +49,7 @@ public static class StopActionExtensions
 
             case StopAction.SwitchCharacter:
                 var characterToSwapTo = AutoWeeklyCap.Config.CharacterForSwap;
-                if (characterToSwapTo.Length == 0 || characterToSwapTo == Utils.GetFullCharacterName())
+                if (characterToSwapTo.Length == 0 || characterToSwapTo == PlayerHelper.GetFullCharacterName())
                     break;
 
                 var parts = characterToSwapTo.Split("@");

@@ -92,6 +92,18 @@ public static class PlayerHelper
         HasMaxJobLevel(PlayerJobType.Leatherworker) &&
         HasMaxJobLevel(PlayerJobType.Weaver);
 
+    public static string? GetFullCharacterName()
+    {
+        if (!AutoWeeklyCap.PlayerState.IsLoaded)
+            return null;
+
+        var world = AutoWeeklyCap.PlayerState.HomeWorld.ValueNullable;
+        if (world == null)
+            return null;
+
+        return AutoWeeklyCap.PlayerState.CharacterName + "@" + world.Value.Name.ToString();
+    }
+
     public static bool HasMaxJobLevel(PlayerJobType jobType)
     {
         return GetJobLevel(jobType) == AutoWeeklyCap.CurrentMaxLevel;

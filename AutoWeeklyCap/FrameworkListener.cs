@@ -16,7 +16,7 @@ public class FrameworkListener
 
         EnforceUpdateStateAt = unixNow + 500;
 
-        Utils.UpdateWeeklyAcquiredTomestonesForCurrentCharacter();
+        CurrencyHelper.UpdateWeeklyAcquiredTomestonesForCurrentCharacter();
         AutoWeeklyCap.Runner.Tick();
     }
 }

@@ -1,6 +1,4 @@
-﻿using AutoWeeklyCap.Helpers;
-
-namespace AutoWeeklyCap.Commands;
+﻿namespace AutoWeeklyCap.Commands;
 
 public class StartCommand : ICommand
 {
@@ -18,7 +16,7 @@ public class StartCommand : ICommand
         }
         else
         {
-            if (Utils.IsRequiredPluginsEnabled())
+            if (AutoWeeklyCap.IsRequiredPluginsEnabled())
             {
                 AutoWeeklyCap.Runner.Start();
             }

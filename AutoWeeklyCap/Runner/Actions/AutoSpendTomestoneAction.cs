@@ -1,10 +1,8 @@
 ﻿using System.Numerics;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
-using Dalamud.Game.ClientState.Conditions;
 using ECommons;
 using ECommons.Automation.NeoTaskManager;
-using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Component.GUI;

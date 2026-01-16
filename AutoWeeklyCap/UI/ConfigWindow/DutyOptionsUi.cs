@@ -14,13 +14,13 @@ public static class DutyOptionsUi
         if (ImGui.BeginCombo(
                 $"###selected-duty",
                 TomestoneZone.IsSupportedTomestoneZone(AutoWeeklyCap.Config.ZoneId)
-                    ? Utils.GetZoneNameFromId(AutoWeeklyCap.Config.ZoneId)
+                    ? MapHelper.GetZoneNameFromId(AutoWeeklyCap.Config.ZoneId)
                     : "Not selected"
             ))
         {
             foreach (var zoneId in TomestoneZone.AvailableTomestoneZones)
             {
-                if (ImGui.Selectable(Utils.GetZoneNameFromId(zoneId), AutoWeeklyCap.Config.ZoneId == zoneId))
+                if (ImGui.Selectable(MapHelper.GetZoneNameFromId(zoneId), AutoWeeklyCap.Config.ZoneId == zoneId))
                 {
                     AutoWeeklyCap.Config.ZoneId = zoneId;
                 }
