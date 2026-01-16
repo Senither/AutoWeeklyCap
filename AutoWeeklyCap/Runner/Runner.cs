@@ -302,7 +302,7 @@ public class Runner
             if (AutoWeeklyCap.Config.UseBossModRebornAI && BossModReborn.IsEnabled)
             {
                 AutoWeeklyCap.Log.Debug("UseBossModRebornAI is enabled and BossMod Reborn is disabled, enabling AI");
-                Chat.RunCommand("bmrai on");
+                ChatHelper.RunCommand("bmrai on");
             }
         }, "enable BossMod Reborn AI if option is enabled");
 

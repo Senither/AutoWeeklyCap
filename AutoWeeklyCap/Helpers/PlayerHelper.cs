@@ -135,7 +135,7 @@ public static class PlayerHelper
                 if (!gearsetModule->IsValidGearset(i) || gearsetModule->GetGearset(i)->ClassJob != targetJobId)
                     continue;
 
-                Chat.RunCommand($"gs change {i + 1}");
+                ChatHelper.RunCommand($"gs change {i + 1}");
                 return CharacterSwapStatus.SwitchedJob;
             }
         }

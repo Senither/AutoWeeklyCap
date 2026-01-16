@@ -66,7 +66,7 @@ public static class StopActionExtensions
                 break;
 
             case StopAction.ShutdownGame:
-                Chat.RunCommand("xlkill");
+                ChatHelper.RunCommand("xlkill");
                 break;
 
             case StopAction.AutoRetainerMultimode:

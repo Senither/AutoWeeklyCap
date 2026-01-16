@@ -69,7 +69,7 @@ public static class AutoSpendTomestoneHelper
             if (VNavMeshIPC.IsRunning() || !VNavMeshIPC.IsReady())
                 return false;
 
-            Chat.RunCommand("automove off");
+            ChatHelper.RunCommand("automove off");
 
             VNavMeshIPC.SetTolerance(.25f);
             VNavMeshIPC.SetAlignCamera(true);

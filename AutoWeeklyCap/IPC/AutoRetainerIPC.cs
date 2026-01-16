@@ -18,13 +18,13 @@ public class AutoRetainerIPC
     internal static void EnableMultiMode()
     {
         if (IsEnabled && !GetMultiModeStatus())
-            Chat.RunCommand("autoretainer multi enable");
+            ChatHelper.RunCommand("autoretainer multi enable");
     }
 
     internal static void DisableMultiMode()
     {
         if (IsEnabled && GetMultiModeStatus())
-            Chat.RunCommand("autoretainer multi disable");
+            ChatHelper.RunCommand("autoretainer multi disable");
     }
 
     [EzIPC]

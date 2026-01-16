@@ -1,11 +1,11 @@
 ﻿using System.Numerics;
 using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.Runner;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using Chat = AutoWeeklyCap.Helpers.Chat;
 
 namespace AutoWeeklyCap.UI.MainWindow;
 
@@ -83,7 +83,7 @@ internal static class CharactersUI
         }
         else if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
         {
-            Chat.RunCommand(command);
+            ChatHelper.RunCommand(command);
         }
 
         ImGuiEx.Tooltip("Left click:   relog to this character\nRight click: copy relog command to clipboard");

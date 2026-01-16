@@ -17,7 +17,7 @@ public static class ExtractHelper
     {
         if (Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51])
             return false;
-        
+
         if (!AutoWeeklyCap.PlayerState.IsLoaded || !Player.Available)
             return false;
 

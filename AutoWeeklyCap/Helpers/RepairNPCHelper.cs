@@ -2,16 +2,13 @@
 using System.Numerics;
 using AutoWeeklyCap.IPC;
 using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Game.ClientState.Objects.Types;
 using ECommons;
 using ECommons.Automation.NeoTaskManager;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using ECommons.Throttlers;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 
 namespace AutoWeeklyCap.Helpers;
 
@@ -70,7 +67,7 @@ public class RepairNPCHelper
             if (VNavMeshIPC.IsRunning() || !VNavMeshIPC.IsReady())
                 return false;
 
-            Chat.RunCommand("automove off");
+            ChatHelper.RunCommand("automove off");
 
             VNavMeshIPC.SetTolerance(.25f);
             VNavMeshIPC.SetAlignCamera(true);

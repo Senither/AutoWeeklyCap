@@ -5,7 +5,7 @@ using FFXIVClientStructs.FFXIV.Client.UI.Shell;
 
 namespace AutoWeeklyCap.Helpers;
 
-public static class Chat
+public static class ChatHelper
 {
     public static bool RunCommand(string commandString)
     {
