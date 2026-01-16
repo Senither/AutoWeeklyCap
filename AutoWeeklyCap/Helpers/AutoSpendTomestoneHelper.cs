@@ -1,7 +1,9 @@
 ﻿using System.Numerics;
 using AutoWeeklyCap.IPC;
+using Dalamud.Game.ClientState.Conditions;
 using ECommons;
 using ECommons.Automation.NeoTaskManager;
+using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -25,6 +27,15 @@ public static class AutoSpendTomestoneHelper
 
     public static bool SpendTomestones()
     {
+        if (Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51])
+            return false;
+
+        if (!AutoWeeklyCap.PlayerState.IsLoaded || !Player.Available)
+            return false;
+
+        if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled)
+            return false;
+
         // TODO: Check for a valid config setup to buy tomestones with
 
         var longTask = new TaskManagerConfiguration(timeLimitMS: 120_000);

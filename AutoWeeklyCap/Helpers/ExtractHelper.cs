@@ -1,7 +1,9 @@
 ﻿using System;
+using Dalamud.Game.ClientState.Conditions;
 using ECommons;
 using ECommons.Automation.NeoTaskManager;
 using ECommons.DalamudServices;
+using ECommons.GameHelpers;
 using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -13,6 +15,18 @@ public static class ExtractHelper
 {
     public static bool ExtractMateria()
     {
+        if (Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51])
+            return false;
+        
+        if (!AutoWeeklyCap.PlayerState.IsLoaded || !Player.Available)
+            return false;
+
+        if (!QuestManager.IsQuestComplete(66174))
+        {
+            AutoWeeklyCap.Log.Info("Stopping materia extraction, reason: player has not completed quest 66174 (Forging the Spirit)");
+            return false;
+        }
+
         var stoppingCategory = AutoWeeklyCap.Config.ExtractAll ? 6 : 0;
         var currentCategory = 0;
         var switchCategory = false;
