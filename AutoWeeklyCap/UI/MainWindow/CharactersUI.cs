@@ -54,18 +54,19 @@ internal static class CharactersUI
 
     internal static void DrawCharacterStatusIcon(string character, CharacterOptions option)
     {
-        if (option.IsEnabled())
+        var isEnabled = option.IsEnabled();
+        if (isEnabled)
             ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
 
         if (ImGuiEx.IconButton(FontAwesomeIcon.Rocket))
         {
-            option.Enabled = !option.IsEnabled();
+            option.Enabled = !isEnabled;
             SaveCharacterConfigurationOption(character, option);
         }
 
-        ImGuiEx.Tooltip($"Click to {(option.IsEnabled() ? "disable" : "enable")} auto weekly cap for the character");
+        ImGuiEx.Tooltip($"Click to {(isEnabled ? "disable" : "enable")} auto weekly cap for the character");
 
-        if (option.IsEnabled())
+        if (isEnabled)
             ImGui.PopStyleColor();
     }
 
