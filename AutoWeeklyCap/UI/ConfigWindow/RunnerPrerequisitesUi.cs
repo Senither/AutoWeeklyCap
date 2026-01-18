@@ -1,6 +1,8 @@
 ﻿using System;
+using AutoWeeklyCap.IPC;
 using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
 using ECommons.ImGuiMethods;
 
@@ -39,6 +41,18 @@ public static class RunnerPrerequisitesUi
             ImGui.SameLine();
             if (ImGui.RadioButton("City NPC", !AutoWeeklyCap.Config.RepairSelf))
                 AutoWeeklyCap.Config.RepairSelf = false;
+
+            InformationTooltip.Draw(() =>
+                {
+                    ImGui.Text("Will teleport to your grand company and use gil to repair your gear");
+
+                    ImGui.Text("Requires ");
+                    DrawStatusText(LifestreamIPC.IsEnabled, "Lifestream");
+                    ImGui.Text(" and ");
+                    DrawStatusText(VNavMeshIPC.IsEnabled, "VNavMesh");
+                    ImGui.Text(" to be enabled");
+                }
+            );
 
             ImGui.Text("Trigger @");
             ImGui.SameLine();
@@ -116,6 +130,11 @@ public static class RunnerPrerequisitesUi
         if (ImGui.Checkbox("Use Auto Retainer", ref useAutoRetainer))
             AutoWeeklyCap.Config.AutoRetainerEnabled = useAutoRetainer;
 
+        InformationTooltip.Draw(
+            "When enabled and at least one retainer are ready within your selected threshold, the runner will " +
+            "enable MultiMode and then do one full cycle on all your characters before doing another run"
+        );
+
         Disabled.Draw(!AutoWeeklyCap.Config.AutoRetainerEnabled, () =>
         {
             var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 2.5);
@@ -133,5 +152,12 @@ public static class RunnerPrerequisitesUi
 
             ImGui.PopItemWidth();
         });
+    }
+
+    private static void DrawStatusText(bool status, string text)
+    {
+        ImGui.SameLine(0f, 0f);
+        ImGui.TextColored(status ? ImGuiColors.HealerGreen : ImGuiColors.DalamudRed, text);
+        ImGui.SameLine(0f, 0f);
     }
 }
