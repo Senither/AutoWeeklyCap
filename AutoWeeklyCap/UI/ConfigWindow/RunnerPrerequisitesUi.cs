@@ -47,9 +47,9 @@ public static class RunnerPrerequisitesUi
                     ImGui.Text("Will teleport to your grand company and use gil to repair your gear");
 
                     ImGui.Text("Requires ");
-                    DrawStatusText(LifestreamIPC.IsEnabled, "Lifestream");
+                    StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
                     ImGui.Text(" and ");
-                    DrawStatusText(VNavMeshIPC.IsEnabled, "VNavMesh");
+                    StatusText.Draw(VNavMeshIPC.IsEnabled, "VNavMesh");
                     ImGui.Text(" to be enabled");
                 }
             );
@@ -152,12 +152,5 @@ public static class RunnerPrerequisitesUi
 
             ImGui.PopItemWidth();
         });
-    }
-
-    private static void DrawStatusText(bool status, string text)
-    {
-        ImGui.SameLine(0f, 0f);
-        ImGui.TextColored(status ? ImGuiColors.HealerGreen : ImGuiColors.DalamudRed, text);
-        ImGui.SameLine(0f, 0f);
     }
 }

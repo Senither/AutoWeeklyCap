@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.Helpers;
+using AutoWeeklyCap.IPC;
 using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
@@ -46,6 +47,13 @@ public static class DutyOptionsUi
             AutoWeeklyCap.Config.UseBossModRebornAI = useBossModRebornAi;
         }
 
-        InformationTooltip.Draw("When enabled, the BossMod Reborn AI will be used for AutoDuty over the default AI");
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When enabled, the ");
+            StatusText.Draw(BossModReborn.IsEnabled, "BossMod Reborn AI");
+            ImGui.Text(" will be used for ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text(" over the default AI");
+        });
     }
 }
