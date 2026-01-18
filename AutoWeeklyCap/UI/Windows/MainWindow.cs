@@ -129,6 +129,7 @@ public class MainWindow : Window, IDisposable
 
             DrawPluginStatusTooltipWithContent(AutoRetainerIPC.IsEnabled, "AutoRetainer");
             DrawPluginStatusTooltipWithContent(BossModReborn.IsEnabled, "BossMod Reborn");
+            DrawPluginStatusTooltipWithContent(VNavMeshIPC.IsEnabled, "VNavMesh");
 
             ImGui.EndTooltip();
         }
