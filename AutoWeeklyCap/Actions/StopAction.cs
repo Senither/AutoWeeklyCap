@@ -1,6 +1,8 @@
 ﻿using System;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
+using AutoWeeklyCap.UI.Helpers;
+using Dalamud.Bindings.ImGui;
 
 namespace AutoWeeklyCap.Actions;
 
@@ -28,12 +30,17 @@ public static class StopActionExtensions
         };
     }
 
-    public static string? GetTooltip(this StopAction action)
+    public static Action? GetTooltip(this StopAction action)
     {
         return action switch
         {
-            StopAction.SwitchCharacter => "If the runner finished on your selected character, nothing will happen.",
-            StopAction.AutoRetainerMultimode => "This requires AutoRetainer to be enabled, if it's not enabled it will do nothing.",
+            StopAction.SwitchCharacter => () => ImGui.Text("If the runner finished on your selected character, nothing will happen"),
+            StopAction.AutoRetainerMultimode => () =>
+            {
+                ImGui.Text("This requires ");
+                StatusText.Draw(AutoRetainerIPC.IsEnabled, "AutoRetainer");
+                ImGui.Text(" to be enabled, if it's not enabled it will do nothing");
+            },
             _ => null
         };
     }
