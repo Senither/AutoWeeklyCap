@@ -1,42 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using Dalamud.Bindings.ImGui;
+﻿using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Utility;
+using ECommons.ImGuiMethods;
 
 namespace AutoWeeklyCap.UI.MainWindow;
 
 internal static class AboutTabUi
 {
-    private static readonly Dictionary<string, string> Content = new()
-    {
-        { "Author:", "Senither" },
-        { "Discord:", "@senither" },
-        { "Version:", AutoWeeklyCap.Version },
-        { "Credits:", "Tuffic for the original idea" }
-    };
-
     internal static void Draw()
     {
-        var labelWidth = 0f;
-        foreach (var label in Content.Keys)
-            labelWidth = MathF.Max(labelWidth, ImGui.CalcTextSize(label).X);
+        ImGuiHelpers.ScaledDummy(5f);
+        ImGuiEx.TextCentered($"{AutoWeeklyCap.Name} v{AutoWeeklyCap.Version}");
+        ImGuiHelpers.ScaledDummy(1f);
 
-        labelWidth += ImGui.GetStyle().CellPadding.X * 2f;
+        ImGuiEx.TextCentered("Developed and published by Senither");
+        ImGuiEx.TextCentered("Original idea by Tuffic");
 
-        if (ImGui.BeginTable("##about-table-awc", 2))
+        ImGuiHelpers.ScaledDummy(5f);
+
+        ImGuiEx.LineCentered(() =>
         {
-            ImGui.TableSetupColumn("Field", ImGuiTableColumnFlags.WidthFixed, labelWidth);
-            ImGui.TableSetupColumn("Value", ImGuiTableColumnFlags.WidthStretch);
-
-            foreach (var (label, value) in Content)
+            if (ImGui.Button("Plugin List"))
             {
-                ImGui.TableNextRow();
-                ImGui.TableSetColumnIndex(0);
-                ImGui.TextUnformatted(label);
-                ImGui.TableSetColumnIndex(1);
-                ImGui.TextWrapped(value);
+                ImGui.SetClipboardText("https://dalamud-plugins.senither.com");
+                Notify.Success("Link copied to clipboard");
             }
 
-            ImGui.EndTable();
-        }
+            ImGui.SameLine();
+            if (ImGui.Button("Plugin Repository"))
+            {
+                ImGui.SetClipboardText("https://dalamud-plugins.senither.com/plugins/autoweeklycap.json");
+                Notify.Success("Link copied to clipboard");
+            }
+        });
     }
 }
