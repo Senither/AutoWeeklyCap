@@ -73,7 +73,6 @@ public class DebugUI
     {
         ImGui.SameLine(0, 0);
 
-
         try
         {
             ImGui.TextColored(value() ? ImGuiColors.HealerGreen : ImGuiColors.DPSRed, text);
