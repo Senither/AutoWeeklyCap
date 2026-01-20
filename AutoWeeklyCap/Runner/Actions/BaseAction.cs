@@ -1,6 +1,7 @@
 ﻿using System;
 using Dalamud.Game.ClientState.Conditions;
 using ECommons;
+using ECommons.Automation.NeoTaskManager;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -58,5 +59,36 @@ public abstract class BaseAction
         }
 
         return true;
+    }
+
+    // TaskManager proxy methods
+
+    protected void Enqueue(Func<bool> action, string description)
+    {
+        AutoWeeklyCap.TaskManager.Enqueue(action, $"{Name}: {description}");
+    }
+
+    protected void Enqueue(Func<bool> action, string description, int timelimitMS)
+    {
+        AutoWeeklyCap.TaskManager.Enqueue(
+            action,
+            $"{Name}: {description}",
+            new TaskManagerConfiguration(timeLimitMS: timelimitMS)
+        );
+    }
+
+    protected void EnqueueDelay(int ms)
+    {
+        AutoWeeklyCap.TaskManager.EnqueueDelay(ms);
+    }
+
+    protected void LogDebug(string message)
+    {
+        AutoWeeklyCap.Log.Debug($"{Name}: {message}");
+    }
+
+    protected void LogInfo(string message)
+    {
+        AutoWeeklyCap.Log.Info($"{Name}: {message}");
     }
 }

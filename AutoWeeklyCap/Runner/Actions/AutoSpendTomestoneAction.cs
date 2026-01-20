@@ -2,10 +2,7 @@
 using System.Numerics;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
-using Dalamud.Game.ClientState.Conditions;
 using ECommons;
-using ECommons.Automation.NeoTaskManager;
-using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -19,6 +16,8 @@ public class AutoSpendTomestoneAction : BaseAction
 {
     protected override string Name => nameof(AutoSpendTomestoneAction);
     protected override string[] AddonsToClose { get; } = ["ShopExchangeCurrency", "SelectIconString", "SelectYesno", "SelectString"];
+
+    private const int LongTaskTimeout = 120_000;
 
     // Path 7.4 - Zircon @ Solution Nine (Nexus Arcade)
     private static readonly Vector3 VendorPosition = new(-185.5f, 0.6600001f, -28.45f);
@@ -50,8 +49,6 @@ public class AutoSpendTomestoneAction : BaseAction
                 return false;
         }
 
-        var longTask = new TaskManagerConfiguration(timeLimitMS: 120_000);
-
         // Reset state before starting
         unsafe
         {
@@ -59,7 +56,7 @@ public class AutoSpendTomestoneAction : BaseAction
             AddonShopExchangeCurrency = null;
         }
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500))
                 return false;
@@ -73,17 +70,17 @@ public class AutoSpendTomestoneAction : BaseAction
             LifestreamIPC.ExecuteCommand(VendorAetheriteName);
 
             return true;
-        }, "auto spend tomestone: start moving to territory");
+        }, "start moving to territory");
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500))
                 return false;
 
             return Player.Territory.RowId == VendorTerritoryID && PlayerHelper.IsReady && !LifestreamIPC.IsBusy();
-        }, "auto spend tomestone: waiting for player to be in territory");
+        }, "waiting for player to be in territory");
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (VNavMeshIPC.IsRunning() || !VNavMeshIPC.IsReady())
                 return false;
@@ -95,9 +92,9 @@ public class AutoSpendTomestoneAction : BaseAction
             VNavMeshIPC.PathfindAndMoveTo(VendorPosition, false);
 
             return true;
-        }, "auto spend tomestone: start moving to npc location", longTask);
+        }, "start moving to npc location", LongTaskTimeout);
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             var distance = Vector3.Distance(VendorPosition, Player.Position);
             if (distance >= .50)
@@ -106,9 +103,9 @@ public class AutoSpendTomestoneAction : BaseAction
             VNavMeshIPC.Stop();
 
             return true;
-        }, "auto spend tomestone: waiting for player movement to npc", longTask);
+        }, "waiting for player movement to npc", LongTaskTimeout);
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (EzThrottler.Throttle("OpeningTomestoneVendorWindow", 250))
                 return false;
@@ -128,9 +125,9 @@ public class AutoSpendTomestoneAction : BaseAction
             }
 
             return false;
-        }, "auto spend tomestone: open window");
+        }, "open window");
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (EzThrottler.Throttle("BuyingTomestoneItem", 500))
                 return false;
@@ -148,10 +145,10 @@ public class AutoSpendTomestoneAction : BaseAction
             }
 
             return false;
-        }, "auto spend tomestone: buy tomestone item");
+        }, "buy tomestone item");
 
-        AutoWeeklyCap.TaskManager.EnqueueDelay(500);
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        EnqueueDelay(500);
+        Enqueue(() =>
         {
             if (EzThrottler.Throttle("BuyingTomestoneItemClose", 500))
                 return false;
@@ -175,7 +172,7 @@ public class AutoSpendTomestoneAction : BaseAction
             }
 
             return false;
-        }, "auto spend tomestone: close window");
+        }, "close window");
 
         return true;
     }

@@ -2,10 +2,7 @@
 using System.Numerics;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
-using Dalamud.Game.ClientState.Conditions;
 using ECommons;
-using ECommons.Automation.NeoTaskManager;
-using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using ECommons.Throttlers;
@@ -17,6 +14,8 @@ public class NpcRepairAction : BaseAction
 {
     protected override string Name => nameof(NpcRepairAction);
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "Repair", "SelectString"];
+
+    private const int LongTaskTimeout = 120_000;
 
     private static bool SeenAddon = false;
     private static unsafe AtkUnitBase* AddonRepair = null;
@@ -32,10 +31,9 @@ public class NpcRepairAction : BaseAction
         if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled)
             return false;
 
-        var longTask = new TaskManagerConfiguration(timeLimitMS: 120_000);
         ResetRepairState();
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
                 return false;
@@ -49,17 +47,17 @@ public class NpcRepairAction : BaseAction
             LifestreamIPC.ExecuteCommand(RepairVendorAetheriteName);
 
             return true;
-        }, "npc repair: start moving to gc territory");
+        }, "start moving to gc territory");
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
                 return false;
 
             return Player.Territory.RowId == RepairVendorTerritoryType() && PlayerHelper.IsReady;
-        }, "npc repair: waiting for player to be in gc territory");
+        }, "waiting for player to be in gc territory");
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (VNavMeshIPC.IsRunning() || !VNavMeshIPC.IsReady())
                 return false;
@@ -71,9 +69,9 @@ public class NpcRepairAction : BaseAction
             VNavMeshIPC.PathfindAndMoveTo(RepairVendorLocation, false);
 
             return true;
-        }, "npc repair: start moving to npc location", longTask);
+        }, "start moving to npc location", LongTaskTimeout);
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             var distance = Vector3.Distance(RepairVendorLocation, Player.Position);
             if (distance > 1.25)
@@ -82,9 +80,9 @@ public class NpcRepairAction : BaseAction
             VNavMeshIPC.Stop();
 
             return true;
-        }, "npc repair: waiting for player movement to npc", longTask);
+        }, "waiting for player movement to npc", LongTaskTimeout);
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (EzThrottler.Throttle("RepairingGearViaNPC", 250))
                 return false;
@@ -126,9 +124,9 @@ public class NpcRepairAction : BaseAction
             }
 
             return false;
-        }, "npc repair: repair gear");
+        }, "repair gear");
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (!EzThrottler.Throttle("RepairClose", 250))
                 return false;
@@ -155,7 +153,7 @@ public class NpcRepairAction : BaseAction
             }
 
             return false;
-        }, "npc repair: close window");
+        }, "close window");
 
         return true;
     }

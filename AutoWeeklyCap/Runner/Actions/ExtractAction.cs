@@ -1,7 +1,6 @@
 ﻿using System;
 using AutoWeeklyCap.Helpers;
 using ECommons;
-using ECommons.Automation.NeoTaskManager;
 using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
@@ -19,7 +18,7 @@ public class ExtractAction : BaseAction
     {
         if (!QuestManager.IsQuestComplete(66174))
         {
-            AutoWeeklyCap.Log.Info("Stopping materia extraction, reason: player has not completed quest 66174 (Forging the Spirit)");
+            LogInfo("Stopping materia extraction, reason: player has not completed quest 66174 (Forging the Spirit)");
             return false;
         }
 
@@ -27,7 +26,7 @@ public class ExtractAction : BaseAction
         var currentCategory = 0;
         var switchCategory = false;
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (!EzThrottler.Throttle("Extract", 250))
                 return false;
@@ -41,18 +40,17 @@ public class ExtractAction : BaseAction
                 {
                     if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
                     {
-                        AutoWeeklyCap.Log.Info("Stopping materia extraction, reason: no items slot left");
+                        LogInfo("Stopping materia extraction, reason: no items slot left");
                         return true;
                     }
 
                     if (PlayerHelper.IsOccupied)
                         return false;
 
-                    if (GenericHelpers.TryGetAddonByName("MaterializeDialog",
-                                                         out AtkUnitBase* addonMaterializeDialog) &&
+                    if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog) &&
                         GenericHelpers.IsAddonReady(addonMaterializeDialog))
                     {
-                        Svc.Log.Debug("AutoExtract - Confirming MaterializeDialog");
+                        LogDebug("Confirming MaterializeDialog");
                         new AddonMaster.MaterializeDialog(addonMaterializeDialog).Materialize();
                         return false;
                     }
@@ -79,7 +77,7 @@ public class ExtractAction : BaseAction
 
                     if (switchCategory)
                     {
-                        AutoWeeklyCap.Log.Debug($"AutoExtract - Switching to Category: {currentCategory}");
+                        LogDebug($"Switching to Category: {currentCategory}");
                         AddonHelper.FireCallBack(addonMaterialize, false, 1, currentCategory);
                         switchCategory = false;
                         return false;
@@ -87,7 +85,7 @@ public class ExtractAction : BaseAction
 
                     if (spiritbondTextNode->NodeText.ToString().Replace(" ", string.Empty) == "100%")
                     {
-                        AutoWeeklyCap.Log.Debug($"AutoExtract - Extracting Materia");
+                        LogDebug("Extracting Materia");
                         AddonHelper.FireCallBack(addonMaterialize, true, 2, 0);
                     }
                     else
@@ -105,9 +103,9 @@ public class ExtractAction : BaseAction
             }
 
             return true;
-        }, "extracting materia", new TaskManagerConfiguration(timeLimitMS: 180_000)); // 3 minutes
+        }, "extracting materia", 180_000); // 3 minutes
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             try
             {
@@ -126,7 +124,7 @@ public class ExtractAction : BaseAction
             }
 
             return true;
-        }, "closing materia window");
+        }, "closing window");
 
         return true;
     }

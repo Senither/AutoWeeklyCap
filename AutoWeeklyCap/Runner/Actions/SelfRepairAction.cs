@@ -18,17 +18,17 @@ public class SelfRepairAction : BaseAction
 
         if (!PlayerHelper.CanSelfRepairWithCrafters)
         {
-            AutoWeeklyCap.Log.Debug("switching to NPC repair, reason: player does not have all the required crafters leveled");
+            LogDebug("switching to NPC repair, reason: player does not have all the required crafters leveled");
             return ActionInstance.NpcRepair.Invoke();
         }
 
         if (InventoryHelper.GetItemsNeedingRepairCount(percent) > InventoryHelper.GetDarkMatterCount())
         {
-            AutoWeeklyCap.Log.Debug("switching to NPC repair, reason: too low quantity of dark matter");
+            LogDebug("switching to NPC repair, reason: too low quantity of dark matter");
             return ActionInstance.NpcRepair.Invoke();
         }
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (!EzThrottler.Throttle("RepairOpen", 250))
                 return false;
@@ -49,9 +49,9 @@ public class SelfRepairAction : BaseAction
             }
 
             return false;
-        }, "self repair: open window");
+        }, "open window");
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             try
             {
@@ -79,9 +79,9 @@ public class SelfRepairAction : BaseAction
             }
 
             return false;
-        }, "self repair: repair all + confirm");
+        }, "repair all + confirm");
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        Enqueue(() =>
         {
             if (!EzThrottler.Throttle("RepairClose", 250))
                 return false;
@@ -105,7 +105,7 @@ public class SelfRepairAction : BaseAction
             }
 
             return false;
-        }, "self repair: close window");
+        }, "close window");
 
         return true;
     }
