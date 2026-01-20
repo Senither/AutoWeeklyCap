@@ -17,7 +17,7 @@ public record TomestoneItem(int Index, int Cost, string Name)
     }
 }
 
-public class TomestoneItemHelper
+public static class TomestoneItemHelper
 {
     private static readonly LinkedList<TomestoneItem> Items = [];
 

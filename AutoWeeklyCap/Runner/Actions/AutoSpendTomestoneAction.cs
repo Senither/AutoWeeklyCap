@@ -8,6 +8,7 @@ using ECommons.Automation.NeoTaskManager;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using ECommons.Throttlers;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 // ReSharper disable InconsistentNaming
@@ -45,6 +46,12 @@ public class AutoSpendTomestoneAction : BaseAction
 
         if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled)
             return false;
+
+        unsafe
+        {
+            if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
+                return false;
+        }
 
         var longTask = new TaskManagerConfiguration(timeLimitMS: 120_000);
 
