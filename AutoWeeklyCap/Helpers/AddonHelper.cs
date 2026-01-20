@@ -11,6 +11,24 @@ namespace AutoWeeklyCap.Helpers;
 
 public static unsafe class AddonHelper
 {
+    internal static bool IsTitleScreenReady()
+    {
+        try
+        {
+            return GenericHelpers.TryGetAddonByName<AtkUnitBase>("_TitleMenu", out var title)
+                   && GenericHelpers.IsAddonReady(title)
+                   && title->UldManager.NodeListCount > 3
+                   && title->UldManager.NodeList[7]->IsVisible()
+                   && title->UldManager.NodeList[3]->Color.A == 0xFF
+                   && !GenericHelpers.TryGetAddonByName<AtkUnitBase>("TitleDCWorldMap", out _)
+                   && !GenericHelpers.TryGetAddonByName<AtkUnitBase>("TitleConnect", out _);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
     internal static void FireCallBack(AtkUnitBase* addon, bool boolValue, params object[] args)
     {
         if (addon == null)

@@ -1,7 +1,6 @@
 ﻿using System;
 using AutoWeeklyCap.Helpers;
 using ECommons;
-using ECommons.DalamudServices;
 using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.Game;

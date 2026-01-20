@@ -221,7 +221,7 @@ public class Runner
         if (!AutoRetainerIPC.GetMultiModeStatus())
             AutoRetainerIPC.EnableMultiMode();
 
-        if (AutoRetainerIPC.IsBusy() || LifestreamIPC.IsBusy())
+        if (AutoRetainerIPC.IsBusy() || LifestreamIPC.IsBusy() || (!PlayerHelper.IsValid && !AddonHelper.IsTitleScreenReady()))
         {
             timestamp = DateTime.UtcNow;
             return;
@@ -232,7 +232,7 @@ public class Runner
         switch (PlayerHelper.IsValid)
         {
             case true when elapsed < 15:
-            case false when elapsed < 30:
+            case false when elapsed < 5:
                 return;
         }
 
