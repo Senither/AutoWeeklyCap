@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
@@ -86,38 +87,34 @@ public static class RunnerPrerequisitesUi
         });
 
         // Auto Spend Tomestones
-        Disabled.Draw(() =>
+        var autoSpendUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestones;
+        if (ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones))
+            AutoWeeklyCap.Config.SpendUncappedTomestones = autoSpendUncappedTomestones;
+
+        Disabled.Draw(!AutoWeeklyCap.Config.SpendUncappedTomestones, () =>
         {
-            var autoSpendUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestones;
-            if (ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones))
-                AutoWeeklyCap.Config.SpendUncappedTomestones = autoSpendUncappedTomestones;
+            ImGui.Text("Buy @");
+            ImGui.SameLine();
 
-            Disabled.Draw(!AutoWeeklyCap.Config.SpendUncappedTomestones, () =>
+            var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 1.5);
+            ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
+
+            var autoBuyWithUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold;
+            if (ImGui.SliderUInt("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000))
+                AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold = autoBuyWithUncappedTomestones;
+
+            ImGui.Text("Item to buy");
+            var selectedItem = TomestoneItemHelper.GetTomestoneItemFromName(AutoWeeklyCap.Config.SpendUncappedTomestoneItemName);
+            if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", selectedItem != null ? selectedItem.Name : "Not selected"))
             {
-                ImGui.Text("Buy @");
-                ImGui.SameLine();
-
-                var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 1.5);
-                ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
-
-                var autoBuyWithUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold;
-                if (ImGui.SliderUInt("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000))
-                    AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold = autoBuyWithUncappedTomestones;
-
-                ImGui.Text("Item to buy");
-                if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", "Turali Pigment"))
+                foreach (var item in TomestoneItemHelper.GetTomestoneItems())
                 {
-                    if (ImGui.Selectable("Turali Pigment")) { }
-
-                    if (ImGui.Selectable("Test #1")) { }
-
-                    if (ImGui.Selectable("Test #2")) { }
-
-                    if (ImGui.Selectable("Test #3")) { }
-
-                    ImGui.EndCombo();
+                    if (ImGui.Selectable(item.Name))
+                        AutoWeeklyCap.Config.SpendUncappedTomestoneItemName = item.Name;
                 }
-            });
+
+                ImGui.EndCombo();
+            }
         });
     }
 

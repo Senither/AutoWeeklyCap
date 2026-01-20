@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using AutoWeeklyCap.Commands;
 using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using AutoWeeklyCap.UI.Windows;
 using Dalamud.Game.Command;
@@ -67,6 +68,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         ECommonsMain.Init(PluginInterface, this, Module.DalamudReflector);
 
         TaskManager = new TaskManager(new TaskManagerConfiguration(abortOnTimeout: true, timeLimitMS: 20000, showDebug: true));
+        TomestoneItemHelper.RegisterTomestoneItems();
 
         try
         {

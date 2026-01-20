@@ -33,7 +33,7 @@ public class Configuration : IPluginConfiguration
     public bool ExtractAll { get; set; } = false;
     public bool SpendUncappedTomestones { get; set; } = false;
     public uint SpendUncappedTomestoneThreshold { get; set; } = 1800;
-    // TODO: Add the item that should be bought using uncapped tomestones here...
+    public string? SpendUncappedTomestoneItemName { get; set; } = null;
 
     // Runner Options (AutoRetainer)
     public bool AutoRetainerEnabled { get; set; } = false;
