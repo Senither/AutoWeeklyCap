@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
+using ECommons.Automation.NeoTaskManager;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -309,11 +310,12 @@ public class Runner
         AutoWeeklyCap.TaskManager.Enqueue(
             () =>
             {
-                if (!EzThrottler.Throttle("RunnerStartingDuty", 250))
+                if (!EzThrottler.Throttle("RunnerStartingDuty", 1000))
                     return false;
 
                 if (AutoWeeklyCap.ClientState.TerritoryType == AutoWeeklyCap.Config.ZoneId)
                 {
+                    AutoWeeklyCap.Log.Debug("Player detected in the duty zone, switching to RunningAutoDuty stage");
                     state = State.RunningAutoDuty;
 
                     if (AutoDutyIPC.IsStopped())
@@ -322,15 +324,16 @@ public class Runner
                     return true;
                 }
 
-                AutoWeeklyCap.Log.Debug("Attempting to start auto duty: {@Stats}", new Dictionary<string, object>
+                if (!PlayerHelper.IsReady || VNavMeshIPC.IsRunning())
                 {
-                    { "Seconds elapsed", (DateTime.UtcNow - timestamp).Seconds },
-                    { "AutoDuty started", !AutoDutyIPC.IsStopped() },
-                    { "Current zone", AutoWeeklyCap.ClientState.TerritoryType },
-                    { "Duty zone", AutoWeeklyCap.Config.ZoneId },
-                });
+                    if (EzThrottler.Throttle("RunnerStartingDutyBusyLog", 2500))
+                        AutoWeeklyCap.Log.Debug($"Resetting AutoDuty start timer, reason: player is busy or VNavMesh is running");
 
-                if ((DateTime.UtcNow - timestamp).Seconds > 15)
+                    timestamp = DateTime.UtcNow;
+                    return false;
+                }
+
+                if ((DateTime.UtcNow - timestamp).Seconds > 30)
                 {
                     AutoWeeklyCap.Log.Debug("Timed out while trying to start AutoDuty");
 
@@ -354,10 +357,23 @@ public class Runner
                     return true;
                 }
 
-                AutoDutyIPC.Run(AutoWeeklyCap.Config.ZoneId, 1, false);
+                if (EzThrottler.Throttle("RunnerStartingDutyStartAttempt", 1500))
+                {
+                    AutoWeeklyCap.Log.Debug("Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object>
+                    {
+                        { "Seconds elapsed", (DateTime.UtcNow - timestamp).Seconds },
+                        { "AutoDuty started", !AutoDutyIPC.IsStopped() },
+                        { "Current zone", AutoWeeklyCap.ClientState.TerritoryType },
+                        { "Duty zone", AutoWeeklyCap.Config.ZoneId },
+                    });
+
+                    AutoDutyIPC.Run(AutoWeeklyCap.Config.ZoneId, 1, false);
+                }
+
                 return false;
             },
-            "starting AutoDuty"
+            "starting AutoDuty",
+            new TaskManagerConfiguration(timeLimitMS: 120_000) // 2 minutes
         );
     }
 
