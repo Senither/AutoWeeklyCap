@@ -15,6 +15,9 @@ namespace AutoWeeklyCap.Runner.Actions;
 
 public class NpcRepairAction : BaseAction
 {
+    protected override string Name => nameof(NpcRepairAction);
+    protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "Repair", "SelectString"];
+
     private static bool SeenAddon = false;
     private static unsafe AtkUnitBase* AddonRepair = null;
     private static unsafe AtkUnitBase* AddonSelectYesno = null;

@@ -12,6 +12,9 @@ namespace AutoWeeklyCap.Runner.Actions;
 
 public class ExtractAction : BaseAction
 {
+    protected override string Name => nameof(ExtractAction);
+    protected override string[] AddonsToClose { get; } = ["MaterializeDialog", "Materialize", "SelectYesno", "SelectString"];
+
     protected override bool Run()
     {
         if (!QuestManager.IsQuestComplete(66174))

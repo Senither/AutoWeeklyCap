@@ -17,6 +17,9 @@ namespace AutoWeeklyCap.Runner.Actions;
 
 public class AutoSpendTomestoneAction : BaseAction
 {
+    protected override string Name => nameof(AutoSpendTomestoneAction);
+    protected override string[] AddonsToClose { get; } = ["ShopExchangeCurrency", "SelectIconString", "SelectYesno", "SelectString"];
+
     // Path 7.4 - Zircon @ Solution Nine (Nexus Arcade)
     private static readonly Vector3 VendorPosition = new(-185.5f, 0.6600001f, -28.45f);
     private const uint VendorDataID = 1049079u;

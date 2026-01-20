@@ -7,6 +7,9 @@ namespace AutoWeeklyCap.Runner.Actions;
 
 public class SelfRepairAction : BaseAction
 {
+    protected override string Name => nameof(SelfRepairAction);
+    protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "Repair", "SelectString"];
+
     protected override bool Run()
     {
         var percent = AutoWeeklyCap.Config.RepairPercentage;
