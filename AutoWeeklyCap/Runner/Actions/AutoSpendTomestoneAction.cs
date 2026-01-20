@@ -1,8 +1,11 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
+using Dalamud.Game.ClientState.Conditions;
 using ECommons;
 using ECommons.Automation.NeoTaskManager;
+using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -26,12 +29,31 @@ public class AutoSpendTomestoneAction : BaseAction
 
     protected override bool Run()
     {
+        var itemToBuy = TomestoneItemHelper.GetTomestoneItemFromName(AutoWeeklyCap.Config.SpendUncappedTomestoneItemName);
+        if (itemToBuy == null)
+            return false;
+
+        var quantity = itemToBuy.CalculateQuantityForGivenTomestones(CurrencyHelper.GetUncappedAcquiredTomestoneCount());
+        if (quantity == 0)
+            return false;
+
+        if (!AutoWeeklyCap.PlayerState.IsLoaded || !Player.Available)
+            return false;
+
+        if (Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51])
+            return false;
+
         if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled)
             return false;
 
-        // TODO: Check for a valid config setup to buy tomestones with
-
         var longTask = new TaskManagerConfiguration(timeLimitMS: 120_000);
+
+        // Reset state before starting
+        unsafe
+        {
+            AddonSelectIconString = null;
+            AddonShopExchangeCurrency = null;
+        }
 
         AutoWeeklyCap.TaskManager.Enqueue(() =>
         {
@@ -103,6 +125,53 @@ public class AutoSpendTomestoneAction : BaseAction
 
             return false;
         }, "auto spend tomestone: open window");
+
+        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        {
+            if (EzThrottler.Throttle("BuyingTomestoneItem", 500))
+                return false;
+
+            unsafe
+            {
+                if (GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString))
+                {
+                    AddonHelper.ClickSelectYesno();
+                    return true;
+                }
+
+                if (GenericHelpers.TryGetAddonByName("ShopExchangeCurrency", out AddonShopExchangeCurrency) && GenericHelpers.IsAddonReady(AddonShopExchangeCurrency))
+                    AddonHelper.ClickShopExchangeItem(itemToBuy.Index, quantity);
+            }
+
+            return false;
+        }, "auto spend tomestone: buy tomestone item");
+
+        AutoWeeklyCap.TaskManager.EnqueueDelay(500);
+        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        {
+            if (EzThrottler.Throttle("BuyingTomestoneItemClose", 500))
+                return false;
+
+            try
+            {
+                unsafe
+                {
+                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _))
+                        return false;
+
+                    if (!AddonHelper.TryGetReadyAddon("ShopExchangeCurrency", out var addonShopExchangeCurrency))
+                        return true;
+
+                    addonShopExchangeCurrency->Close(true);
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return false;
+        }, "auto spend tomestone: close window");
 
         return true;
     }
