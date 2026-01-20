@@ -5,7 +5,6 @@ using AutoWeeklyCap.Runner;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using ECommons.ImGuiMethods;
-using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.UI.MainWindow;
 
@@ -15,7 +14,7 @@ internal static class CharactersUI
     {
         var charactersEnabled = 0;
         var totalTomesCollected = 0;
-        var weeklyTomeLimit = InventoryManager.GetLimitedTomestoneWeeklyLimit();
+        var weeklyTomeLimit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
 
         foreach (var character in AutoWeeklyCap.Config.GetSortedCharacters())
         {

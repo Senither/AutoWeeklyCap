@@ -21,6 +21,11 @@ public static class CurrencyHelper
         }
     }
 
+    public static int GetLimitedTomestoneWeeklyLimit()
+    {
+        return InventoryManager.GetLimitedTomestoneWeeklyLimit();
+    }
+
     public static int GetWeeklyAcquiredTomestoneCount()
     {
         try

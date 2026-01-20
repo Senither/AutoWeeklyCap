@@ -5,7 +5,6 @@ using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using ECommons.Automation.NeoTaskManager;
 using ECommons.Throttlers;
-using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Runner;
 
@@ -251,7 +250,7 @@ public class Runner
             return;
         }
 
-        var limit = InventoryManager.GetLimitedTomestoneWeeklyLimit();
+        var limit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
         var tomes = AutoWeeklyCap.Config.CollectedTomes.GetValueOrDefault(currentCharacter, 0);
         if (tomes == limit)
         {
@@ -279,7 +278,7 @@ public class Runner
         var tomes = CurrencyHelper.GetWeeklyAcquiredTomestoneCount();
 
         timestamp = DateTime.UtcNow;
-        state = InventoryManager.GetLimitedTomestoneWeeklyLimit() == tomes
+        state = CurrencyHelper.GetLimitedTomestoneWeeklyLimit() == tomes
                     ? State.StartingCharacterSwap
                     : State.StartingAutoDuty;
     }
@@ -391,7 +390,7 @@ public class Runner
 
     private void StartCharacterSwap()
     {
-        var limit = InventoryManager.GetLimitedTomestoneWeeklyLimit();
+        var limit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
 
         foreach (var character in AutoWeeklyCap.Config.GetSortedCharacters())
         {
