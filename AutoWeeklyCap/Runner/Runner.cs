@@ -169,7 +169,7 @@ public class Runner
             return;
         }
 
-        if (AutoRetainerHelper.HasRetainerWithinThreshold())
+        if (AutoWeeklyCap.Config.AutoRetainerEnabled && AutoRetainerHelper.HasRetainerWithinThreshold())
         {
             timestamp = DateTime.UtcNow;
 
