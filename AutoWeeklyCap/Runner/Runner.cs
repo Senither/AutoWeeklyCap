@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
+using AutoWeeklyCap.Runner.Actions;
 using ECommons.Automation.NeoTaskManager;
 using ECommons.Throttlers;
 
@@ -202,6 +203,12 @@ public class Runner
                 ActionInstance.SelfRepair.Invoke();
             else
                 ActionInstance.NpcRepair.Invoke();
+        }
+
+        if (AutoWeeklyCap.Config.SpendUncappedTomestones)
+        {
+            if (CurrencyHelper.GetUncappedAcquiredTomestoneCount() >= AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold)
+                ActionInstance.SpendTomestone.Invoke();
         }
 
         AutoWeeklyCap.TaskManager.Enqueue(
