@@ -26,12 +26,6 @@ public class NpcRepairAction : BaseAction
         if (InventoryHelper.GetItemsNeedingRepairCount(percent) == 0)
             return false;
 
-        if (!AutoWeeklyCap.PlayerState.IsLoaded || !Player.Available)
-            return false;
-
-        if (Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51])
-            return false;
-
         if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled)
             return false;
 
