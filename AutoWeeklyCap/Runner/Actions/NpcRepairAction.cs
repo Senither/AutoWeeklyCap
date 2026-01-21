@@ -24,8 +24,7 @@ public class NpcRepairAction : BaseAction
 
     protected override bool Run()
     {
-        var percent = AutoWeeklyCap.Config.RepairPercentage;
-        if (InventoryHelper.GetItemsNeedingRepairCount(percent) == 0)
+        if (InventoryHelper.GetItemsNeedingRepairCount(99) == 0)
             return false;
 
         if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled)

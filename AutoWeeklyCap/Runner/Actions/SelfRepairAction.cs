@@ -12,17 +12,13 @@ public class SelfRepairAction : BaseAction
 
     protected override bool Run()
     {
-        var percent = AutoWeeklyCap.Config.RepairPercentage;
-        if (!InventoryHelper.CanRepair(percent))
-            return false;
-
         if (!PlayerHelper.CanSelfRepairWithCrafters)
         {
             LogDebug("switching to NPC repair, reason: player does not have all the required crafters leveled");
             return ActionInstance.NpcRepair.Invoke();
         }
 
-        if (InventoryHelper.GetItemsNeedingRepairCount(percent) > InventoryHelper.GetDarkMatterCount())
+        if (InventoryHelper.GetItemsNeedingRepairCount(99) > InventoryHelper.GetDarkMatterCount())
         {
             LogDebug("switching to NPC repair, reason: too low quantity of dark matter");
             return ActionInstance.NpcRepair.Invoke();
@@ -66,7 +62,7 @@ public class SelfRepairAction : BaseAction
                         return true;
                     }
 
-                    if (!InventoryHelper.CanRepair(percent))
+                    if (!InventoryHelper.CanRepair(AutoWeeklyCap.Config.RepairPercentage))
                         return true;
 
                     if (EzThrottler.Throttle("RepairAll", 1000))

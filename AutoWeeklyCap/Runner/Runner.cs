@@ -196,7 +196,7 @@ public class Runner
         if (AutoWeeklyCap.Config.Extract)
             ActionInstance.Extract.Invoke();
 
-        if (AutoWeeklyCap.Config.Repair)
+        if (AutoWeeklyCap.Config.Repair && InventoryHelper.CanRepair(AutoWeeklyCap.Config.RepairPercentage))
         {
             if (AutoWeeklyCap.Config.RepairSelf)
                 ActionInstance.SelfRepair.Invoke();
@@ -336,6 +336,26 @@ public class Runner
 
                     timestamp = DateTime.UtcNow;
                     return false;
+                }
+
+                unsafe
+                {
+                    if ((DateTime.UtcNow - timestamp).Seconds > 5 && !AutoDutyIPC.IsStopped() && AddonHelper.TryGetReadyAddon("Repair", out _))
+                    {
+                        AutoWeeklyCap.Log.Debug("Detected repairing attempt to have been idle for 5+ seconds while trying to start AutoDuty");
+                        AutoWeeklyCap.Log.Debug("Stopping AutoDuty and repairing through AWC instead, and then restarting");
+
+                        AutoDutyIPC.Stop();
+                        AutoWeeklyCap.TaskManager.Abort();
+                        ActionInstance.SelfRepair.Invoke();
+
+                        AutoWeeklyCap.TaskManager.Enqueue(
+                            () => state = State.CheckingTomestone,
+                            "next stage: checking tomestone"
+                        );
+
+                        return true;
+                    }
                 }
 
                 if ((DateTime.UtcNow - timestamp).Seconds > 30)
