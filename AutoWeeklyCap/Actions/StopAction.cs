@@ -12,7 +12,8 @@ public enum StopAction
     SwitchCharacter = 1,
     LogoutToMenu = 2,
     ShutdownGame = 3,
-    AutoRetainerMultimode = 4
+    AutoRetainerMultimode = 4,
+    StartUnlimitedRuns = 5
 }
 
 public static class StopActionExtensions
@@ -26,6 +27,7 @@ public static class StopActionExtensions
             StopAction.LogoutToMenu => "Logout to Menu",
             StopAction.ShutdownGame => "Shutdown Game",
             StopAction.AutoRetainerMultimode => "Start AutoRetainer multimode",
+            StopAction.StartUnlimitedRuns => "Start Unlimited Runs",
             _ => action.ToString()
         };
     }
@@ -34,13 +36,17 @@ public static class StopActionExtensions
     {
         return action switch
         {
-            StopAction.SwitchCharacter => () => ImGui.Text("If the runner finished on your selected character, nothing will happen"),
+            StopAction.SwitchCharacter => () => ImGui.Text("If the runner finished on your preferred character, nothing will happen"),
             StopAction.AutoRetainerMultimode => () =>
             {
                 ImGui.Text("This requires ");
                 StatusText.Draw(AutoRetainerIPC.IsEnabled, "AutoRetainer");
                 ImGui.Text(" to be enabled, if it's not enabled it will do nothing");
             },
+            StopAction.StartUnlimitedRuns => () => ImGui.Text(
+                "When the runner finishes capping all your characters it will switch to your\n" +
+                "preferred character and then start doing runs until manually stopped"
+            ),
             _ => null
         };
     }
@@ -78,6 +84,9 @@ public static class StopActionExtensions
 
             case StopAction.AutoRetainerMultimode:
                 AutoRetainerIPC.EnableMultiMode();
+                break;
+
+            case StopAction.StartUnlimitedRuns:
                 break;
 
             default:

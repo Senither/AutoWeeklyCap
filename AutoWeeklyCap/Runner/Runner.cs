@@ -11,6 +11,7 @@ namespace AutoWeeklyCap.Runner;
 public class Runner
 {
     private bool stopGracefully = false;
+    private bool unlimited = false;
 
     private State state = State.Waiting;
     private string? currentCharacter = null;
@@ -72,6 +73,7 @@ public class Runner
         state = State.Waiting;
         timestamp = DateTime.UtcNow;
         stopGracefully = false;
+        unlimited = false;
 
         LifestreamIPC.Abort();
         AutoDutyIPC.Stop();
@@ -281,9 +283,15 @@ public class Runner
         if (character == null)
             return;
 
-        var tomes = CurrencyHelper.GetWeeklyAcquiredTomestoneCount();
-
         timestamp = DateTime.UtcNow;
+
+        if (unlimited)
+        {
+            state = State.StartingAutoDuty;
+            return;
+        }
+
+        var tomes = CurrencyHelper.GetWeeklyAcquiredTomestoneCount();
         state = CurrencyHelper.GetLimitedTomestoneWeeklyLimit() == tomes
                     ? State.StartingCharacterSwap
                     : State.StartingAutoDuty;
@@ -438,6 +446,36 @@ public class Runner
 
             AutoWeeklyCap.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
             currentCharacter = character;
+            state = State.SwitchingCharacter;
+            timestamp = DateTime.UtcNow;
+            LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
+
+            return;
+        }
+
+        if (AutoWeeklyCap.Config.StopAction == StopAction.StartUnlimitedRuns)
+        {
+            unlimited = true;
+            AutoWeeklyCap.Log.Debug("All characters have been fully capped, starting unlimited runs");
+
+            var preferredCharacter = AutoWeeklyCap.Config.CharacterForSwap;
+            if (PlayerHelper.GetFullCharacterName() == preferredCharacter)
+            {
+                AutoWeeklyCap.Log.Debug("Player is already on preferred character, starting AutoDuty");
+                state = State.StartingAutoDuty;
+                return;
+            }
+
+            var parts = preferredCharacter.Split("@");
+            if (parts.Length != 2)
+            {
+                AutoWeeklyCap.Log.Error($"Character {preferredCharacter} is not a valid character name, stopping runner");
+                Stop();
+                return;
+            }
+
+            AutoWeeklyCap.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
+            currentCharacter = preferredCharacter;
             state = State.SwitchingCharacter;
             timestamp = DateTime.UtcNow;
             LifestreamIPC.ChangeCharacter(parts[0], parts[1]);

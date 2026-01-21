@@ -29,12 +29,17 @@ public static class StopActionsUi
         ImGui.Spacing();
         ImGui.Spacing();
 
-        Disabled.Draw(AutoWeeklyCap.Config.StopAction != StopAction.SwitchCharacter, DrawCharacterSwitch);
+        Disabled.Draw(!IsDrawCharacterSwitchEnabled(AutoWeeklyCap.Config.StopAction), DrawCharacterSwitch);
+    }
+
+    private static bool IsDrawCharacterSwitchEnabled(StopAction action)
+    {
+        return action is StopAction.SwitchCharacter or StopAction.StartUnlimitedRuns;
     }
 
     private static void DrawCharacterSwitch()
     {
-        ImGui.TextWrapped("Switch to Character");
+        ImGui.TextWrapped("Preferred Character");
 
         if (ImGui.BeginCombo(
                 $"###character-selector",
