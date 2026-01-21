@@ -110,9 +110,12 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
 
+        if (Config.OpenWindowOnStartup)
+            OpenMainUi();
+
 #if DEBUG
-        ToggleMainUi();
-        ToggleConfigUi();
+        OpenMainUi();
+        OpenConfigUi();
 #endif
     }
 
@@ -141,7 +144,9 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     }
 
     public void ToggleConfigUi() => ConfigWindow.Toggle();
+    public void OpenConfigUi() => ConfigWindow.IsOpen = true;
     public void ToggleMainUi() => MainWindow.Toggle();
+    public void OpenMainUi() => MainWindow.IsOpen = true;
 
     public void OpenCharacterOptionsUi(string character) =>
         CharacterOptionWindow.ToggleForCharacterWithOptions(character);

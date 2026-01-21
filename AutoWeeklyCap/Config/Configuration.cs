@@ -12,7 +12,8 @@ public class Configuration : IPluginConfiguration
     public int Version { get; set; } = 0;
 
     // General Options
-    public bool UseSliders { get; set; } = true;
+    public bool OpenWindowOnStartup { get; set; } = false;
+    public bool UseSliders { get; set; } = false;
 
     // Character & Window storages
     public WindowOptions Window { get; set; } = new();
