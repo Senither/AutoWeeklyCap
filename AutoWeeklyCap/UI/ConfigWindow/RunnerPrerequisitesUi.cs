@@ -5,6 +5,7 @@ using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
 using ECommons.ImGuiMethods;
+using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
 
@@ -61,7 +62,7 @@ public static class RunnerPrerequisitesUi
             ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
 
             var autoRepairPercentage = AutoWeeklyCap.Config.RepairPercentage;
-            if (ImGui.SliderUInt("##Repair@", ref autoRepairPercentage, 1, 99, "%d%%"))
+            if (Range.Draw("##Repair@", ref autoRepairPercentage, 1, 99, "%d%%"))
                 AutoWeeklyCap.Config.RepairPercentage = Math.Min(100, Math.Max(1, autoRepairPercentage));
 
             ImGui.PopItemWidth();
@@ -100,7 +101,7 @@ public static class RunnerPrerequisitesUi
             ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
 
             var autoBuyWithUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold;
-            if (ImGui.SliderUInt("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000))
+            if (Range.Draw("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000))
                 AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold = autoBuyWithUncappedTomestones;
 
             ImGui.Text("Item to buy");
@@ -140,7 +141,7 @@ public static class RunnerPrerequisitesUi
             ImGui.SameLine();
 
             var autoRetainerRemainingTime = AutoWeeklyCap.Config.AutoRetainerThreshold;
-            if (ImGui.SliderUInt("###AutoRetainerTimeWaitingSlider", ref autoRetainerRemainingTime, 0, 300))
+            if (Range.Draw("###AutoRetainerTimeWaitingRange", ref autoRetainerRemainingTime, 0, 300))
                 AutoWeeklyCap.Config.AutoRetainerThreshold = autoRetainerRemainingTime;
 
             ImGui.SameLine();

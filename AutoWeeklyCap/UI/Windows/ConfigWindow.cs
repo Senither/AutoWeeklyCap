@@ -30,6 +30,7 @@ public class ConfigWindow : Window, IDisposable
             }
         }
 
+        Card.Draw("General Options", GeneralOptionsUi.Draw);
         Card.Draw("Duty Options", DutyOptionsUi.Draw);
 
         if (hasHiddenCharacters)

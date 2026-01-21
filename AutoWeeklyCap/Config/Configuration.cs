@@ -11,6 +11,9 @@ public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
 
+    // General Options
+    public bool UseSliders { get; set; } = true;
+
     // Character & Window storages
     public WindowOptions Window { get; set; } = new();
     public Dictionary<string, CharacterOptions> Characters { get; set; } = new();
