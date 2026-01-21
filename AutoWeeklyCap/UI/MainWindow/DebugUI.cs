@@ -12,7 +12,7 @@ public class DebugUI
 {
     internal static void Draw()
     {
-        ImGui.Text($"TaskManager [current task: {AutoWeeklyCap.TaskManager.CurrentTask?.Name ?? "idle"}]");
+        ImGui.Text($"TaskManager [tasks: {AutoWeeklyCap.TaskManager.NumQueuedTasks},current task: {AutoWeeklyCap.TaskManager.CurrentTask?.Name ?? "idle"}]");
         ImGui.Text($"Currencies [weekly: {CurrencyHelper.GetWeeklyAcquiredTomestoneCount()}, uncapped: {CurrencyHelper.GetUncappedAcquiredTomestoneCount()}]");
 
         ImGui.Separator();
