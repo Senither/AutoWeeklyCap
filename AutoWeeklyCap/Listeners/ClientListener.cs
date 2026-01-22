@@ -6,6 +6,10 @@ namespace AutoWeeklyCap.Listeners;
 
 public class ClientListener
 {
+    public static bool IsRecoveringFromDisconnect = false;
+    public static bool IsRestarting = false;
+    public static DateTime LastRecoveryTimestamp = DateTime.MinValue;
+
     public void OnLogout(int type, int code)
     {
         if (!AutoWeeklyCap.Config.AttemptRecoveryFromDisconnects)
@@ -18,8 +22,21 @@ public class ClientListener
         if (!AutoWeeklyCap.Runner.IsRunning())
             return;
 
-        AutoWeeklyCap.Runner.Abort();
+        EnqueueRestart();
+    }
 
+    public static void EnqueueRestart()
+    {
+        if (IsRestarting && (DateTime.UtcNow - LastRecoveryTimestamp).Seconds < 10)
+            return;
+
+        IsRecoveringFromDisconnect = true;
+        IsRestarting = true;
+        LastRecoveryTimestamp = DateTime.UtcNow;
+
+        AutoWeeklyCap.Log.Debug($"Queueing up restart tasks to recover from disconnect");
+
+        AutoWeeklyCap.Runner.Abort();
         AutoWeeklyCap.TaskManager.Enqueue(() =>
         {
             try
@@ -29,15 +46,15 @@ public class ClientListener
                     if (!EzThrottler.Throttle("AttemptDisconnectedRecovery", 250))
                         return false;
 
-                    if (AddonHelper.TryGetLobbyError(out var errorAddon))
+                    if (AddonHelper.TryGetLobbyError(out var errorAddon) && errorAddon->IsVisible)
                     {
-                        AutoWeeklyCap.Log.Debug($"Found lobby error [Addon: {errorAddon->GetType()}, Click: {AddonHelper.ClickDialogueOk()}]");
+                        var dialogueStatus = AddonHelper.ClickDialogueOk();
+
+                        AutoWeeklyCap.Log.Debug($"Found lobby error [Addon: {errorAddon->GetType()}, Click: {dialogueStatus}]");
                         return false;
                     }
 
-                    var status = !AddonHelper.IsLobbyErrorVisible() && AddonHelper.IsTitleScreenReady();
-
-                    return status;
+                    return !AddonHelper.IsLobbyErrorVisible() && AddonHelper.IsTitleScreenReady();
                 }
             }
             catch (Exception)
@@ -54,12 +71,13 @@ public class ClientListener
                 return false;
 
             AutoWeeklyCap.Runner.Start();
+            IsRestarting = false;
 
             return true;
         }, "restarting runner");
     }
 
-    private bool IsDisconnectErrorCode(int code)
+    private static bool IsDisconnectErrorCode(int code)
     {
         return code is 90001 or 90002 or 90006 or 90007;
     }

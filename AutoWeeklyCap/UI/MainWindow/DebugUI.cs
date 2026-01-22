@@ -1,5 +1,6 @@
 ﻿using System;
 using AutoWeeklyCap.Helpers;
+using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.Runner;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
@@ -14,6 +15,7 @@ public class DebugUI
     {
         ImGui.Text($"TaskManager [tasks: {AutoWeeklyCap.TaskManager.NumQueuedTasks},current task: {AutoWeeklyCap.TaskManager.CurrentTask?.Name ?? "idle"}]");
         ImGui.Text($"Currencies [weekly: {CurrencyHelper.GetWeeklyAcquiredTomestoneCount()}, uncapped: {CurrencyHelper.GetUncappedAcquiredTomestoneCount()}]");
+        ImGui.Text($"Restart [recovery: {ClientListener.IsRecoveringFromDisconnect}, restart: {ClientListener.IsRestarting}]");
 
         ImGui.Separator();
 
