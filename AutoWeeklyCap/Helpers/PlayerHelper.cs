@@ -69,6 +69,8 @@ public static class PlayerHelper
 {
     internal static bool IsReady => IsValid && !IsOccupied;
 
+    internal static bool IsLoggedIn => AutoWeeklyCap.ClientState.IsLoggedIn;
+
     internal static bool IsOccupied => GenericHelpers.IsOccupied() || Svc.Condition[ConditionFlag.Jumping61];
 
     public static unsafe bool IsValid =>

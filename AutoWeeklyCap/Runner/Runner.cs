@@ -4,6 +4,8 @@ using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using ECommons.Automation.NeoTaskManager;
+using ECommons.DalamudServices;
+using ECommons.GameHelpers;
 using ECommons.Throttlers;
 
 namespace AutoWeeklyCap.Runner;
@@ -44,7 +46,7 @@ public class Runner
 
     public void Stop()
     {
-        if (AutoWeeklyCap.Config.StopRunnerGracefully)
+        if (AutoWeeklyCap.Config.StopRunnerGracefully && PlayerHelper.IsLoggedIn)
         {
             if (state is State.RunningAutoDuty or State.SwitchingCharacter || !AutoDutyIPC.IsStopped())
             {
