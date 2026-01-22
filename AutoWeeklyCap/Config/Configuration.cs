@@ -14,6 +14,7 @@ public class Configuration : IPluginConfiguration
     // General Options
     public bool OpenWindowOnStartup { get; set; } = false;
     public bool UseSliders { get; set; } = false;
+    public bool AttemptRecoveryFromDisconnects { get; set; } = false;
 
     // Character & Window storages
     public WindowOptions Window { get; set; } = new();

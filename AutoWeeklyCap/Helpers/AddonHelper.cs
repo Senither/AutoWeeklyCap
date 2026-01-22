@@ -128,6 +128,45 @@ public static unsafe class AddonHelper
         return true;
     }
 
+    internal static bool ClickDialogueOk()
+    {
+        if (!EzThrottler.Throttle(nameof(ClickDialogueOk), 500))
+            return false;
+
+        if (!TryGetReadyAddon("Dialogue", out var addon))
+            return false;
+
+        var dialogue = new AddonMaster.Dialogue(addon);
+
+        dialogue.Ok();
+        
+        return true;
+    }
+
+    internal static bool IsLobbyErrorVisible() => TryGetLobbyError(out _);
+
+    internal static bool TryGetLobbyError(out AtkUnitBase* addon)
+    {
+        addon = null;
+
+        if (TryGetReadyAddon("Dialogue", out var dialogue))
+        {
+            addon = dialogue;
+            return true;
+        }
+
+        foreach (var name in new[] { "_TitleError", "TitleError", "TitleServerError", "TitleNetworkError" })
+        {
+            if (TryGetReadyAddon(name, out var errorAddon))
+            {
+                addon = errorAddon;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     internal static bool TryGetReadyAddon(string addonName, out AtkUnitBase* addon)
     {
         if (!GenericHelpers.TryGetAddonByName(addonName, out addon))

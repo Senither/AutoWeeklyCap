@@ -2,7 +2,7 @@
 using AutoWeeklyCap.Helpers;
 using Dalamud.Plugin.Services;
 
-namespace AutoWeeklyCap;
+namespace AutoWeeklyCap.Listeners;
 
 public class FrameworkListener
 {

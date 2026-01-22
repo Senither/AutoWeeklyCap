@@ -19,5 +19,14 @@ public static class GeneralOptionsUi
             "When enabled, ranged inputs will be shown as sliders\n" +
             "When disabled, ranged inputs will be shown as text inputs with increment and decrement step buttons"
         );
+
+        var recovery = AutoWeeklyCap.Config.AttemptRecoveryFromDisconnects;
+        if (ImGui.Checkbox("Recovery from disconnects", ref recovery))
+            AutoWeeklyCap.Config.AttemptRecoveryFromDisconnects = recovery;
+
+        InformationTooltip.Draw(
+            "When enabled and a disconnect is detected while the runner is active\n" +
+            "AWC will attempt to log back into your character and restart the runner"
+        );
     }
 }

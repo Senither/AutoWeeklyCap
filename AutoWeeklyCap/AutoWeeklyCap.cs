@@ -4,6 +4,7 @@ using AutoWeeklyCap.Commands;
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
+using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.UI.Windows;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
@@ -56,7 +57,9 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     private MainWindow MainWindow { get; init; }
     private ConfigWindow ConfigWindow { get; init; }
     private CharacterOptionWindow CharacterOptionWindow { get; init; }
+
     private FrameworkListener FrameworkListener { get; init; } = new();
+    private ClientListener ClientListener { get; init; } = new();
 
     internal const string CommandNameShort = "/awc";
     internal const string CommandNameLong = "/autoweeklycap";
@@ -105,6 +108,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         });
 
         Framework.Update += FrameworkListener.OnFrameworkUpdate;
+        ClientState.Logout += ClientListener.OnLogout;
 
         PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
@@ -124,6 +128,9 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         PluginInterface.UiBuilder.Draw -= WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi -= ToggleMainUi;
+
+        Framework.Update -= FrameworkListener.OnFrameworkUpdate;
+        ClientState.Logout -= ClientListener.OnLogout;
 
         WindowSystem.RemoveAllWindows();
 
