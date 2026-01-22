@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using Dalamud.Plugin.Services;
+using ECommons.Throttlers;
 using ECommons.UIHelpers.AddonMasterImplementations;
 
 namespace AutoWeeklyCap.Listeners;
 
-public class FrameworkListener
+public partial class FrameworkListener
 {
     protected long EnforceUpdateStateAt = 0;
 
@@ -57,18 +59,38 @@ public class FrameworkListener
             return;
         }
 
+        if (!EzThrottler.Throttle("RecoveryFromDisconnect.AddonAttempt", 250))
+            return;
+
         try
         {
             unsafe
             {
                 if (AddonHelper.ClickSelectYesno())
-                    return;
-
-                if (AddonHelper.TryGetReadyAddon("SelectOk", out var addon))
                 {
-                    var select = new AddonMaster.SelectOk(addon);
-                    if (select.Text.Contains("Players in queue:"))
+                    AutoWeeklyCap.Log.Debug("Found Selectyesno addon, clicked yes");
+                    return;
+                }
+
+                if (AddonHelper.TryGetReadyAddon("SelectOk", out var selectAddon))
+                {
+                    var select = new AddonMaster.SelectOk(selectAddon);
+                    if (!LoginQueueRegex().IsMatch(select.Text.Trim()))
+                    {
+                        AutoWeeklyCap.Log.Debug($"Found SelectOk addon that is not queue, clicking OK button");
                         select.Ok();
+                    }
+
+                    AutoWeeklyCap.Log.Debug($"Found SelectOk addon is queue, doing nothing");
+                    return;
+                }
+
+                if (AddonHelper.TryGetReadyAddon("_CharaSelectReturn", out var returnAddon))
+                {
+                    AutoWeeklyCap.Log.Debug($"Found _CharaSelectReturn addon, returning to main title screen");
+
+                    var returnToTitle = new AddonMaster.Dialogue(returnAddon);
+                    returnToTitle.Ok();
                 }
             }
         }
@@ -83,4 +105,7 @@ public class FrameworkListener
         CurrencyHelper.UpdateWeeklyAcquiredTomestonesForCurrentCharacter();
         AutoWeeklyCap.Runner.Tick();
     }
+
+    [GeneratedRegex(@":\s*\d+\.$")]
+    private static partial Regex LoginQueueRegex();
 }

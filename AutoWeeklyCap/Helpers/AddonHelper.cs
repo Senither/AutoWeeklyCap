@@ -139,7 +139,7 @@ public static unsafe class AddonHelper
         var dialogue = new AddonMaster.Dialogue(addon);
 
         dialogue.Ok();
-        
+
         return true;
     }
 
