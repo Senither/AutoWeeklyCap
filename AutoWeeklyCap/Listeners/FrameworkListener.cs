@@ -14,6 +14,8 @@ public partial class FrameworkListener
 
     public void OnFrameworkUpdate(IFramework _)
     {
+        AutoWeeklyCap.Instance.DtrStatusBar.Draw();
+
         var unixNow = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         if (EnforceUpdateStateAt > unixNow)
             return;

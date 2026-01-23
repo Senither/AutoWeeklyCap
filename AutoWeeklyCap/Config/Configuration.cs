@@ -15,6 +15,8 @@ public class Configuration : IPluginConfiguration
     public bool OpenWindowOnStartup { get; set; } = false;
     public bool UseSliders { get; set; } = false;
     public bool AttemptRecoveryFromDisconnects { get; set; } = false;
+    public bool ShowStatusInStatusBar { get; set; } = false;
+    public bool ShowStatusAsIcons { get; set; } = false;
 
     // Character & Window storages
     public WindowOptions Window { get; set; } = new();

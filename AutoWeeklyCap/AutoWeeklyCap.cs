@@ -5,6 +5,7 @@ using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
 using AutoWeeklyCap.Listeners;
+using AutoWeeklyCap.UI.Dtr;
 using AutoWeeklyCap.UI.Windows;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
@@ -49,11 +50,17 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     internal static IDataManager DataManager { get; private set; } = null!;
 
     [PluginService]
+    internal static IDtrBar DtrBar { get; private set; } = null!;
+
+    [PluginService]
     internal static IPluginLog Log { get; private set; } = null!;
+
+    public DtrStatusBar DtrStatusBar { get; init; } = new();
 
     public Configuration Configuration { get; init; }
 
     public readonly WindowSystem WindowSystem = new("AutoWeeklyCap");
+
     private MainWindow MainWindow { get; init; }
     private ConfigWindow ConfigWindow { get; init; }
     private CharacterOptionWindow CharacterOptionWindow { get; init; }
@@ -85,6 +92,8 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
             else
                 throw;
         }
+
+        DtrStatusBar.Start();
 
         Runner = new Runner.Runner();
 
@@ -133,6 +142,8 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         ClientState.Logout -= ClientListener.OnLogout;
 
         WindowSystem.RemoveAllWindows();
+
+        DtrStatusBar.Dispose();
 
         ConfigWindow.Dispose();
         MainWindow.Dispose();

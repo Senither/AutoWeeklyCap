@@ -1,0 +1,108 @@
+﻿using System;
+using System.Threading;
+using Dalamud.Bindings.ImGui;
+using Dalamud.Game.Gui.Dtr;
+using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Game.Text.SeStringHandling.Payloads;
+using ECommons.Throttlers;
+
+namespace AutoWeeklyCap.UI.Dtr;
+
+public class DtrStatusBar : IDisposable
+{
+    private const string DtrBarTitle = "AutoWeeklyCapDtr";
+    private const string DtrBarTooltip = "Click => toggle the character window\nCTRL + Click => toggle runner status";
+
+    private Thread? dtrEntryLoadThread;
+    private IDtrBarEntry? dtrEntry;
+    private bool isInitialized = false;
+
+    public void Start()
+    {
+        dtrEntryLoadThread = new Thread(() =>
+        {
+            for (var i = 0; dtrEntry == null; i++)
+            {
+                if (isInitialized)
+                    break;
+
+                try
+                {
+                    dtrEntry = AutoWeeklyCap.DtrBar.Get(DtrBarTitle + i);
+                    dtrEntry.Text = "...";
+                    dtrEntry.Shown = false;
+                    dtrEntry.OnClick = _ => OnClick();
+                    dtrEntry.Tooltip = DtrBarTooltip;
+
+                    isInitialized = true;
+                }
+                catch (Exception e)
+                {
+                    AutoWeeklyCap.Log.Error(e, $"Failed to acquire DtrBarEntry {DtrBarTitle}, trying {DtrBarTitle}{i + 1}");
+                    Thread.Sleep(100);
+                }
+            }
+        });
+
+        dtrEntryLoadThread.Start();
+    }
+
+    public void Draw()
+    {
+        if (dtrEntry == null)
+            return;
+
+        if (!AutoWeeklyCap.Config.ShowStatusInStatusBar)
+        {
+            if (dtrEntry.Shown)
+                dtrEntry.Shown = false;
+
+            return;
+        }
+
+        if (!EzThrottler.Throttle(nameof(DtrStatusBar), 250))
+            return;
+
+        dtrEntry.Tooltip = AutoWeeklyCap.Config.ShowStatusAsIcons
+                               ? $"Status: {AutoWeeklyCap.Runner.GetStatusShort()}\n\n{DtrBarTooltip}"
+                               : DtrBarTooltip;
+
+        dtrEntry?.Shown = true;
+        dtrEntry?.Text = new SeString(
+            new TextPayload($"AWC: "),
+            AutoWeeklyCap.Config.ShowStatusAsIcons
+                ? new IconPayload(AutoWeeklyCap.Runner.GetStatusIcon())
+                : new TextPayload(AutoWeeklyCap.Runner.GetStatusShort())
+        );
+    }
+
+    public void OnClick()
+    {
+        if (!ImGui.GetIO().KeyCtrl)
+        {
+            AutoWeeklyCap.Instance.ToggleMainUi();
+            return;
+        }
+
+        if (!AutoWeeklyCap.Runner.IsRunning())
+        {
+            AutoWeeklyCap.Runner.Start();
+            return;
+        }
+
+        if (AutoWeeklyCap.Runner.IsStopping())
+            AutoWeeklyCap.Runner.Resume();
+        else
+            AutoWeeklyCap.Runner.Stop();
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+
+        dtrEntryLoadThread?.Join();
+        dtrEntry?.Remove();
+
+        isInitialized = false;
+    }
+}

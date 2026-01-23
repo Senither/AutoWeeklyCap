@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Helpers;
 using AutoWeeklyCap.IPC;
+using Dalamud.Game.Text.SeStringHandling;
 using ECommons.Automation.NeoTaskManager;
-using ECommons.DalamudServices;
-using ECommons.GameHelpers;
 using ECommons.Throttlers;
 
 namespace AutoWeeklyCap.Runner;
@@ -108,6 +107,31 @@ public class Runner
             State.SwitchingCharacter => "Switching Character to " + currentCharacter,
             State.StoppingRunner => "Stopping Runner",
             _ => "unknown"
+        };
+    }
+
+    public string GetStatusShort()
+    {
+        return state switch
+        {
+            State.Waiting => "Off",
+            State.SwitchingCharacter => "Switching Character",
+            _ => GetStatus(),
+        };
+    }
+
+    public BitmapFontIcon GetStatusIcon()
+    {
+        return state switch
+        {
+            State.Waiting => BitmapFontIcon.Away,
+            State.PreparingRunner => BitmapFontIcon.FateCrafting,
+            State.WaitingForAutoRetainer => BitmapFontIcon.Alarm,
+            State.CheckingTomestone => BitmapFontIcon.OrangeDiamond,
+            State.StartingAutoDuty => BitmapFontIcon.WaitingForDutyFinder,
+            State.RunningAutoDuty => stopGracefully ? BitmapFontIcon.SwordSheathed : BitmapFontIcon.SwordUnsheathed,
+            State.StartingCharacterSwap or State.SwitchingCharacter => BitmapFontIcon.WatchingCutscene,
+            _ => BitmapFontIcon.Disconnecting,
         };
     }
 

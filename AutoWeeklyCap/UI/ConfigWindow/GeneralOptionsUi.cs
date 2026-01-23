@@ -35,5 +35,23 @@ public static class GeneralOptionsUi
             ImGui.Text(" is enabled when using the feature");
             ImGui.Text("to allow recovering for prolonged internet loss without the game closing");
         });
+
+        var dtrBar = AutoWeeklyCap.Config.ShowStatusInStatusBar;
+        if (ImGui.Checkbox("Show status in DTR bar", ref dtrBar))
+            AutoWeeklyCap.Config.ShowStatusInStatusBar = dtrBar;
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Adds a status indicator to the DTR bar, allowing for quickly seeing");
+            ImGui.Text("the runner status, and toggling the windows and runner statues");
+        });
+
+        Disabled.Draw(!dtrBar, () =>
+        {
+            ImGui.SameLine(0f, 20f);
+            var iconsDtr = AutoWeeklyCap.Config.ShowStatusAsIcons;
+            if (ImGui.Checkbox("Show status as icons instead of text", ref iconsDtr))
+                AutoWeeklyCap.Config.ShowStatusAsIcons = iconsDtr;
+        });
     }
 }
