@@ -53,5 +53,9 @@ public static class GeneralOptionsUi
             if (ImGui.Checkbox("Show status as icons instead of text", ref iconsDtr))
                 AutoWeeklyCap.Config.ShowStatusAsIcons = iconsDtr;
         });
+
+        var trackDisabled = AutoWeeklyCap.Config.TrackDisabledCharacters;
+        if (ImGui.Checkbox("Track tomestones for disabled characters", ref trackDisabled))
+            AutoWeeklyCap.Config.TrackDisabledCharacters = trackDisabled;
     }
 }

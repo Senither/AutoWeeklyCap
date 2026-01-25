@@ -48,7 +48,7 @@ public static class CurrencyHelper
             return false;
 
         var options = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(characterAndWorld);
-        if (!options.IsEnabled())
+        if (!options.IsEnabled() && !AutoWeeklyCap.Config.TrackDisabledCharacters)
             return false;
 
         var weeklyTomes = GetWeeklyAcquiredTomestoneCount();
