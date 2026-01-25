@@ -37,7 +37,11 @@ public static class RunnerPrerequisitesUi
             if (ImGui.RadioButton("Self", AutoWeeklyCap.Config.RepairSelf))
                 AutoWeeklyCap.Config.RepairSelf = true;
 
-            InformationTooltip.Draw("Will use Dark Matter to Self Repair (Requires Leveled Crafters!)");
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text("Will use Dark Matter to Self Repair (Requires Leveled Crafters!)");
+                ImGui.Text("If self repair is not possible NPC repairs will be used instead");
+            });
 
             ImGui.SameLine();
             if (ImGui.RadioButton("City NPC", !AutoWeeklyCap.Config.RepairSelf))
