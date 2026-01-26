@@ -10,10 +10,12 @@ namespace AutoWeeklyCap.IPC;
 
 public class AutoRetainerIPC
 {
-    public static readonly EzIPCDisposalToken[] disposalTokens =
-        EzIPC.Init(typeof(AutoRetainerIPC), "AutoRetainer.PluginState", SafeWrapper.IPCException);
+    internal const string Name = "AutoRetainer";
 
-    internal static bool IsEnabled => IPCSubscriber.IsReady("AutoRetainer");
+    public static readonly EzIPCDisposalToken[] disposalTokens =
+        EzIPC.Init(typeof(AutoRetainerIPC), $"{Name}.PluginState", SafeWrapper.IPCException);
+
+    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 
     internal static void EnableMultiMode()
     {

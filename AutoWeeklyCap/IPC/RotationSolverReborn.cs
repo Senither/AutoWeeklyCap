@@ -1,7 +1,7 @@
 ﻿namespace AutoWeeklyCap.IPC;
 
-public static class NoKillPlugin
+public class RotationSolverReborn
 {
-    internal const string Name = "NoKillPlugin";
+    internal const string Name = "RotationSolver";
     internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 }

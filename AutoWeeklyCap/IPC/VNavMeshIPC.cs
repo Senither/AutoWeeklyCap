@@ -13,8 +13,10 @@ namespace AutoWeeklyCap.IPC;
 
 public class VNavMeshIPC
 {
-    public static readonly EzIPCDisposalToken[] disposalTokens =
-        EzIPC.Init(typeof(VNavMeshIPC), "vnavmesh", SafeWrapper.IPCException);
+    internal const string Name = "vnavmesh";
+
+    internal static readonly EzIPCDisposalToken[] disposalTokens =
+        EzIPC.Init(typeof(VNavMeshIPC), Name, SafeWrapper.IPCException);
 
     public static class Delegates
     {
@@ -25,7 +27,7 @@ public class VNavMeshIPC
         public delegate void PathMoveTo(List<Vector3> waypoints, bool fly);
     }
 
-    internal static bool IsEnabled => IPCSubscriber.IsReady("vnavmesh");
+    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 
     [EzIPC("Nav.IsReady")]
     internal static Func<bool> IsReady { get; private set; }

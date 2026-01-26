@@ -11,10 +11,12 @@ namespace AutoWeeklyCap.IPC;
 
 public class LifestreamIPC
 {
-    public static readonly EzIPCDisposalToken[] disposalTokens =
-        EzIPC.Init(typeof(LifestreamIPC), "Lifestream", SafeWrapper.IPCException);
+    internal const string Name = "Lifestream";
 
-    internal static bool IsEnabled => IPCSubscriber.IsReady("Lifestream");
+    internal static readonly EzIPCDisposalToken[] disposalTokens =
+        EzIPC.Init(typeof(LifestreamIPC), Name, SafeWrapper.IPCException);
+
+    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 
     [EzIPC]
     internal static Func<bool> IsBusy;

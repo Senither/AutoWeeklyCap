@@ -9,7 +9,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Control;
 
 namespace AutoWeeklyCap.UI.MainWindow;
 
-public class DebugUI
+internal static class DebugUI
 {
     internal static void Draw()
     {

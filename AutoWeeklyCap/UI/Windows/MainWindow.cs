@@ -91,6 +91,7 @@ public class MainWindow : Window, IDisposable
         var tabs = new List<(string name, Action function, Vector4? color, bool child)>
         {
             ("Characters", CharactersUI.Draw, null, true),
+            ("Dependencies", DependenciesUI.Draw, null, true),
             ("About", AboutTabUi.Draw, null, true)
         };
 
@@ -124,13 +125,6 @@ public class MainWindow : Window, IDisposable
 
             DrawPluginStatusTooltipWithContent(AutoDutyIPC.IsEnabled, "AutoDuty");
             DrawPluginStatusTooltipWithContent(LifestreamIPC.IsEnabled, "Lifestream");
-
-            ImGui.TextUnformatted("Optional plugins to enhance AWC:");
-
-            DrawPluginStatusTooltipWithContent(AutoRetainerIPC.IsEnabled, "AutoRetainer");
-            DrawPluginStatusTooltipWithContent(BossModReborn.IsEnabled, "BossMod Reborn");
-            DrawPluginStatusTooltipWithContent(VNavMeshIPC.IsEnabled, "VNavMesh");
-            DrawPluginStatusTooltipWithContent(NoKillPlugin.IsEnabled, "No Kill Plugin");
 
             ImGui.EndTooltip();
         }

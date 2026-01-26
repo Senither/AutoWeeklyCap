@@ -9,10 +9,12 @@ namespace AutoWeeklyCap.IPC;
 
 public class AutoDutyIPC
 {
-    public static readonly EzIPCDisposalToken[] disposalTokens =
-        EzIPC.Init(typeof(AutoDutyIPC), "AutoDuty", SafeWrapper.IPCException);
+    internal const string Name = "AutoDuty";
 
-    internal static bool IsEnabled => IPCSubscriber.IsReady("AutoDuty");
+    internal static readonly EzIPCDisposalToken[] disposalTokens =
+        EzIPC.Init(typeof(AutoDutyIPC), Name, SafeWrapper.IPCException);
+
+    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 
     [EzIPC]
     internal static Action<uint, int, bool> Run;
