@@ -23,7 +23,9 @@ internal static class CharactersUI
                 continue;
 
             var characterTomes = AutoWeeklyCap.Config.GetWeeklyTomes(character);
-            totalTomesCollected += characterTomes;
+
+            if (option.IsEnabled())
+                totalTomesCollected += characterTomes;
 
             if (option.IsEnabled())
                 charactersEnabled++;
