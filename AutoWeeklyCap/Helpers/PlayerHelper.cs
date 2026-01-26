@@ -165,4 +165,13 @@ public static class PlayerHelper
     };
 
     internal static unsafe GrandCompany GetGrandCompany() => (GrandCompany)PlayerState.Instance()->GrandCompany;
+
+    internal static uint GetGrandCompanyTerritoryType() => GetGrandCompanyTerritoryType(GetGrandCompany());
+
+    internal static string GetGrandCompanyAetheriteName() => GetGrandCompany() switch
+    {
+        GrandCompany.Maelstrom => "The Aftcastle",
+        GrandCompany.TwinAdder => "New Gridania",
+        _ => "Steps of Nald",
+    };
 }

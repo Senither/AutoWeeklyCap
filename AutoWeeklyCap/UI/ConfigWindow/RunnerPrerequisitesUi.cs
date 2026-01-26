@@ -19,6 +19,8 @@ public static class RunnerPrerequisitesUi
         DrawGeneralOptions();
         Card.Separator();
         DrawAutoRetainer();
+        Card.Separator();
+        DrawDeliveroo();
     }
 
     private static void DrawGeneralOptions()
@@ -152,5 +154,37 @@ public static class RunnerPrerequisitesUi
 
             ImGui.PopItemWidth();
         });
+    }
+
+    private static void DrawDeliveroo()
+    {
+        ImGuiEx.TextCentered(ColorUtils.HexToVector(0xED, 0xB8, 0x8E), "Deliveroo");
+
+        var useDeliveroo = AutoWeeklyCap.Config.DeliverooEnabled;
+        if (ImGui.Checkbox("Use Deliveroo", ref useDeliveroo))
+            AutoWeeklyCap.Config.DeliverooEnabled = useDeliveroo;
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When enabled the runner will move to your grand company and trade in all unused and tradable");
+            ImGui.Text("items for grand company seals, and then buy your preferred items (setup within Deliveroo)");
+
+            ImGui.Text("Requires ");
+            StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
+            ImGui.Text(" and ");
+            StatusText.Draw(VNavMeshIPC.IsEnabled, "VNavMesh");
+            ImGui.Text(" to be enabled, along with ");
+            StatusText.Draw(DeliverooIPC.IsEnabled, "Deliveroo");
+        });
+
+        ImGui.Spacing();
+        ImGui.Text("When should Deliveroo be used?");
+
+        var limitDeliveroo = AutoWeeklyCap.Config.DeliverooOnEveryRun;
+        if (ImGui.RadioButton("Between every run", limitDeliveroo))
+            AutoWeeklyCap.Config.DeliverooOnEveryRun = true;
+
+        if (ImGui.RadioButton("After character is tomestone capped", !limitDeliveroo))
+            AutoWeeklyCap.Config.DeliverooOnEveryRun = false;
     }
 }

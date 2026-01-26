@@ -48,6 +48,10 @@ public class Configuration : IPluginConfiguration
     public uint AutoRetainerThreshold { get; set; } = 90;
     // TODO: Add summoning bell location here...
 
+    // Runner Options (Deliveroo)
+    public bool DeliverooEnabled { get; set; } = false;
+    public bool DeliverooOnEveryRun { get; set; } = false;
+
     public void Save()
     {
         AutoWeeklyCap.PluginInterface.SavePluginConfig(this);

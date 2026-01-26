@@ -8,4 +8,5 @@ public static class ActionInstance
     public static readonly AutoSpendTomestoneAction SpendTomestone = new();
     public static readonly SelfRepairAction SelfRepair = new();
     public static readonly NpcRepairAction NpcRepair = new();
+    public static readonly DeliverooAction Deliveroo = new();
 }

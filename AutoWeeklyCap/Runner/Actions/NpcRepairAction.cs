@@ -37,13 +37,13 @@ public class NpcRepairAction : BaseAction
             if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
                 return false;
 
-            if (Player.Territory.RowId == RepairVendorTerritoryType())
+            if (Player.Territory.RowId == PlayerHelper.GetGrandCompanyTerritoryType())
                 return true;
 
             if (LifestreamIPC.IsBusy())
                 return false;
 
-            LifestreamIPC.ExecuteCommand(RepairVendorAetheriteName);
+            LifestreamIPC.ExecuteCommand(PlayerHelper.GetGrandCompanyAetheriteName());
 
             return true;
         }, "start moving to gc territory");
@@ -53,7 +53,7 @@ public class NpcRepairAction : BaseAction
             if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
                 return false;
 
-            return Player.Territory.RowId == RepairVendorTerritoryType() && PlayerHelper.IsReady;
+            return Player.Territory.RowId == PlayerHelper.GetGrandCompanyTerritoryType() && PlayerHelper.IsReady;
         }, "waiting for player to be in gc territory");
 
         Enqueue(() =>
@@ -157,11 +157,6 @@ public class NpcRepairAction : BaseAction
         return true;
     }
 
-    private static uint RepairVendorTerritoryType()
-    {
-        return PlayerHelper.GetGrandCompanyTerritoryType(PlayerHelper.GetGrandCompany());
-    }
-
     private static Vector3 RepairVendorLocation => PlayerHelper.GetGrandCompany() switch
     {
         GrandCompany.Maelstrom => new Vector3(17.715698f, 40.200005f, 3.9520264f),
@@ -174,13 +169,6 @@ public class NpcRepairAction : BaseAction
         GrandCompany.Maelstrom => 1003251u,
         GrandCompany.TwinAdder => 1000394u,
         _ => 1004416u,
-    };
-
-    private static string RepairVendorAetheriteName => PlayerHelper.GetGrandCompany() switch
-    {
-        GrandCompany.Maelstrom => "The Aftcastle",
-        GrandCompany.TwinAdder => "New Gridania",
-        _ => "Steps of Nald",
     };
 
     private static unsafe void ResetRepairState()

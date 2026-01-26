@@ -32,6 +32,7 @@ internal static class DebugUI
         DebugButton("Self Repair", () => ActionInstance.SelfRepair.Invoke());
         DebugButton("NPC Repair", () => ActionInstance.NpcRepair.Invoke());
         DebugButton("Spend Tomestones", () => ActionInstance.SpendTomestone.Invoke());
+        DebugButton("Deliveroo", () => ActionInstance.Deliveroo.Invoke());
 
         ImGui.Separator();
         ImGui.Text("Game data state:");
