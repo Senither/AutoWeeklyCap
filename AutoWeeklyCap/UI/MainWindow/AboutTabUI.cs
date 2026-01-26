@@ -14,6 +14,7 @@ internal static class AboutTabUi
 
         ImGuiEx.TextCentered("Developed and published by Senither");
         ImGuiEx.TextCentered("Original idea by Tuffic");
+        ImGuiEx.TextCentered("Additional ideas by Naru & Myuri");
 
         ImGuiHelpers.ScaledDummy(5f);
 
