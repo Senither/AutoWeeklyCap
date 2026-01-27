@@ -58,6 +58,11 @@ internal static class DependenciesUI
             RepositoryUrl: "https://github.com/PunishXIV/AutoRetainer"
         ),
         new(
+            PluginName: DeliverooIPC.Name,
+            Description: "Used to automate your grand company deliveries to get GC seals, and spend them to buy your preferred items.",
+            RepositoryUrl: "https://github.com/VeraNala/Deliveroo"
+        ),
+        new(
             PluginName: NoKillPlugin.Name,
             Description: "Prevents the game from closing when getting lobby errors (Prolonged network issues)",
             RepositoryUrl: "https://github.com/Bluefissure/NoKillPlugin"
@@ -104,7 +109,7 @@ internal static class DependenciesUI
 
         var plugin = FindInstalledPlugin(pluginInfo.PluginName);
         DrawPluginStatusIcon(plugin != null);
-        
+
         var indent = ImGui.GetCursorPosX();
         DrawPluginName(plugin, pluginInfo.PluginName);
 
