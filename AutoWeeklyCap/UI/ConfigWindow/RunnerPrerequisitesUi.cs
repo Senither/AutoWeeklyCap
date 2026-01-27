@@ -132,10 +132,16 @@ public static class RunnerPrerequisitesUi
         if (ImGui.Checkbox("Use Auto Retainer", ref useAutoRetainer))
             AutoWeeklyCap.Config.AutoRetainerEnabled = useAutoRetainer;
 
-        InformationTooltip.Draw(
-            "When enabled and at least one retainer are ready within your selected threshold, the runner will " +
-            "enable MultiMode and then do one full cycle on all your characters before doing another run"
-        );
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When enabled and at least one retainer are ready within your selected threshold, the runner will ");
+            ImGui.Text("enable MultiMode and then do one full cycle on all your characters before doing another run");
+
+            ImGui.Text("Requires ");
+            StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
+            ImGui.Text(" and ");
+            StatusText.Draw(AutoRetainerIPC.IsEnabled, "AutoRetainer");
+        });
 
         Disabled.Draw(!AutoWeeklyCap.Config.AutoRetainerEnabled, () =>
         {
