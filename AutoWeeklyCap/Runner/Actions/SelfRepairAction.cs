@@ -62,7 +62,7 @@ public class SelfRepairAction : BaseAction
                         return true;
                     }
 
-                    if (!InventoryHelper.CanRepair(AutoWeeklyCap.Config.RepairPercentage))
+                    if (!InventoryHelper.CanRepair(99))
                         return true;
 
                     if (EzThrottler.Throttle("RepairAll", 1000))
