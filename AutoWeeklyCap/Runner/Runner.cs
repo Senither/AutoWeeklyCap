@@ -232,6 +232,9 @@ public class Runner
                 ActionInstance.NpcRepair.Invoke();
         }
 
+        if (AutoWeeklyCap.Config.DeliverooEnabled && AutoWeeklyCap.Config.DeliverooOnEveryRun)
+            ActionInstance.Deliveroo.Invoke();
+
         if (AutoWeeklyCap.Config.SpendUncappedTomestones)
         {
             if (CurrencyHelper.GetUncappedAcquiredTomestoneCount() >= AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold)
@@ -309,6 +312,10 @@ public class Runner
         if (character == null)
             return;
 
+        var isCapped = CurrencyHelper.GetLimitedTomestoneWeeklyLimit() == CurrencyHelper.GetWeeklyAcquiredTomestoneCount();
+        if (isCapped && AutoWeeklyCap.Config.DeliverooEnabled && !AutoWeeklyCap.Config.DeliverooOnEveryRun)
+            ActionInstance.Deliveroo.Invoke();
+
         timestamp = DateTime.UtcNow;
 
         if (unlimited)
@@ -317,10 +324,7 @@ public class Runner
             return;
         }
 
-        var tomes = CurrencyHelper.GetWeeklyAcquiredTomestoneCount();
-        state = CurrencyHelper.GetLimitedTomestoneWeeklyLimit() == tomes
-                    ? State.StartingCharacterSwap
-                    : State.StartingAutoDuty;
+        state = isCapped ? State.StartingCharacterSwap : State.StartingAutoDuty;
     }
 
     private void StartAutoDuty()
