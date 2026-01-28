@@ -14,18 +14,16 @@ public static class RunnerPrerequisitesUi
     public static void Draw()
     {
         ImGui.Text("Select what should happen before and between runs.");
-        Card.Separator();
+        ImGui.Spacing();
 
-        DrawGeneralOptions();
-        Card.Separator();
-        DrawAutoRetainer();
-        Card.Separator();
-        DrawDeliveroo();
+        Card.DrawSubtle("General Options###runner-prereq-general", DrawGeneralOptions, defaultOpen: true);
+        Card.DrawSubtle("Auto Retainer###runner-prereq-auto-retainer", DrawAutoRetainer);
+        Card.DrawSubtle("Deliveroo###runner-prereq-deliveroo", DrawDeliveroo);
     }
 
     private static void DrawGeneralOptions()
     {
-        ImGuiEx.TextCentered(ColorUtils.HexToVector(0x59, 0x69, 0xFF), "General Options");
+        ImGui.Spacing();
 
         // Repair (Self & NPC)
         var repairStatus = AutoWeeklyCap.Config.Repair;
@@ -137,7 +135,7 @@ public static class RunnerPrerequisitesUi
 
     private static void DrawAutoRetainer()
     {
-        ImGuiEx.TextCentered(ColorUtils.HexToVector(0xFF, 0x73, 0x59), "Auto Retainer");
+        ImGui.Spacing();
 
         var useAutoRetainer = AutoWeeklyCap.Config.AutoRetainerEnabled;
         if (ImGui.Checkbox("Use Auto Retainer", ref useAutoRetainer))
@@ -175,7 +173,7 @@ public static class RunnerPrerequisitesUi
 
     private static void DrawDeliveroo()
     {
-        ImGuiEx.TextCentered(ColorUtils.HexToVector(0xED, 0xB8, 0x8E), "Deliveroo");
+        ImGui.Spacing();
 
         var useDeliveroo = AutoWeeklyCap.Config.DeliverooEnabled;
         if (ImGui.Checkbox("Use Deliveroo", ref useDeliveroo))
