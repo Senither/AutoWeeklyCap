@@ -49,16 +49,15 @@ public static class RunnerPrerequisitesUi
                 AutoWeeklyCap.Config.RepairSelf = false;
 
             InformationTooltip.Draw(() =>
-                {
-                    ImGui.Text("Will teleport to your grand company and use gil to repair your gear");
+            {
+                ImGui.Text("Will teleport to your grand company and use gil to repair your gear");
 
-                    ImGui.Text("Requires ");
-                    StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
-                    ImGui.Text(" and ");
-                    StatusText.Draw(VNavMeshIPC.IsEnabled, "VNavMesh");
-                    ImGui.Text(" to be enabled");
-                }
-            );
+                ImGui.Text("Requires ");
+                StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
+                ImGui.Text(" and ");
+                StatusText.Draw(VNavMeshIPC.IsEnabled, "VNavMesh");
+                ImGui.Text(" to be enabled");
+            });
 
             ImGui.Text("Trigger @");
             ImGui.SameLine();
@@ -96,6 +95,18 @@ public static class RunnerPrerequisitesUi
         var autoSpendUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestones;
         if (ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones))
             AutoWeeklyCap.Config.SpendUncappedTomestones = autoSpendUncappedTomestones;
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Will teleport to the Nexus Arcade in Solution Nine and buy your");
+            ImGui.Text("selected items from Zircon with your uncapped tomestones");
+
+            ImGui.Text("Requires ");
+            StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
+            ImGui.Text(" and ");
+            StatusText.Draw(VNavMeshIPC.IsEnabled, "VNavMesh");
+            ImGui.Text(" to be enabled");
+        });
 
         Disabled.Draw(!AutoWeeklyCap.Config.SpendUncappedTomestones, () =>
         {
