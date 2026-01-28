@@ -118,6 +118,8 @@ public static class RunnerPrerequisitesUi
             if (Range.Draw("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000))
                 AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold = autoBuyWithUncappedTomestones;
 
+            ImGui.PopItemWidth();
+
             ImGui.Text("Item to buy");
             var selectedItem = TomestoneItemHelper.GetTomestoneItemFromName(AutoWeeklyCap.Config.SpendUncappedTomestoneItemName);
             if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", selectedItem != null ? selectedItem.Name : "Not selected"))
@@ -192,14 +194,30 @@ public static class RunnerPrerequisitesUi
             StatusText.Draw(DeliverooIPC.IsEnabled, "Deliveroo");
         });
 
-        ImGui.Spacing();
-        ImGui.Text("When should Deliveroo be used?");
+        Disabled.Draw(!AutoWeeklyCap.Config.DeliverooEnabled, () =>
+        {
+            ImGui.Text("When should Deliveroo be used?");
 
-        var limitDeliveroo = AutoWeeklyCap.Config.DeliverooOnEveryRun;
-        if (ImGui.RadioButton("Between every run", limitDeliveroo))
-            AutoWeeklyCap.Config.DeliverooOnEveryRun = true;
+            if (ImGui.RadioButton("After", AutoWeeklyCap.Config.DeliverooOnInterval))
+                AutoWeeklyCap.Config.DeliverooOnInterval = true;
 
-        if (ImGui.RadioButton("After character is tomestone capped", !limitDeliveroo))
-            AutoWeeklyCap.Config.DeliverooOnEveryRun = false;
+            ImGui.SameLine();
+            ImGui.PushItemWidth(80 * ImGuiHelpers.GlobalScale);
+
+            var configDeliverooRunInterval = AutoWeeklyCap.Config.DeliverooRunInterval;
+            if (Range.Draw("runs###deliveroo-run-interval", ref configDeliverooRunInterval, 1, 10))
+                AutoWeeklyCap.Config.DeliverooRunInterval = configDeliverooRunInterval;
+
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text("Runs are only counted on a per-character basis, switching");
+                ImGui.Text("between characters will reset the runs counter");
+            });
+
+            ImGui.PopItemWidth();
+
+            if (ImGui.RadioButton("After character is tomestone capped", !AutoWeeklyCap.Config.DeliverooOnInterval))
+                AutoWeeklyCap.Config.DeliverooOnInterval = false;
+        });
     }
 }

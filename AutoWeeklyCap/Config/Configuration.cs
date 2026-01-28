@@ -50,7 +50,8 @@ public class Configuration : IPluginConfiguration
 
     // Runner Options (Deliveroo)
     public bool DeliverooEnabled { get; set; } = false;
-    public bool DeliverooOnEveryRun { get; set; } = false;
+    public uint DeliverooRunInterval { get; set; } = 2;
+    public bool DeliverooOnInterval { get; set; } = false;
 
     public void Save()
     {

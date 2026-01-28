@@ -17,6 +17,7 @@ public class Runner
     private State state = State.Waiting;
     private string? currentCharacter = null;
     private DateTime timestamp;
+    private int runsCounter = 0;
 
     public bool Start()
     {
@@ -37,6 +38,7 @@ public class Runner
         currentCharacter = character;
         state = State.PreparingRunner;
         timestamp = DateTime.UtcNow;
+        runsCounter = 0;
 
         AutoWeeklyCap.Log.Debug("Starting weekly cap runner");
 
@@ -75,6 +77,7 @@ public class Runner
         timestamp = DateTime.UtcNow;
         stopGracefully = false;
         unlimited = false;
+        runsCounter = 0;
 
         LifestreamIPC.Abort();
         AutoDutyIPC.Stop();
@@ -232,8 +235,11 @@ public class Runner
                 ActionInstance.NpcRepair.Invoke();
         }
 
-        if (AutoWeeklyCap.Config.DeliverooEnabled && AutoWeeklyCap.Config.DeliverooOnEveryRun)
-            ActionInstance.Deliveroo.Invoke();
+        if (AutoWeeklyCap.Config.DeliverooEnabled && AutoWeeklyCap.Config.DeliverooOnInterval)
+        {
+            if (runsCounter % AutoWeeklyCap.Config.DeliverooRunInterval == 0)
+                ActionInstance.Deliveroo.Invoke();
+        }
 
         if (AutoWeeklyCap.Config.SpendUncappedTomestones)
         {
@@ -313,7 +319,7 @@ public class Runner
             return;
 
         var isCapped = CurrencyHelper.GetLimitedTomestoneWeeklyLimit() == CurrencyHelper.GetWeeklyAcquiredTomestoneCount();
-        if (isCapped && AutoWeeklyCap.Config.DeliverooEnabled && !AutoWeeklyCap.Config.DeliverooOnEveryRun)
+        if (isCapped && AutoWeeklyCap.Config.DeliverooEnabled && !AutoWeeklyCap.Config.DeliverooOnInterval)
             ActionInstance.Deliveroo.Invoke();
 
         timestamp = DateTime.UtcNow;
@@ -449,6 +455,7 @@ public class Runner
             return;
 
         AutoWeeklyCap.Log.Debug("AutoDuty has complete a run, switching to preparations stage");
+        runsCounter++;
         state = State.PreparingRunner;
     }
 
@@ -528,6 +535,7 @@ public class Runner
 
         AutoWeeklyCap.Log.Debug("Completed character swap, checking tomestones");
         state = State.PreparingRunner;
+        runsCounter = 0;
     }
 
     private void StopRunner()
