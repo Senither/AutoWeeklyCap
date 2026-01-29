@@ -196,6 +196,8 @@ public static class RunnerPrerequisitesUi
 
         Disabled.Draw(!AutoWeeklyCap.Config.DeliverooEnabled, () =>
         {
+            ImGui.Spacing();
+
             ImGui.Text("When should Deliveroo be used?");
 
             if (ImGui.RadioButton("After", AutoWeeklyCap.Config.DeliverooOnInterval))
@@ -218,6 +220,13 @@ public static class RunnerPrerequisitesUi
 
             if (ImGui.RadioButton("After character is tomestone capped", !AutoWeeklyCap.Config.DeliverooOnInterval))
                 AutoWeeklyCap.Config.DeliverooOnInterval = false;
+
+            Card.Separator();
+            ImGui.Spacing();
+
+            var runOnFirstLoop = AutoWeeklyCap.Config.DeliverooRunOnFirstLoop;
+            if (ImGui.Checkbox("Always run before the first AutoDuty run", ref runOnFirstLoop))
+                AutoWeeklyCap.Config.DeliverooRunOnFirstLoop = runOnFirstLoop;
         });
     }
 }

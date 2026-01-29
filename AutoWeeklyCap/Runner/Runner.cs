@@ -235,9 +235,17 @@ public class Runner
                 ActionInstance.NpcRepair.Invoke();
         }
 
-        if (AutoWeeklyCap.Config.DeliverooEnabled && AutoWeeklyCap.Config.DeliverooOnInterval)
+        if (AutoWeeklyCap.Config.DeliverooEnabled)
         {
-            if (runsCounter % AutoWeeklyCap.Config.DeliverooRunInterval == 0)
+            var shouldRunFirst = AutoWeeklyCap.Config.DeliverooRunOnFirstLoop
+                                 && runsCounter == 0;
+
+            var shouldRunForCounter = AutoWeeklyCap.Config.DeliverooOnInterval
+                                      && runsCounter % AutoWeeklyCap.Config.DeliverooRunInterval == 0
+                                      && runsCounter > 0;
+
+            AutoWeeklyCap.Log.Debug($"Deliveroo check [first: {shouldRunFirst}, forCounter: {shouldRunForCounter}]");
+            if (shouldRunFirst || shouldRunForCounter)
                 ActionInstance.Deliveroo.Invoke();
         }
 

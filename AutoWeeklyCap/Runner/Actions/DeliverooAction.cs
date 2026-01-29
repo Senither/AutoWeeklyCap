@@ -95,6 +95,4 @@ public class DeliverooAction : BaseAction
         GrandCompany.TwinAdder => new Vector3(-67.994354f, -0.50152725f, -8.873131f),
         _ => new Vector3(-142.4761f, 4.0999994f, -106.80103f),
     };
-
-    // -142.4761
 }
