@@ -4,7 +4,6 @@ using AutoWeeklyCap.IPC;
 using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
-using ECommons.ImGuiMethods;
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
@@ -13,10 +12,14 @@ public static class RunnerPrerequisitesUi
 {
     public static void Draw()
     {
-        ImGui.Text("Select what should happen before and between runs.");
+        ImGui.TextWrapped("Select what should happen before and between runs.");
         ImGui.Spacing();
 
         Card.DrawSubtle("General Options###runner-prereq-general", DrawGeneralOptions, defaultOpen: true);
+
+        ImGui.TextWrapped("Select how third-party plugins should be integrated into the runner.");
+        ImGui.Spacing();
+
         Card.DrawSubtle("Auto Retainer###runner-prereq-auto-retainer", DrawAutoRetainer);
         Card.DrawSubtle("Deliveroo###runner-prereq-deliveroo", DrawDeliveroo);
     }
