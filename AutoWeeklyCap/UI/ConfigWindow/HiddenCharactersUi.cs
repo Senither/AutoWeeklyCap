@@ -1,6 +1,4 @@
-﻿using Dalamud.Bindings.ImGui;
-using Dalamud.Interface;
-using ECommons.ImGuiMethods;
+﻿using Dalamud.Interface;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
 
@@ -13,9 +11,9 @@ public static class HiddenCharactersUi
         ImGui.Spacing();
         ImGui.Spacing();
 
-        foreach (var characterAndWorld in AutoWeeklyCap.Config.GetSortedCharacters())
+        foreach (var characterAndWorld in AWC.Config.GetSortedCharacters())
         {
-            var options = AutoWeeklyCap.Config.Characters[characterAndWorld];
+            var options = AWC.Config.Characters[characterAndWorld];
             if (!options.IsHidden())
                 continue;
 

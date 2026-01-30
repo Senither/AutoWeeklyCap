@@ -1,8 +1,4 @@
-﻿using System;
-using AutoWeeklyCap.Helpers;
-using ECommons.Throttlers;
-
-namespace AutoWeeklyCap.Listeners;
+﻿namespace AutoWeeklyCap.Listeners;
 
 public class ClientListener
 {
@@ -12,14 +8,14 @@ public class ClientListener
 
     public void OnLogout(int type, int code)
     {
-        if (!AutoWeeklyCap.Config.AttemptRecoveryFromDisconnects)
+        if (!AWC.Config.AttemptRecoveryFromDisconnects)
             return;
 
         if (!IsDisconnectErrorCode(code))
             return;
 
-        AutoWeeklyCap.Log.Debug($"Disconnection detected, runner status: {(AutoWeeklyCap.Runner.IsRunning() ? "active" : "idle")}");
-        if (!AutoWeeklyCap.Runner.IsRunning())
+        AWC.Log.Debug($"Disconnection detected, runner status: {(AWC.Runner.IsRunning() ? "active" : "idle")}");
+        if (!AWC.Runner.IsRunning())
             return;
 
         EnqueueRestart();
@@ -34,10 +30,10 @@ public class ClientListener
         IsRestarting = true;
         LastRecoveryTimestamp = DateTime.UtcNow;
 
-        AutoWeeklyCap.Log.Debug($"Queueing up restart tasks to recover from disconnect");
+        AWC.Log.Debug($"Queueing up restart tasks to recover from disconnect");
 
-        AutoWeeklyCap.Runner.Abort();
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        AWC.Runner.Abort();
+        AWC.TaskManager.Enqueue(() =>
         {
             try
             {
@@ -50,7 +46,7 @@ public class ClientListener
                     {
                         var dialogueStatus = AddonHelper.ClickDialogueOk();
 
-                        AutoWeeklyCap.Log.Debug($"Found lobby error [Addon: {errorAddon->GetType()}, Click: {dialogueStatus}]");
+                        AWC.Log.Debug($"Found lobby error [Addon: {errorAddon->GetType()}, Click: {dialogueStatus}]");
                         return false;
                     }
 
@@ -65,12 +61,12 @@ public class ClientListener
             return false;
         }, "close disconnect dialogs");
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        AWC.TaskManager.Enqueue(() =>
         {
             if (!AddonHelper.IsTitleScreenReady())
                 return false;
 
-            AutoWeeklyCap.Runner.Start();
+            AWC.Runner.Start();
             IsRestarting = false;
 
             return true;

@@ -1,7 +1,4 @@
-﻿using System;
-using Dalamud.Bindings.ImGui;
-
-namespace AutoWeeklyCap.UI.Helpers;
+﻿namespace AutoWeeklyCap.UI.Helpers;
 
 public static class Disabled
 {

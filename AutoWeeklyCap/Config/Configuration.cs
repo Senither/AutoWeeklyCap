@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoWeeklyCap.Actions;
+﻿using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.Runner;
 using Dalamud.Configuration;
 
@@ -56,7 +54,7 @@ public class Configuration : IPluginConfiguration
 
     public void Save()
     {
-        AutoWeeklyCap.PluginInterface.SavePluginConfig(this);
+        AWC.PluginInterface.SavePluginConfig(this);
     }
 
     public int GetWeeklyTomes(string character)

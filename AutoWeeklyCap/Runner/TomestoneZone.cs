@@ -1,8 +1,6 @@
-﻿using System;
+﻿namespace AutoWeeklyCap.Runner;
 
-namespace AutoWeeklyCap.Runner;
-
-public class TomestoneZone
+public static class TomestoneZone
 {
     public static readonly uint[] AvailableTomestoneZones =
     {

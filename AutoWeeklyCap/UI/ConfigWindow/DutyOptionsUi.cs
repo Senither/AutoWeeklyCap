@@ -1,8 +1,5 @@
-﻿using AutoWeeklyCap.Helpers;
-using AutoWeeklyCap.IPC;
-using AutoWeeklyCap.Runner;
+﻿using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.UI.Helpers;
-using Dalamud.Bindings.ImGui;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
 
@@ -14,17 +11,15 @@ public static class DutyOptionsUi
 
         if (ImGui.BeginCombo(
                 $"###selected-duty",
-                TomestoneZone.IsSupportedTomestoneZone(AutoWeeklyCap.Config.ZoneId)
-                    ? MapHelper.GetZoneNameFromId(AutoWeeklyCap.Config.ZoneId)
+                TomestoneZone.IsSupportedTomestoneZone(AWC.Config.ZoneId)
+                    ? MapHelper.GetZoneNameFromId(AWC.Config.ZoneId)
                     : "Not selected"
             ))
         {
             foreach (var zoneId in TomestoneZone.AvailableTomestoneZones)
             {
-                if (ImGui.Selectable(MapHelper.GetZoneNameFromId(zoneId), AutoWeeklyCap.Config.ZoneId == zoneId))
-                {
-                    AutoWeeklyCap.Config.ZoneId = zoneId;
-                }
+                if (ImGui.Selectable(MapHelper.GetZoneNameFromId(zoneId), AWC.Config.ZoneId == zoneId))
+                    AWC.Config.ZoneId = zoneId;
             }
 
             ImGui.EndCombo();
@@ -33,19 +28,15 @@ public static class DutyOptionsUi
         ImGui.Spacing();
         ImGui.Spacing();
 
-        var stopGracefully = AutoWeeklyCap.Config.StopRunnerGracefully;
+        var stopGracefully = AWC.Config.StopRunnerGracefully;
         if (ImGui.Checkbox("Stop runs gracefully", ref stopGracefully))
-        {
-            AutoWeeklyCap.Config.StopRunnerGracefully = stopGracefully;
-        }
+            AWC.Config.StopRunnerGracefully = stopGracefully;
 
         InformationTooltip.Draw("When stopping the runner mid duty, graceful stopping will finish the run before stopping completely");
 
-        var useBossModRebornAi = AutoWeeklyCap.Config.UseBossModRebornAI;
+        var useBossModRebornAi = AWC.Config.UseBossModRebornAI;
         if (ImGui.Checkbox("Use BossMod Reborn AI", ref useBossModRebornAi))
-        {
-            AutoWeeklyCap.Config.UseBossModRebornAI = useBossModRebornAi;
-        }
+            AWC.Config.UseBossModRebornAI = useBossModRebornAi;
 
         InformationTooltip.Draw(() =>
         {

@@ -1,0 +1,16 @@
+﻿global using AWC = AutoWeeklyCap.AutoWeeklyCap;
+global using AutoWeeklyCap.Helpers;
+global using AutoWeeklyCap.IPC;
+global using Dalamud.Bindings.ImGui;
+global using Dalamud.Interface.Colors;
+global using Dalamud.Interface.Utility;
+global using Dalamud.Plugin.Services;
+global using ECommons.DalamudServices;
+global using ECommons.GameHelpers;
+global using ECommons.ImGuiMethods;
+global using ECommons.Throttlers;
+global using ECommons;
+global using System.Collections.Generic;
+global using System.Numerics;
+global using System;
+global using System.Linq;

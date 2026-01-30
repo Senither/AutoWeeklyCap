@@ -7,18 +7,18 @@ public class StartCommand : ICommand
 
     public void Run(string[] args)
     {
-        if (AutoWeeklyCap.Runner.IsRunning())
+        if (AWC.Runner.IsRunning())
         {
-            if (AutoWeeklyCap.Runner.IsStopping())
+            if (AWC.Runner.IsStopping())
             {
-                AutoWeeklyCap.Runner.Resume();
+                AWC.Runner.Resume();
             }
         }
         else
         {
-            if (AutoWeeklyCap.IsRequiredPluginsEnabled())
+            if (AWC.IsRequiredPluginsEnabled())
             {
-                AutoWeeklyCap.Runner.Start();
+                AWC.Runner.Start();
             }
         }
     }

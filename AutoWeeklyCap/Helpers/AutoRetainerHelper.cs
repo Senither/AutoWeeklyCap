@@ -1,7 +1,4 @@
-﻿using AutoWeeklyCap.IPC;
-using ECommons.GameHelpers;
-
-namespace AutoWeeklyCap.Helpers;
+﻿namespace AutoWeeklyCap.Helpers;
 
 public static class AutoRetainerHelper
 {
@@ -17,6 +14,6 @@ public static class AutoRetainerHelper
         if (!seconds.HasValue)
             return false;
 
-        return seconds.Value <= AutoWeeklyCap.Config.AutoRetainerThreshold;
+        return seconds.Value <= AWC.Config.AutoRetainerThreshold;
     }
 }

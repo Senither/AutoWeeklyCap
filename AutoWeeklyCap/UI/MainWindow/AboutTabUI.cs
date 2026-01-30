@@ -1,15 +1,11 @@
-﻿using Dalamud.Bindings.ImGui;
-using Dalamud.Interface.Utility;
-using ECommons.ImGuiMethods;
-
-namespace AutoWeeklyCap.UI.MainWindow;
+﻿namespace AutoWeeklyCap.UI.MainWindow;
 
 internal static class AboutTabUi
 {
     internal static void Draw()
     {
         ImGuiHelpers.ScaledDummy(5f);
-        ImGuiEx.TextCentered($"{AutoWeeklyCap.Name} v{AutoWeeklyCap.Version}");
+        ImGuiEx.TextCentered($"{AWC.Name} v{AWC.Version}");
         ImGuiHelpers.ScaledDummy(1f);
 
         ImGuiEx.TextCentered("Developed and published by Senither");

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Numerics;
-using AutoWeeklyCap.Helpers;
-using AutoWeeklyCap.IPC;
-using ECommons;
-using ECommons.ExcelServices;
-using ECommons.GameHelpers;
-using ECommons.Throttlers;
+﻿using ECommons.ExcelServices;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoWeeklyCap.Runner.Actions;

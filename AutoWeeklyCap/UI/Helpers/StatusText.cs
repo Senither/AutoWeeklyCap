@@ -1,7 +1,4 @@
-﻿using Dalamud.Bindings.ImGui;
-using Dalamud.Interface.Colors;
-
-namespace AutoWeeklyCap.UI.Helpers;
+﻿namespace AutoWeeklyCap.UI.Helpers;
 
 public static class StatusText
 {

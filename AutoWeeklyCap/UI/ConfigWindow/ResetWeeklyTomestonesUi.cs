@@ -1,5 +1,4 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
-using Dalamud.Bindings.ImGui;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
 
@@ -18,7 +17,7 @@ public static class ResetWeeklyTomestonesUi
         ActionButton.Draw(
             "Reset Weekly Tomestones",
             "Hold down CTRL to reset your weekly tomestones",
-            () => AutoWeeklyCap.Config.CollectedTomes.Clear()
+            () => AWC.Config.CollectedTomes.Clear()
         );
     }
 }

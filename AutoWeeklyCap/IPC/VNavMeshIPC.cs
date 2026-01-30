@@ -1,8 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
 
-using System;
-using System.Collections.Generic;
-using System.Numerics;
 using System.Threading.Tasks;
 using ECommons.EzIpcManager;
 
@@ -11,21 +8,21 @@ using ECommons.EzIpcManager;
 
 namespace AutoWeeklyCap.IPC;
 
+public static class Delegates
+{
+    public delegate Task<List<Vector3>> Pathfind(Vector3 from, Vector3 to, bool isFlying);
+
+    public delegate bool PathfindAndMoveTo(Vector3 position, bool canFly);
+
+    public delegate void PathMoveTo(List<Vector3> waypoints, bool fly);
+}
+
 public class VNavMeshIPC
 {
     internal const string Name = "vnavmesh";
 
     internal static readonly EzIPCDisposalToken[] disposalTokens =
         EzIPC.Init(typeof(VNavMeshIPC), Name, SafeWrapper.IPCException);
-
-    public static class Delegates
-    {
-        public delegate Task<List<Vector3>> Pathfind(Vector3 from, Vector3 to, bool isFlying);
-
-        public delegate bool PathfindAndMoveTo(Vector3 position, bool canFly);
-
-        public delegate void PathMoveTo(List<Vector3> waypoints, bool fly);
-    }
 
     internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 

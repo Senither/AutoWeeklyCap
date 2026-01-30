@@ -8,7 +8,7 @@ public class StopCommand : ICommand
 
     public void Run(string[] args)
     {
-        if (AutoWeeklyCap.Runner.IsRunning() && !AutoWeeklyCap.Runner.IsStopping())
-            AutoWeeklyCap.Runner.Stop();
+        if (AWC.Runner.IsRunning() && !AWC.Runner.IsStopping())
+            AWC.Runner.Stop();
     }
 }

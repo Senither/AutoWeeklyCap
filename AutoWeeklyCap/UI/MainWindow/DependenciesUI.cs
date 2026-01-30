@@ -1,13 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using AutoWeeklyCap.IPC;
-using Dalamud.Bindings.ImGui;
-using Dalamud.Interface;
-using Dalamud.Interface.Colors;
+﻿using Dalamud.Interface;
 using Dalamud.Plugin;
 using Dalamud.Utility;
-using ECommons.ImGuiMethods;
 
 namespace AutoWeeklyCap.UI.MainWindow;
 
@@ -76,13 +69,13 @@ internal static class DependenciesUI
 
     public static void Draw()
     {
-        ImGui.TextWrapped($"{AutoWeeklyCap.Name} requires the following plugins to work:");
+        ImGui.TextWrapped($"{AWC.Name} requires the following plugins to work:");
         DrawPluginList(RequiredPlugins);
 
         ImGui.Separator();
         ImGui.Spacing();
 
-        ImGui.TextWrapped($"{AutoWeeklyCap.Name} recommends the following plugins for an ideal experience:");
+        ImGui.TextWrapped($"{AWC.Name} recommends the following plugins for an ideal experience:");
         DrawPluginList(RecommendedPlugins);
 
         ImGui.Separator();
@@ -155,6 +148,6 @@ internal static class DependenciesUI
 
     private static IExposedPlugin? FindInstalledPlugin(string internalName)
     {
-        return AutoWeeklyCap.PluginInterface.InstalledPlugins.FirstOrDefault(x => x.InternalName == internalName && x.IsLoaded);
+        return AWC.PluginInterface.InstalledPlugins.FirstOrDefault(x => x.InternalName == internalName && x.IsLoaded);
     }
 }

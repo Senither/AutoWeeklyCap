@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
 using AutoWeeklyCap.Actions;
-using AutoWeeklyCap.Helpers;
-using AutoWeeklyCap.IPC;
 using Dalamud.Game.Text.SeStringHandling;
 using ECommons.Automation.NeoTaskManager;
-using ECommons.Throttlers;
 
 namespace AutoWeeklyCap.Runner;
 
@@ -24,12 +19,12 @@ public class Runner
         if (state != State.Waiting || stopGracefully)
             return false;
 
-        var zoneName = MapHelper.GetZoneNameFromId(AutoWeeklyCap.Config.ZoneId);
+        var zoneName = MapHelper.GetZoneNameFromId(AWC.Config.ZoneId);
         if (zoneName == null)
             return false;
 
         var character = PlayerHelper.GetFullCharacterName();
-        if (character == null || !AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character).IsEnabled())
+        if (character == null || !AWC.Config.GetOrRegisterCharacterOptions(character).IsEnabled())
         {
             StartCharacterSwap();
             return true;
@@ -40,14 +35,14 @@ public class Runner
         timestamp = DateTime.UtcNow;
         runsCounter = 0;
 
-        AutoWeeklyCap.Log.Debug("Starting weekly cap runner");
+        AWC.Log.Debug("Starting weekly cap runner");
 
         return true;
     }
 
     public void Stop()
     {
-        if (AutoWeeklyCap.Config.StopRunnerGracefully && PlayerHelper.IsLoggedIn)
+        if (AWC.Config.StopRunnerGracefully && PlayerHelper.IsLoggedIn)
         {
             if (state is State.RunningAutoDuty or State.SwitchingCharacter || !AutoDutyIPC.IsStopped())
             {
@@ -61,7 +56,7 @@ public class Runner
 
     public void Resume()
     {
-        if (!AutoWeeklyCap.Config.StopRunnerGracefully || !stopGracefully || AutoDutyIPC.IsStopped())
+        if (!AWC.Config.StopRunnerGracefully || !stopGracefully || AutoDutyIPC.IsStopped())
             return;
 
         if (state is not (State.RunningAutoDuty or State.SwitchingCharacter))
@@ -81,9 +76,9 @@ public class Runner
 
         LifestreamIPC.Abort();
         AutoDutyIPC.Stop();
-        AutoWeeklyCap.TaskManager.Abort();
+        AWC.TaskManager.Abort();
 
-        AutoWeeklyCap.Log.Debug("Stopped weekly cap runner");
+        AWC.Log.Debug("Stopped weekly cap runner");
     }
 
     public bool IsRunning()
@@ -140,7 +135,7 @@ public class Runner
 
     public void Tick()
     {
-        if (AutoWeeklyCap.TaskManager.IsBusy)
+        if (AWC.TaskManager.IsBusy)
             return;
 
         switch (state)
@@ -195,23 +190,23 @@ public class Runner
 
         if (currentCharacter == null)
         {
-            AutoWeeklyCap.Log.Debug("Stopping runner due to character being NULL");
+            AWC.Log.Debug("Stopping runner due to character being NULL");
             Stop();
             return;
         }
 
-        if (AutoWeeklyCap.Config.AutoRetainerEnabled && AutoRetainerHelper.HasRetainerWithinThreshold())
+        if (AWC.Config.AutoRetainerEnabled && AutoRetainerHelper.HasRetainerWithinThreshold())
         {
             timestamp = DateTime.UtcNow;
 
-            AutoWeeklyCap.TaskManager.Enqueue(
+            AWC.TaskManager.Enqueue(
                 () => state = State.WaitingForAutoRetainer,
                 "next stage: waiting for auto retainer"
             );
             return;
         }
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        AWC.TaskManager.Enqueue(() =>
         {
             if (AutoRetainerIPC.IsEnabled && AutoRetainerIPC.GetMultiModeStatus())
             {
@@ -224,38 +219,38 @@ public class Runner
             return true;
         }, "disable AutoRetainer multi mode when it's not busy");
 
-        if (AutoWeeklyCap.Config.Extract)
+        if (AWC.Config.Extract)
             ActionInstance.Extract.Invoke();
 
-        if (AutoWeeklyCap.Config.Repair && InventoryHelper.CanRepair(AutoWeeklyCap.Config.RepairPercentage))
+        if (AWC.Config.Repair && InventoryHelper.CanRepair(AWC.Config.RepairPercentage))
         {
-            if (AutoWeeklyCap.Config.RepairSelf)
+            if (AWC.Config.RepairSelf)
                 ActionInstance.SelfRepair.Invoke();
             else
                 ActionInstance.NpcRepair.Invoke();
         }
 
-        if (AutoWeeklyCap.Config.DeliverooEnabled)
+        if (AWC.Config.DeliverooEnabled)
         {
-            var shouldRunFirst = AutoWeeklyCap.Config.DeliverooRunOnFirstLoop
+            var shouldRunFirst = AWC.Config.DeliverooRunOnFirstLoop
                                  && runsCounter == 0;
 
-            var shouldRunForCounter = AutoWeeklyCap.Config.DeliverooOnInterval
-                                      && runsCounter % AutoWeeklyCap.Config.DeliverooRunInterval == 0
+            var shouldRunForCounter = AWC.Config.DeliverooOnInterval
+                                      && runsCounter % AWC.Config.DeliverooRunInterval == 0
                                       && runsCounter > 0;
 
-            AutoWeeklyCap.Log.Debug($"Deliveroo check [first: {shouldRunFirst}, forCounter: {shouldRunForCounter}]");
+            AWC.Log.Debug($"Deliveroo check [first: {shouldRunFirst}, forCounter: {shouldRunForCounter}]");
             if (shouldRunFirst || shouldRunForCounter)
                 ActionInstance.Deliveroo.Invoke();
         }
 
-        if (AutoWeeklyCap.Config.SpendUncappedTomestones)
+        if (AWC.Config.SpendUncappedTomestones)
         {
-            if (CurrencyHelper.GetUncappedAcquiredTomestoneCount() >= AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold)
+            if (CurrencyHelper.GetUncappedAcquiredTomestoneCount() >= AWC.Config.SpendUncappedTomestoneThreshold)
                 ActionInstance.SpendTomestone.Invoke();
         }
 
-        AutoWeeklyCap.TaskManager.Enqueue(
+        AWC.TaskManager.Enqueue(
             () => state = State.CheckingTomestone,
             "next stage: checking tomestone"
         );
@@ -285,7 +280,7 @@ public class Runner
 
         if (PlayerHelper.GetFullCharacterName() == currentCharacter)
         {
-            AutoWeeklyCap.TaskManager.Enqueue(
+            AWC.TaskManager.Enqueue(
                 () => state = State.PreparingRunner,
                 "next stage: checking tomestone"
             );
@@ -294,7 +289,7 @@ public class Runner
 
         if (currentCharacter == null)
         {
-            AutoWeeklyCap.TaskManager.Enqueue(
+            AWC.TaskManager.Enqueue(
                 () => state = State.StartingCharacterSwap,
                 "next stage: starting character swap"
             );
@@ -302,10 +297,10 @@ public class Runner
         }
 
         var limit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
-        var tomes = AutoWeeklyCap.Config.CollectedTomes.GetValueOrDefault(currentCharacter, 0);
+        var tomes = AWC.Config.CollectedTomes.GetValueOrDefault(currentCharacter, 0);
         if (tomes == limit)
         {
-            AutoWeeklyCap.TaskManager.Enqueue(
+            AWC.TaskManager.Enqueue(
                 () => state = State.StartingCharacterSwap,
                 "next stage: starting character swap"
             );
@@ -314,7 +309,7 @@ public class Runner
 
         var parts = currentCharacter.Split("@");
 
-        AutoWeeklyCap.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
+        AWC.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
         state = State.SwitchingCharacter;
         timestamp = DateTime.UtcNow;
         LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
@@ -327,7 +322,7 @@ public class Runner
             return;
 
         var isCapped = CurrencyHelper.GetLimitedTomestoneWeeklyLimit() == CurrencyHelper.GetWeeklyAcquiredTomestoneCount();
-        if (isCapped && AutoWeeklyCap.Config.DeliverooEnabled && !AutoWeeklyCap.Config.DeliverooOnInterval)
+        if (isCapped && AWC.Config.DeliverooEnabled && !AWC.Config.DeliverooOnInterval)
             ActionInstance.Deliveroo.Invoke();
 
         timestamp = DateTime.UtcNow;
@@ -345,38 +340,38 @@ public class Runner
     {
         if (currentCharacter == null)
         {
-            AutoWeeklyCap.Log.Debug("Stopping runner due to character being NULL");
+            AWC.Log.Debug("Stopping runner due to character being NULL");
             Stop();
             return;
         }
 
-        AutoWeeklyCap.TaskManager.Enqueue(
-            () => AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(currentCharacter).PreferredJob.SwitchToJob(),
+        AWC.TaskManager.Enqueue(
+            () => AWC.Config.GetOrRegisterCharacterOptions(currentCharacter).PreferredJob.SwitchToJob(),
             "switch to preferred job"
         );
 
-        AutoWeeklyCap.TaskManager.Enqueue(() =>
+        AWC.TaskManager.Enqueue(() =>
         {
-            if (AutoWeeklyCap.Config.UseBossModRebornAI && BossModReborn.IsEnabled)
+            if (AWC.Config.UseBossModRebornAI && BossModReborn.IsEnabled)
             {
-                AutoWeeklyCap.Log.Debug("UseBossModRebornAI is enabled and BossMod Reborn is disabled, enabling AI");
+                AWC.Log.Debug("UseBossModRebornAI is enabled and BossMod Reborn is disabled, enabling AI");
                 ChatHelper.RunCommand("bmrai on");
             }
         }, "enable BossMod Reborn AI if option is enabled");
 
-        AutoWeeklyCap.TaskManager.Enqueue(
+        AWC.TaskManager.Enqueue(
             () =>
             {
                 if (!EzThrottler.Throttle("RunnerStartingDuty", 1000))
                     return false;
 
-                if (AutoWeeklyCap.ClientState.TerritoryType == AutoWeeklyCap.Config.ZoneId)
+                if (AWC.ClientState.TerritoryType == AWC.Config.ZoneId)
                 {
-                    AutoWeeklyCap.Log.Debug("Player detected in the duty zone, switching to RunningAutoDuty stage");
+                    AWC.Log.Debug("Player detected in the duty zone, switching to RunningAutoDuty stage");
                     state = State.RunningAutoDuty;
 
                     if (AutoDutyIPC.IsStopped())
-                        AutoDutyIPC.Run(AutoWeeklyCap.Config.ZoneId, 1, false);
+                        AutoDutyIPC.Run(AWC.Config.ZoneId, 1, false);
 
                     return true;
                 }
@@ -384,7 +379,7 @@ public class Runner
                 if (!PlayerHelper.IsReady || VNavMeshIPC.IsRunning())
                 {
                     if (EzThrottler.Throttle("RunnerStartingDutyBusyLog", 2500))
-                        AutoWeeklyCap.Log.Debug($"Resetting AutoDuty start timer, reason: player is busy or VNavMesh is running");
+                        AWC.Log.Debug($"Resetting AutoDuty start timer, reason: player is busy or VNavMesh is running");
 
                     timestamp = DateTime.UtcNow;
                     return false;
@@ -394,14 +389,14 @@ public class Runner
                 {
                     if ((DateTime.UtcNow - timestamp).Seconds > 5 && !AutoDutyIPC.IsStopped() && AddonHelper.TryGetReadyAddon("Repair", out _))
                     {
-                        AutoWeeklyCap.Log.Debug("Detected repairing attempt to have been idle for 5+ seconds while trying to start AutoDuty");
-                        AutoWeeklyCap.Log.Debug("Stopping AutoDuty and repairing through AWC instead, and then restarting");
+                        AWC.Log.Debug("Detected repairing attempt to have been idle for 5+ seconds while trying to start AutoDuty");
+                        AWC.Log.Debug("Stopping AutoDuty and repairing through AWC instead, and then restarting");
 
                         AutoDutyIPC.Stop();
-                        AutoWeeklyCap.TaskManager.Abort();
+                        AWC.TaskManager.Abort();
                         ActionInstance.SelfRepair.Invoke();
 
-                        AutoWeeklyCap.TaskManager.Enqueue(
+                        AWC.TaskManager.Enqueue(
                             () => state = State.CheckingTomestone,
                             "next stage: checking tomestone"
                         );
@@ -412,21 +407,21 @@ public class Runner
 
                 if ((DateTime.UtcNow - timestamp).Seconds > 30)
                 {
-                    AutoWeeklyCap.Log.Debug("Timed out while trying to start AutoDuty");
+                    AWC.Log.Debug("Timed out while trying to start AutoDuty");
 
                     if (currentCharacter == null)
                     {
-                        AutoWeeklyCap.Log.Debug("Stopping runner due to character being NULL");
+                        AWC.Log.Debug("Stopping runner due to character being NULL");
                         Stop();
                         return true;
                     }
 
-                    AutoWeeklyCap.Log.Debug($"Disabling AWC for {currentCharacter} and switching character");
+                    AWC.Log.Debug($"Disabling AWC for {currentCharacter} and switching character");
 
-                    AutoWeeklyCap.Config.Characters[currentCharacter].Enabled = false;
-                    AutoWeeklyCap.Config.Save();
+                    AWC.Config.Characters[currentCharacter].Enabled = false;
+                    AWC.Config.Save();
 
-                    AutoWeeklyCap.TaskManager.Enqueue(
+                    AWC.TaskManager.Enqueue(
                         () => state = State.StartingCharacterSwap,
                         "next stage: starting character swap"
                     );
@@ -436,15 +431,15 @@ public class Runner
 
                 if (EzThrottler.Throttle("RunnerStartingDutyStartAttempt", 1500))
                 {
-                    AutoWeeklyCap.Log.Debug("Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object>
+                    AWC.Log.Debug("Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object>
                     {
                         { "Seconds elapsed", (DateTime.UtcNow - timestamp).Seconds },
                         { "AutoDuty started", !AutoDutyIPC.IsStopped() },
-                        { "Current zone", AutoWeeklyCap.ClientState.TerritoryType },
-                        { "Duty zone", AutoWeeklyCap.Config.ZoneId },
+                        { "Current zone", AWC.ClientState.TerritoryType },
+                        { "Duty zone", AWC.Config.ZoneId },
                     });
 
-                    AutoDutyIPC.Run(AutoWeeklyCap.Config.ZoneId, 1, false);
+                    AutoDutyIPC.Run(AWC.Config.ZoneId, 1, false);
                 }
 
                 return false;
@@ -459,10 +454,10 @@ public class Runner
         if (!AutoDutyIPC.IsStopped())
             return;
 
-        if (AutoWeeklyCap.ClientState.TerritoryType == AutoWeeklyCap.Config.ZoneId)
+        if (AWC.ClientState.TerritoryType == AWC.Config.ZoneId)
             return;
 
-        AutoWeeklyCap.Log.Debug("AutoDuty has complete a run, switching to preparations stage");
+        AWC.Log.Debug("AutoDuty has complete a run, switching to preparations stage");
         runsCounter++;
         state = State.PreparingRunner;
     }
@@ -471,25 +466,25 @@ public class Runner
     {
         var limit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
 
-        foreach (var character in AutoWeeklyCap.Config.GetSortedCharacters())
+        foreach (var character in AWC.Config.GetSortedCharacters())
         {
-            var option = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
+            var option = AWC.Config.GetOrRegisterCharacterOptions(character);
             if (!option.IsEnabled())
                 continue;
 
-            var tomes = AutoWeeklyCap.Config.CollectedTomes.GetValueOrDefault(character, 0);
+            var tomes = AWC.Config.CollectedTomes.GetValueOrDefault(character, 0);
             if (tomes == limit)
                 continue;
 
             var parts = character.Split("@");
             if (parts.Length != 2)
             {
-                AutoWeeklyCap.Log.Error($"Character {character} is not a valid character name, stopping runner");
+                AWC.Log.Error($"Character {character} is not a valid character name, stopping runner");
                 Stop();
                 return;
             }
 
-            AutoWeeklyCap.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
+            AWC.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
             currentCharacter = character;
             state = State.SwitchingCharacter;
             timestamp = DateTime.UtcNow;
@@ -498,15 +493,15 @@ public class Runner
             return;
         }
 
-        if (AutoWeeklyCap.Config.StopAction == StopAction.StartUnlimitedRuns)
+        if (AWC.Config.StopAction == StopAction.StartUnlimitedRuns)
         {
             unlimited = true;
-            AutoWeeklyCap.Log.Debug("All characters have been fully capped, starting unlimited runs");
+            AWC.Log.Debug("All characters have been fully capped, starting unlimited runs");
 
-            var preferredCharacter = AutoWeeklyCap.Config.CharacterForSwap;
+            var preferredCharacter = AWC.Config.CharacterForSwap;
             if (PlayerHelper.GetFullCharacterName() == preferredCharacter)
             {
-                AutoWeeklyCap.Log.Debug("Player is already on preferred character, starting AutoDuty");
+                AWC.Log.Debug("Player is already on preferred character, starting AutoDuty");
                 state = State.StartingAutoDuty;
                 return;
             }
@@ -514,12 +509,12 @@ public class Runner
             var parts = preferredCharacter.Split("@");
             if (parts.Length != 2)
             {
-                AutoWeeklyCap.Log.Error($"Character {preferredCharacter} is not a valid character name, stopping runner");
+                AWC.Log.Error($"Character {preferredCharacter} is not a valid character name, stopping runner");
                 Stop();
                 return;
             }
 
-            AutoWeeklyCap.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
+            AWC.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
             currentCharacter = preferredCharacter;
             state = State.SwitchingCharacter;
             timestamp = DateTime.UtcNow;
@@ -528,7 +523,7 @@ public class Runner
             return;
         }
 
-        AutoWeeklyCap.Log.Debug("Found no character with missing weekly capped tomestones, stopping runner");
+        AWC.Log.Debug("Found no character with missing weekly capped tomestones, stopping runner");
         state = State.StoppingRunner;
     }
 
@@ -541,7 +536,7 @@ public class Runner
         if (character == null || character != currentCharacter)
             return;
 
-        AutoWeeklyCap.Log.Debug("Completed character swap, checking tomestones");
+        AWC.Log.Debug("Completed character swap, checking tomestones");
         state = State.PreparingRunner;
         runsCounter = 0;
     }
@@ -550,9 +545,9 @@ public class Runner
     {
         Abort();
 
-        AutoWeeklyCap.TaskManager.EnqueueDelay(500);
-        AutoWeeklyCap.TaskManager.Enqueue(
-            () => AutoWeeklyCap.Config.StopAction.Execute(),
+        AWC.TaskManager.EnqueueDelay(500);
+        AWC.TaskManager.Enqueue(
+            () => AWC.Config.StopAction.Execute(),
             "executing stop action"
         );
     }

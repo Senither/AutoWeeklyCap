@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading;
-using Dalamud.Bindings.ImGui;
+﻿using System.Threading;
 using Dalamud.Game.Gui.Dtr;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
-using ECommons.Throttlers;
 
 namespace AutoWeeklyCap.UI.Dtr;
 
@@ -28,7 +25,7 @@ public class DtrStatusBar : IDisposable
 
                 try
                 {
-                    dtrEntry = AutoWeeklyCap.DtrBar.Get(DtrBarTitle + i);
+                    dtrEntry = AWC.DtrBar.Get(DtrBarTitle + i);
                     dtrEntry.Text = "...";
                     dtrEntry.Shown = false;
                     dtrEntry.OnClick = _ => OnClick();
@@ -38,7 +35,7 @@ public class DtrStatusBar : IDisposable
                 }
                 catch (Exception e)
                 {
-                    AutoWeeklyCap.Log.Error(e, $"Failed to acquire DtrBarEntry {DtrBarTitle}, trying {DtrBarTitle}{i + 1}");
+                    AWC.Log.Error(e, $"Failed to acquire DtrBarEntry {DtrBarTitle}, trying {DtrBarTitle}{i + 1}");
                     Thread.Sleep(100);
                 }
             }
@@ -52,7 +49,7 @@ public class DtrStatusBar : IDisposable
         if (dtrEntry == null)
             return;
 
-        if (!AutoWeeklyCap.Config.ShowStatusInStatusBar)
+        if (!AWC.Config.ShowStatusInStatusBar)
         {
             if (dtrEntry.Shown)
                 dtrEntry.Shown = false;
@@ -63,16 +60,16 @@ public class DtrStatusBar : IDisposable
         if (!EzThrottler.Throttle(nameof(DtrStatusBar), 250))
             return;
 
-        dtrEntry.Tooltip = AutoWeeklyCap.Config.ShowStatusAsIcons
-                               ? $"Status: {AutoWeeklyCap.Runner.GetStatusShort()}\n\n{DtrBarTooltip}"
+        dtrEntry.Tooltip = AWC.Config.ShowStatusAsIcons
+                               ? $"Status: {AWC.Runner.GetStatusShort()}\n\n{DtrBarTooltip}"
                                : DtrBarTooltip;
 
         dtrEntry?.Shown = true;
         dtrEntry?.Text = new SeString(
             new TextPayload($"AWC: "),
-            AutoWeeklyCap.Config.ShowStatusAsIcons
-                ? new IconPayload(AutoWeeklyCap.Runner.GetStatusIcon())
-                : new TextPayload(AutoWeeklyCap.Runner.GetStatusShort())
+            AWC.Config.ShowStatusAsIcons
+                ? new IconPayload(AWC.Runner.GetStatusIcon())
+                : new TextPayload(AWC.Runner.GetStatusShort())
         );
     }
 
@@ -80,20 +77,20 @@ public class DtrStatusBar : IDisposable
     {
         if (!ImGui.GetIO().KeyCtrl)
         {
-            AutoWeeklyCap.Instance.ToggleMainUi();
+            AWC.Instance.ToggleMainUi();
             return;
         }
 
-        if (!AutoWeeklyCap.Runner.IsRunning())
+        if (!AWC.Runner.IsRunning())
         {
-            AutoWeeklyCap.Runner.Start();
+            AWC.Runner.Start();
             return;
         }
 
-        if (AutoWeeklyCap.Runner.IsStopping())
-            AutoWeeklyCap.Runner.Resume();
+        if (AWC.Runner.IsStopping())
+            AWC.Runner.Resume();
         else
-            AutoWeeklyCap.Runner.Stop();
+            AWC.Runner.Stop();
     }
 
     public void Dispose()

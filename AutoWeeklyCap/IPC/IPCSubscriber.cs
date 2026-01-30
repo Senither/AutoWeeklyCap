@@ -1,5 +1,4 @@
-﻿using System;
-using ECommons.EzIpcManager;
+﻿using ECommons.EzIpcManager;
 using ECommons.Reflection;
 
 namespace AutoWeeklyCap.IPC;
@@ -19,7 +18,7 @@ public class IPCSubscriber
             }
             catch (Exception ex)
             {
-                AutoWeeklyCap.Log.Error($"Error while unregistering IPC: {ex}");
+                AWC.Log.Error($"Error while unregistering IPC: {ex}");
             }
         }
     }

@@ -1,9 +1,6 @@
-using System;
 using System.Reflection;
 using AutoWeeklyCap.Commands;
 using AutoWeeklyCap.Config;
-using AutoWeeklyCap.Helpers;
-using AutoWeeklyCap.IPC;
 using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.UI.Dtr;
 using AutoWeeklyCap.UI.Windows;
@@ -11,8 +8,6 @@ using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
-using Dalamud.Plugin.Services;
-using ECommons;
 using ECommons.Automation.NeoTaskManager;
 using Newtonsoft.Json;
 using Module = ECommons.Module;
@@ -23,7 +18,7 @@ namespace AutoWeeklyCap;
 public sealed class AutoWeeklyCap : IDalamudPlugin
 {
     internal const string Name = "Auto Weekly Cap";
-    internal static AutoWeeklyCap Instance = null!;
+    internal static AWC Instance = null!;
     internal const int CurrentMaxLevel = 100;
 
     internal static Configuration Config => Instance.Configuration;

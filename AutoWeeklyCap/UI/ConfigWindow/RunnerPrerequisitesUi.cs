@@ -1,9 +1,4 @@
-﻿using System;
-using AutoWeeklyCap.Helpers;
-using AutoWeeklyCap.IPC;
-using AutoWeeklyCap.UI.Helpers;
-using Dalamud.Bindings.ImGui;
-using Dalamud.Interface.Utility;
+﻿using AutoWeeklyCap.UI.Helpers;
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
@@ -29,15 +24,15 @@ public static class RunnerPrerequisitesUi
         ImGui.Spacing();
 
         // Repair (Self & NPC)
-        var repairStatus = AutoWeeklyCap.Config.Repair;
+        var repairStatus = AWC.Config.Repair;
         if (ImGui.Checkbox("Repair Gear", ref repairStatus))
-            AutoWeeklyCap.Config.Repair = repairStatus;
+            AWC.Config.Repair = repairStatus;
 
-        Disabled.Draw(!AutoWeeklyCap.Config.Repair, () =>
+        Disabled.Draw(!AWC.Config.Repair, () =>
         {
             ImGui.SameLine();
-            if (ImGui.RadioButton("Self", AutoWeeklyCap.Config.RepairSelf))
-                AutoWeeklyCap.Config.RepairSelf = true;
+            if (ImGui.RadioButton("Self", AWC.Config.RepairSelf))
+                AWC.Config.RepairSelf = true;
 
             InformationTooltip.Draw(() =>
             {
@@ -46,8 +41,8 @@ public static class RunnerPrerequisitesUi
             });
 
             ImGui.SameLine();
-            if (ImGui.RadioButton("City NPC", !AutoWeeklyCap.Config.RepairSelf))
-                AutoWeeklyCap.Config.RepairSelf = false;
+            if (ImGui.RadioButton("City NPC", !AWC.Config.RepairSelf))
+                AWC.Config.RepairSelf = false;
 
             InformationTooltip.Draw(() =>
             {
@@ -66,9 +61,9 @@ public static class RunnerPrerequisitesUi
             var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 1.5);
             ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
 
-            var autoRepairPercentage = AutoWeeklyCap.Config.RepairPercentage;
+            var autoRepairPercentage = AWC.Config.RepairPercentage;
             if (Range.Draw("##Repair@", ref autoRepairPercentage, 1, 99, "%d%%"))
-                AutoWeeklyCap.Config.RepairPercentage = Math.Min(100, Math.Max(1, autoRepairPercentage));
+                AWC.Config.RepairPercentage = Math.Min(100, Math.Max(1, autoRepairPercentage));
 
             ImGui.PopItemWidth();
 
@@ -77,25 +72,25 @@ public static class RunnerPrerequisitesUi
         });
 
         // Auto Extract
-        var autoExtract = AutoWeeklyCap.Config.Extract;
+        var autoExtract = AWC.Config.Extract;
         if (ImGui.Checkbox("Extract Materia", ref autoExtract))
-            AutoWeeklyCap.Config.Extract = autoExtract;
+            AWC.Config.Extract = autoExtract;
 
-        Disabled.Draw(!AutoWeeklyCap.Config.Extract, () =>
+        Disabled.Draw(!AWC.Config.Extract, () =>
         {
             ImGui.SameLine(0, 10);
-            if (ImGui.RadioButton("Equipped", !AutoWeeklyCap.Config.ExtractAll))
-                AutoWeeklyCap.Config.ExtractAll = false;
+            if (ImGui.RadioButton("Equipped", !AWC.Config.ExtractAll))
+                AWC.Config.ExtractAll = false;
 
             ImGui.SameLine(0, 5);
-            if (ImGui.RadioButton("All", AutoWeeklyCap.Config.ExtractAll))
-                AutoWeeklyCap.Config.ExtractAll = true;
+            if (ImGui.RadioButton("All", AWC.Config.ExtractAll))
+                AWC.Config.ExtractAll = true;
         });
 
         // Auto Spend Tomestones
-        var autoSpendUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestones;
+        var autoSpendUncappedTomestones = AWC.Config.SpendUncappedTomestones;
         if (ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones))
-            AutoWeeklyCap.Config.SpendUncappedTomestones = autoSpendUncappedTomestones;
+            AWC.Config.SpendUncappedTomestones = autoSpendUncappedTomestones;
 
         InformationTooltip.Draw(() =>
         {
@@ -109,7 +104,7 @@ public static class RunnerPrerequisitesUi
             ImGui.Text(" to be enabled");
         });
 
-        Disabled.Draw(!AutoWeeklyCap.Config.SpendUncappedTomestones, () =>
+        Disabled.Draw(!AWC.Config.SpendUncappedTomestones, () =>
         {
             ImGui.Text("Buy @");
             ImGui.SameLine();
@@ -117,20 +112,20 @@ public static class RunnerPrerequisitesUi
             var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 1.5);
             ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
 
-            var autoBuyWithUncappedTomestones = AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold;
+            var autoBuyWithUncappedTomestones = AWC.Config.SpendUncappedTomestoneThreshold;
             if (Range.Draw("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000))
-                AutoWeeklyCap.Config.SpendUncappedTomestoneThreshold = autoBuyWithUncappedTomestones;
+                AWC.Config.SpendUncappedTomestoneThreshold = autoBuyWithUncappedTomestones;
 
             ImGui.PopItemWidth();
 
             ImGui.Text("Item to buy");
-            var selectedItem = TomestoneItemHelper.GetTomestoneItemFromName(AutoWeeklyCap.Config.SpendUncappedTomestoneItemName);
+            var selectedItem = TomestoneItemHelper.GetTomestoneItemFromName(AWC.Config.SpendUncappedTomestoneItemName);
             if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", selectedItem != null ? selectedItem.Name : "Not selected"))
             {
                 foreach (var item in TomestoneItemHelper.GetTomestoneItems())
                 {
                     if (ImGui.Selectable(item.Name))
-                        AutoWeeklyCap.Config.SpendUncappedTomestoneItemName = item.Name;
+                        AWC.Config.SpendUncappedTomestoneItemName = item.Name;
                 }
 
                 ImGui.EndCombo();
@@ -142,9 +137,9 @@ public static class RunnerPrerequisitesUi
     {
         ImGui.Spacing();
 
-        var useAutoRetainer = AutoWeeklyCap.Config.AutoRetainerEnabled;
+        var useAutoRetainer = AWC.Config.AutoRetainerEnabled;
         if (ImGui.Checkbox("Use Auto Retainer", ref useAutoRetainer))
-            AutoWeeklyCap.Config.AutoRetainerEnabled = useAutoRetainer;
+            AWC.Config.AutoRetainerEnabled = useAutoRetainer;
 
         InformationTooltip.Draw(() =>
         {
@@ -157,7 +152,7 @@ public static class RunnerPrerequisitesUi
             StatusText.Draw(AutoRetainerIPC.IsEnabled, "AutoRetainer");
         });
 
-        Disabled.Draw(!AutoWeeklyCap.Config.AutoRetainerEnabled, () =>
+        Disabled.Draw(!AWC.Config.AutoRetainerEnabled, () =>
         {
             var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 2.5);
             ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
@@ -165,9 +160,9 @@ public static class RunnerPrerequisitesUi
             ImGui.Text("Wait for up to");
             ImGui.SameLine();
 
-            var autoRetainerRemainingTime = AutoWeeklyCap.Config.AutoRetainerThreshold;
+            var autoRetainerRemainingTime = AWC.Config.AutoRetainerThreshold;
             if (Range.Draw("###AutoRetainerTimeWaitingRange", ref autoRetainerRemainingTime, 0, 300))
-                AutoWeeklyCap.Config.AutoRetainerThreshold = autoRetainerRemainingTime;
+                AWC.Config.AutoRetainerThreshold = autoRetainerRemainingTime;
 
             ImGui.SameLine();
             ImGui.Text("seconds");
@@ -180,9 +175,9 @@ public static class RunnerPrerequisitesUi
     {
         ImGui.Spacing();
 
-        var useDeliveroo = AutoWeeklyCap.Config.DeliverooEnabled;
+        var useDeliveroo = AWC.Config.DeliverooEnabled;
         if (ImGui.Checkbox("Use Deliveroo", ref useDeliveroo))
-            AutoWeeklyCap.Config.DeliverooEnabled = useDeliveroo;
+            AWC.Config.DeliverooEnabled = useDeliveroo;
 
         InformationTooltip.Draw(() =>
         {
@@ -197,21 +192,21 @@ public static class RunnerPrerequisitesUi
             StatusText.Draw(DeliverooIPC.IsEnabled, "Deliveroo");
         });
 
-        Disabled.Draw(!AutoWeeklyCap.Config.DeliverooEnabled, () =>
+        Disabled.Draw(!AWC.Config.DeliverooEnabled, () =>
         {
             ImGui.Spacing();
 
             ImGui.Text("When should Deliveroo be used?");
 
-            if (ImGui.RadioButton("After", AutoWeeklyCap.Config.DeliverooOnInterval))
-                AutoWeeklyCap.Config.DeliverooOnInterval = true;
+            if (ImGui.RadioButton("After", AWC.Config.DeliverooOnInterval))
+                AWC.Config.DeliverooOnInterval = true;
 
             ImGui.SameLine();
             ImGui.PushItemWidth(80 * ImGuiHelpers.GlobalScale);
 
-            var configDeliverooRunInterval = AutoWeeklyCap.Config.DeliverooRunInterval;
+            var configDeliverooRunInterval = AWC.Config.DeliverooRunInterval;
             if (Range.Draw("runs###deliveroo-run-interval", ref configDeliverooRunInterval, 1, 10))
-                AutoWeeklyCap.Config.DeliverooRunInterval = configDeliverooRunInterval;
+                AWC.Config.DeliverooRunInterval = configDeliverooRunInterval;
 
             InformationTooltip.Draw(() =>
             {
@@ -221,15 +216,15 @@ public static class RunnerPrerequisitesUi
 
             ImGui.PopItemWidth();
 
-            if (ImGui.RadioButton("After character is tomestone capped", !AutoWeeklyCap.Config.DeliverooOnInterval))
-                AutoWeeklyCap.Config.DeliverooOnInterval = false;
+            if (ImGui.RadioButton("After character is tomestone capped", !AWC.Config.DeliverooOnInterval))
+                AWC.Config.DeliverooOnInterval = false;
 
             Card.Separator();
             ImGui.Spacing();
 
-            var runOnFirstLoop = AutoWeeklyCap.Config.DeliverooRunOnFirstLoop;
+            var runOnFirstLoop = AWC.Config.DeliverooRunOnFirstLoop;
             if (ImGui.Checkbox("Always run before the first AutoDuty run", ref runOnFirstLoop))
-                AutoWeeklyCap.Config.DeliverooRunOnFirstLoop = runOnFirstLoop;
+                AWC.Config.DeliverooRunOnFirstLoop = runOnFirstLoop;
         });
     }
 }

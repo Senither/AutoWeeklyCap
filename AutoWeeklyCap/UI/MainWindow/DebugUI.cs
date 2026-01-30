@@ -1,10 +1,5 @@
-﻿using System;
-using AutoWeeklyCap.Helpers;
-using AutoWeeklyCap.Listeners;
+﻿using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.Runner;
-using Dalamud.Bindings.ImGui;
-using Dalamud.Interface.Colors;
-using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 
 namespace AutoWeeklyCap.UI.MainWindow;
@@ -13,17 +8,17 @@ internal static class DebugUI
 {
     internal static void Draw()
     {
-        ImGui.Text($"TaskManager [tasks: {AutoWeeklyCap.TaskManager.NumQueuedTasks},current task: {AutoWeeklyCap.TaskManager.CurrentTask?.Name ?? "idle"}]");
+        ImGui.Text($"TaskManager [tasks: {AWC.TaskManager.NumQueuedTasks},current task: {AWC.TaskManager.CurrentTask?.Name ?? "idle"}]");
         ImGui.Text($"Currencies [weekly: {CurrencyHelper.GetWeeklyAcquiredTomestoneCount()}, uncapped: {CurrencyHelper.GetUncappedAcquiredTomestoneCount()}]");
         ImGui.Text($"Restart [recovery: {ClientListener.IsRecoveringFromDisconnect}, restart: {ClientListener.IsRestarting}]");
 
         ImGui.Separator();
 
-        ImGui.Text($"Runner debug steps [stage: {AutoWeeklyCap.Runner.GetStatus()}]");
-        DebugButton("Start", () => AutoWeeklyCap.Runner.Start(), false);
-        DebugButton("Stop", () => AutoWeeklyCap.Runner.Stop());
-        DebugButton("Resume", () => AutoWeeklyCap.Runner.Resume());
-        DebugButton("Abort", () => AutoWeeklyCap.Runner.Abort());
+        ImGui.Text($"Runner debug steps [stage: {AWC.Runner.GetStatus()}]");
+        DebugButton("Start", () => AWC.Runner.Start(), false);
+        DebugButton("Stop", () => AWC.Runner.Stop());
+        DebugButton("Resume", () => AWC.Runner.Resume());
+        DebugButton("Abort", () => AWC.Runner.Abort());
 
         ImGui.Separator();
 

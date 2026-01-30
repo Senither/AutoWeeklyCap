@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using AutoWeeklyCap.IPC;
-using AutoWeeklyCap.UI.Helpers;
+﻿using AutoWeeklyCap.UI.Helpers;
 using AutoWeeklyCap.UI.MainWindow;
-using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
-using Dalamud.Interface.Colors;
-using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
 using ECommons.Configuration;
-using ECommons.ImGuiMethods;
 
 namespace AutoWeeklyCap.UI.Windows;
 
@@ -18,7 +10,7 @@ public class MainWindow : Window, IDisposable
 {
     private TitleBarButton LockButton;
 
-    public MainWindow(AutoWeeklyCap autoWeeklyCap) : base("Auto Weekly Tomestone Capper##main-window")
+    public MainWindow(AWC autoWeeklyCap) : base("Auto Weekly Tomestone Capper##main-window")
     {
         SizeConstraints = new WindowSizeConstraints
         {
@@ -43,13 +35,13 @@ public class MainWindow : Window, IDisposable
             {
                 if (m == ImGuiMouseButton.Left)
                 {
-                    AutoWeeklyCap.Config.Window.Pin = !AutoWeeklyCap.Config.Window.Pin;
-                    LockButton?.Icon = AutoWeeklyCap.Config.Window.Pin
+                    AWC.Config.Window.Pin = !AWC.Config.Window.Pin;
+                    LockButton?.Icon = AWC.Config.Window.Pin
                                            ? FontAwesomeIcon.Lock
                                            : FontAwesomeIcon.LockOpen;
                 }
             },
-            Icon = AutoWeeklyCap.Config.Window.Pin ? FontAwesomeIcon.Lock : FontAwesomeIcon.LockOpen,
+            Icon = AWC.Config.Window.Pin ? FontAwesomeIcon.Lock : FontAwesomeIcon.LockOpen,
             IconOffset = new Vector2(3, 2),
             ShowTooltip = () => ImGui.SetTooltip("Lock window position and size"),
         };
@@ -66,21 +58,21 @@ public class MainWindow : Window, IDisposable
 
     public override void PreDraw()
     {
-        var name = $"{AutoWeeklyCap.Name} {AutoWeeklyCap.Version}";
-        if (AutoWeeklyCap.Runner.IsRunning())
+        var name = $"{AWC.Name} {AWC.Version}";
+        if (AWC.Runner.IsRunning())
         {
-            name += $" | {AutoWeeklyCap.Runner.GetStatus()}";
+            name += $" | {AWC.Runner.GetStatus()}";
         }
 
-        WindowName = $"{name}###AutoWeeklyCap";
+        WindowName = $"{name}###AWC";
 
-        if (AutoWeeklyCap.Config.Window.Pin)
+        if (AWC.Config.Window.Pin)
         {
-            ImGuiHelpers.SetNextWindowPosRelativeMainViewport(AutoWeeklyCap.Config.Window.Position);
-            ImGui.SetNextWindowSize(AutoWeeklyCap.Config.Window.Size);
+            ImGuiHelpers.SetNextWindowPosRelativeMainViewport(AWC.Config.Window.Position);
+            ImGui.SetNextWindowSize(AWC.Config.Window.Size);
         }
 
-        Flags = AutoWeeklyCap.Config.Window.Pin ? ImGuiWindowFlags.NoResize : ImGuiWindowFlags.None;
+        Flags = AWC.Config.Window.Pin ? ImGuiWindowFlags.NoResize : ImGuiWindowFlags.None;
     }
 
     public override void Draw()
@@ -95,15 +87,15 @@ public class MainWindow : Window, IDisposable
             ("About", AboutTabUi.Draw, null, true)
         };
 
-        if (AutoWeeklyCap.PluginInterface.IsDev)
+        if (AWC.PluginInterface.IsDev)
             tabs.Add(("Debug", DebugUI.Draw, null, true));
 
         ImGuiEx.EzTabBar("main-awc-tabbar", "Test", tabs.ToArray());
 
-        if (!AutoWeeklyCap.Config.Window.Pin)
+        if (!AWC.Config.Window.Pin)
         {
-            AutoWeeklyCap.Config.Window.Position = ImGui.GetWindowPos();
-            AutoWeeklyCap.Config.Window.Size = ImGui.GetWindowSize();
+            AWC.Config.Window.Position = ImGui.GetWindowPos();
+            AWC.Config.Window.Size = ImGui.GetWindowSize();
         }
     }
 
@@ -112,7 +104,7 @@ public class MainWindow : Window, IDisposable
         ImGui.TextUnformatted("AWC is");
         ImGui.SameLine(0f, 6f);
 
-        if (AutoWeeklyCap.IsRequiredPluginsEnabled())
+        if (AWC.IsRequiredPluginsEnabled())
             ImGui.TextColored(ImGuiColors.HealerGreen, "✓ Ready");
         else
             ImGui.TextColored(ImGuiColors.DalamudOrange, "X Unavailable");
@@ -141,26 +133,25 @@ public class MainWindow : Window, IDisposable
 
     protected void DrawHeaderActionButtons()
     {
-        var isEnabled = AutoWeeklyCap.IsRequiredPluginsEnabled()
-                        && AutoWeeklyCap.Config.IsRequiredSettingsSetup();
+        var isEnabled = AWC.IsRequiredPluginsEnabled() && AWC.Config.IsRequiredSettingsSetup();
 
         if (!isEnabled)
             ImGui.BeginDisabled();
 
-        if (AutoWeeklyCap.Runner.IsRunning())
+        if (AWC.Runner.IsRunning())
         {
-            if (AutoWeeklyCap.Runner.IsStopping())
+            if (AWC.Runner.IsStopping())
             {
                 if (RightAlignedButton.Draw(" Resume Runner "))
                 {
-                    AutoWeeklyCap.Runner.Resume();
+                    AWC.Runner.Resume();
                 }
             }
             else
             {
                 if (RightAlignedButton.Draw(" Stop Runner "))
                 {
-                    AutoWeeklyCap.Runner.Stop();
+                    AWC.Runner.Stop();
                 }
             }
         }
@@ -168,9 +159,9 @@ public class MainWindow : Window, IDisposable
         {
             if (RightAlignedButton.Draw(" Start Run "))
             {
-                if (AutoWeeklyCap.IsRequiredPluginsEnabled())
+                if (AWC.IsRequiredPluginsEnabled())
                 {
-                    AutoWeeklyCap.Runner.Start();
+                    AWC.Runner.Start();
                 }
             }
         }

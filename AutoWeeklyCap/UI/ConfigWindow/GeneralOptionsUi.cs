@@ -1,6 +1,4 @@
-﻿using AutoWeeklyCap.IPC;
-using AutoWeeklyCap.UI.Helpers;
-using Dalamud.Bindings.ImGui;
+﻿using AutoWeeklyCap.UI.Helpers;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
 
@@ -8,22 +6,22 @@ public static class GeneralOptionsUi
 {
     public static void Draw()
     {
-        var openWindow = AutoWeeklyCap.Config.OpenWindowOnStartup;
+        var openWindow = AWC.Config.OpenWindowOnStartup;
         if (ImGui.Checkbox("Open Character UI window on startup", ref openWindow))
-            AutoWeeklyCap.Config.OpenWindowOnStartup = openWindow;
+            AWC.Config.OpenWindowOnStartup = openWindow;
 
-        var useSliders = AutoWeeklyCap.Config.UseSliders;
+        var useSliders = AWC.Config.UseSliders;
         if (ImGui.Checkbox("Slider inputs", ref useSliders))
-            AutoWeeklyCap.Config.UseSliders = useSliders;
+            AWC.Config.UseSliders = useSliders;
 
         InformationTooltip.Draw(
             "When enabled, ranged inputs will be shown as sliders\n" +
             "When disabled, ranged inputs will be shown as text inputs with increment and decrement step buttons"
         );
 
-        var recovery = AutoWeeklyCap.Config.AttemptRecoveryFromDisconnects;
+        var recovery = AWC.Config.AttemptRecoveryFromDisconnects;
         if (ImGui.Checkbox("Recovery from disconnects", ref recovery))
-            AutoWeeklyCap.Config.AttemptRecoveryFromDisconnects = recovery;
+            AWC.Config.AttemptRecoveryFromDisconnects = recovery;
 
         InformationTooltip.Draw(() =>
         {
@@ -36,9 +34,9 @@ public static class GeneralOptionsUi
             ImGui.Text("to allow recovering for prolonged internet loss without the game closing");
         });
 
-        var dtrBar = AutoWeeklyCap.Config.ShowStatusInStatusBar;
+        var dtrBar = AWC.Config.ShowStatusInStatusBar;
         if (ImGui.Checkbox("Show status in DTR bar", ref dtrBar))
-            AutoWeeklyCap.Config.ShowStatusInStatusBar = dtrBar;
+            AWC.Config.ShowStatusInStatusBar = dtrBar;
 
         InformationTooltip.Draw(() =>
         {
@@ -49,13 +47,13 @@ public static class GeneralOptionsUi
         Disabled.Draw(!dtrBar, () =>
         {
             ImGui.SameLine(0f, 20f);
-            var iconsDtr = AutoWeeklyCap.Config.ShowStatusAsIcons;
+            var iconsDtr = AWC.Config.ShowStatusAsIcons;
             if (ImGui.Checkbox("Show status as icons instead of text", ref iconsDtr))
-                AutoWeeklyCap.Config.ShowStatusAsIcons = iconsDtr;
+                AWC.Config.ShowStatusAsIcons = iconsDtr;
         });
 
-        var trackDisabled = AutoWeeklyCap.Config.TrackDisabledCharacters;
+        var trackDisabled = AWC.Config.TrackDisabledCharacters;
         if (ImGui.Checkbox("Track tomestones for disabled characters", ref trackDisabled))
-            AutoWeeklyCap.Config.TrackDisabledCharacters = trackDisabled;
+            AWC.Config.TrackDisabledCharacters = trackDisabled;
     }
 }

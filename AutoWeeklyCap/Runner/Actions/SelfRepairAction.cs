@@ -1,7 +1,4 @@
-﻿using System;
-using AutoWeeklyCap.Helpers;
-using ECommons.Throttlers;
-using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Runner.Actions;
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using ECommons;
-using ECommons.Logging;
+﻿using ECommons.Logging;
 
 namespace AutoWeeklyCap.Commands;
 
@@ -19,7 +16,7 @@ public static class CommandHandler
         var args = SplitArgs(stringArgs);
         if (args.Length == 0)
         {
-            AutoWeeklyCap.Instance.ToggleMainUi();
+            AWC.Instance.ToggleMainUi();
             return;
         }
 
@@ -59,7 +56,7 @@ public static class CommandHandler
                 DuoLog.Information($" - {cmd.Triggers.Join(" / ")}");
             }
 
-            DuoLog.Information($"Run with: '{AutoWeeklyCap.CommandNameShort} <option>'");
+            DuoLog.Information($"Run with: '{AWC.CommandNameShort} <option>'");
             return;
         }
 
@@ -79,6 +76,6 @@ public static class CommandHandler
 
     private static void PrintUnknownCommand(string command)
     {
-        DuoLog.Information($"Unknown command '{command}', use `{AutoWeeklyCap.CommandNameShort} help` for a list of commands");
+        DuoLog.Information($"Unknown command '{command}', use `{AWC.CommandNameShort} help` for a list of commands");
     }
 }

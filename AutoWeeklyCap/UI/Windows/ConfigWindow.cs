@@ -1,6 +1,4 @@
-﻿using System;
-using System.Numerics;
-using AutoWeeklyCap.UI.ConfigWindow;
+﻿using AutoWeeklyCap.UI.ConfigWindow;
 using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Interface.Windowing;
 
@@ -22,7 +20,7 @@ public class ConfigWindow : Window, IDisposable
     public override void Draw()
     {
         var hasHiddenCharacters = false;
-        foreach (var option in AutoWeeklyCap.Config.Characters.Values)
+        foreach (var option in AWC.Config.Characters.Values)
         {
             if (option.IsHidden())
             {
@@ -43,6 +41,6 @@ public class ConfigWindow : Window, IDisposable
 
     public override void OnClose()
     {
-        AutoWeeklyCap.Config.Save();
+        AWC.Config.Save();
     }
 }

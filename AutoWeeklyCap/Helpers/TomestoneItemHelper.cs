@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ECommons;
-
-namespace AutoWeeklyCap.Helpers;
+﻿namespace AutoWeeklyCap.Helpers;
 
 public record TomestoneItem(int Index, int Cost, string Name)
 {

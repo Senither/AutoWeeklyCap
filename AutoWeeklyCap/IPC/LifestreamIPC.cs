@@ -1,6 +1,4 @@
-﻿using System;
-using ECommons;
-using ECommons.EzIpcManager;
+﻿using ECommons.EzIpcManager;
 
 // ReSharper disable InconsistentNaming
 

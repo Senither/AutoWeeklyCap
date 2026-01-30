@@ -1,12 +1,8 @@
-﻿using System;
-using System.Numerics;
-using AutoWeeklyCap.Config;
+﻿using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.UI.Helpers;
-using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
-using ECommons.ImGuiMethods;
 
 namespace AutoWeeklyCap.UI.Windows;
 
@@ -42,7 +38,7 @@ public class CharacterOptionWindow : Window, IDisposable
         character = null;
         IsOpen = false;
 
-        AutoWeeklyCap.Config.Save();
+        AWC.Config.Save();
     }
 
     public override void PreDraw()
@@ -55,7 +51,7 @@ public class CharacterOptionWindow : Window, IDisposable
         if (character == null)
             return;
 
-        var options = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
+        var options = AWC.Config.GetOrRegisterCharacterOptions(character);
 
         Card.Draw("Character visibility", () => DrawCharacterVisibility(options), collapsible: false);
         Card.Draw("Character Preferences", () => DrawCharacterPreferences(options), collapsible: false);
@@ -87,7 +83,7 @@ public class CharacterOptionWindow : Window, IDisposable
 
         ImGui.SameLine(0f, 4f);
 
-        Disabled.Draw(options.Position == AutoWeeklyCap.Config.Characters.Count - 1, () =>
+        Disabled.Draw(options.Position == AWC.Config.Characters.Count - 1, () =>
         {
             if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowDown))
                 MoveCharacterPosition(1);
@@ -106,9 +102,9 @@ public class CharacterOptionWindow : Window, IDisposable
         if (character == null)
             return;
 
-        AutoWeeklyCap.Config.NormalizeCharacterPositions();
+        AWC.Config.NormalizeCharacterPositions();
 
-        var sortedCharacters = AutoWeeklyCap.Config.GetSortedCharacters();
+        var sortedCharacters = AWC.Config.GetSortedCharacters();
         var currentIndex = sortedCharacters.IndexOf(character);
         if (currentIndex == -1)
             return;
@@ -118,12 +114,12 @@ public class CharacterOptionWindow : Window, IDisposable
             return;
 
         var otherCharacter = sortedCharacters[targetIndex];
-        var currentOptions = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(character);
-        var otherOptions = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(otherCharacter);
+        var currentOptions = AWC.Config.GetOrRegisterCharacterOptions(character);
+        var otherOptions = AWC.Config.GetOrRegisterCharacterOptions(otherCharacter);
 
         (currentOptions.Position, otherOptions.Position) = (otherOptions.Position, currentOptions.Position);
 
-        AutoWeeklyCap.Config.NormalizeCharacterPositions();
+        AWC.Config.NormalizeCharacterPositions();
     }
 
     private void DrawCharacterPreferences(CharacterOptions options)
@@ -167,9 +163,9 @@ public class CharacterOptionWindow : Window, IDisposable
 
                 var removedCharacter = character;
 
-                AutoWeeklyCap.Config.Characters.Remove(removedCharacter);
-                AutoWeeklyCap.Config.CollectedTomes.Remove(removedCharacter);
-                AutoWeeklyCap.Config.NormalizeCharacterPositions();
+                AWC.Config.Characters.Remove(removedCharacter);
+                AWC.Config.CollectedTomes.Remove(removedCharacter);
+                AWC.Config.NormalizeCharacterPositions();
                 OnClose();
             }
         );

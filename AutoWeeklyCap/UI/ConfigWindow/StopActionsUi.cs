@@ -1,7 +1,5 @@
-﻿using System;
-using AutoWeeklyCap.Actions;
+﻿using AutoWeeklyCap.Actions;
 using AutoWeeklyCap.UI.Helpers;
-using Dalamud.Bindings.ImGui;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
 
@@ -16,9 +14,9 @@ public static class StopActionsUi
 
         foreach (StopAction action in Enum.GetValues(typeof(StopAction)))
         {
-            if (ImGui.RadioButton(action.GetName(), AutoWeeklyCap.Config.StopAction == action))
+            if (ImGui.RadioButton(action.GetName(), AWC.Config.StopAction == action))
             {
-                AutoWeeklyCap.Config.StopAction = action;
+                AWC.Config.StopAction = action;
             }
 
             var tooltip = action.GetTooltip();
@@ -29,7 +27,7 @@ public static class StopActionsUi
         ImGui.Spacing();
         ImGui.Spacing();
 
-        Disabled.Draw(!IsDrawCharacterSwitchEnabled(AutoWeeklyCap.Config.StopAction), DrawCharacterSwitch);
+        Disabled.Draw(!IsDrawCharacterSwitchEnabled(AWC.Config.StopAction), DrawCharacterSwitch);
     }
 
     private static bool IsDrawCharacterSwitchEnabled(StopAction action)
@@ -43,16 +41,16 @@ public static class StopActionsUi
 
         if (ImGui.BeginCombo(
                 $"###character-selector",
-                AutoWeeklyCap.Config.Characters.ContainsKey(AutoWeeklyCap.Config.CharacterForSwap)
-                    ? AutoWeeklyCap.Config.CharacterForSwap
+                AWC.Config.Characters.ContainsKey(AWC.Config.CharacterForSwap)
+                    ? AWC.Config.CharacterForSwap
                     : "Not selected"
             ))
         {
-            foreach (var character in AutoWeeklyCap.Config.GetSortedCharacters())
+            foreach (var character in AWC.Config.GetSortedCharacters())
             {
-                if (ImGui.Selectable(character, AutoWeeklyCap.Config.CharacterForSwap == character))
+                if (ImGui.Selectable(character, AWC.Config.CharacterForSwap == character))
                 {
-                    AutoWeeklyCap.Config.CharacterForSwap = character;
+                    AWC.Config.CharacterForSwap = character;
                 }
             }
 

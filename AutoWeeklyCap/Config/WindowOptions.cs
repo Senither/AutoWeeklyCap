@@ -1,7 +1,4 @@
-﻿using System;
-using System.Numerics;
-
-namespace AutoWeeklyCap.Config;
+﻿namespace AutoWeeklyCap.Config;
 
 [Serializable]
 public class WindowOptions

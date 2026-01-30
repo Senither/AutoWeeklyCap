@@ -1,10 +1,6 @@
-﻿using System.Numerics;
-using AutoWeeklyCap.Config;
-using AutoWeeklyCap.Helpers;
+﻿using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Runner;
-using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
-using ECommons.ImGuiMethods;
 
 namespace AutoWeeklyCap.UI.MainWindow;
 
@@ -16,13 +12,13 @@ internal static class CharactersUI
         var totalTomesCollected = 0;
         var weeklyTomeLimit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
 
-        foreach (var character in AutoWeeklyCap.Config.GetSortedCharacters())
+        foreach (var character in AWC.Config.GetSortedCharacters())
         {
-            var option = AutoWeeklyCap.Config.Characters[character];
+            var option = AWC.Config.Characters[character];
             if (option.IsHidden())
                 continue;
 
-            var characterTomes = AutoWeeklyCap.Config.GetWeeklyTomes(character);
+            var characterTomes = AWC.Config.GetWeeklyTomes(character);
 
             if (option.IsEnabled())
                 totalTomesCollected += characterTomes;
@@ -49,8 +45,8 @@ internal static class CharactersUI
 
     internal static void SaveCharacterConfigurationOption(string character, CharacterOptions options)
     {
-        AutoWeeklyCap.Config.Characters[character] = options;
-        AutoWeeklyCap.Config.Save();
+        AWC.Config.Characters[character] = options;
+        AWC.Config.Save();
     }
 
     internal static void DrawCharacterStatusIcon(string character, CharacterOptions option)
@@ -73,7 +69,7 @@ internal static class CharactersUI
 
     internal static void DrawCharacterRelogIcon(string character)
     {
-        var command = $"{AutoWeeklyCap.CommandNameShort} relog {character}";
+        var command = $"{AWC.CommandNameShort} relog {character}";
 
         ImGui.SameLine(0f, 4f);
         ImGuiEx.IconButton(FontAwesomeIcon.DoorOpen);
@@ -97,7 +93,7 @@ internal static class CharactersUI
 
         if (ImGuiEx.IconButton(FontAwesomeIcon.UserCog))
         {
-            AutoWeeklyCap.Instance.OpenCharacterOptionsUi(character);
+            AWC.Instance.OpenCharacterOptionsUi(character);
         }
 
         ImGuiEx.Tooltip("Configure Character");

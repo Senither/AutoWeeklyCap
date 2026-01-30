@@ -1,9 +1,5 @@
-﻿using System;
-using Dalamud.Game.ClientState.Conditions;
+﻿using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Utility;
-using ECommons;
-using ECommons.DalamudServices;
-using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
@@ -69,7 +65,7 @@ public static class PlayerHelper
 {
     internal static bool IsReady => IsValid && !IsOccupied;
 
-    internal static bool IsLoggedIn => AutoWeeklyCap.ClientState.IsLoggedIn;
+    internal static bool IsLoggedIn => AWC.ClientState.IsLoggedIn;
 
     internal static bool IsOccupied => GenericHelpers.IsOccupied() || Svc.Condition[ConditionFlag.Jumping61];
 
@@ -96,24 +92,24 @@ public static class PlayerHelper
 
     public static string? GetFullCharacterName()
     {
-        if (!AutoWeeklyCap.PlayerState.IsLoaded)
+        if (!AWC.PlayerState.IsLoaded)
             return null;
 
-        var world = AutoWeeklyCap.PlayerState.HomeWorld.ValueNullable;
+        var world = AWC.PlayerState.HomeWorld.ValueNullable;
         if (world == null)
             return null;
 
-        return AutoWeeklyCap.PlayerState.CharacterName + "@" + world.Value.Name.ToString();
+        return AWC.PlayerState.CharacterName + "@" + world.Value.Name.ToString();
     }
 
     public static bool HasMaxJobLevel(PlayerJobType jobType)
     {
-        return GetJobLevel(jobType) == AutoWeeklyCap.CurrentMaxLevel;
+        return GetJobLevel(jobType) == AWC.CurrentMaxLevel;
     }
 
     public static int GetJobLevel(PlayerJobType jobType)
     {
-        if (!AutoWeeklyCap.PlayerState.IsLoaded)
+        if (!AWC.PlayerState.IsLoaded)
             return 0;
 
         try
@@ -131,10 +127,10 @@ public static class PlayerHelper
 
     public static CharacterSwapStatus SwitchJob(uint targetJobId)
     {
-        if (!AutoWeeklyCap.PlayerState.IsLoaded)
+        if (!AWC.PlayerState.IsLoaded)
             return CharacterSwapStatus.FailedToSwitchJob;
 
-        var currentJobId = AutoWeeklyCap.PlayerState.ClassJob.RowId;
+        var currentJobId = AWC.PlayerState.ClassJob.RowId;
         if (currentJobId == targetJobId)
             return CharacterSwapStatus.AlreadyOnTargetJob;
 

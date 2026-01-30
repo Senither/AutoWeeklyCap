@@ -1,11 +1,4 @@
-﻿using System;
-using System.Numerics;
-using AutoWeeklyCap.Helpers;
-using AutoWeeklyCap.IPC;
-using ECommons;
-using ECommons.GameHelpers;
-using ECommons.Throttlers;
-using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 // ReSharper disable InconsistentNaming
@@ -32,7 +25,7 @@ public class AutoSpendTomestoneAction : BaseAction
 
     protected override bool Run()
     {
-        var itemToBuy = TomestoneItemHelper.GetTomestoneItemFromName(AutoWeeklyCap.Config.SpendUncappedTomestoneItemName);
+        var itemToBuy = TomestoneItemHelper.GetTomestoneItemFromName(AWC.Config.SpendUncappedTomestoneItemName);
         if (itemToBuy == null)
             return false;
 

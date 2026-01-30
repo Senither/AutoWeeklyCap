@@ -1,8 +1,4 @@
-﻿using System;
-using AutoWeeklyCap.Helpers;
-using ECommons;
-using ECommons.Throttlers;
-using ECommons.UIHelpers.AddonMasterImplementations;
+﻿using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
@@ -21,7 +17,7 @@ public class ExtractAction : BaseAction
             return false;
         }
 
-        var stoppingCategory = AutoWeeklyCap.Config.ExtractAll ? 6 : 0;
+        var stoppingCategory = AWC.Config.ExtractAll ? 6 : 0;
         var currentCategory = 0;
         var switchCategory = false;
 

@@ -1,8 +1,4 @@
-﻿using System;
-using AutoWeeklyCap.Helpers;
-using AutoWeeklyCap.IPC;
-using AutoWeeklyCap.UI.Helpers;
-using Dalamud.Bindings.ImGui;
+﻿using AutoWeeklyCap.UI.Helpers;
 
 namespace AutoWeeklyCap.Actions;
 
@@ -53,7 +49,7 @@ public static class StopActionExtensions
 
     public static void Execute(this StopAction action)
     {
-        AutoWeeklyCap.Log.Debug($"Executing action: {action.GetName()}");
+        AWC.Log.Debug($"Executing action: {action.GetName()}");
 
         switch (action)
         {
@@ -61,7 +57,7 @@ public static class StopActionExtensions
                 break;
 
             case StopAction.SwitchCharacter:
-                var characterToSwapTo = AutoWeeklyCap.Config.CharacterForSwap;
+                var characterToSwapTo = AWC.Config.CharacterForSwap;
                 if (characterToSwapTo.Length == 0 || characterToSwapTo == PlayerHelper.GetFullCharacterName())
                     break;
 
@@ -75,7 +71,7 @@ public static class StopActionExtensions
 
             case StopAction.LogoutToMenu:
                 var status = LifestreamIPC.Logout();
-                AutoWeeklyCap.Log.Debug($"Logging out via Lifestream with status: {status}");
+                AWC.Log.Debug($"Logging out via Lifestream with status: {status}");
                 break;
 
             case StopAction.ShutdownGame:

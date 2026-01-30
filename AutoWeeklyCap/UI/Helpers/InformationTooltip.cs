@@ -1,8 +1,4 @@
-﻿using System;
-using Dalamud.Bindings.ImGui;
-using ECommons.ImGuiMethods;
-
-namespace AutoWeeklyCap.UI.Helpers;
+﻿namespace AutoWeeklyCap.UI.Helpers;
 
 public static class InformationTooltip
 {

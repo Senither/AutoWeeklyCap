@@ -1,12 +1,11 @@
-﻿using ECommons.DalamudServices;
-using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using FFXIVClientStructs.FFXIV.Client.Game;
 using Lumina.Excel.Sheets;
 
 namespace AutoWeeklyCap.Helpers;
 
 public static unsafe class InventoryHelper
 {
-    internal static bool CanRepair() => CanRepair(AutoWeeklyCap.Config.RepairPercentage);
+    internal static bool CanRepair() => CanRepair(AWC.Config.RepairPercentage);
     internal static bool CanRepair(uint percent) => (LowestEquippedItem().Condition / 300f) <= percent;
 
     internal static InventoryItem LowestEquippedItem()

@@ -1,7 +1,4 @@
-﻿using AutoWeeklyCap.Helpers;
-using AutoWeeklyCap.IPC;
-using ECommons;
-using ECommons.Logging;
+﻿using ECommons.Logging;
 
 namespace AutoWeeklyCap.Commands;
 
@@ -26,14 +23,14 @@ public class RelogCommand : ICommand
             return;
         }
 
-        if (AutoWeeklyCap.Runner.IsRunning() || AutoWeeklyCap.TaskManager.IsBusy)
+        if (AWC.Runner.IsRunning() || AWC.TaskManager.IsBusy)
         {
             DuoLog.Warning("AutoWeeklyCap is busy, can't relog to character");
             return;
         }
 
         var characterAndWorld = args.Join(" ");
-        if (!AutoWeeklyCap.Config.Characters.ContainsKey(characterAndWorld))
+        if (!AWC.Config.Characters.ContainsKey(characterAndWorld))
         {
             DuoLog.Warning($"Unknown character '{characterAndWorld}', please specify a valid character");
             return;

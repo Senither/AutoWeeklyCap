@@ -1,5 +1,4 @@
-﻿using System;
-using AutoWeeklyCap.Runner;
+﻿using AutoWeeklyCap.Runner;
 
 namespace AutoWeeklyCap.Config;
 

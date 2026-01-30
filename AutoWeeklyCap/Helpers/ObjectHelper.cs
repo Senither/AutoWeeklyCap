@@ -1,8 +1,4 @@
-﻿using System;
-using System.Numerics;
-using Dalamud.Game.ClientState.Objects.Types;
-using ECommons.DalamudServices;
-using ECommons.GameHelpers;
+﻿using Dalamud.Game.ClientState.Objects.Types;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;

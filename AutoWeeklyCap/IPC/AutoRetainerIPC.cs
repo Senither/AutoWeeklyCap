@@ -1,6 +1,4 @@
-﻿using System;
-using AutoWeeklyCap.Helpers;
-using ECommons.EzIpcManager;
+﻿using ECommons.EzIpcManager;
 
 namespace AutoWeeklyCap.IPC;
 

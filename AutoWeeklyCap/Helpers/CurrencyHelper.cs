@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Helpers;
 
@@ -47,23 +45,23 @@ public static class CurrencyHelper
         if (characterAndWorld == null)
             return false;
 
-        var options = AutoWeeklyCap.Config.GetOrRegisterCharacterOptions(characterAndWorld);
-        if (!options.IsEnabled() && !AutoWeeklyCap.Config.TrackDisabledCharacters)
+        var options = AWC.Config.GetOrRegisterCharacterOptions(characterAndWorld);
+        if (!options.IsEnabled() && !AWC.Config.TrackDisabledCharacters)
             return false;
 
         var weeklyTomes = GetWeeklyAcquiredTomestoneCount();
-        var storedTomes = AutoWeeklyCap.Config.CollectedTomes.GetValueOrDefault(characterAndWorld);
+        var storedTomes = AWC.Config.CollectedTomes.GetValueOrDefault(characterAndWorld);
 
         if (weeklyTomes == storedTomes)
             return false;
 
         if (storedTomes > weeklyTomes)
         {
-            AutoWeeklyCap.Config.CollectedTomes.Clear();
+            AWC.Config.CollectedTomes.Clear();
         }
 
-        AutoWeeklyCap.Config.CollectedTomes[characterAndWorld] = weeklyTomes;
-        AutoWeeklyCap.Config.Save();
+        AWC.Config.CollectedTomes[characterAndWorld] = weeklyTomes;
+        AWC.Config.Save();
 
         return true;
     }

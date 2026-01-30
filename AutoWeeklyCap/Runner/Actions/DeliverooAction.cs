@@ -1,9 +1,4 @@
-﻿using System.Numerics;
-using AutoWeeklyCap.Helpers;
-using AutoWeeklyCap.IPC;
-using ECommons.ExcelServices;
-using ECommons.GameHelpers;
-using ECommons.Throttlers;
+﻿using ECommons.ExcelServices;
 
 namespace AutoWeeklyCap.Runner.Actions;
 

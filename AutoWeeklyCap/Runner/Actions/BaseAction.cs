@@ -1,9 +1,5 @@
-﻿using System;
-using Dalamud.Game.ClientState.Conditions;
-using ECommons;
+﻿using Dalamud.Game.ClientState.Conditions;
 using ECommons.Automation.NeoTaskManager;
-using ECommons.DalamudServices;
-using ECommons.GameHelpers;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoWeeklyCap.Runner.Actions;
@@ -22,7 +18,7 @@ public abstract class BaseAction
             return false;
 
         if (AddonsToClose.Length > 0)
-            AutoWeeklyCap.TaskManager.Insert(CloseAddons, $"{Name}: closing addons");
+            AWC.TaskManager.Insert(CloseAddons, $"{Name}: closing addons");
 
         return true;
     }
@@ -34,7 +30,7 @@ public abstract class BaseAction
         if (Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51])
             return false;
 
-        return AutoWeeklyCap.PlayerState.IsLoaded && Player.Available;
+        return AWC.PlayerState.IsLoaded && Player.Available;
     }
 
     private bool CloseAddons()
@@ -65,12 +61,12 @@ public abstract class BaseAction
 
     protected void Enqueue(Func<bool> action, string description)
     {
-        AutoWeeklyCap.TaskManager.Enqueue(action, $"{Name}: {description}");
+        AWC.TaskManager.Enqueue(action, $"{Name}: {description}");
     }
 
     protected void Enqueue(Func<bool> action, string description, int timelimitMS)
     {
-        AutoWeeklyCap.TaskManager.Enqueue(
+        AWC.TaskManager.Enqueue(
             action,
             $"{Name}: {description}",
             new TaskManagerConfiguration(timeLimitMS: timelimitMS)
@@ -79,16 +75,16 @@ public abstract class BaseAction
 
     protected void EnqueueDelay(int ms)
     {
-        AutoWeeklyCap.TaskManager.EnqueueDelay(ms);
+        AWC.TaskManager.EnqueueDelay(ms);
     }
 
     protected void LogDebug(string message)
     {
-        AutoWeeklyCap.Log.Debug($"{Name}: {message}");
+        AWC.Log.Debug($"{Name}: {message}");
     }
 
     protected void LogInfo(string message)
     {
-        AutoWeeklyCap.Log.Info($"{Name}: {message}");
+        AWC.Log.Info($"{Name}: {message}");
     }
 }
