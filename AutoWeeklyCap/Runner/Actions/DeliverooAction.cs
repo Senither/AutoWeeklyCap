@@ -41,32 +41,11 @@ public class DeliverooAction : BaseAction
             return Player.Territory.RowId == PlayerHelper.GetGrandCompanyTerritoryType() && PlayerHelper.IsReady;
         }, "waiting for player to be in gc territory");
 
-        Enqueue(() =>
-        {
-            if (VNavMeshIPC.IsRunning() || !VNavMeshIPC.IsReady())
-                return false;
-
-            ChatHelper.RunCommand("automove off");
-
-            VNavMeshIPC.SetTolerance(.25f);
-            VNavMeshIPC.SetAlignCamera(true);
-            VNavMeshIPC.PathfindAndMoveTo(GrandCompanyTurnInLocation, false);
-
-            return true;
-        }, "start moving to gc NPC location", LongTaskTimeout);
-
-        Enqueue(() =>
-        {
-            var distance = Vector3.Distance(GrandCompanyTurnInLocation, Player.Position);
-            if (distance > 1.25)
-                return false;
-
-            VNavMeshIPC.Stop();
-
-            return true;
-        }, "waiting for player movement to npc", LongTaskTimeout);
-
-        EnqueueDelay(250);
+        Enqueue(
+            () => MovementHelper.MoveTo(GrandCompanyTurnInLocation),
+            "start moving to gc NPC location",
+            LongTaskTimeout
+        );
 
         Enqueue(() =>
         {

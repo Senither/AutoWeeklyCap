@@ -73,30 +73,11 @@ public class AutoSpendTomestoneAction : BaseAction
             return Player.Territory.RowId == VendorTerritoryID && PlayerHelper.IsReady && !LifestreamIPC.IsBusy();
         }, "waiting for player to be in territory");
 
-        Enqueue(() =>
-        {
-            if (VNavMeshIPC.IsRunning() || !VNavMeshIPC.IsReady())
-                return false;
-
-            ChatHelper.RunCommand("automove off");
-
-            VNavMeshIPC.SetTolerance(.25f);
-            VNavMeshIPC.SetAlignCamera(true);
-            VNavMeshIPC.PathfindAndMoveTo(VendorPosition, false);
-
-            return true;
-        }, "start moving to npc location", LongTaskTimeout);
-
-        Enqueue(() =>
-        {
-            var distance = Vector3.Distance(VendorPosition, Player.Position);
-            if (distance >= .50)
-                return false;
-
-            VNavMeshIPC.Stop();
-
-            return true;
-        }, "waiting for player movement to npc", LongTaskTimeout);
+        Enqueue(
+            () => MovementHelper.MoveTo(VendorPosition),
+            "start moving to npc location",
+            LongTaskTimeout
+        );
 
         Enqueue(() =>
         {

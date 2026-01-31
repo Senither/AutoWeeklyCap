@@ -49,30 +49,11 @@ public class NpcRepairAction : BaseAction
             return Player.Territory.RowId == PlayerHelper.GetGrandCompanyTerritoryType() && PlayerHelper.IsReady;
         }, "waiting for player to be in gc territory");
 
-        Enqueue(() =>
-        {
-            if (VNavMeshIPC.IsRunning() || !VNavMeshIPC.IsReady())
-                return false;
-
-            ChatHelper.RunCommand("automove off");
-
-            VNavMeshIPC.SetTolerance(.25f);
-            VNavMeshIPC.SetAlignCamera(true);
-            VNavMeshIPC.PathfindAndMoveTo(RepairVendorLocation, false);
-
-            return true;
-        }, "start moving to npc location", LongTaskTimeout);
-
-        Enqueue(() =>
-        {
-            var distance = Vector3.Distance(RepairVendorLocation, Player.Position);
-            if (distance > 1.25)
-                return false;
-
-            VNavMeshIPC.Stop();
-
-            return true;
-        }, "waiting for player movement to npc", LongTaskTimeout);
+        Enqueue(
+            () => MovementHelper.MoveTo(RepairVendorLocation),
+            "start moving to npc location",
+            LongTaskTimeout
+        );
 
         Enqueue(() =>
         {
