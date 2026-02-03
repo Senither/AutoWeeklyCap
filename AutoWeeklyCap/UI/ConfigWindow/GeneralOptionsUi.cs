@@ -6,6 +6,20 @@ public static class GeneralOptionsUi
 {
     public static void Draw()
     {
+        Card.DrawSubtle("General Options", GeneralOptions, collapsible: false);
+        Card.DrawSubtle("UI Elements & Windows", UiElementsAndWindows, collapsible: false);
+        Card.DrawSubtle("Network Options", NetworkOptions, collapsible: false);
+    }
+
+    private static void GeneralOptions()
+    {
+        var trackDisabled = AWC.Config.TrackDisabledCharacters;
+        if (ImGui.Checkbox("Track tomestones for disabled characters", ref trackDisabled))
+            AWC.Config.TrackDisabledCharacters = trackDisabled;
+    }
+
+    private static void UiElementsAndWindows()
+    {
         var openWindow = AWC.Config.OpenWindowOnStartup;
         if (ImGui.Checkbox("Open Character UI window on startup", ref openWindow))
             AWC.Config.OpenWindowOnStartup = openWindow;
@@ -18,21 +32,6 @@ public static class GeneralOptionsUi
             "When enabled, ranged inputs will be shown as sliders\n" +
             "When disabled, ranged inputs will be shown as text inputs with increment and decrement step buttons"
         );
-
-        var recovery = AWC.Config.AttemptRecoveryFromDisconnects;
-        if (ImGui.Checkbox("Recovery from disconnects", ref recovery))
-            AWC.Config.AttemptRecoveryFromDisconnects = recovery;
-
-        InformationTooltip.Draw(() =>
-        {
-            ImGui.Text("When enabled and a disconnect is detected while the runner is active AWC will");
-            ImGui.Text("attempt to log back into your character and restart the runner.");
-            ImGui.Text("");
-            ImGui.Text("Note: It's recommended that ");
-            StatusText.Draw(NoKillPlugin.IsEnabled, "No Kill Plugin");
-            ImGui.Text(" is enabled when using the feature");
-            ImGui.Text("to allow recovering for prolonged internet loss without the game closing");
-        });
 
         var dtrBar = AWC.Config.ShowStatusInStatusBar;
         if (ImGui.Checkbox("Show status in DTR bar", ref dtrBar))
@@ -51,9 +50,23 @@ public static class GeneralOptionsUi
             if (ImGui.Checkbox("Show status as icons instead of text", ref iconsDtr))
                 AWC.Config.ShowStatusAsIcons = iconsDtr;
         });
+    }
 
-        var trackDisabled = AWC.Config.TrackDisabledCharacters;
-        if (ImGui.Checkbox("Track tomestones for disabled characters", ref trackDisabled))
-            AWC.Config.TrackDisabledCharacters = trackDisabled;
+    private static void NetworkOptions()
+    {
+        var recovery = AWC.Config.AttemptRecoveryFromDisconnects;
+        if (ImGui.Checkbox("Recovery from disconnects", ref recovery))
+            AWC.Config.AttemptRecoveryFromDisconnects = recovery;
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When enabled and a disconnect is detected while the runner is active AWC will");
+            ImGui.Text("attempt to log back into your character and restart the runner.");
+            ImGui.Text("");
+            ImGui.Text("Note: It's recommended that ");
+            StatusText.Draw(NoKillPlugin.IsEnabled, "No Kill Plugin");
+            ImGui.Text(" is enabled when using the feature");
+            ImGui.Text("to allow recovering for prolonged internet loss without the game closing");
+        });
     }
 }
