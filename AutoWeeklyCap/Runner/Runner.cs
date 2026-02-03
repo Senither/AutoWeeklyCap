@@ -81,57 +81,12 @@ public class Runner
         AWC.Log.Debug("Stopped weekly cap runner");
     }
 
-    public bool IsRunning()
-    {
-        return state != State.Waiting;
-    }
+    public bool IsRunning() => state != State.Waiting;
+    public bool IsStopping() => stopGracefully;
 
-    public bool IsStopping()
-    {
-        return stopGracefully;
-    }
-
-    public string GetStatus()
-    {
-        return state switch
-        {
-            State.Waiting => "idle",
-            State.PreparingRunner => "Preparing runner",
-            State.WaitingForAutoRetainer => "Waiting for AutoRetainer",
-            State.CheckingTomestone => "Checking Tomestone",
-            State.StartingAutoDuty => "Starting AutoDuty",
-            State.RunningAutoDuty => stopGracefully ? "Stopping when duty finishes" : "Running AutoDuty",
-            State.StartingCharacterSwap => "Starting Character Swap",
-            State.SwitchingCharacter => "Switching Character to " + currentCharacter,
-            State.StoppingRunner => "Stopping Runner",
-            _ => "unknown"
-        };
-    }
-
-    public string GetStatusShort()
-    {
-        return state switch
-        {
-            State.Waiting => "Off",
-            State.SwitchingCharacter => "Switching Character",
-            _ => GetStatus(),
-        };
-    }
-
-    public BitmapFontIcon GetStatusIcon()
-    {
-        return state switch
-        {
-            State.Waiting => BitmapFontIcon.Away,
-            State.PreparingRunner => BitmapFontIcon.FateCrafting,
-            State.WaitingForAutoRetainer => BitmapFontIcon.Alarm,
-            State.CheckingTomestone => BitmapFontIcon.OrangeDiamond,
-            State.StartingAutoDuty => BitmapFontIcon.WaitingForDutyFinder,
-            State.RunningAutoDuty => stopGracefully ? BitmapFontIcon.SwordSheathed : BitmapFontIcon.SwordUnsheathed,
-            State.StartingCharacterSwap or State.SwitchingCharacter => BitmapFontIcon.WatchingCutscene,
-            _ => BitmapFontIcon.Disconnecting,
-        };
-    }
+    public string GetStatus() => state.GetStatus(stopGracefully, currentCharacter);
+    public string GetStatusShort() => state.GetStatusShort(stopGracefully, currentCharacter);
+    public BitmapFontIcon GetStatusIcon() => state.GetStatusIcon(stopGracefully);
 
     public void Tick()
     {
