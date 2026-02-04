@@ -9,6 +9,7 @@ using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using ECommons.Automation.NeoTaskManager;
+using ECommons.Schedulers;
 using Newtonsoft.Json;
 using Module = ECommons.Module;
 
@@ -118,8 +119,13 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
 
+        Log.Debug($"AWC#Startup - OpenWindowOnStartup: {Config.OpenWindowOnStartup}");
         if (Config.OpenWindowOnStartup)
             OpenMainUi();
+
+        Log.Debug($"AWC#Startup - StartRunnerOnBoot: {Config.StartRunnerOnBoot}");
+        if (Config.StartRunnerOnBoot)
+            new TickScheduler(() => Runner.AutoStartOnBoot());
 
 #if DEBUG
         OpenMainUi();

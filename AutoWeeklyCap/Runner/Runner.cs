@@ -1,5 +1,6 @@
 using AutoWeeklyCap.Actions;
 using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Interface.ImGuiNotification;
 using ECommons.Automation.NeoTaskManager;
 
 namespace AutoWeeklyCap.Runner;
@@ -36,6 +37,43 @@ public class Runner
         runsCounter = 0;
 
         AWC.Log.Debug("Starting weekly cap runner");
+
+        return true;
+    }
+
+    public bool AutoStartOnBoot()
+    {
+        if (state != State.Waiting || stopGracefully)
+            return false;
+
+        var zoneName = MapHelper.GetZoneNameFromId(AWC.Config.ZoneId);
+        if (zoneName == null)
+            return false;
+
+        if (PlayerHelper.IsValid)
+            return false;
+
+        const int autoStartDelay = 5;
+        for (var i = 0; i < autoStartDelay; i++)
+        {
+            var seconds = autoStartDelay - i;
+            AWC.TaskManager.Enqueue(() => Svc.NotificationManager.AddNotification(new Notification
+            {
+                Content = $"Autostart AWC in {seconds}!",
+                InitialDuration = TimeSpan.FromSeconds(1),
+                HardExpiry = DateTime.Now.AddSeconds(1),
+                Type = NotificationType.Warning,
+            }));
+
+            AWC.TaskManager.EnqueueDelay(1000);
+        }
+
+        AWC.TaskManager.Enqueue(() =>
+        {
+            state = State.WaitingForAutoRetainer;
+            timestamp = DateTime.UtcNow;
+            runsCounter = 0;
+        });
 
         return true;
     }
@@ -233,20 +271,22 @@ public class Runner
 
         // From this point onwards we're assuming that AutoRetainer has completed its run, next we'll return the original player
 
+        if (currentCharacter == null)
+        {
+            AutoRetainerIPC.DisableMultiMode();
+
+            AWC.TaskManager.Enqueue(
+                () => state = State.StartingCharacterSwap,
+                "next stage: starting character swap"
+            );
+            return;
+        }
+
         if (PlayerHelper.GetFullCharacterName() == currentCharacter)
         {
             AWC.TaskManager.Enqueue(
                 () => state = State.PreparingRunner,
                 "next stage: checking tomestone"
-            );
-            return;
-        }
-
-        if (currentCharacter == null)
-        {
-            AWC.TaskManager.Enqueue(
-                () => state = State.StartingCharacterSwap,
-                "next stage: starting character swap"
             );
             return;
         }

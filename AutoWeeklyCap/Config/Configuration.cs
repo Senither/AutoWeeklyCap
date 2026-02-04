@@ -10,6 +10,7 @@ public class Configuration : IPluginConfiguration
     public int Version { get; set; } = 0;
 
     // General Options
+    public bool StartRunnerOnBoot { get; set; } = false;
     public bool OpenWindowOnStartup { get; set; } = false;
     public bool UseSliders { get; set; } = false;
     public bool AttemptRecoveryFromDisconnects { get; set; } = false;

@@ -1,4 +1,4 @@
-using AutoWeeklyCap.Listeners;
+﻿using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.UI.Helpers;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
@@ -26,6 +26,7 @@ internal static class DebugUI
     {
         ImGui.Text($"Current stage: {AWC.Runner.GetStatus()}");
         DebugButton("Start", () => AWC.Runner.Start(), false);
+        DebugButton("Start on Boot", () => AWC.Runner.AutoStartOnBoot());
         DebugButton("Stop", () => AWC.Runner.Stop());
         DebugButton("Resume", () => AWC.Runner.Resume());
         DebugButton("Abort", () => AWC.Runner.Abort());

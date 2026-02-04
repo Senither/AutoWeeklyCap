@@ -13,6 +13,16 @@ public static class GeneralOptionsUi
 
     private static void GeneralOptions()
     {
+        var startOnBoot = AWC.Config.StartRunnerOnBoot;
+        if (ImGui.Checkbox("Start runner automatically on startup", ref startOnBoot))
+            AWC.Config.StartRunnerOnBoot = startOnBoot;
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When the option is enabled and at least one enabled character is still not");
+            ImGui.Text("tome capped, AWC will automatically start the runner during game boot.");
+        });
+
         var trackDisabled = AWC.Config.TrackDisabledCharacters;
         if (ImGui.Checkbox("Track tomestones for disabled characters", ref trackDisabled))
             AWC.Config.TrackDisabledCharacters = trackDisabled;
