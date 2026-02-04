@@ -1,5 +1,6 @@
-﻿using AutoWeeklyCap.Listeners;
+using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.Runner;
+using AutoWeeklyCap.UI.Helpers;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 
 namespace AutoWeeklyCap.UI.MainWindow;
@@ -8,28 +9,39 @@ internal static class DebugUI
 {
     internal static void Draw()
     {
+        Card.DrawSubtle("Plugin Details", DrawPluginDetails, collapsible: false);
+        Card.DrawSubtle("Runner Debug Steps", DrawRunnerDebugSteps, collapsible: false);
+        Card.DrawSubtle("Runner Debug Actions", DrawRunnerDebugActions, collapsible: false);
+        Card.DrawSubtle("Game Data State", DrawGameDataState, collapsible: false);
+    }
+
+    private static void DrawPluginDetails()
+    {
         ImGui.Text($"TaskManager [tasks: {AWC.TaskManager.NumQueuedTasks},current task: {AWC.TaskManager.CurrentTask?.Name ?? "idle"}]");
         ImGui.Text($"Currencies [weekly: {CurrencyHelper.GetWeeklyAcquiredTomestoneCount()}, uncapped: {CurrencyHelper.GetUncappedAcquiredTomestoneCount()}]");
         ImGui.Text($"Restart [recovery: {ClientListener.IsRecoveringFromDisconnect}, restart: {ClientListener.IsRestarting}]");
+    }
 
-        ImGui.Separator();
-
-        ImGui.Text($"Runner debug steps [stage: {AWC.Runner.GetStatus()}]");
+    private static void DrawRunnerDebugSteps()
+    {
+        ImGui.Text($"Current stage: {AWC.Runner.GetStatus()}");
         DebugButton("Start", () => AWC.Runner.Start(), false);
         DebugButton("Stop", () => AWC.Runner.Stop());
         DebugButton("Resume", () => AWC.Runner.Resume());
         DebugButton("Abort", () => AWC.Runner.Abort());
+    }
 
-        ImGui.Separator();
-
-        ImGui.Text($"Runner actions:");
+    private static void DrawRunnerDebugActions()
+    {
         DebugButton("Extract", () => ActionInstance.Extract.Invoke(), false);
         DebugButton("Self Repair", () => ActionInstance.SelfRepair.Invoke());
         DebugButton("NPC Repair", () => ActionInstance.NpcRepair.Invoke());
         DebugButton("Spend Tomestones", () => ActionInstance.SpendTomestone.Invoke());
         DebugButton("Deliveroo", () => ActionInstance.Deliveroo.Invoke());
+    }
 
-        ImGui.Separator();
+    private static void DrawGameDataState()
+    {
         ImGui.Text("Game data state:");
         ImGui.Text($"Position:  T:{Player.Territory.RowId} P:{Player.Position}");
 
