@@ -68,5 +68,15 @@ public static class GeneralOptionsUi
             ImGui.Text(" is enabled when using the feature");
             ImGui.Text("to allow recovering for prolonged internet loss without the game closing");
         });
+
+        var titleMovie = AWC.Config.DisableTitleScreenMovie;
+        if (ImGui.Checkbox("Disable title screen movie", ref titleMovie))
+            AWC.Config.DisableTitleScreenMovie = titleMovie;
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When enabled the title screen movie will disabled, regardless");
+            ImGui.Text("of if the runner is actually running or not.");
+        });
     }
 }

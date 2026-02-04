@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using ECommons.UIHelpers.AddonMasterImplementations;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace AutoWeeklyCap.Listeners;
 
@@ -19,6 +20,7 @@ public partial class FrameworkListener
 
         AttemptErrorRecovery();
         UpdateRunnerLoop();
+        DisableTitleScreenMovie();
     }
 
     private static void AttemptErrorRecovery()
@@ -101,6 +103,30 @@ public partial class FrameworkListener
     {
         CurrencyHelper.UpdateWeeklyAcquiredTomestonesForCurrentCharacter();
         AWC.Runner.Tick();
+    }
+
+    private static void DisableTitleScreenMovie()
+    {
+        if (!AWC.Config.DisableTitleScreenMovie)
+            return;
+
+        if (PlayerHelper.IsValid)
+            return;
+
+        if (!AddonHelper.IsTitleScreenReady())
+            return;
+
+        try
+        {
+            unsafe
+            {
+                AgentLobby.Instance()->IdleTime = 0;
+            }
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
     }
 
     [GeneratedRegex(@":\s*\d+\.$")]
