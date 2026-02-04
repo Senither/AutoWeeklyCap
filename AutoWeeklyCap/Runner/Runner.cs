@@ -53,13 +53,16 @@ public class Runner
         if (PlayerHelper.IsValid)
             return false;
 
+        if (AWC.Config.GetFirstUncappedCharacter() == null)
+            return false;
+
         const int autoStartDelay = 5;
         for (var i = 0; i < autoStartDelay; i++)
         {
             var seconds = autoStartDelay - i;
             AWC.TaskManager.Enqueue(() => Svc.NotificationManager.AddNotification(new Notification
             {
-                Content = $"Autostart AWC in {seconds}!",
+                Content = $"Auto start AWC in {seconds}!",
                 InitialDuration = TimeSpan.FromSeconds(1),
                 HardExpiry = DateTime.Now.AddSeconds(1),
                 Type = NotificationType.Warning,
@@ -459,18 +462,9 @@ public class Runner
 
     private void StartCharacterSwap()
     {
-        var limit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
-
-        foreach (var character in AWC.Config.GetSortedCharacters())
+        var character = AWC.Config.GetFirstUncappedCharacter();
+        if (character != null)
         {
-            var option = AWC.Config.GetOrRegisterCharacterOptions(character);
-            if (!option.IsEnabled())
-                continue;
-
-            var tomes = AWC.Config.CollectedTomes.GetValueOrDefault(character, 0);
-            if (tomes == limit)
-                continue;
-
             var parts = character.Split("@");
             if (parts.Length != 2)
             {

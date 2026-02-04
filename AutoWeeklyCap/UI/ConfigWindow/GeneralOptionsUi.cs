@@ -21,6 +21,9 @@ public static class GeneralOptionsUi
         {
             ImGui.Text("When the option is enabled and at least one enabled character is still not");
             ImGui.Text("tome capped, AWC will automatically start the runner during game boot.");
+            ImGui.Text("");
+            ImGui.Text("Note: If all enabled characters are tome caped and unlimited mode is enabled");
+            ImGui.Text("the runner will still not be automatically started during game boot.");
         });
 
         var trackDisabled = AWC.Config.TrackDisabledCharacters;

@@ -64,6 +64,26 @@ public class Configuration : IPluginConfiguration
         return CollectedTomes.GetValueOrDefault(character, 0);
     }
 
+    public string? GetFirstUncappedCharacter()
+    {
+        var limit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
+
+        foreach (var character in GetSortedCharacters())
+        {
+            var option = GetOrRegisterCharacterOptions(character);
+            if (!option.IsEnabled())
+                continue;
+
+            var tomes = CollectedTomes.GetValueOrDefault(character, 0);
+            if (tomes == limit)
+                continue;
+
+            return character;
+        }
+
+        return null;
+    }
+
     public List<string> GetSortedCharacters()
     {
         var characters = new List<string>(Characters.Keys);
