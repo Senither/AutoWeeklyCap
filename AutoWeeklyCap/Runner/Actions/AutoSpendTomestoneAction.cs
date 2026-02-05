@@ -12,12 +12,18 @@ public class AutoSpendTomestoneAction : BaseAction
 
     private const int LongTaskTimeout = 120_000;
 
-    // Path 7.4 - Zircon @ Solution Nine (Nexus Arcade)
-    private static readonly Vector3 VendorPosition = new(-185.5f, 0.6600001f, -28.45f);
-    private const uint VendorDataID = 1049079u;
-    private const uint VendorTerritoryID = 1186u;
-    private const int VendorSelectionIndex = 3;
-    private const string VendorAetheriteName = "Nexus Arcade";
+    // Path 7.4 - Materials - Zircon @ Solution Nine (Nexus Arcade)
+    private static readonly Vector3 MaterialVendorPosition = new(-185.5f, 0.6600001f, -28.45f);
+    private const uint MaterialVendorDataID = 1049079u;
+    private const uint MaterialVendorTerritoryID = 1186u;
+    private const int MaterialVendorSelectionIndex = 3;
+    private const string MaterialVendorAetheriteName = "Nexus Arcade";
+
+    // Patch 7.4 - Relic - Ermina @ Phantom Village
+    private static readonly Vector3 RelicVendorPosition = new(40.204746f, -1.19920929f, 19.514793f);
+    private const uint RelicVendorDataID = 1053904u;
+    private const uint RelicVendorTerritoryID = 1278u;
+    private const string RelicVendorAetheriteName = "Phantom Village";
 
     // Pointers for game instances to open and interact with windows 
     private unsafe AtkUnitBase* AddonSelectIconString = null;
@@ -40,27 +46,29 @@ public class AutoSpendTomestoneAction : BaseAction
         {
             if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
                 return false;
-        }
 
-        // Reset state before starting
-        unsafe
-        {
+            // Reset state before starting
             AddonSelectIconString = null;
             AddonShopExchangeCurrency = null;
         }
+
+        var (position, territoryID, aetheriteName) = GetVendorLocation(itemToBuy.NPC);
+        var (vendorId, sectionId) = GetVendorInteractData(itemToBuy.NPC);
+
+        LogDebug($"Queueing buy attempt tasks for: [position: {position}, territory: {territoryID}, aetherite: {aetheriteName}, vendorId: {vendorId}, sectionId: {sectionId}]");
 
         Enqueue(() =>
         {
             if (EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500))
                 return false;
 
-            if (Player.Territory.RowId == VendorTerritoryID)
+            if (Player.Territory.RowId == territoryID)
                 return true;
 
             if (LifestreamIPC.IsBusy())
                 return false;
 
-            LifestreamIPC.ExecuteCommand(VendorAetheriteName);
+            LifestreamIPC.ExecuteCommand(aetheriteName);
 
             return true;
         }, "start moving to territory");
@@ -70,11 +78,11 @@ public class AutoSpendTomestoneAction : BaseAction
             if (EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500))
                 return false;
 
-            return Player.Territory.RowId == VendorTerritoryID && PlayerHelper.IsReady && !LifestreamIPC.IsBusy();
+            return Player.Territory.RowId == territoryID && PlayerHelper.IsReady && !LifestreamIPC.IsBusy();
         }, "waiting for player to be in territory");
 
         Enqueue(
-            () => MovementHelper.MoveTo(VendorPosition),
+            () => MovementHelper.MoveTo(position),
             "start moving to npc location",
             LongTaskTimeout
         );
@@ -84,14 +92,14 @@ public class AutoSpendTomestoneAction : BaseAction
             if (EzThrottler.Throttle("OpeningTomestoneVendorWindow", 250))
                 return false;
 
-            var vendor = ObjectHelper.FindGameObject(VendorDataID, VendorPosition);
+            var vendor = ObjectHelper.FindGameObject(vendorId, position);
             if (vendor == null)
                 return false;
 
             unsafe
             {
                 if (GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString))
-                    AddonHelper.ClickSelectIconString(VendorSelectionIndex);
+                    AddonHelper.ClickSelectIconString(sectionId);
                 else if (GenericHelpers.TryGetAddonByName("ShopExchangeCurrency", out AddonShopExchangeCurrency) && GenericHelpers.IsAddonReady(AddonShopExchangeCurrency))
                     return true;
                 else if (!GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString))
@@ -149,5 +157,25 @@ public class AutoSpendTomestoneAction : BaseAction
         }, "close window");
 
         return true;
+    }
+
+    protected static (Vector3, uint, string) GetVendorLocation(TomestoneNPC npc)
+    {
+        return npc switch
+        {
+            TomestoneNPC.Material => (MaterialVendorPosition, MaterialVendorTerritoryID, MaterialVendorAetheriteName),
+            TomestoneNPC.Relic => (RelicVendorPosition, RelicVendorTerritoryID, RelicVendorAetheriteName),
+            _ => throw new ArgumentOutOfRangeException(nameof(npc), npc, null)
+        };
+    }
+
+    protected static (uint, int) GetVendorInteractData(TomestoneNPC npc)
+    {
+        return npc switch
+        {
+            TomestoneNPC.Material => (MaterialVendorDataID, MaterialVendorSelectionIndex),
+            TomestoneNPC.Relic => (RelicVendorDataID, 0),
+            _ => throw new ArgumentOutOfRangeException(nameof(npc), npc, null)
+        };
     }
 }
