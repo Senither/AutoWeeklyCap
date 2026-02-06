@@ -1,6 +1,8 @@
-﻿namespace AutoWeeklyCap.IPC;
+﻿// ReSharper disable InconsistentNaming
 
-public static class BossModReborn
+namespace AutoWeeklyCap.IPC;
+
+public static class BossModRebornIPC
 {
     internal const string Name = "BossModReborn";
     internal static bool IsEnabled => IPCSubscriber.IsReady(Name);

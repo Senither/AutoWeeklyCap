@@ -1,9 +1,11 @@
 ﻿using ECommons.EzIpcManager;
 using ECommons.Reflection;
 
+// ReSharper disable InconsistentNaming
+
 namespace AutoWeeklyCap.IPC;
 
-public class IPCSubscriber
+public static class IPCSubscriber
 {
     internal static bool IsReady(string pluginName) =>
         DalamudReflector.TryGetDalamudPlugin(pluginName, out _, false, true);

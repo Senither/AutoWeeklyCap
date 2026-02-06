@@ -350,7 +350,7 @@ public class Runner
 
         AWC.TaskManager.Enqueue(() =>
         {
-            if (AWC.Config.UseBossModRebornAI && BossModReborn.IsEnabled)
+            if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled)
             {
                 AWC.Log.Debug("UseBossModRebornAI is enabled and BossMod Reborn is disabled, enabling AI");
                 ChatHelper.RunCommand("bmrai on");

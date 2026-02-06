@@ -1,7 +1,6 @@
 ﻿using ECommons.EzIpcManager;
 
 // ReSharper disable InconsistentNaming
-
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value null
 

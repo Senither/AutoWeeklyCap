@@ -1,6 +1,8 @@
-﻿namespace AutoWeeklyCap.IPC;
+﻿// ReSharper disable InconsistentNaming
 
-public class RotationSolverReborn
+namespace AutoWeeklyCap.IPC;
+
+public static class RotationSolverRebornIPC
 {
     internal const string Name = "RotationSolver";
     internal static bool IsEnabled => IPCSubscriber.IsReady(Name);

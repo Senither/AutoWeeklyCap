@@ -41,7 +41,7 @@ public static class DutyOptionsUi
         InformationTooltip.Draw(() =>
         {
             ImGui.Text("When enabled, the ");
-            StatusText.Draw(BossModReborn.IsEnabled, "BossMod Reborn AI");
+            StatusText.Draw(BossModRebornIPC.IsEnabled, "BossMod Reborn AI");
             ImGui.Text(" will be used for ");
             StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
             ImGui.Text(" over the default AI");

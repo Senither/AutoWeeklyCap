@@ -1,12 +1,16 @@
 ﻿using ECommons.EzIpcManager;
 
+// ReSharper disable InconsistentNaming
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value null
+
 namespace AutoWeeklyCap.IPC;
 
 public static class DeliverooIPC
 {
     internal const string Name = "Deliveroo";
 
-    public static readonly EzIPCDisposalToken[] disposalTokens =
+    internal static readonly EzIPCDisposalToken[] disposalTokens =
         EzIPC.Init(typeof(DeliverooIPC), Name, SafeWrapper.IPCException);
 
     internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
@@ -28,3 +32,6 @@ public static class DeliverooIPC
 
     internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
 }
+
+#pragma warning restore CS8618
+#pragma warning restore CS0649

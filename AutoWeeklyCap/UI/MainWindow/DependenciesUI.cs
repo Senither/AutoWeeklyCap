@@ -31,12 +31,12 @@ internal static class DependenciesUI
     private static readonly List<PluginInformation> RecommendedPlugins =
     [
         new(
-            PluginName: BossModReborn.Name,
+            PluginName: BossModRebornIPC.Name,
             Description: "Better combat AI for dodging and avoiding attacks while in duties.",
             RepositoryUrl: "https://github.com/FFXIV-CombatReborn/BossmodReborn"
         ),
         new(
-            PluginName: RotationSolverReborn.Name,
+            PluginName: RotationSolverRebornIPC.Name,
             Description: "Better combat rotation solver, making duty runs quicker and more seamless.",
             RepositoryUrl: "https://github.com/FFXIV-CombatReborn/RotationSolverReborn"
         ),
@@ -56,7 +56,7 @@ internal static class DependenciesUI
             RepositoryUrl: "https://github.com/VeraNala/Deliveroo"
         ),
         new(
-            PluginName: NoKillPlugin.Name,
+            PluginName: NoKillPluginIPC.Name,
             Description: "Prevents the game from closing when getting lobby errors (Prolonged network issues)",
             RepositoryUrl: "https://github.com/Bluefissure/NoKillPlugin"
         ),

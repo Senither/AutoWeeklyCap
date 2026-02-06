@@ -77,7 +77,7 @@ public static class GeneralOptionsUi
             ImGui.Text("attempt to log back into your character and restart the runner.");
             ImGui.Text("");
             ImGui.Text("Note: It's recommended that ");
-            StatusText.Draw(NoKillPlugin.IsEnabled, "No Kill Plugin");
+            StatusText.Draw(NoKillPluginIPC.IsEnabled, "No Kill Plugin");
             ImGui.Text(" is enabled when using the feature");
             ImGui.Text("to allow recovering for prolonged internet loss without the game closing");
         });

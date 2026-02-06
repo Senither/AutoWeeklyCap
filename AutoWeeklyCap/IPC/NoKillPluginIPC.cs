@@ -1,6 +1,8 @@
-﻿namespace AutoWeeklyCap.IPC;
+﻿// ReSharper disable InconsistentNaming
 
-public static class NoKillPlugin
+namespace AutoWeeklyCap.IPC;
+
+public static class NoKillPluginIPC
 {
     internal const string Name = "NoKillPlugin";
     internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
