@@ -152,6 +152,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         TaskManager.Dispose();
 
         ECommonsMain.Dispose();
+        IPCSubscriber.Dispose();
 
         CommandManager.RemoveHandler(CommandNameShort);
         CommandManager.RemoveHandler(CommandNameLong);
