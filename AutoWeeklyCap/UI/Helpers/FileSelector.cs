@@ -7,6 +7,8 @@ namespace AutoWeeklyCap.UI.Helpers;
 
 public static class FileSelector
 {
+    internal const string AudioFilter = "Select audio track|*.3g2;*.3gp;*.3gp2;*.3gpp;*.asf;*.wma;*.wmv;*.aac;*.adts;*.avi;*.mp3;*.m4a;*.m4v;*.mov;*.mp4;*.sami;*.smi;*.wav;*.aiff";
+
     private static readonly ConcurrentDictionary<string, bool> OpenDialogs = new();
     private static readonly ConcurrentQueue<(string id, string? selectedPath)> Results = [];
 

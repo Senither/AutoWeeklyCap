@@ -94,7 +94,7 @@ internal static class DebugUI
         ImGui.Text("Select the file that should be played:");
         ImGui.InputText("###audio-file-path", ref DebugAudioFilePath, 1000);
         ImGui.SameLine();
-        FileSelector.Draw("Test", ref DebugAudioFilePath, filter: $"Select audio track|*.3g2;*.3gp;*.3gp2;*.3gpp;*.asf;*.wma;*.wmv;*.aac;*.adts;*.avi;*.mp3;*.m4a;*.m4v;*.mov;*.mp4;*.sami;*.smi;*.wav;*.aiff");
+        FileSelector.Draw("debug-audio-file-selector", ref DebugAudioFilePath, filter: FileSelector.AudioFilter);
         ImGui.Spacing();
 
         ImGui.Text("Audio volume:");

@@ -56,6 +56,13 @@ public class Configuration : IPluginConfiguration
 
     // Runner Options (Notification Master)
     public bool NotificationMasterEnabled { get; set; } = false;
+    public bool NotificationMasterUsingFlashTaskbarIcon { get; set; } = false;
+    public bool NotificationMasterUsingToastNotification { get; set; } = false;
+    public bool NotificationMasterUsingPlaySound { get; set; } = false;
+    public bool NotificationMasterUsingPlaySoundOptionRepeat { get; set; } = false;
+    public bool NotificationMasterUsingPlaySoundOptionStopOnFocus { get; set; } = false;
+    public uint NotificationMasterUsingPlaySoundOptionVolume { get; set; } = 50;
+    public string NotificationMasterUsingPlaySoundOptionFilePath { get; set; } = "";
 
     public void Save()
     {

@@ -251,8 +251,61 @@ public static class RunnerPrerequisitesUi
         {
             ImGui.Spacing();
 
-            ImGui.Text("When do you want to be notified?");
-            ImGui.Checkbox("When all characters are capped", ref useNotificationMaster);
+            ImGui.Text("How do you want to be notified?");
+
+            var usingFlashTaskbarIcon = AWC.Config.NotificationMasterUsingFlashTaskbarIcon;
+            if (ImGui.Checkbox("Flash the taskbar icon", ref usingFlashTaskbarIcon))
+                AWC.Config.NotificationMasterUsingFlashTaskbarIcon = usingFlashTaskbarIcon;
+
+            var usingToastNotification = AWC.Config.NotificationMasterUsingToastNotification;
+            if (ImGui.Checkbox("Send a toast notification", ref usingToastNotification))
+                AWC.Config.NotificationMasterUsingToastNotification = usingToastNotification;
+
+            var usingPlaySound = AWC.Config.NotificationMasterUsingPlaySound;
+            if (ImGui.Checkbox("Play audio track", ref usingPlaySound))
+                AWC.Config.NotificationMasterUsingPlaySound = usingPlaySound;
+
+            Disabled.Draw(!AWC.Config.NotificationMasterUsingPlaySound, () =>
+            {
+                var usingPlaySoundOptionFilePath = AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath;
+                ImGui.Text("Select the file that should be played:");
+                ImGui.InputText("###audio-file-path", ref usingPlaySoundOptionFilePath, 1000);
+                ImGui.SameLine();
+                if (FileSelector.Draw("runner-audio-file-selector", ref usingPlaySoundOptionFilePath, filter: FileSelector.AudioFilter))
+                    AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath = usingPlaySoundOptionFilePath;
+
+                Disabled.Draw(AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath.Length == 0, () =>
+                {
+                    if (ImGui.Button("Test"))
+                    {
+                        NotificationMasterIPC.SendPlaySound(
+                            AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath,
+                            AWC.Config.NotificationMasterUsingPlaySoundOptionVolume / 100f,
+                            false, false
+                        );
+                    }
+
+                    ImGui.SameLine();
+
+                    if (ImGui.Button("Stop"))
+                        NotificationMasterIPC.SendStopSound();
+                });
+
+                ImGui.Text("Audio volume:");
+                var usingPlaySoundOptionVolume = AWC.Config.NotificationMasterUsingPlaySoundOptionVolume;
+                if (Range.Draw("###runner-option-audio-volume", ref usingPlaySoundOptionVolume, 1, 100, "%d%%"))
+                    AWC.Config.NotificationMasterUsingPlaySoundOptionVolume = usingPlaySoundOptionVolume;
+
+                var usingPlaySoundOptionRepeat = AWC.Config.NotificationMasterUsingPlaySoundOptionRepeat;
+                if (ImGui.Checkbox("Repeat audio track", ref usingPlaySoundOptionRepeat))
+                    AWC.Config.NotificationMasterUsingPlaySoundOptionRepeat = usingPlaySoundOptionRepeat;
+
+                ImGui.SameLine();
+
+                var usingPlaySoundOptionStopOnFocus = AWC.Config.NotificationMasterUsingPlaySoundOptionStopOnFocus;
+                if (ImGui.Checkbox("Stop on game focus", ref usingPlaySoundOptionStopOnFocus))
+                    AWC.Config.NotificationMasterUsingPlaySoundOptionStopOnFocus = usingPlaySoundOptionStopOnFocus;
+            }, 12);
         });
     }
 }
