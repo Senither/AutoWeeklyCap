@@ -3,6 +3,8 @@ using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.UI.Helpers;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 
+// ReSharper disable InconsistentNaming
+
 namespace AutoWeeklyCap.UI.MainWindow;
 
 internal static class DebugUI
@@ -12,6 +14,7 @@ internal static class DebugUI
         Card.DrawSubtle("Plugin Details", DrawPluginDetails, collapsible: false);
         Card.DrawSubtle("Runner Debug Steps", DrawRunnerDebugSteps, collapsible: false);
         Card.DrawSubtle("Runner Debug Actions", DrawRunnerDebugActions, collapsible: false);
+        Card.DrawSubtle("Notification Debug Actions", DrawNotificationDebugActions, collapsible: false);
         Card.DrawSubtle("Game Data State", DrawGameDataState, collapsible: false);
     }
 
@@ -39,6 +42,41 @@ internal static class DebugUI
         DebugButton("NPC Repair", () => ActionInstance.NpcRepair.Invoke());
         DebugButton("Spend Tomestones", () => ActionInstance.SpendTomestone.Invoke());
         DebugButton("Deliveroo", () => ActionInstance.Deliveroo.Invoke());
+    }
+
+    private static void DrawNotificationDebugActions()
+    {
+        DebugButton("Flash Taskbar Icon", () =>
+        {
+            AWC.TaskManager.EnqueueDelay(1500);
+            AWC.TaskManager.Enqueue(NotificationMasterIPC.SendFlashTaskbarIcon);
+        }, false);
+
+        DebugButton("Display Toast Notification", () =>
+        {
+            AWC.TaskManager.EnqueueDelay(1500);
+            AWC.TaskManager.Enqueue(() =>
+            {
+                NotificationMasterIPC.SendDisplayToastNotification(
+                    "AWC: Test message title",
+                    "AWC: Test message body"
+                );
+            });
+        });
+
+        DebugButton("Play Sound", () =>
+        {
+            AWC.TaskManager.EnqueueDelay(1500);
+            AWC.TaskManager.Enqueue(() =>
+            {
+                // NotificationMasterIPC.SendPlaySound(
+                //     "C:\\Users\\alexis\\Desktop\\Test\\madcow.wav",
+                //     .10f,
+                //     false,
+                //     true
+                // );
+            });
+        });
     }
 
     private static void DrawGameDataState()

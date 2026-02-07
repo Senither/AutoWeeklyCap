@@ -16,6 +16,7 @@ public static class IPCSubscriber
         GenericHelpers.Safe(AutoRetainerIPC.Dispose);
         GenericHelpers.Safe(DeliverooIPC.Dispose);
         GenericHelpers.Safe(LifestreamIPC.Dispose);
+        GenericHelpers.Safe(NotificationMasterIPC.Dispose);
         GenericHelpers.Safe(VNavMeshIPC.Dispose);
     }
 

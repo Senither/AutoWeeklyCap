@@ -54,6 +54,9 @@ public class Configuration : IPluginConfiguration
     public bool DeliverooOnInterval { get; set; } = false;
     public uint DeliverooRunInterval { get; set; } = 2;
 
+    // Runner Options (Notification Master)
+    public bool NotificationMasterEnabled { get; set; } = false;
+
     public void Save()
     {
         AWC.PluginInterface.SavePluginConfig(this);

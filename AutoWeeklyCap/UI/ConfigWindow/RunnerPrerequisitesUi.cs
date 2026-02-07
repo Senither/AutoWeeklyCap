@@ -17,6 +17,7 @@ public static class RunnerPrerequisitesUi
 
         Card.DrawSubtle("Auto Retainer###runner-prereq-auto-retainer", DrawAutoRetainer);
         Card.DrawSubtle("Deliveroo###runner-prereq-deliveroo", DrawDeliveroo);
+        Card.DrawSubtle("Notification Master###runner-prereq-notification-master", DrawNotificationMaster);
     }
 
     private static void DrawGeneralOptions()
@@ -225,6 +226,33 @@ public static class RunnerPrerequisitesUi
             var runOnFirstLoop = AWC.Config.DeliverooRunOnFirstLoop;
             if (ImGui.Checkbox("Always run before the first AutoDuty run", ref runOnFirstLoop))
                 AWC.Config.DeliverooRunOnFirstLoop = runOnFirstLoop;
+        });
+    }
+
+    private static void DrawNotificationMaster()
+    {
+        ImGui.Spacing();
+
+        var useNotificationMaster = AWC.Config.NotificationMasterEnabled;
+        if (ImGui.Checkbox("Use Notification Master", ref useNotificationMaster))
+            AWC.Config.NotificationMasterEnabled = useNotificationMaster;
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When enabled the runner will send notifications outside the game");
+            ImGui.Text("when the runner has finished capping all your characters");
+
+            ImGui.Text("Requires ");
+            StatusText.Draw(NotificationMasterIPC.IsEnabled, "Notification Master");
+            ImGui.Text(" to be enabled");
+        });
+
+        Disabled.Draw(!AWC.Config.NotificationMasterEnabled, () =>
+        {
+            ImGui.Spacing();
+
+            ImGui.Text("When do you want to be notified?");
+            ImGui.Checkbox("When all characters are capped", ref useNotificationMaster);
         });
     }
 }

@@ -19,6 +19,8 @@ namespace AutoWeeklyCap;
 public sealed class AutoWeeklyCap : IDalamudPlugin
 {
     internal const string Name = "Auto Weekly Cap";
+    internal const string InternalName = "AutoWeeklyCap";
+
     internal static AWC Instance = null!;
     internal const int CurrentMaxLevel = 100;
 
