@@ -482,6 +482,8 @@ public class Runner
             return;
         }
 
+        ActionInstance.Notification.ForceInvoke();
+
         if (AWC.Config.StopAction == StopAction.StartUnlimitedRuns)
         {
             unlimited = true;

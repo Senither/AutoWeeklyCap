@@ -9,6 +9,13 @@ public abstract class BaseAction
     protected abstract string Name { get; }
     protected virtual string[] AddonsToClose { get; } = [];
 
+    /// <summary>
+    /// Will first check if the player is both valid and not between loading zones,
+    /// then attempt to run the action which will queue all the tasks within the
+    /// task manager, and then finally close all the addons the action might
+    /// interact with to ensure all the addons are in the correct state.
+    /// </summary>
+    /// <returns>True if the action was invoked successfully</returns>
     public bool Invoke()
     {
         if (!IsPlayerAvailable())
@@ -22,6 +29,14 @@ public abstract class BaseAction
 
         return true;
     }
+
+    /// <summary>
+    /// Will invoke the run method while skipping all the validation checks to
+    /// ensure the player is logged in, valid, and addons that the action
+    /// might interact with are closed and in the right state.
+    /// </summary>
+    /// <returns>True if the action was invoked successfully</returns>
+    public bool ForceInvoke() => Run();
 
     protected abstract bool Run();
 

@@ -47,7 +47,9 @@ internal static class DebugUI
         DebugButton("Self Repair", () => ActionInstance.SelfRepair.Invoke());
         DebugButton("NPC Repair", () => ActionInstance.NpcRepair.Invoke());
         DebugButton("Spend Tomestones", () => ActionInstance.SpendTomestone.Invoke());
-        DebugButton("Deliveroo", () => ActionInstance.Deliveroo.Invoke());
+
+        DebugButton("Deliveroo", () => ActionInstance.Deliveroo.Invoke(), false);
+        DebugButton("Notification", () => ActionInstance.Notification.Invoke());
     }
 
     private static void DrawNotificationDebugActions()
