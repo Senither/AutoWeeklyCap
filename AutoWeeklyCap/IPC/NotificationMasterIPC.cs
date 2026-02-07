@@ -32,6 +32,12 @@ public static class NotificationMasterIPC
     internal static bool SendPlaySound(string path, float volume, bool repeat, bool stopOnceFocused)
         => IsEnabled && PlaySound(AWC.InternalName, path, volume, repeat, stopOnceFocused);
 
+    [EzIPC]
+    private static Func<string, bool> StopSound;
+
+    internal static bool SendStopSound()
+        => IsEnabled && StopSound(AWC.InternalName);
+
     internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
 }
 

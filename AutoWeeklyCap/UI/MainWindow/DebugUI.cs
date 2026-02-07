@@ -2,6 +2,7 @@
 using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.UI.Helpers;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
+using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 // ReSharper disable InconsistentNaming
 
@@ -9,6 +10,11 @@ namespace AutoWeeklyCap.UI.MainWindow;
 
 internal static class DebugUI
 {
+    private static string DebugAudioFilePath = "";
+    private static uint DebugAudioVolume = 50;
+    private static bool DebugAudioRepeat = false;
+    private static bool DebugAudioStopOnFocus = false;
+
     internal static void Draw()
     {
         Card.DrawSubtle("Plugin Details", DrawPluginDetails, collapsible: false);
@@ -69,14 +75,36 @@ internal static class DebugUI
             AWC.TaskManager.EnqueueDelay(1500);
             AWC.TaskManager.Enqueue(() =>
             {
-                // NotificationMasterIPC.SendPlaySound(
-                //     "C:\\Users\\alexis\\Desktop\\Test\\madcow.wav",
-                //     .10f,
-                //     false,
-                //     true
-                // );
+                NotificationMasterIPC.SendPlaySound(
+                    DebugAudioFilePath,
+                    DebugAudioVolume / 100f,
+                    DebugAudioRepeat,
+                    DebugAudioStopOnFocus
+                );
             });
         });
+
+        DebugButton("Stop Sound", () => AWC.TaskManager.Enqueue(NotificationMasterIPC.SendStopSound));
+
+        ImGui.Spacing();
+        ImGui.TextWrapped("All actions except for \"Stop Sound\" has a 1500ms delay");
+
+        Card.Separator();
+
+        ImGui.Text("Select the file that should be played:");
+        ImGui.InputText("###audio-file-path", ref DebugAudioFilePath, 1000);
+        ImGui.SameLine();
+        FileSelector.Draw("Test", ref DebugAudioFilePath, filter: $"Select audio track|*.3g2;*.3gp;*.3gp2;*.3gpp;*.asf;*.wma;*.wmv;*.aac;*.adts;*.avi;*.mp3;*.m4a;*.m4v;*.mov;*.mp4;*.sami;*.smi;*.wav;*.aiff");
+        ImGui.Spacing();
+
+        ImGui.Text("Audio volume:");
+        Range.Draw("###audio-volume", ref DebugAudioVolume, 1, 100, "%d%%");
+        ImGui.Spacing();
+
+        ImGui.Text("Audio options:");
+        ImGui.Checkbox("Should repeat", ref DebugAudioRepeat);
+        ImGui.SameLine();
+        ImGui.Checkbox("Should stop on focus", ref DebugAudioStopOnFocus);
     }
 
     private static void DrawGameDataState()

@@ -80,8 +80,7 @@ public static class FileSelector
                 if (!string.IsNullOrWhiteSpace(initialDirectory))
                     dialog.InitialDirectory = initialDirectory;
 
-                var result = dialog.ShowDialog();
-                if (result == DialogResult.OK)
+                if (dialog.ShowDialog() == DialogResult.OK)
                     Results.Enqueue((id, dialog.FileName));
                 else
                     Results.Enqueue((id, null));
