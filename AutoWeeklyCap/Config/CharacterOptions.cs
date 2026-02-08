@@ -24,4 +24,9 @@ public class CharacterOptions
     {
         return Hidden;
     }
+
+    public bool HasOverrideSettingsEnabled()
+    {
+        return PreferredTomestoneItemName != null;
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Runner;
+using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Interface;
 
 namespace AutoWeeklyCap.UI.MainWindow;
@@ -115,6 +116,13 @@ internal static class CharactersUI
             characterText += $"  ({options.PreferredJob.GetName()})";
 
         ImGui.TextWrapped(characterText);
+
+        if (options.HasOverrideSettingsEnabled())
+        {
+            ImGui.SameLine();
+            ImGuiEx.IconWithText(ColorUtils.HexToVector(0x9B, 0x9B, 0xE9, 0.65f), FontAwesomeIcon.Flask, "");
+        }
+
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - 64 + ImGui.GetStyle().ItemSpacing.X);
 
         ImGui.TextUnformatted($"{tomes}/{weeklyLimit}");
