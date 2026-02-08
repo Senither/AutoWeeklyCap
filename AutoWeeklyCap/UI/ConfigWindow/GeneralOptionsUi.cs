@@ -88,7 +88,7 @@ public static class GeneralOptionsUi
 
         InformationTooltip.Draw(() =>
         {
-            ImGui.Text("When enabled the title screen movie will disabled, regardless");
+            ImGui.Text("When enabled the title screen movie will be disabled, regardless");
             ImGui.Text("of if the runner is actually running or not.");
         });
     }
