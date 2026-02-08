@@ -56,6 +56,11 @@ internal static class DependenciesUI
             RepositoryUrl: "https://github.com/VeraNala/Deliveroo"
         ),
         new(
+            PluginName: NotificationMasterIPC.Name,
+            Description: "Used to send notifications outside the game to notify you when the runner is done, such as making the game icon in the taskbar flash, sending toast notifications, and playing audio.",
+            RepositoryUrl: "https://github.com/NightmareXIV/NotificationMaster"
+        ),
+        new(
             PluginName: NoKillPluginIPC.Name,
             Description: "Prevents the game from closing when getting lobby errors (Prolonged network issues)",
             RepositoryUrl: "https://github.com/Bluefissure/NoKillPlugin"
