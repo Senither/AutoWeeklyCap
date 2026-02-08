@@ -7,7 +7,7 @@ public class DeliverooAction : BaseAction
     protected override string Name => nameof(DeliverooAction);
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "GrandCompanySupplyList", "GrandCompanyExchange", "SelectString"];
 
-    private const int LongTaskTimeout = 120_000;
+    private const int LongTaskTimeout = 450_000; // 7½ minute
 
     protected override bool Run()
     {
