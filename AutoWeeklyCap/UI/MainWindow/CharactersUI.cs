@@ -71,7 +71,12 @@ internal static class CharactersUI
 
         ImGuiEx.LineCentered(
             "TomestoneEta",
-            () => ImGuiEx.Text($"Estimated time to cap ~{etaText}")
+            time.TotalSeconds > 0D
+                ? () => ImGuiEx.Text($"Estimated time to cap {etaText}")
+                : () => ImGui.TextColored(
+                    ColorUtils.HexToUInt(0xFF, 0xFF, 0xFF, 0.45f),
+                    "All your characters are tome capped"
+                )
         );
     }
 
