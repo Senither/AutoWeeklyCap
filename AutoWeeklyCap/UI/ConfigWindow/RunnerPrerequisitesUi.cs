@@ -257,6 +257,12 @@ public static class RunnerPrerequisitesUi
             if (ImGui.Checkbox("Flash the taskbar icon", ref usingFlashTaskbarIcon))
                 AWC.Config.NotificationMasterUsingFlashTaskbarIcon = usingFlashTaskbarIcon;
 
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text("When enabled and the game is not the main focus, the taskbar icon will");
+                ImGui.Text("begin to flash until you manually focus the game window again");
+            });
+
             var usingToastNotification = AWC.Config.NotificationMasterUsingToastNotification;
             if (ImGui.Checkbox("Send a toast notification", ref usingToastNotification))
                 AWC.Config.NotificationMasterUsingToastNotification = usingToastNotification;
@@ -269,8 +275,12 @@ public static class RunnerPrerequisitesUi
             {
                 var usingPlaySoundOptionFilePath = AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath;
                 ImGui.Text("Select the file that should be played:");
-                ImGui.InputText("###audio-file-path", ref usingPlaySoundOptionFilePath, 1000);
+
+                if (ImGui.InputText("###audio-file-path", ref usingPlaySoundOptionFilePath, 1000))
+                    AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath = usingPlaySoundOptionFilePath;
+
                 ImGui.SameLine();
+
                 if (FileSelector.Draw("runner-audio-file-selector", ref usingPlaySoundOptionFilePath, filter: FileSelector.AudioFilter))
                     AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath = usingPlaySoundOptionFilePath;
 
@@ -291,7 +301,7 @@ public static class RunnerPrerequisitesUi
                         NotificationMasterIPC.SendStopSound();
                 });
 
-                ImGui.Text("Audio volume:");
+                ImGui.Text("Sound volume:");
                 var usingPlaySoundOptionVolume = AWC.Config.NotificationMasterUsingPlaySoundOptionVolume;
                 if (Range.Draw("###runner-option-audio-volume", ref usingPlaySoundOptionVolume, 1, 100, "%d%%"))
                     AWC.Config.NotificationMasterUsingPlaySoundOptionVolume = usingPlaySoundOptionVolume;
@@ -300,12 +310,27 @@ public static class RunnerPrerequisitesUi
                 if (ImGui.Checkbox("Repeat audio track", ref usingPlaySoundOptionRepeat))
                     AWC.Config.NotificationMasterUsingPlaySoundOptionRepeat = usingPlaySoundOptionRepeat;
 
+                InformationTooltip.Draw(() =>
+                {
+                    ImGui.Text("When enabled, the audio track will repeat endlessly until an action is made to stop it, such as");
+                    ImGui.Text("using the \"Stop on game focus\" option, or clicking on the \"Stop\" button manually.");
+                    ImGui.Text("");
+                    ImGui.Text("Note: It's recommended to use the \"Stop on game focus\" option along with the repeat,");
+                    ImGui.Text("to prevent the audio from looping endlessly without manual intervetion.");
+                });
+
                 ImGui.SameLine();
 
                 var usingPlaySoundOptionStopOnFocus = AWC.Config.NotificationMasterUsingPlaySoundOptionStopOnFocus;
                 if (ImGui.Checkbox("Stop on game focus", ref usingPlaySoundOptionStopOnFocus))
                     AWC.Config.NotificationMasterUsingPlaySoundOptionStopOnFocus = usingPlaySoundOptionStopOnFocus;
-            }, 12);
+
+                InformationTooltip.Draw(() =>
+                {
+                    ImGui.Text("When enabled, the sound will only be played while the game window is not in focus, and will");
+                    ImGui.Text("be stopped automatically as soon as the game window becomes the main focus target");
+                });
+            }, indent: 12);
         });
     }
 }
