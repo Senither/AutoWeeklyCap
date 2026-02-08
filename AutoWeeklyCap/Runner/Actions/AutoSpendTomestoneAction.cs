@@ -31,7 +31,15 @@ public class AutoSpendTomestoneAction : BaseAction
 
     protected override bool Run()
     {
-        var itemToBuy = TomestoneItemHelper.GetTomestoneItemFromName(AWC.Config.SpendUncappedTomestoneItemName);
+        var name = PlayerHelper.GetFullCharacterName();
+        if (name is null)
+            return false;
+
+        var itemToBuy = TomestoneItemHelper.GetTomestoneItemFromNames(
+            AWC.Config.GetOrRegisterCharacterOptions(name).PreferredTomestoneItemName,
+            AWC.Config.SpendUncappedTomestoneItemName
+        );
+
         if (itemToBuy == null)
             return false;
 

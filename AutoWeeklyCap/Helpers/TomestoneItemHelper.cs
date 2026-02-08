@@ -63,6 +63,15 @@ public static class TomestoneItemHelper
         return Items;
     }
 
+    public static TomestoneItem? GetTomestoneItemFromNames(string? first, string? second)
+    {
+        var item = GetTomestoneItemFromName(first);
+        if (item != null)
+            return item;
+
+        return GetTomestoneItemFromName(second);
+    }
+
     public static TomestoneItem? GetTomestoneItemFromName(string? name)
     {
         if (name == null)

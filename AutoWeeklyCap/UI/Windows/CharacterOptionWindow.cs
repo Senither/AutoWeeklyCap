@@ -124,9 +124,8 @@ public class CharacterOptionWindow : Window, IDisposable
 
     private void DrawCharacterPreferences(CharacterOptions options)
     {
-        ImGui.TextWrapped("Preferred job");
-
-        if (ImGui.BeginCombo($"###selected-duty", options.PreferredJob.GetName()))
+        ImGui.Text("Preferred job");
+        if (ImGui.BeginCombo($"###selected-duty-job", options.PreferredJob.GetName()))
         {
             foreach (var job in PlayerJobExtensions.GetValues())
             {
@@ -139,10 +138,35 @@ public class CharacterOptionWindow : Window, IDisposable
             ImGui.EndCombo();
         }
 
-        InformationTooltip.Draw(
-            "Automatically swaps to your preferred job before starting AutoDuty\n" +
-            "If none is selected your job will not be changed"
-        );
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Automatically swaps to your preferred job before starting AutoDuty");
+            ImGui.Text("If none is selected your job will not be changed");
+        });
+
+        ImGui.Text("Preferred items to buy");
+        if (ImGui.BeginCombo($"###selected-item-name", options.PreferredTomestoneItemName ?? "Use default"))
+        {
+            if (ImGui.Selectable("Use default", options.PreferredTomestoneItemName == null))
+                options.PreferredTomestoneItemName = null;
+            if (ImGui.Selectable("--------------------------------"))
+                options.PreferredTomestoneItemName = null;
+
+            foreach (var item in TomestoneItemHelper.GetTomestoneItems())
+            {
+                if (ImGui.Selectable(item.Name, options.PreferredTomestoneItemName == item.Name))
+                    options.PreferredTomestoneItemName = item.Name;
+            }
+
+            ImGui.EndCombo();
+        }
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Buys the selected item for this characters with tomestones instead");
+            ImGui.Text("of the item selected for all characters in the plugin settings");
+            ImGui.Text("Overrides the \"Runner Options\" > \"Item to buy\" option");
+        });
     }
 
     private void DrawCharacterRemoval()
