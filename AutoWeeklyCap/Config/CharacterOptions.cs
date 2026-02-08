@@ -10,6 +10,7 @@ public class CharacterOptions
     public PlayerJob PreferredJob { get; set; } = PlayerJob.None;
     public string? PreferredTomestoneItemName { get; set; } = null;
     public uint Position { get; set; } = 0;
+    public List<int> LastDutyDurationsSeconds { get; set; } = new();
 
     /// <summary>
     /// Checks if the character is both enabled and not hidden
@@ -28,5 +29,17 @@ public class CharacterOptions
     public bool HasOverrideSettingsEnabled()
     {
         return PreferredTomestoneItemName != null;
+    }
+
+    public void AddDutyDurationSeconds(int durationSeconds)
+    {
+        if (durationSeconds <= 0)
+            return;
+
+        LastDutyDurationsSeconds.Add(durationSeconds);
+
+        const int maxSamples = 5;
+        while (LastDutyDurationsSeconds.Count > maxSamples)
+            LastDutyDurationsSeconds.RemoveAt(0);
     }
 }

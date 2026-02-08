@@ -14,6 +14,7 @@ public class Runner
     private string? currentCharacter = null;
     private DateTime timestamp;
     private int runsCounter = 0;
+    public DateTime? CurrentDutyStartUtc { get; private set; }
 
     public bool Start()
     {
@@ -114,6 +115,7 @@ public class Runner
         stopGracefully = false;
         unlimited = false;
         runsCounter = 0;
+        CurrentDutyStartUtc = null;
 
         LifestreamIPC.Abort();
         AutoDutyIPC.Stop();
@@ -368,6 +370,8 @@ public class Runner
                     AWC.Log.Debug("Player detected in the duty zone, switching to RunningAutoDuty stage");
                     state = State.RunningAutoDuty;
 
+                    CurrentDutyStartUtc ??= DateTime.UtcNow;
+
                     if (AutoDutyIPC.IsStopped())
                         AutoDutyIPC.Run(AWC.Config.ZoneId, 1, false);
 
@@ -456,6 +460,17 @@ public class Runner
             return;
 
         AWC.Log.Debug("AutoDuty has complete a run, switching to preparations stage");
+
+        if (CurrentDutyStartUtc.HasValue && currentCharacter != null)
+        {
+            var durationSeconds = (int)(DateTime.UtcNow - CurrentDutyStartUtc.Value).TotalSeconds;
+            AWC.Log.Debug($"Finished the run in {durationSeconds} seconds");
+
+            AWC.Config.GetOrRegisterCharacterOptions(currentCharacter).AddDutyDurationSeconds(durationSeconds);
+            AWC.Config.Save();
+        }
+
+        CurrentDutyStartUtc = null;
         runsCounter++;
         state = State.PreparingRunner;
     }

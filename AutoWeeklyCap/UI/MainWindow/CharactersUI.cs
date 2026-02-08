@@ -7,11 +7,15 @@ namespace AutoWeeklyCap.UI.MainWindow;
 
 internal static class CharactersUI
 {
+    private const int TomesPerRun = 50;
+    private const int DefaultRunSeconds = 24 * 60;
+
     internal static void Draw()
     {
         var charactersEnabled = 0;
         var totalTomesCollected = 0;
         var weeklyTomeLimit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
+        var totalEtaSeconds = 0.0;
 
         foreach (var character in AWC.Config.GetSortedCharacters())
         {
@@ -22,7 +26,20 @@ internal static class CharactersUI
             var characterTomes = AWC.Config.GetWeeklyTomes(character);
 
             if (option.IsEnabled())
+            {
                 totalTomesCollected += characterTomes;
+
+                var remainingTomes = Math.Max(0, weeklyTomeLimit - characterTomes);
+                var runsNeeded = (int)Math.Ceiling(remainingTomes / (double)TomesPerRun);
+                var averageSeconds = DefaultRunSeconds;
+
+                if (option.LastDutyDurationsSeconds.Count > 0)
+                    // Adding 30 seconds to the timer to account for waiting time outside
+                    // the instance, AutoRetainer, repairs, extracting, etc
+                    averageSeconds = (int)option.LastDutyDurationsSeconds.Average() + 30;
+
+                totalEtaSeconds += runsNeeded * averageSeconds;
+            }
 
             if (option.IsEnabled())
                 charactersEnabled++;
@@ -39,8 +56,22 @@ internal static class CharactersUI
 
         ImGuiEx.LineCentered(
             "TomestoneCap",
-            () => ImGuiEx.Text($"Weekly tomestone cap is at {totalTomesCollected}/{weeklyTomeLimit * charactersEnabled}"
-            )
+            () => ImGuiEx.Text($"Weekly tomestone cap is at {totalTomesCollected}/{weeklyTomeLimit * charactersEnabled}")
+        );
+
+        var time = TimeSpan.FromSeconds(totalEtaSeconds);
+        if (AWC.Runner.CurrentDutyStartUtc != null)
+            time -= DateTime.UtcNow - AWC.Runner.CurrentDutyStartUtc.Value;
+
+        var etaText = time switch
+        {
+            { TotalDays: >= 1 } => $"{(int)time.TotalDays}d {time.Hours}h {time.Minutes}m",
+            _ => $"{time.Hours}h {time.Minutes}m {time.Seconds}s",
+        };
+
+        ImGuiEx.LineCentered(
+            "TomestoneEta",
+            () => ImGuiEx.Text($"Estimated time to cap ~{etaText}")
         );
     }
 
