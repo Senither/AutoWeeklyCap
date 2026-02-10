@@ -9,7 +9,7 @@ public class ExtractAction : BaseAction
     protected override string Name => nameof(ExtractAction);
     protected override string[] AddonsToClose { get; } = ["MaterializeDialog", "Materialize", "SelectYesno", "SelectString"];
 
-    protected override bool Run()
+    protected override bool Run(params object[] args)
     {
         if (!QuestManager.IsQuestComplete(66174))
         {

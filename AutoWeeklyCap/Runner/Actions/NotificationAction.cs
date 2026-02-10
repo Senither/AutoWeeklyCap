@@ -4,7 +4,7 @@ public class NotificationAction : BaseAction
 {
     protected override string Name => nameof(NotificationAction);
 
-    protected override bool Run()
+    protected override bool Run(params object[] args)
     {
         if (!AWC.Config.NotificationMasterEnabled || !NotificationMasterIPC.IsEnabled)
             return false;

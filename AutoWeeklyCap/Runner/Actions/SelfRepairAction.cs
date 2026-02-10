@@ -7,7 +7,7 @@ public class SelfRepairAction : BaseAction
     protected override string Name => nameof(SelfRepairAction);
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "Repair", "SelectString"];
 
-    protected override bool Run()
+    protected override bool Run(params object[] args)
     {
         if (!PlayerHelper.CanSelfRepairWithCrafters)
         {

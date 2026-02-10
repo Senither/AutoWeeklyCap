@@ -15,7 +15,7 @@ public class NpcRepairAction : BaseAction
     private static unsafe AtkUnitBase* AddonSelectYesno = null;
     private static unsafe AtkUnitBase* AddonSelectIconString = null;
 
-    protected override bool Run()
+    protected override bool Run(params object[] args)
     {
         if (InventoryHelper.GetItemsNeedingRepairCount(99) == 0)
             return false;

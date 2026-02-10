@@ -9,7 +9,7 @@ public class DeliverooAction : BaseAction
 
     private const int LongTaskTimeout = 450_000; // 7½ minute
 
-    protected override bool Run()
+    protected override bool Run(params object[] args)
     {
         if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled || !DeliverooIPC.IsEnabled)
             return false;

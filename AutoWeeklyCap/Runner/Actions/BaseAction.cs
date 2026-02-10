@@ -16,12 +16,12 @@ public abstract class BaseAction
     /// interact with to ensure all the addons are in the correct state.
     /// </summary>
     /// <returns>True if the action was invoked successfully</returns>
-    public bool Invoke()
+    public bool Invoke(params object[] args)
     {
         if (!IsPlayerAvailable())
             return false;
 
-        if (!Run())
+        if (!Run(args))
             return false;
 
         if (AddonsToClose.Length > 0)
@@ -36,9 +36,9 @@ public abstract class BaseAction
     /// might interact with are closed and in the right state.
     /// </summary>
     /// <returns>True if the action was invoked successfully</returns>
-    public bool ForceInvoke() => Run();
+    public bool ForceInvoke(params object[] args) => Run(args);
 
-    protected abstract bool Run();
+    protected abstract bool Run(params object[] args);
 
     protected static bool IsPlayerAvailable()
     {

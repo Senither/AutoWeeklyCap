@@ -29,7 +29,7 @@ public class AutoSpendTomestoneAction : BaseAction
     private unsafe AtkUnitBase* AddonSelectIconString = null;
     private unsafe AtkUnitBase* AddonShopExchangeCurrency = null;
 
-    protected override bool Run()
+    protected override bool Run(params object[] args)
     {
         var name = PlayerHelper.GetFullCharacterName();
         if (name is null)
