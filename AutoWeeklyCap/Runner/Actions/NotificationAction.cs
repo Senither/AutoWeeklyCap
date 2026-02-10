@@ -1,13 +1,38 @@
 ﻿namespace AutoWeeklyCap.Runner.Actions;
 
+public enum NotificationType
+{
+    RunnerStopped = 0,
+    CharacterCapped = 1
+}
+
+public static class NotificationTypeExtensions
+{
+    public static string GetMessage(this NotificationType notificationType)
+    {
+        return notificationType switch
+        {
+            NotificationType.CharacterCapped => "The runner has finished capping tomes on all your characters.",
+            NotificationType.RunnerStopped => "The runner has finished a duty tomestone run and has stopped.",
+            _ => throw new ArgumentOutOfRangeException(nameof(notificationType), notificationType, null)
+        };
+    }
+}
+
 public class NotificationAction : BaseAction
 {
     protected override string Name => nameof(NotificationAction);
 
     protected override bool Run(params object[] args)
     {
-        if (!AWC.Config.NotificationMasterEnabled || !NotificationMasterIPC.IsEnabled)
+        if (!NotificationMasterIPC.IsEnabled)
             return false;
+
+        if (args.Length == 0 || args[0] is not NotificationType)
+            return false;
+
+        var type = (NotificationType)args[0];
+        LogDebug($"Called for type: {type}");
 
         EnqueueDelay(500);
 
@@ -19,9 +44,8 @@ public class NotificationAction : BaseAction
         if (AWC.Config.NotificationMasterUsingToastNotification)
         {
             Enqueue(() => NotificationMasterIPC.SendDisplayToastNotification(
-                        AWC.Name,
-                        "The runner has finished capping tomes on all your characters."
-                    ), "Toast notification");
+                        AWC.Name, type.GetMessage()), "Toast notification"
+            );
         }
 
         if (AWC.Config.NotificationMasterUsingPlaySound && AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath.Length > 0)

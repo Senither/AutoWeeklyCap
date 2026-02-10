@@ -470,6 +470,9 @@ public class Runner
             AWC.Config.Save();
         }
 
+        if (stopGracefully && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnRunnerStopped)
+            ActionInstance.Notification.ForceInvoke(Actions.NotificationType.RunnerStopped);
+
         CurrentDutyStartUtc = null;
         runsCounter++;
         state = State.PreparingRunner;
@@ -497,7 +500,8 @@ public class Runner
             return;
         }
 
-        ActionInstance.Notification.ForceInvoke();
+        if (AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnFullyCapped)
+            ActionInstance.Notification.ForceInvoke(Actions.NotificationType.CharacterCapped);
 
         if (AWC.Config.StopAction == StopAction.StartUnlimitedRuns)
         {

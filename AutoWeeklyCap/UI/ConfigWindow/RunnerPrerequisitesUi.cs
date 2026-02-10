@@ -251,6 +251,29 @@ public static class RunnerPrerequisitesUi
         {
             ImGui.Spacing();
 
+            ImGui.Text("When do you want to be notified?");
+
+            var usingOnRunnerStopped = AWC.Config.NotificationMasterUsingOnRunnerStopped;
+            if (ImGui.Checkbox("When the runner is stopped", ref usingOnRunnerStopped))
+                AWC.Config.NotificationMasterUsingOnRunnerStopped = usingOnRunnerStopped;
+
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text("This will notify you when the runner is stopped after a duty,");
+                ImGui.Text("this works great with graceful stopping the runner");
+            });
+
+            var usingOnFullyCapped = AWC.Config.NotificationMasterUsingOnFullyCapped;
+            if (ImGui.Checkbox("When all characters are tome capped", ref usingOnFullyCapped))
+                AWC.Config.NotificationMasterUsingOnFullyCapped = usingOnFullyCapped;
+
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text("This will notify you when all your enabled characters are fully tome");
+                ImGui.Text(" capped, if the stop action is set to unlimited runs it will notify");
+                ImGui.Text(" you and then start the unlimited runs afterwards");
+            });
+
             ImGui.Text("How do you want to be notified?");
 
             var usingFlashTaskbarIcon = AWC.Config.NotificationMasterUsingFlashTaskbarIcon;
