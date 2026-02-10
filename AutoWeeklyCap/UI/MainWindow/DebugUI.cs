@@ -1,4 +1,5 @@
-﻿using AutoWeeklyCap.Listeners;
+﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.Runner.Actions;
 using AutoWeeklyCap.UI.Helpers;
@@ -23,6 +24,7 @@ internal static class DebugUI
         Card.DrawSubtle("Runner Debug Actions", DrawRunnerDebugActions, collapsible: false);
         Card.DrawSubtle("Notification Debug Actions", DrawNotificationDebugActions, collapsible: false);
         Card.DrawSubtle("Game Data State", DrawGameDataState, collapsible: false);
+        Card.DrawDanger("Danger Zone", DrawDangerZone);
     }
 
     private static void DrawPluginDetails()
@@ -170,5 +172,16 @@ internal static class DebugUI
             ImGui.SameLine(0, 0);
             ImGui.Text(" | ");
         }
+    }
+
+    private static void DrawDangerZone()
+    {
+        ImGui.TextWrapped("Clicking the button below will reset the main plugin config file to use the default values, it's recommended that you backup the file if you want to save your current settings.");
+        ImGui.Spacing();
+
+        if (ImGui.Button("Reset Plugin Config") && ImGuiEx.Ctrl)
+            AWC.Instance.Configuration = new Configuration();
+
+        ImGuiEx.Tooltip("Hold down CTRL + Click to reset the plugin configuration to all the default values");
     }
 }

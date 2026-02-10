@@ -55,7 +55,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
     public DtrStatusBar DtrStatusBar { get; init; } = new();
 
-    public Configuration Configuration { get; init; }
+    public Configuration Configuration { get; set; }
 
     public readonly WindowSystem WindowSystem = new("AutoWeeklyCap");
 

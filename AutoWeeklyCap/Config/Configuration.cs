@@ -34,10 +34,10 @@ public class Configuration : IPluginConfiguration
     public string CharacterForSwap { get; set; } = "";
 
     // Runner Options (General)
-    public bool Repair { get; set; } = false;
-    public bool RepairSelf { get; set; } = false;
-    public uint RepairPercentage { get; set; } = 80;
-    public bool Extract { get; set; } = false;
+    public bool Repair { get; set; } = true;
+    public bool RepairSelf { get; set; } = true;
+    public uint RepairPercentage { get; set; } = 50;
+    public bool Extract { get; set; } = true;
     public bool ExtractAll { get; set; } = false;
     public bool SpendUncappedTomestones { get; set; } = false;
     public uint SpendUncappedTomestoneThreshold { get; set; } = 1800;
@@ -51,7 +51,7 @@ public class Configuration : IPluginConfiguration
     // Runner Options (Deliveroo)
     public bool DeliverooEnabled { get; set; } = false;
     public bool DeliverooRunOnFirstLoop { get; set; } = false;
-    public bool DeliverooOnInterval { get; set; } = false;
+    public bool DeliverooOnInterval { get; set; } = true;
     public uint DeliverooRunInterval { get; set; } = 2;
 
     // Runner Options (Notification Master)
