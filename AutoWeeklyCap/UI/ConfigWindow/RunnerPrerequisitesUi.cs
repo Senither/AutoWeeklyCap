@@ -259,8 +259,8 @@ public static class RunnerPrerequisitesUi
 
             InformationTooltip.Draw(() =>
             {
-                ImGui.Text("This will notify you when the runner is stopped after a duty,");
-                ImGui.Text("this works great with graceful stopping the runner");
+                ImGui.Text("This will notify you when the runner is stopped after a duty, this");
+                ImGui.Text("only works when you're also using graceful stopping of the runner");
             });
 
             var usingOnFullyCapped = AWC.Config.NotificationMasterUsingOnFullyCapped;
