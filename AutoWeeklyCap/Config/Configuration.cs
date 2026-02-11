@@ -8,6 +8,7 @@ namespace AutoWeeklyCap.Config;
 public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
+    public bool DevMode { get; set; } = false;
 
     // General Options
     public bool StartRunnerOnBoot { get; set; } = false;
@@ -20,6 +21,7 @@ public class Configuration : IPluginConfiguration
     public bool TrackDisabledCharacters { get; set; } = false;
     public bool HideUiElementChangelog { get; set; } = false;
     public bool HideUiElementDependencies { get; set; } = false;
+    public bool ShowUiElementDebug { get; set; } = false;
 
     // Character & Window storages
     public WindowOptions Window { get; set; } = new();

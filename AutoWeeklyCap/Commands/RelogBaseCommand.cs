@@ -2,14 +2,14 @@
 
 namespace AutoWeeklyCap.Commands;
 
-public class RelogCommand : ICommand
+public class RelogBaseCommand : BaseCommand
 {
-    public string[] Triggers { get; } = ["relog", "r", "switch"];
+    public override string[] Triggers { get; } = ["relog", "r", "switch"];
 
-    public string Description =>
+    public override string Description =>
         "Relogs to the specified character, the character must be a character that AWC already knows about, and must include the full name and homeworld name.";
 
-    public void Run(string[] args)
+    public override void Run(string[] args)
     {
         if (!LifestreamIPC.IsEnabled)
         {

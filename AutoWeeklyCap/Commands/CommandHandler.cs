@@ -4,11 +4,12 @@ namespace AutoWeeklyCap.Commands;
 
 public static class CommandHandler
 {
-    internal static readonly ICommand[] Commands =
+    internal static readonly BaseCommand[] Commands =
     [
-        new StartCommand(),
-        new StopCommand(),
-        new RelogCommand(),
+        new StartBaseCommand(),
+        new StopBaseCommand(),
+        new RelogBaseCommand(),
+        new DevModeBaseCommand(),
     ];
 
     public static void HandleCommand(string stringArgs)
@@ -53,6 +54,9 @@ public static class CommandHandler
             DuoLog.Information("AutoWeeklyCap Commands:");
             foreach (var cmd in Commands)
             {
+                if (cmd.Hidden)
+                    continue;
+
                 DuoLog.Information($" - {cmd.Triggers.Join(" / ")}");
             }
 

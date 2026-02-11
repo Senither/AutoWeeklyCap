@@ -1,11 +1,11 @@
 ﻿namespace AutoWeeklyCap.Commands;
 
-public class StartCommand : ICommand
+public class StartBaseCommand : BaseCommand
 {
-    public string[] Triggers { get; } = ["start", "s"];
-    public string Description => "Start the runner, or resume if it's being stopped gracefully";
+    public override string[] Triggers { get; } = ["start", "s"];
+    public override string Description => "Start the runner, or resume if it's being stopped gracefully";
 
-    public void Run(string[] args)
+    public override void Run(string[] args)
     {
         if (AWC.Runner.IsRunning())
         {

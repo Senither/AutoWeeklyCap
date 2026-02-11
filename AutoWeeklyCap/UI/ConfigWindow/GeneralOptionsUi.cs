@@ -73,6 +73,13 @@ public static class GeneralOptionsUi
         var hideElementChangelog = AWC.Config.HideUiElementChangelog;
         if (ImGui.Checkbox("Hide changelog tab", ref hideElementChangelog))
             AWC.Config.HideUiElementChangelog = hideElementChangelog;
+
+        if (!AWC.Config.DevMode)
+            return;
+
+        var showElementDebug = AWC.Config.ShowUiElementDebug;
+        if (ImGui.Checkbox("Show debug tab", ref showElementDebug))
+            AWC.Config.ShowUiElementDebug = showElementDebug;
     }
 
     private static void NetworkOptions()

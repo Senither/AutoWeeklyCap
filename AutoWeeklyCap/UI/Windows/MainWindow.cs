@@ -91,7 +91,7 @@ public class MainWindow : Window, IDisposable
         if (!AWC.Config.HideUiElementChangelog)
             tabs.Add(("Changelog", ChangelogUI.Draw, null, true));
 
-        if (AWC.PluginInterface.IsDev)
+        if (AWC.Config.DevMode && AWC.Config.ShowUiElementDebug)
             tabs.Add(("Debug", DebugUI.Draw, null, true));
 
         ImGuiEx.EzTabBar("main-awc-tabbar", "Test", tabs.ToArray());
