@@ -18,6 +18,8 @@ public class Configuration : IPluginConfiguration
     public bool ShowStatusInStatusBar { get; set; } = false;
     public bool ShowStatusAsIcons { get; set; } = false;
     public bool TrackDisabledCharacters { get; set; } = false;
+    public bool HideUiElementChangelog { get; set; } = false;
+    public bool HideUiElementDependencies { get; set; } = false;
 
     // Character & Window storages
     public WindowOptions Window { get; set; } = new();

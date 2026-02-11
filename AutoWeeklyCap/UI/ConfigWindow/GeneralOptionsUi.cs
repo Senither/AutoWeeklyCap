@@ -63,6 +63,16 @@ public static class GeneralOptionsUi
             if (ImGui.Checkbox("Show status as icons instead of text", ref iconsDtr))
                 AWC.Config.ShowStatusAsIcons = iconsDtr;
         });
+
+        Card.Separator();
+
+        var hideElementDependencies = AWC.Config.HideUiElementDependencies;
+        if (ImGui.Checkbox("Hide dependencies tab", ref hideElementDependencies))
+            AWC.Config.HideUiElementDependencies = hideElementDependencies;
+
+        var hideElementChangelog = AWC.Config.HideUiElementChangelog;
+        if (ImGui.Checkbox("Hide changelog tab", ref hideElementChangelog))
+            AWC.Config.HideUiElementChangelog = hideElementChangelog;
     }
 
     private static void NetworkOptions()

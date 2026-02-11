@@ -81,12 +81,15 @@ public class MainWindow : Window, IDisposable
         DrawHeaderActionButtons();
 
         var tabs = new List<(string name, Action function, Vector4? color, bool child)>
-        {
-            ("Characters", CharactersUI.Draw, null, true),
-            ("Dependencies", DependenciesUI.Draw, null, true),
-            ("About", AboutTabUi.Draw, null, true),
-            ("Changelog", ChangelogUI.Draw, null, true)
-        };
+            { ("Characters", CharactersUI.Draw, null, true) };
+
+        if (!AWC.Config.HideUiElementDependencies)
+            tabs.Add(("Dependencies", DependenciesUI.Draw, null, true));
+
+        tabs.Add(("About", AboutTabUi.Draw, null, true));
+
+        if (!AWC.Config.HideUiElementChangelog)
+            tabs.Add(("Changelog", ChangelogUI.Draw, null, true));
 
         if (AWC.PluginInterface.IsDev)
             tabs.Add(("Debug", DebugUI.Draw, null, true));
