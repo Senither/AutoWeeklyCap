@@ -517,7 +517,7 @@ public class Runner
             return;
         }
 
-        if (AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnFullyCapped)
+        if (runsCounter > 0 && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnFullyCapped)
             ActionInstance.Notification.ForceInvoke(Actions.NotificationType.CharacterCapped);
 
         if (AWC.Config.StopAction == StopAction.StartUnlimitedRuns)
