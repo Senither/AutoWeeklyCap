@@ -84,7 +84,8 @@ public class MainWindow : Window, IDisposable
         {
             ("Characters", CharactersUI.Draw, null, true),
             ("Dependencies", DependenciesUI.Draw, null, true),
-            ("About", AboutTabUi.Draw, null, true)
+            ("About", AboutTabUi.Draw, null, true),
+            ("Changelog", ChangelogUI.Draw, null, true)
         };
 
         if (AWC.PluginInterface.IsDev)
