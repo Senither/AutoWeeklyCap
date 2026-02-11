@@ -32,6 +32,7 @@ internal static class DebugUI
         ImGui.Text($"TaskManager [tasks: {AWC.TaskManager.NumQueuedTasks},current task: {AWC.TaskManager.CurrentTask?.Name ?? "idle"}]");
         ImGui.Text($"Currencies [weekly: {CurrencyHelper.GetWeeklyAcquiredTomestoneCount()}, uncapped: {CurrencyHelper.GetUncappedAcquiredTomestoneCount()}]");
         ImGui.Text($"Restart [recovery: {ClientListener.IsRecoveringFromDisconnect}, restart: {ClientListener.IsRestarting}]");
+        ImGui.Text($"Runner counter [runs: {AWC.Runner.GetRunsCounter()}, character: {AWC.Runner.GetRunsCharacter() ?? "<not set>"}]");
     }
 
     private static void DrawRunnerDebugSteps()

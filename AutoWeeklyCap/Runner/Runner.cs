@@ -13,7 +13,10 @@ public class Runner
     private State state = State.Waiting;
     private string? currentCharacter = null;
     private DateTime timestamp;
+
     private int runsCounter = 0;
+    private string? runsCharacter = null;
+
     public DateTime? CurrentDutyStartUtc { get; private set; }
 
     public bool Start()
@@ -36,6 +39,7 @@ public class Runner
         state = State.PreparingRunner;
         timestamp = DateTime.UtcNow;
         runsCounter = 0;
+        runsCharacter = null;
 
         AWC.Log.Debug("Starting weekly cap runner");
 
@@ -77,6 +81,7 @@ public class Runner
             state = State.WaitingForAutoRetainer;
             timestamp = DateTime.UtcNow;
             runsCounter = 0;
+            runsCharacter = null;
         });
 
         return true;
@@ -115,6 +120,7 @@ public class Runner
         stopGracefully = false;
         unlimited = false;
         runsCounter = 0;
+        runsCharacter = null;
         CurrentDutyStartUtc = null;
 
         LifestreamIPC.Abort();
@@ -130,6 +136,9 @@ public class Runner
     public string GetStatus() => state.GetStatus(stopGracefully, currentCharacter);
     public string GetStatusShort() => state.GetStatusShort(stopGracefully, currentCharacter);
     public BitmapFontIcon GetStatusIcon() => state.GetStatusIcon(stopGracefully);
+
+    public int GetRunsCounter() => runsCounter;
+    public string? GetRunsCharacter() => runsCharacter;
 
     public void Tick()
     {
@@ -474,6 +483,14 @@ public class Runner
             ActionInstance.Notification.ForceInvoke(Actions.NotificationType.RunnerStopped);
 
         CurrentDutyStartUtc = null;
+
+        runsCharacter ??= currentCharacter;
+        if (runsCharacter != currentCharacter)
+        {
+            runsCharacter = currentCharacter;
+            runsCounter = 0;
+        }
+
         runsCounter++;
         state = State.PreparingRunner;
     }
@@ -548,7 +565,6 @@ public class Runner
 
         AWC.Log.Debug("Completed character swap, checking tomestones");
         state = State.PreparingRunner;
-        runsCounter = 0;
     }
 
     private void StopRunner()
