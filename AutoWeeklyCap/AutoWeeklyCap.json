@@ -1,8 +1,8 @@
 {
   "Author": "Senither",
   "Name": "Auto Weekly Capper",
-  "Punchline": "Cap your weekly tomestones automatically",
-  "Description": "Automatically tracks and caps your weekly tomestones for all characters, all at once.",
+  "Punchline": "Cap your weekly tomestones automatically with a click of a button",
+  "Description": "Automatically tracks and caps your weekly tomestones for all your characters while still collecting retainer ventures, handing in items for GC seals, buying items with uncapped tomestones, and much more",
   "ApplicableVersion": "any",
   "Tags": [
     "auto",
