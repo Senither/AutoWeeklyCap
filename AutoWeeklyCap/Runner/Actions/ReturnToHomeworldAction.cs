@@ -27,7 +27,8 @@ public class ReturnToHomeworldAction : BaseAction
             LongTaskTimeout
         );
 
-        EnqueueDelay(500);
+        Enqueue(() => PlayerHelper.IsReady, "wait for player to be logged in");
+        EnqueueDelay(2500);
 
         return true;
     }
