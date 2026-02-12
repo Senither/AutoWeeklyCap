@@ -20,7 +20,7 @@ public class AutoSpendTomestoneAction : BaseAction
     private const string MaterialVendorAetheriteName = "Nexus Arcade";
 
     // Patch 7.4 - Relic - Ermina @ Phantom Village
-    private static readonly Vector3 RelicVendorPosition = new(40.204746f, -1.19920929f, 19.514793f);
+    private static readonly Vector3 RelicVendorPosition = new(40.244816f, -1.1920929E-07f, 19.306528f);
     private const uint RelicVendorDataID = 1053904u;
     private const uint RelicVendorTerritoryID = 1278u;
     private const string RelicVendorAetheriteName = "Phantom Village";
