@@ -202,6 +202,9 @@ public class Runner
             return;
         }
 
+        if (AWC.Config.AlwaysStartOnHomeWorld && ActionInstance.Homeworld.Invoke())
+            return;
+
         if (AWC.Config.AutoRetainerEnabled && AutoRetainerHelper.HasRetainerWithinThreshold())
         {
             timestamp = DateTime.UtcNow;

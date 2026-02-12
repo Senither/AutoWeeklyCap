@@ -32,6 +32,7 @@ public class Configuration : IPluginConfiguration
     public uint ZoneId { get; set; } = TomestoneZone.AvailableTomestoneZones[0];
     public bool StopRunnerGracefully { get; set; } = true;
     public bool UseBossModRebornAI { get; set; } = true;
+    public bool AlwaysStartOnHomeWorld { get; set; } = true;
 
     // Stop Actions
     public StopAction StopAction { get; set; } = StopAction.None;
