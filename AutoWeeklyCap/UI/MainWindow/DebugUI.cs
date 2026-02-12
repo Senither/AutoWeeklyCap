@@ -1,4 +1,5 @@
-﻿using AutoWeeklyCap.Config;
+﻿using System.Globalization;
+using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.Runner.Actions;
@@ -120,16 +121,21 @@ internal static class DebugUI
 
     private static void DrawGameDataState()
     {
-        ImGui.Text("Game data state:");
-        ImGui.Text($"Position:  T:{Player.Territory.RowId} P:{Player.Position}");
+        CopyableText(
+            $"Position:  T:{Player.Territory.RowId} P:{Player.Position}",
+            "position",
+            () => $"{Player.Position.X.ToString(CultureInfo.InvariantCulture)}f, {Player.Position.Y.ToString(CultureInfo.InvariantCulture)}f, {Player.Position.Z.ToString(CultureInfo.InvariantCulture)}f"
+        );
 
         var taget = "<no target>";
+        uint targetId = 0;
         try
         {
             unsafe
             {
                 var t = TargetSystem.Instance()->Target;
 
+                targetId = t->BaseId;
                 taget = $"{t->GetName()} [id: {t->BaseId}]";
             }
         }
@@ -138,7 +144,8 @@ internal static class DebugUI
             // ignored
         }
 
-        ImGui.Text($"Target:     {taget}");
+        CopyableText($"Target:     {taget}", "target ID", () => $"{targetId}u");
+
         ImGui.Text("State:       ");
         StateText(() => PlayerHelper.IsReady, "Ready");
         StateText(() => PlayerHelper.IsValid, "Valid");
@@ -146,6 +153,16 @@ internal static class DebugUI
         StateText(() => PlayerHelper.IsJumping, "Jumping");
         StateText(() => PlayerHelper.IsMoving, "Moving");
         StateText(() => PlayerHelper.IsCasting, "Casting", seperator: false);
+    }
+
+    private static void CopyableText(string text, string propertyName, Func<string> copy)
+    {
+        ImGui.Text(text);
+
+        if (ImGui.IsItemClicked())
+            ImGui.SetClipboardText(copy());
+        if (ImGui.IsItemHovered())
+            ImGuiEx.Tooltip($"Click to copy {propertyName} to clipboard");
     }
 
     private static void DebugButton(string text, Action action, bool sameLine = true)
