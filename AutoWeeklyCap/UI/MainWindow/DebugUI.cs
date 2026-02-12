@@ -3,6 +3,7 @@ using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.Runner.Actions;
 using AutoWeeklyCap.UI.Helpers;
+using ECommons.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
@@ -47,14 +48,14 @@ internal static class DebugUI
 
     private static void DrawRunnerDebugActions()
     {
-        DebugButton("Extract", () => ActionInstance.Extract.Invoke(), false);
-        DebugButton("Self Repair", () => ActionInstance.SelfRepair.Invoke());
-        DebugButton("NPC Repair", () => ActionInstance.NpcRepair.Invoke());
-        DebugButton("Spend Tomestones", () => ActionInstance.SpendTomestone.Invoke());
+        DebugActionButton("Extract", ActionInstance.Extract, false);
+        DebugActionButton("Self Repair", ActionInstance.SelfRepair);
+        DebugActionButton("NPC Repair", ActionInstance.NpcRepair);
+        DebugActionButton("Spend Tomestones", ActionInstance.SpendTomestone);
 
-        DebugButton("Return to Homeworld", () => ActionInstance.Homeworld.Invoke(), false);
-        DebugButton("Deliveroo", () => ActionInstance.Deliveroo.Invoke());
-        DebugButton("Notification", () => ActionInstance.Notification.Invoke());
+        DebugActionButton("Return to Homeworld", ActionInstance.Homeworld, false);
+        DebugActionButton("Deliveroo", ActionInstance.Deliveroo);
+        DebugActionButton("Notification", ActionInstance.Notification);
     }
 
     private static void DrawNotificationDebugActions()
@@ -154,6 +155,15 @@ internal static class DebugUI
 
         if (ImGui.Button(text))
             action();
+    }
+
+    private static void DebugActionButton(string text, BaseAction action, bool sameLine = true)
+    {
+        if (sameLine)
+            ImGui.SameLine();
+
+        if (ImGui.Button(text))
+            DuoLog.Warning($"{action.GetName()}: {action.Invoke()}");
     }
 
     private static void StateText(Func<bool> value, string text, bool seperator = true)

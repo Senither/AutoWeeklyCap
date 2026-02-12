@@ -9,6 +9,8 @@ public abstract class BaseAction
     protected abstract string Name { get; }
     protected virtual string[] AddonsToClose { get; } = [];
 
+    public string GetName() => Name;
+
     /// <summary>
     /// Will first check if the player is both valid and not between loading zones,
     /// then attempt to run the action which will queue all the tasks within the
