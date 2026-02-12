@@ -366,7 +366,7 @@ public class Runner
         {
             if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled)
             {
-                AWC.Log.Debug("UseBossModRebornAI is enabled and BossMod Reborn is disabled, enabling AI");
+                AWC.Log.Debug("UseBossModRebornAI: enabling AI");
                 ChatHelper.RunCommand("bmrai on");
             }
         }, "enable BossMod Reborn AI if option is enabled");
@@ -472,6 +472,12 @@ public class Runner
             return;
 
         AWC.Log.Debug("AutoDuty has complete a run, switching to preparations stage");
+
+        if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled)
+        {
+            AWC.Log.Debug("UseBossModRebornAI: disabling AI");
+            ChatHelper.RunCommand("bmrai off");
+        }
 
         if (CurrentDutyStartUtc.HasValue && currentCharacter != null)
         {
