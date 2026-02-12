@@ -2,73 +2,103 @@
 using Dalamud.Plugin;
 using Dalamud.Utility;
 
-namespace AutoWeeklyCap.UI.MainWindow;
+// ReSharper disable InconsistentNaming
 
-internal record PluginInformation(string PluginName, string Description, string? WebsiteUrl = null, string? RepositoryUrl = null)
-{
-    public readonly string PluginName = PluginName;
-    public readonly string Description = Description;
-    public readonly string? WebsiteUrl = WebsiteUrl;
-    public readonly string? RepositoryUrl = RepositoryUrl;
-}
+namespace AutoWeeklyCap.UI.MainWindow;
 
 internal static class DependenciesUI
 {
+    public class PluginInformation
+    {
+        public readonly string PluginName;
+        public readonly string Description;
+        public readonly string? WebsiteUrl;
+        public readonly string? RepositoryUrl;
+        public readonly string? InstallUrl;
+
+        public PluginInformation(
+            string pluginName,
+            string description,
+            string? websiteUrl = null,
+            string? repositoryUrl = null,
+            string? installUrl = null
+        )
+        {
+            PluginName = pluginName;
+            Description = description;
+            WebsiteUrl = websiteUrl;
+            RepositoryUrl = repositoryUrl;
+
+            InstallUrl = installUrl ?? $"https://dalamud-plugins.senither.com/plugin/{PluginName}.json";
+        }
+
+        public bool InstallPlugin()
+        {
+            if (InstallUrl == null)
+                return false;
+
+            if (!EzThrottler.Throttle($"InstallPlugin:Start:{PluginName}", 1500))
+                return false;
+
+            return PluginInstallerHelper.InstallPlugin(InstallUrl, PluginName);
+        }
+    }
+
     private static readonly List<PluginInformation> RequiredPlugins =
     [
         new(
-            PluginName: AutoDutyIPC.Name,
-            Description: "Used to run the duties when farming tomestones.",
-            RepositoryUrl: "https://github.com/erdelf/AutoDuty"
+            pluginName: AutoDutyIPC.Name,
+            description: "Used to run the duties when farming tomestones.",
+            repositoryUrl: "https://github.com/erdelf/AutoDuty"
         ),
         new(
-            PluginName: LifestreamIPC.Name,
-            Description: "Used to travel to aethernet shards in cities, and switch between characters.",
-            RepositoryUrl: "https://github.com/NightmareXIV/Lifestream"
+            pluginName: LifestreamIPC.Name,
+            description: "Used to travel to aethernet shards in cities, and switch between characters.",
+            repositoryUrl: "https://github.com/NightmareXIV/Lifestream"
         ),
     ];
 
     private static readonly List<PluginInformation> RecommendedPlugins =
     [
         new(
-            PluginName: BossModRebornIPC.Name,
-            Description: "Better combat AI for dodging and avoiding attacks while in duties.",
-            RepositoryUrl: "https://github.com/FFXIV-CombatReborn/BossmodReborn"
+            pluginName: BossModRebornIPC.Name,
+            description: "Better combat AI for dodging and avoiding attacks while in duties.",
+            repositoryUrl: "https://github.com/FFXIV-CombatReborn/BossmodReborn"
         ),
         new(
-            PluginName: RotationSolverRebornIPC.Name,
-            Description: "Better combat rotation solver, making duty runs quicker and more seamless.",
-            RepositoryUrl: "https://github.com/FFXIV-CombatReborn/RotationSolverReborn"
+            pluginName: RotationSolverRebornIPC.Name,
+            description: "Better combat rotation solver, making duty runs quicker and more seamless.",
+            repositoryUrl: "https://github.com/FFXIV-CombatReborn/RotationSolverReborn"
         ),
     ];
 
     private static readonly List<PluginInformation> OptionalPlugins =
     [
         new(
-            PluginName: AutoRetainerIPC.Name,
-            Description: "Used to mange retainer ventures and deployables on all your characters.",
-            WebsiteUrl: "https://puni.sh/",
-            RepositoryUrl: "https://github.com/PunishXIV/AutoRetainer"
+            pluginName: AutoRetainerIPC.Name,
+            description: "Used to mange retainer ventures and deployables on all your characters.",
+            websiteUrl: "https://puni.sh/",
+            repositoryUrl: "https://github.com/PunishXIV/AutoRetainer"
         ),
         new(
-            PluginName: DeliverooIPC.Name,
-            Description: "Used to automate your grand company deliveries to get GC seals, and spend them to buy your preferred items.",
-            RepositoryUrl: "https://github.com/VeraNala/Deliveroo"
+            pluginName: DeliverooIPC.Name,
+            description: "Used to automate your grand company deliveries to get GC seals, and spend them to buy your preferred items.",
+            repositoryUrl: "https://github.com/VeraNala/Deliveroo"
         ),
         new(
-            PluginName: NotificationMasterIPC.Name,
-            Description: "Used to send notifications outside the game to notify you when the runner is done, such as making the game icon in the taskbar flash, sending toast notifications, and playing audio.",
-            RepositoryUrl: "https://github.com/NightmareXIV/NotificationMaster"
+            pluginName: NotificationMasterIPC.Name,
+            description: "Used to send notifications outside the game to notify you when the runner is done, such as making the game icon in the taskbar flash, sending toast notifications, and playing audio.",
+            repositoryUrl: "https://github.com/NightmareXIV/NotificationMaster"
         ),
         new(
-            PluginName: NoKillPluginIPC.Name,
-            Description: "Prevents the game from closing when getting lobby errors (Prolonged network issues)",
-            RepositoryUrl: "https://github.com/Bluefissure/NoKillPlugin"
+            pluginName: NoKillPluginIPC.Name,
+            description: "Prevents the game from closing when getting lobby errors (Prolonged network issues)",
+            repositoryUrl: "https://github.com/Bluefissure/NoKillPlugin"
         ),
         new(
-            PluginName: VNavMeshIPC.Name,
-            Description: "Handles navigating within a zone, moving your character to retainer bells and NPCs for repairs or buying materials.",
-            RepositoryUrl: "https://github.com/awgil/ffxiv_navmesh"
+            pluginName: VNavMeshIPC.Name,
+            description: "Handles navigating within a zone, moving your character to retainer bells and NPCs for repairs or buying materials.",
+            repositoryUrl: "https://github.com/awgil/ffxiv_navmesh"
         ),
     ];
 
@@ -119,14 +149,16 @@ internal static class DependenciesUI
 
         ImGui.SetCursorPosX(indent);
 
+        if (pluginInfo.InstallUrl != null)
+            DrawActionButton(FontAwesomeIcon.Download, "Install", () => pluginInfo.InstallPlugin());
+
         if (pluginInfo.WebsiteUrl != null)
             DrawLinkButton(FontAwesomeIcon.Globe, "Open Website", pluginInfo.WebsiteUrl);
 
-        if (pluginInfo is { WebsiteUrl: not null, RepositoryUrl: not null })
-            ImGui.SameLine();
-
         if (pluginInfo.RepositoryUrl != null)
             DrawLinkButton(FontAwesomeIcon.Code, "Open Repository", pluginInfo.RepositoryUrl);
+
+        ImGui.NewLine();
     }
 
     private static void DrawPluginStatusIcon(bool status)
@@ -146,9 +178,17 @@ internal static class DependenciesUI
     private static void DrawLinkButton(FontAwesomeIcon icon, string text, string url)
     {
         if (ImGuiEx.IconButtonWithText(icon, text))
-        {
             Util.OpenLink(url);
-        }
+
+        ImGui.SameLine();
+    }
+
+    private static void DrawActionButton(FontAwesomeIcon icon, string text, Action action)
+    {
+        if (ImGuiEx.IconButtonWithText(icon, text))
+            action();
+
+        ImGui.SameLine();
     }
 
     private static IExposedPlugin? FindInstalledPlugin(string internalName)
