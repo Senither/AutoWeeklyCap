@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Dalamud.Interface;
 using Dalamud.Plugin;
-using ECommons.Automation.NeoTaskManager;
 using ECommons.Reflection;
 
 namespace AutoWeeklyCap.Helpers;
@@ -62,6 +62,7 @@ public static class PluginInstallerHelper
                     {
                         AWC.Log.Debug($"PluginInstaller: {internalName} already installed but not ready");
                         Notify.Warning($"{internalName} is already installed, please enable the plugin in /xlplugins");
+                        AWC.PluginInterface.OpenPluginInstallerTo(PluginInstallerOpenKind.AllPlugins, internalName);
                     }
 
                     return true;

@@ -39,7 +39,13 @@ internal static class DependenciesUI
         {
             if (NativeDalamudPlugin)
             {
-                Notify.Info($"{PluginName} is a native Dalamud plugin, please install it manually from /xlplugins");
+                var exposedPlugin = AWC.PluginInterface.InstalledPlugins.FirstOrDefault(plugin => plugin.InternalName == PluginName);
+                if (exposedPlugin != null)
+                    Notify.Warning($"{PluginName} is already installed, please enabled it manually");
+                else
+                    Notify.Info($"{PluginName} is a native Dalamud plugin, please install it manually");
+
+                AWC.PluginInterface.OpenPluginInstallerTo(PluginInstallerOpenKind.AllPlugins, PluginName);
                 return false;
             }
 
