@@ -1,4 +1,4 @@
-﻿using Dalamud.Interface;
+using Dalamud.Interface;
 using Dalamud.Plugin;
 using Dalamud.Utility;
 
@@ -150,13 +150,13 @@ internal static class DependenciesUI
         ImGui.SetCursorPosX(indent);
 
         if (pluginInfo.InstallUrl != null)
-            DrawActionButton(FontAwesomeIcon.Download, "Install", () => pluginInfo.InstallPlugin());
+            DrawActionButton(FontAwesomeIcon.Download, $"Install###Install{pluginInfo.PluginName}", () => pluginInfo.InstallPlugin());
 
         if (pluginInfo.WebsiteUrl != null)
-            DrawLinkButton(FontAwesomeIcon.Globe, "Open Website", pluginInfo.WebsiteUrl);
+            DrawLinkButton(FontAwesomeIcon.Globe, $"Open Website###WebsiteFor{pluginInfo.PluginName}", pluginInfo.WebsiteUrl);
 
         if (pluginInfo.RepositoryUrl != null)
-            DrawLinkButton(FontAwesomeIcon.Code, "Open Repository", pluginInfo.RepositoryUrl);
+            DrawLinkButton(FontAwesomeIcon.Code, $"Open Repository###RepositoryFor{pluginInfo.PluginName}", pluginInfo.RepositoryUrl);
 
         ImGui.NewLine();
     }
