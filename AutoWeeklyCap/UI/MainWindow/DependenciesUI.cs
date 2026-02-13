@@ -1,4 +1,4 @@
-using Dalamud.Interface;
+﻿using Dalamud.Interface;
 using Dalamud.Plugin;
 using Dalamud.Utility;
 
@@ -15,25 +15,34 @@ internal static class DependenciesUI
         public readonly string? WebsiteUrl;
         public readonly string? RepositoryUrl;
         public readonly string? InstallUrl;
+        private readonly bool NativeDalamudPlugin;
 
         public PluginInformation(
             string pluginName,
             string description,
             string? websiteUrl = null,
             string? repositoryUrl = null,
-            string? installUrl = null
+            string? installUrl = null,
+            bool nativeDalamudPlugin = false
         )
         {
             PluginName = pluginName;
             Description = description;
             WebsiteUrl = websiteUrl;
             RepositoryUrl = repositoryUrl;
+            NativeDalamudPlugin = nativeDalamudPlugin;
 
             InstallUrl = installUrl ?? $"https://dalamud-plugins.senither.com/plugin/{PluginName}.json";
         }
 
         public bool InstallPlugin()
         {
+            if (NativeDalamudPlugin)
+            {
+                Notify.Info($"{PluginName} is a native Dalamud plugin, please install it manually from /xlplugins");
+                return false;
+            }
+
             if (InstallUrl == null)
                 return false;
 
@@ -88,12 +97,14 @@ internal static class DependenciesUI
         new(
             pluginName: NotificationMasterIPC.Name,
             description: "Used to send notifications outside the game to notify you when the runner is done, such as making the game icon in the taskbar flash, sending toast notifications, and playing audio.",
-            repositoryUrl: "https://github.com/NightmareXIV/NotificationMaster"
+            repositoryUrl: "https://github.com/NightmareXIV/NotificationMaster",
+            nativeDalamudPlugin: true
         ),
         new(
             pluginName: NoKillPluginIPC.Name,
             description: "Prevents the game from closing when getting lobby errors (Prolonged network issues)",
-            repositoryUrl: "https://github.com/Bluefissure/NoKillPlugin"
+            repositoryUrl: "https://github.com/Bluefissure/NoKillPlugin",
+            nativeDalamudPlugin: true
         ),
         new(
             pluginName: VNavMeshIPC.Name,
