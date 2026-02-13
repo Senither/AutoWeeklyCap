@@ -45,27 +45,25 @@ public static class PluginInstallerHelper
                     return true;
                 }
 
-                if (IPCSubscriber.IsReady(internalName))
+                exposedPlugin ??= AWC.PluginInterface.InstalledPlugins.FirstOrDefault(plugin => plugin.InternalName == internalName);
+                if (exposedPlugin != null)
                 {
                     if (installTask is { Result: true })
                     {
                         AWC.Log.Debug($"PluginInstaller: Successfully installed plugin {internalName}");
                         Notify.Success($"{internalName} has been installed");
                     }
-                    else
+                    else if (IPCSubscriber.IsReady(internalName))
                     {
                         AWC.Log.Debug($"PluginInstaller: {internalName} is ready");
                         Notify.Success($"{internalName} is already installed");
                     }
+                    else
+                    {
+                        AWC.Log.Debug($"PluginInstaller: {internalName} already installed but not ready");
+                        Notify.Warning($"{internalName} is already installed, please enable the plugin in /xlplugins");
+                    }
 
-                    return true;
-                }
-
-                exposedPlugin ??= AWC.PluginInterface.InstalledPlugins.FirstOrDefault(plugin => plugin.InternalName == internalName);
-                if (exposedPlugin != null)
-                {
-                    AWC.Log.Debug($"PluginInstaller: {internalName} already installed but not ready");
-                    Notify.Warning($"{internalName} is already installed, please enable the plugin in /xlplugins");
                     return true;
                 }
 
