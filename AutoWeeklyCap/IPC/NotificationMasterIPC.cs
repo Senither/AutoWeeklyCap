@@ -9,11 +9,17 @@ namespace AutoWeeklyCap.IPC;
 public static class NotificationMasterIPC
 {
     internal const string Name = "NotificationMaster";
+    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 
     internal static readonly EzIPCDisposalToken[] disposalTokens =
         EzIPC.Init(typeof(NotificationMasterIPC), $"{Name}API", SafeWrapper.IPCException);
 
-    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
+    internal static readonly PluginInstallerHelper.PluginContext Context = new(
+        pluginName: Name,
+        description: "Used to send notifications outside the game to notify you when the runner is done, such as making the game icon in the taskbar flash, sending toast notifications, and playing audio.",
+        repositoryUrl: "https://github.com/NightmareXIV/NotificationMaster",
+        nativeDalamudPlugin: true
+    );
 
     [EzIPC]
     private static Func<string, bool> FlashTaskbarIcon;

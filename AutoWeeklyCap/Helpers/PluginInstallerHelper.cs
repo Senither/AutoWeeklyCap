@@ -7,6 +7,62 @@ namespace AutoWeeklyCap.Helpers;
 
 public static class PluginInstallerHelper
 {
+    public class PluginContext
+    {
+        public readonly string PluginName;
+        public readonly string Description;
+        public readonly string? WebsiteUrl;
+        public readonly string? RepositoryUrl;
+        public readonly string? InstallUrl;
+        private readonly bool nativeDalamudPlugin;
+
+        public PluginContext(
+            string pluginName,
+            string description,
+            string? websiteUrl = null,
+            string? repositoryUrl = null,
+            string? installUrl = null,
+            bool nativeDalamudPlugin = false
+        )
+        {
+            PluginName = pluginName;
+            Description = description;
+            WebsiteUrl = websiteUrl;
+            RepositoryUrl = repositoryUrl;
+
+            this.nativeDalamudPlugin = nativeDalamudPlugin;
+
+            InstallUrl = installUrl ?? $"https://dalamud-plugins.senither.com/plugin/{PluginName}.json";
+        }
+
+        public bool InstallPlugin()
+        {
+            if (nativeDalamudPlugin)
+            {
+                if (GetExposedPlugin() != null)
+                    Notify.Warning($"{PluginName} is already installed, please enabled it manually");
+                else
+                    Notify.Info($"{PluginName} is a native Dalamud plugin, please install it manually");
+
+                AWC.PluginInterface.OpenPluginInstallerTo(PluginInstallerOpenKind.AllPlugins, PluginName);
+                return false;
+            }
+
+            if (InstallUrl == null)
+                return false;
+
+            if (!EzThrottler.Throttle($"InstallPlugin:Start:{PluginName}", 1500))
+                return false;
+
+            return PluginInstallerHelper.InstallPlugin(InstallUrl, PluginName);
+        }
+
+        public IExposedPlugin? GetExposedPlugin()
+        {
+            return AWC.PluginInterface.InstalledPlugins.FirstOrDefault(plugin => plugin.InternalName == PluginName);
+        }
+    }
+
     private const string MasterRepositoryUrl = "https://dalamud-plugins.senither.com/";
     private const int MaxInstallRetries = 5;
     private const int InstallThrottleMs = 250;

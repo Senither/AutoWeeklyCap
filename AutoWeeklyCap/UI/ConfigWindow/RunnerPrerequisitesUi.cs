@@ -154,7 +154,7 @@ public static class RunnerPrerequisitesUi
             StatusText.Draw(AutoRetainerIPC.IsEnabled, "AutoRetainer");
         });
 
-        DrawPluginSettingsButton(AutoRetainerIPC.Name);
+        DrawPluginSettingsButton(AutoRetainerIPC.Context);
 
         Disabled.Draw(!AWC.Config.AutoRetainerEnabled, () =>
         {
@@ -196,7 +196,7 @@ public static class RunnerPrerequisitesUi
             StatusText.Draw(DeliverooIPC.IsEnabled, "Deliveroo");
         });
 
-        DrawPluginSettingsButton(DeliverooIPC.Name);
+        DrawPluginSettingsButton(DeliverooIPC.Context);
 
         Disabled.Draw(!AWC.Config.DeliverooEnabled, () =>
         {
@@ -252,7 +252,7 @@ public static class RunnerPrerequisitesUi
             ImGui.Text(" to be enabled");
         });
 
-        DrawPluginSettingsButton(NotificationMasterIPC.Name);
+        DrawPluginSettingsButton(NotificationMasterIPC.Context);
 
         Disabled.Draw(!AWC.Config.NotificationMasterEnabled, () =>
         {
@@ -364,19 +364,19 @@ public static class RunnerPrerequisitesUi
         });
     }
 
-    private static void DrawPluginSettingsButton(string internalPluginName)
+    private static void DrawPluginSettingsButton(PluginInstallerHelper.PluginContext context)
     {
-        var plugin = AWC.PluginInterface.InstalledPlugins.FirstOrDefault(p => p.InternalName == internalPluginName);
+        var plugin = context.GetExposedPlugin();
 
-        if (plugin is not { IsLoaded: true })
+        if (plugin is { IsLoaded: true })
         {
-            if (RightAlignedButton.Draw($"Open Installer###ExposedPluginSettings:{internalPluginName}"))
-                AWC.PluginInterface.OpenPluginInstallerTo(PluginInstallerOpenKind.AllPlugins, internalPluginName);
-        }
-        else
-        {
-            if (RightAlignedButton.Draw($"Open Settings###ExposedPluginSettings:{internalPluginName}"))
+            if (RightAlignedButton.Draw($"Open Settings###ExposedPluginSettings:{context.PluginName}"))
                 plugin.OpenConfigUi();
+
+            return;
         }
+
+        if (RightAlignedButton.Draw($"Install Plugin###ExposedPluginSettings:{context.PluginName}"))
+            context.InstallPlugin();
     }
 }

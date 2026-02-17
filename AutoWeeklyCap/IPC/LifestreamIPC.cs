@@ -9,11 +9,16 @@ namespace AutoWeeklyCap.IPC;
 public class LifestreamIPC
 {
     internal const string Name = "Lifestream";
+    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 
     internal static readonly EzIPCDisposalToken[] disposalTokens =
         EzIPC.Init(typeof(LifestreamIPC), Name, SafeWrapper.IPCException);
 
-    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
+    internal static readonly PluginInstallerHelper.PluginContext Context = new(
+        pluginName: Name,
+        description: "Used to travel to aethernet shards in cities, and switch between characters.",
+        repositoryUrl: "https://github.com/NightmareXIV/Lifestream"
+    );
 
     [EzIPC]
     internal static Func<bool> IsBusy;

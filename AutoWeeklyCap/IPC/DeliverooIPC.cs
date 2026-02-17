@@ -9,11 +9,16 @@ namespace AutoWeeklyCap.IPC;
 public static class DeliverooIPC
 {
     internal const string Name = "Deliveroo";
+    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 
     internal static readonly EzIPCDisposalToken[] disposalTokens =
         EzIPC.Init(typeof(DeliverooIPC), Name, SafeWrapper.IPCException);
 
-    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
+    internal static readonly PluginInstallerHelper.PluginContext Context = new(
+        pluginName: Name,
+        description: "Used to automate your grand company deliveries to get GC seals, and spend them to buy your preferred items.",
+        repositoryUrl: "https://github.com/VeraNala/Deliveroo"
+    );
 
     internal static void StartTurnIn()
     {

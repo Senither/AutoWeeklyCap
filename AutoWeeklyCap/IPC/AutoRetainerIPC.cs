@@ -9,11 +9,17 @@ namespace AutoWeeklyCap.IPC;
 public class AutoRetainerIPC
 {
     internal const string Name = "AutoRetainer";
+    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 
     internal static readonly EzIPCDisposalToken[] disposalTokens =
         EzIPC.Init(typeof(AutoRetainerIPC), $"{Name}.PluginState", SafeWrapper.IPCException);
 
-    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
+    internal static readonly PluginInstallerHelper.PluginContext Context = new(
+        pluginName: Name,
+        description: "Used to mange retainer ventures and deployables on all your characters.",
+        websiteUrl: "https://puni.sh/",
+        repositoryUrl: "https://github.com/PunishXIV/AutoRetainer"
+    );
 
     internal static void EnableMultiMode()
     {

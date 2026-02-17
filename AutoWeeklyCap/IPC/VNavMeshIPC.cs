@@ -20,11 +20,16 @@ public static class Delegates
 public class VNavMeshIPC
 {
     internal const string Name = "vnavmesh";
+    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 
     internal static readonly EzIPCDisposalToken[] disposalTokens =
         EzIPC.Init(typeof(VNavMeshIPC), Name, SafeWrapper.IPCException);
 
-    internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
+    internal static readonly PluginInstallerHelper.PluginContext Context = new(
+        pluginName: Name,
+        description: "Handles navigating within a zone, moving your character to retainer bells and NPCs for repairs or buying materials.",
+        repositoryUrl: "https://github.com/awgil/ffxiv_navmesh"
+    );
 
     [EzIPC("Nav.IsReady")]
     internal static Func<bool> IsReady { get; private set; }

@@ -8,115 +8,25 @@ namespace AutoWeeklyCap.UI.MainWindow;
 
 internal static class DependenciesUI
 {
-    public class PluginInformation
-    {
-        public readonly string PluginName;
-        public readonly string Description;
-        public readonly string? WebsiteUrl;
-        public readonly string? RepositoryUrl;
-        public readonly string? InstallUrl;
-        private readonly bool NativeDalamudPlugin;
-
-        public PluginInformation(
-            string pluginName,
-            string description,
-            string? websiteUrl = null,
-            string? repositoryUrl = null,
-            string? installUrl = null,
-            bool nativeDalamudPlugin = false
-        )
-        {
-            PluginName = pluginName;
-            Description = description;
-            WebsiteUrl = websiteUrl;
-            RepositoryUrl = repositoryUrl;
-            NativeDalamudPlugin = nativeDalamudPlugin;
-
-            InstallUrl = installUrl ?? $"https://dalamud-plugins.senither.com/plugin/{PluginName}.json";
-        }
-
-        public bool InstallPlugin()
-        {
-            if (NativeDalamudPlugin)
-            {
-                var exposedPlugin = AWC.PluginInterface.InstalledPlugins.FirstOrDefault(plugin => plugin.InternalName == PluginName);
-                if (exposedPlugin != null)
-                    Notify.Warning($"{PluginName} is already installed, please enabled it manually");
-                else
-                    Notify.Info($"{PluginName} is a native Dalamud plugin, please install it manually");
-
-                AWC.PluginInterface.OpenPluginInstallerTo(PluginInstallerOpenKind.AllPlugins, PluginName);
-                return false;
-            }
-
-            if (InstallUrl == null)
-                return false;
-
-            if (!EzThrottler.Throttle($"InstallPlugin:Start:{PluginName}", 1500))
-                return false;
-
-            return PluginInstallerHelper.InstallPlugin(InstallUrl, PluginName);
-        }
-    }
-
-    private static readonly List<PluginInformation> RequiredPlugins =
+    private static readonly List<PluginInstallerHelper.PluginContext> RequiredPlugins =
     [
-        new(
-            pluginName: AutoDutyIPC.Name,
-            description: "Used to run the duties when farming tomestones.",
-            repositoryUrl: "https://github.com/erdelf/AutoDuty"
-        ),
-        new(
-            pluginName: LifestreamIPC.Name,
-            description: "Used to travel to aethernet shards in cities, and switch between characters.",
-            repositoryUrl: "https://github.com/NightmareXIV/Lifestream"
-        ),
+        AutoDutyIPC.Context,
+        LifestreamIPC.Context
     ];
 
-    private static readonly List<PluginInformation> RecommendedPlugins =
+    private static readonly List<PluginInstallerHelper.PluginContext> RecommendedPlugins =
     [
-        new(
-            pluginName: BossModRebornIPC.Name,
-            description: "Better combat AI for dodging and avoiding attacks while in duties.",
-            repositoryUrl: "https://github.com/FFXIV-CombatReborn/BossmodReborn"
-        ),
-        new(
-            pluginName: RotationSolverRebornIPC.Name,
-            description: "Better combat rotation solver, making duty runs quicker and more seamless.",
-            repositoryUrl: "https://github.com/FFXIV-CombatReborn/RotationSolverReborn"
-        ),
+        BossModRebornIPC.Context,
+        RotationSolverRebornIPC.Context,
     ];
 
-    private static readonly List<PluginInformation> OptionalPlugins =
+    private static readonly List<PluginInstallerHelper.PluginContext> OptionalPlugins =
     [
-        new(
-            pluginName: AutoRetainerIPC.Name,
-            description: "Used to mange retainer ventures and deployables on all your characters.",
-            websiteUrl: "https://puni.sh/",
-            repositoryUrl: "https://github.com/PunishXIV/AutoRetainer"
-        ),
-        new(
-            pluginName: DeliverooIPC.Name,
-            description: "Used to automate your grand company deliveries to get GC seals, and spend them to buy your preferred items.",
-            repositoryUrl: "https://github.com/VeraNala/Deliveroo"
-        ),
-        new(
-            pluginName: NotificationMasterIPC.Name,
-            description: "Used to send notifications outside the game to notify you when the runner is done, such as making the game icon in the taskbar flash, sending toast notifications, and playing audio.",
-            repositoryUrl: "https://github.com/NightmareXIV/NotificationMaster",
-            nativeDalamudPlugin: true
-        ),
-        new(
-            pluginName: NoKillPluginIPC.Name,
-            description: "Prevents the game from closing when getting lobby errors (Prolonged network issues)",
-            repositoryUrl: "https://github.com/Bluefissure/NoKillPlugin",
-            nativeDalamudPlugin: true
-        ),
-        new(
-            pluginName: VNavMeshIPC.Name,
-            description: "Handles navigating within a zone, moving your character to retainer bells and NPCs for repairs or buying materials.",
-            repositoryUrl: "https://github.com/awgil/ffxiv_navmesh"
-        ),
+        AutoRetainerIPC.Context,
+        DeliverooIPC.Context,
+        NotificationMasterIPC.Context,
+        NoKillPluginIPC.Context,
+        VNavMeshIPC.Context,
     ];
 
     public static void Draw()
@@ -137,7 +47,7 @@ internal static class DependenciesUI
         DrawPluginList(OptionalPlugins);
     }
 
-    private static void DrawPluginList(List<PluginInformation> plugins)
+    private static void DrawPluginList(List<PluginInstallerHelper.PluginContext> plugins)
     {
         ImGui.Spacing();
 
@@ -148,7 +58,7 @@ internal static class DependenciesUI
         }
     }
 
-    private static void DrawPlugin(PluginInformation pluginInfo)
+    private static void DrawPlugin(PluginInstallerHelper.PluginContext pluginInfo)
     {
         ImGui.SetCursorPos(new Vector2(ImGui.GetCursorPos().X + 10, ImGui.GetCursorPos().Y));
 
