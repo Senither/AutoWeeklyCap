@@ -82,6 +82,7 @@ public class Runner
             timestamp = DateTime.UtcNow;
             runsCounter = 0;
             runsCharacter = null;
+            currentCharacter = AWC.Config.GetFirstUncappedCharacter();
         });
 
         return true;
