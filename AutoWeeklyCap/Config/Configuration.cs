@@ -14,11 +14,11 @@ public class Configuration : IPluginConfiguration
     public bool StartRunnerOnBoot { get; set; } = false;
     public bool OpenWindowOnStartup { get; set; } = false;
     public bool UseSliders { get; set; } = false;
-    public bool AttemptRecoveryFromDisconnects { get; set; } = false;
+    public bool AttemptRecoveryFromDisconnects { get; set; } = true;
     public bool DisableTitleScreenMovie { get; set; } = false;
     public bool ShowStatusInStatusBar { get; set; } = false;
     public bool ShowStatusAsIcons { get; set; } = false;
-    public bool TrackDisabledCharacters { get; set; } = false;
+    public bool TrackDisabledCharacters { get; set; } = true;
     public bool HideUiElementChangelog { get; set; } = false;
     public bool HideUiElementDependencies { get; set; } = false;
     public bool ShowUiElementDebug { get; set; } = false;
