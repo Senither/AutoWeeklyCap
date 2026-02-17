@@ -2,42 +2,37 @@
 using Dalamud.Game.Gui.Dtr;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
+using ECommons.EzDTR;
 
 namespace AutoWeeklyCap.UI.Dtr;
 
 public class DtrStatusBar : IDisposable
 {
-    private const string DtrBarTitle = "AutoWeeklyCapDtr";
+    private const string DtrBarTitle = "Auto Weekly Capper";
     private const string DtrBarTooltip = "Click => toggle the character window\nCTRL + Click => toggle runner status";
 
     private Thread? dtrEntryLoadThread;
     private IDtrBarEntry? dtrEntry;
-    private bool isInitialized = false;
 
     public void Start()
     {
         dtrEntryLoadThread = new Thread(() =>
         {
-            for (var i = 0; dtrEntry == null; i++)
+            if (dtrEntry != null)
+                return;
+
+            try
             {
-                if (isInitialized)
-                    break;
-
-                try
-                {
-                    dtrEntry = AWC.DtrBar.Get(DtrBarTitle + i);
-                    dtrEntry.Text = "...";
-                    dtrEntry.Shown = false;
-                    dtrEntry.OnClick = _ => OnClick();
-                    dtrEntry.Tooltip = DtrBarTooltip;
-
-                    isInitialized = true;
-                }
-                catch (Exception e)
-                {
-                    AWC.Log.Error(e, $"Failed to acquire DtrBarEntry {DtrBarTitle}, trying {DtrBarTitle}{i + 1}");
-                    Thread.Sleep(100);
-                }
+                dtrEntry = AWC.DtrBar.Get(DtrBarTitle);
+                dtrEntry.Text = "...";
+                dtrEntry.Shown = false;
+                dtrEntry.OnClick = _ => OnClick();
+                dtrEntry.Tooltip = DtrBarTooltip;
+            }
+            catch (Exception e)
+            {
+                AWC.Log.Error(e, $"Failed to acquire DtrBarEntry {DtrBarTitle}");
+                Thread.Sleep(100);
             }
         });
 
@@ -99,7 +94,5 @@ public class DtrStatusBar : IDisposable
 
         dtrEntryLoadThread?.Join();
         dtrEntry?.Remove();
-
-        isInitialized = false;
     }
 }
