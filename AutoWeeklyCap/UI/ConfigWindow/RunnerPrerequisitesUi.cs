@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
+using Dalamud.Interface;
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
@@ -153,6 +154,8 @@ public static class RunnerPrerequisitesUi
             StatusText.Draw(AutoRetainerIPC.IsEnabled, "AutoRetainer");
         });
 
+        DrawPluginSettingsButton(AutoRetainerIPC.Name);
+
         Disabled.Draw(!AWC.Config.AutoRetainerEnabled, () =>
         {
             var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 2.5);
@@ -192,6 +195,8 @@ public static class RunnerPrerequisitesUi
             ImGui.Text(" to be enabled, along with ");
             StatusText.Draw(DeliverooIPC.IsEnabled, "Deliveroo");
         });
+
+        DrawPluginSettingsButton(DeliverooIPC.Name);
 
         Disabled.Draw(!AWC.Config.DeliverooEnabled, () =>
         {
@@ -246,6 +251,8 @@ public static class RunnerPrerequisitesUi
             StatusText.Draw(NotificationMasterIPC.IsEnabled, "Notification Master");
             ImGui.Text(" to be enabled");
         });
+
+        DrawPluginSettingsButton(NotificationMasterIPC.Name);
 
         Disabled.Draw(!AWC.Config.NotificationMasterEnabled, () =>
         {
@@ -355,5 +362,21 @@ public static class RunnerPrerequisitesUi
                 });
             }, indent: 12);
         });
+    }
+
+    private static void DrawPluginSettingsButton(string internalPluginName)
+    {
+        var plugin = AWC.PluginInterface.InstalledPlugins.FirstOrDefault(p => p.InternalName == internalPluginName);
+
+        if (plugin is not { IsLoaded: true })
+        {
+            if (RightAlignedButton.Draw($"Open Installer###ExposedPluginSettings:{internalPluginName}"))
+                AWC.PluginInterface.OpenPluginInstallerTo(PluginInstallerOpenKind.AllPlugins, internalPluginName);
+        }
+        else
+        {
+            if (RightAlignedButton.Draw($"Open Settings###ExposedPluginSettings:{internalPluginName}"))
+                plugin.OpenConfigUi();
+        }
     }
 }

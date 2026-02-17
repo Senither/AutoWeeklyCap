@@ -313,6 +313,19 @@ public static class Card
 
     public static void Separator() => Separator(null);
 
+    internal static bool TryGetContentRightBoundX(out float rightBoundX)
+    {
+        rightBoundX = 0f;
+
+        if (ContextStack.Count == 0)
+            return false;
+
+        var context = ContextStack.Peek();
+        rightBoundX = ImGui.GetCursorScreenPos().X + Math.Max(0f, ImGui.GetContentRegionAvail().X - context.ParentPaddingX - context.ContentPadding.X);
+
+        return true;
+    }
+
     private static void Separator(uint? borderColor)
     {
         var drawList = ImGui.GetWindowDrawList();
