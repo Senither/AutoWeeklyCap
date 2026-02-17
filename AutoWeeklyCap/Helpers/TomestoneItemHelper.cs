@@ -38,7 +38,7 @@ public static class TomestoneItemHelper
         Items.Add(new TomestoneItem(TomestoneNPC.Material, 4, 20, "Double Duracoat"));
         Items.Add(new TomestoneItem(TomestoneNPC.Material, 5, 20, "Yollal Extract"));
 
-        // Previous path items (Costs 10)
+        // Previous patch items (Costs 10)
         Items.Add(new TomestoneItem(TomestoneNPC.Material, 6, 10, "Neo Abrasive"));
         Items.Add(new TomestoneItem(TomestoneNPC.Material, 7, 10, "Diatryma Pelt"));
         Items.Add(new TomestoneItem(TomestoneNPC.Material, 8, 10, "Cronopio Skin"));

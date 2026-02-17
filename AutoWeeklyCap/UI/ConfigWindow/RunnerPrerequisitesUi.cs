@@ -96,8 +96,8 @@ public static class RunnerPrerequisitesUi
 
         InformationTooltip.Draw(() =>
         {
-            ImGui.Text("Will teleport to the Nexus Arcade in Solution Nine and buy your");
-            ImGui.Text("selected items from Zircon with your uncapped tomestones");
+            ImGui.Text("Will teleport to Solution Nine or the Phantom Village and buy");
+            ImGui.Text("your selected item with your uncapped tomestones");
 
             ImGui.Text("Requires ");
             StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
