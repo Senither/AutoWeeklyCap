@@ -33,7 +33,7 @@ public static class DeliverooIPC
     }
 
     [EzIPC]
-    internal static Func<bool> IsTurnInRunning { get; private set; }
+    internal static Func<bool> IsTurnInRunning;
 
     internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
 }
