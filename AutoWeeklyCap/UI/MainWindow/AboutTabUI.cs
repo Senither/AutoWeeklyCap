@@ -25,7 +25,7 @@ internal static class AboutTabUi
             ImGui.SameLine();
             if (ImGui.Button("Plugin Repository"))
             {
-                ImGui.SetClipboardText("https://dalamud-plugins.senither.com/plugins/autoweeklycap.json");
+                ImGui.SetClipboardText("https://dalamud-plugins.senither.com/plugin/AutoWeeklyCap.json");
                 Notify.Success("Link copied to clipboard");
             }
         });
