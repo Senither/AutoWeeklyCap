@@ -62,6 +62,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     private MainWindow MainWindow { get; init; }
     private ConfigWindow ConfigWindow { get; init; }
     private CharacterOptionWindow CharacterOptionWindow { get; init; }
+    private SetupGuideWindow SetupGuideWindow { get; init; }
 
     private FrameworkListener FrameworkListener { get; init; } = new();
     private ClientListener ClientListener { get; init; } = new();
@@ -98,10 +99,12 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         ConfigWindow = new ConfigWindow();
         MainWindow = new MainWindow(this);
         CharacterOptionWindow = new CharacterOptionWindow();
+        SetupGuideWindow = new SetupGuideWindow();
 
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);
         WindowSystem.AddWindow(CharacterOptionWindow);
+        WindowSystem.AddWindow(SetupGuideWindow);
 
         CommandManager.AddHandler(CommandNameLong, new CommandInfo(OnCommand)
         {
@@ -128,6 +131,9 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         Log.Debug($"AWC#Startup - StartRunnerOnBoot: {Config.StartRunnerOnBoot}");
         if (Config.StartRunnerOnBoot)
             new TickScheduler(() => Runner.AutoStartOnBoot());
+
+        if (!Config.HasCompletedSetupGuide)
+            OpenSetupGuide();
 
 #if DEBUG
         OpenMainUi();
@@ -165,6 +171,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     public void OpenConfigUi() => ConfigWindow.IsOpen = true;
     public void ToggleMainUi() => MainWindow.Toggle();
     public void OpenMainUi() => MainWindow.IsOpen = true;
+    public void OpenSetupGuide() => SetupGuideWindow.IsOpen = true;
 
     public void OpenCharacterOptionsUi(string character) =>
         CharacterOptionWindow.ToggleForCharacterWithOptions(character);
