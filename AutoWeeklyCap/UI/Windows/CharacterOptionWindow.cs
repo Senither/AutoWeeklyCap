@@ -6,7 +6,7 @@ using Dalamud.Interface.Windowing;
 
 namespace AutoWeeklyCap.UI.Windows;
 
-public class CharacterOptionWindow : Window, IDisposable
+public class CharacterOptionWindow : Window
 {
     private string? character = null;
 
@@ -18,8 +18,6 @@ public class CharacterOptionWindow : Window, IDisposable
             MaximumSize = new Vector2(9999, 9999)
         };
     }
-
-    public void Dispose() { }
 
     public void ToggleForCharacterWithOptions(string characterAndWorld)
     {

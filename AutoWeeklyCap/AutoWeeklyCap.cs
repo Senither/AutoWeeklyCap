@@ -147,10 +147,6 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         WindowSystem.RemoveAllWindows();
 
         DtrStatusBar.Dispose();
-
-        ConfigWindow.Dispose();
-        MainWindow.Dispose();
-
         TaskManager.Dispose();
 
         ECommonsMain.Dispose();

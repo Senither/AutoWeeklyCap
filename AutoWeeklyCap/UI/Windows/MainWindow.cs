@@ -6,7 +6,7 @@ using ECommons.Configuration;
 
 namespace AutoWeeklyCap.UI.Windows;
 
-public class MainWindow : Window, IDisposable
+public class MainWindow : Window
 {
     private TitleBarButton LockButton;
 
@@ -48,8 +48,6 @@ public class MainWindow : Window, IDisposable
 
         TitleBarButtons.Add(LockButton);
     }
-
-    public void Dispose() { }
 
     public override void OnClose()
     {
