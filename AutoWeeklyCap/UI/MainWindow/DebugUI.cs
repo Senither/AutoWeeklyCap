@@ -45,7 +45,6 @@ internal static class DebugUI
         DebugButton("Stop", () => AWC.Runner.Stop());
         DebugButton("Resume", () => AWC.Runner.Resume());
         DebugButton("Abort", () => AWC.Runner.Abort());
-        DebugButton("Setup Guide", () => AWC.Instance.OpenSetupGuide());
     }
 
     private static void DrawRunnerDebugActions()

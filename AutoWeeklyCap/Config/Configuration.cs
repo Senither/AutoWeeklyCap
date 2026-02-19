@@ -9,7 +9,6 @@ public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
     public bool DevMode { get; set; } = false;
-    public bool HasCompletedSetupGuide { get; set; } = false;
 
     // General Options
     public bool StartRunnerOnBoot { get; set; } = false;
