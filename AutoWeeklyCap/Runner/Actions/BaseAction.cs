@@ -47,6 +47,9 @@ public abstract class BaseAction
         if (Svc.Condition[ConditionFlag.BetweenAreas] || Svc.Condition[ConditionFlag.BetweenAreas51])
             return false;
 
+        if (Svc.Condition[ConditionFlag.BoundByDuty] || Svc.Condition[ConditionFlag.BoundByDuty56] || Svc.Condition[ConditionFlag.BoundByDuty95])
+            return false;
+
         return AWC.PlayerState.IsLoaded && Player.Available;
     }
 
