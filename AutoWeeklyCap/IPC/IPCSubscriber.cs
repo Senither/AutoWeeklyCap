@@ -1,4 +1,5 @@
-﻿using ECommons.EzIpcManager;
+﻿using AutoWeeklyCap.IPC.Wotsit;
+using ECommons.EzIpcManager;
 using ECommons.Reflection;
 
 // ReSharper disable InconsistentNaming
@@ -8,7 +9,7 @@ namespace AutoWeeklyCap.IPC;
 public static class IPCSubscriber
 {
     internal static bool IsReady(string pluginName) =>
-        DalamudReflector.TryGetDalamudPlugin(pluginName, out _, false, true);
+        DalamudReflector.TryGetDalamudPlugin(pluginName, out _, true, true);
 
     internal static void Dispose()
     {
@@ -18,6 +19,7 @@ public static class IPCSubscriber
         GenericHelpers.Safe(LifestreamIPC.Dispose);
         GenericHelpers.Safe(NotificationMasterIPC.Dispose);
         GenericHelpers.Safe(VNavMeshIPC.Dispose);
+        GenericHelpers.Safe(WotsitIPC.Dispose);
     }
 
     internal static void DisposeAll(EzIPCDisposalToken[] disposalTokens)

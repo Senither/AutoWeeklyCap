@@ -1,4 +1,5 @@
-﻿using Dalamud.Interface;
+﻿using AutoWeeklyCap.IPC.Wotsit;
+using Dalamud.Interface;
 using Dalamud.Plugin;
 using Dalamud.Utility;
 
@@ -27,6 +28,7 @@ internal static class DependenciesUI
         NotificationMasterIPC.Context,
         NoKillPluginIPC.Context,
         VNavMeshIPC.Context,
+        WotsitIPC.Context,
     ];
 
     public static void Draw()

@@ -1,6 +1,7 @@
 using System.Reflection;
 using AutoWeeklyCap.Commands;
 using AutoWeeklyCap.Config;
+using AutoWeeklyCap.IPC.Wotsit;
 using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.UI.Dtr;
 using AutoWeeklyCap.UI.Windows;
@@ -126,6 +127,8 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         Log.Debug($"AWC#Startup - StartRunnerOnBoot: {Config.StartRunnerOnBoot}");
         if (Config.StartRunnerOnBoot)
             new TickScheduler(() => Runner.AutoStartOnBoot());
+
+        WotsitIPC.Manager.InitializeWotsit("AWC initialization");
 
 #if DEBUG
         OpenMainUi();
