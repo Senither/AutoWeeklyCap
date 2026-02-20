@@ -22,11 +22,24 @@ public class MainWindow : Window
         {
             Click = (m) =>
             {
-                if (m == ImGuiMouseButton.Left) autoWeeklyCap.ToggleConfigUi();
+                if (m == ImGuiMouseButton.Left)
+                    autoWeeklyCap.ToggleConfigUi();
             },
             Icon = FontAwesomeIcon.Cog,
             IconOffset = new Vector2(2, 2),
             ShowTooltip = () => ImGui.SetTooltip("Open settings window"),
+        });
+
+        TitleBarButtons.Add(new TitleBarButton
+        {
+            Click = (m) =>
+            {
+                if (m == ImGuiMouseButton.Left)
+                    autoWeeklyCap.ToggleFeedbackUi();
+            },
+            Icon = FontAwesomeIcon.Inbox,
+            IconOffset = new Vector2(2, 2),
+            ShowTooltip = () => ImGui.SetTooltip("Send plugin feedback"),
         });
 
         LockButton = new TitleBarButton()

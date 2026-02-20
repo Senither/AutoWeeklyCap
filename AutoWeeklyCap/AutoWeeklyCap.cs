@@ -62,6 +62,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     private MainWindow MainWindow { get; init; }
     private ConfigWindow ConfigWindow { get; init; }
     private CharacterOptionWindow CharacterOptionWindow { get; init; }
+    private FeedbackWindow FeedbackWindow { get; init; }
 
     private FrameworkListener FrameworkListener { get; init; } = new();
     private ClientListener ClientListener { get; init; } = new();
@@ -95,13 +96,10 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
         Runner = new Runner.Runner();
 
-        ConfigWindow = new ConfigWindow();
-        MainWindow = new MainWindow(this);
-        CharacterOptionWindow = new CharacterOptionWindow();
-
-        WindowSystem.AddWindow(ConfigWindow);
-        WindowSystem.AddWindow(MainWindow);
-        WindowSystem.AddWindow(CharacterOptionWindow);
+        WindowSystem.AddWindow(ConfigWindow = new ConfigWindow());
+        WindowSystem.AddWindow(MainWindow = new MainWindow(this));
+        WindowSystem.AddWindow(CharacterOptionWindow = new CharacterOptionWindow());
+        WindowSystem.AddWindow(FeedbackWindow = new FeedbackWindow());
 
         CommandManager.AddHandler(CommandNameLong, new CommandInfo(OnCommand)
         {
@@ -165,6 +163,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     public void OpenConfigUi() => ConfigWindow.IsOpen = true;
     public void ToggleMainUi() => MainWindow.Toggle();
     public void OpenMainUi() => MainWindow.IsOpen = true;
+    public void ToggleFeedbackUi() => FeedbackWindow.Toggle();
 
     public void OpenCharacterOptionsUi(string character) =>
         CharacterOptionWindow.ToggleForCharacterWithOptions(character);
