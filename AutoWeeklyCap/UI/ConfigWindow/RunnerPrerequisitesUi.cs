@@ -1,5 +1,4 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
-using Dalamud.Interface;
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;

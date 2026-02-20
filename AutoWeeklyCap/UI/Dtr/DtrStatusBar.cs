@@ -2,7 +2,6 @@
 using Dalamud.Game.Gui.Dtr;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
-using ECommons.EzDTR;
 
 namespace AutoWeeklyCap.UI.Dtr;
 

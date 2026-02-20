@@ -45,7 +45,10 @@ public class WotsitManager : IDisposable
     public void InitializeWotsit(string trigger)
     {
         if (!WotsitIPC.IsEnabled)
+        {
+            ClearWotsit();
             return;
+        }
 
         AWC.Log.Debug($"Initializing WotsitManager triggered by: {trigger}, status: {WotsitIPC.IsEnabled}");
 

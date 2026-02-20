@@ -1,6 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
 
-using System.Threading.Tasks;
 using ECommons.EzIpcManager;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
@@ -10,11 +9,7 @@ namespace AutoWeeklyCap.IPC;
 
 public static class Delegates
 {
-    public delegate Task<List<Vector3>> Pathfind(Vector3 from, Vector3 to, bool isFlying);
-
     public delegate bool PathfindAndMoveTo(Vector3 position, bool canFly);
-
-    public delegate void PathMoveTo(List<Vector3> waypoints, bool fly);
 }
 
 public class VNavMeshIPC
