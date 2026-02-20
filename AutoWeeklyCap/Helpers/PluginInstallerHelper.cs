@@ -11,6 +11,7 @@ public static class PluginInstallerHelper
     {
         public readonly string PluginName;
         public readonly string Description;
+        public readonly string DisplayName;
         public readonly string? WebsiteUrl;
         public readonly string? RepositoryUrl;
         public readonly string? InstallUrl;
@@ -19,6 +20,7 @@ public static class PluginInstallerHelper
         public PluginContext(
             string pluginName,
             string description,
+            string? displayName = null,
             string? websiteUrl = null,
             string? repositoryUrl = null,
             string? installUrl = null,
@@ -27,6 +29,7 @@ public static class PluginInstallerHelper
         {
             PluginName = pluginName;
             Description = description;
+            DisplayName = displayName ?? pluginName;
             WebsiteUrl = websiteUrl;
             RepositoryUrl = repositoryUrl;
 

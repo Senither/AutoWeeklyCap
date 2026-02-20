@@ -7,6 +7,7 @@ public static class WotsitIPC
 
     internal static readonly PluginInstallerHelper.PluginContext Context = new(
         pluginName: Name,
+        displayName: "Wotsit",
         description: "Adds a spotlight like quick search, can be used to start and stop the runner, or run individual features.",
         repositoryUrl: "https://github.com/goaaats/Dalamud.FindAnything",
         nativeDalamudPlugin: true

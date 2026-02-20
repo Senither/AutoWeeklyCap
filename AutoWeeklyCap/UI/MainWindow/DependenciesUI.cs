@@ -68,7 +68,7 @@ internal static class DependenciesUI
         DrawPluginStatusIcon(plugin != null);
 
         var indent = ImGui.GetCursorPosX();
-        DrawPluginName(plugin, pluginInfo.PluginName);
+        DrawPluginName(plugin, pluginInfo.DisplayName);
 
         ImGui.SetCursorPosX(indent);
         ImGui.TextWrapped(pluginInfo.Description);
