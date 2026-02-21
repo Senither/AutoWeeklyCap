@@ -6,10 +6,14 @@ namespace AutoWeeklyCap.Helpers;
 
 public static class MovementHelper
 {
-    public static bool MoveTo(Vector3 position) => MoveTo(position, 300_000);
+    public static bool MoveTo(Vector3? position) => MoveTo(position, 1.25f, 300_000);
+    public static bool MoveTo(Vector3? position, float breakpoint) => MoveTo(position, breakpoint, 300_000);
 
-    public static bool MoveTo(Vector3 position, int timeLimitMs)
+    public static bool MoveTo(Vector3? position, float breakpoint, int timeLimitMs)
     {
+        if (position == null)
+            return false;
+
         if (!VNavMeshIPC.IsEnabled)
             return false;
 
@@ -18,12 +22,12 @@ public static class MovementHelper
 
         AWC.TaskManager.InsertMulti(
             new TaskManagerTask(
-                () => MoveToPosition(position),
+                () => MoveToPosition((Vector3)position),
                 "MovementHelper: start moving to location",
                 new TaskManagerConfiguration(timeLimitMS: timeLimitMs)
             ),
             new TaskManagerTask(
-                () => WaitForPosition(position),
+                () => WaitForPosition((Vector3)position, breakpoint),
                 "MovementHelper: waiting for player movement to location",
                 new TaskManagerConfiguration(timeLimitMS: timeLimitMs)
             ),
@@ -46,7 +50,7 @@ public static class MovementHelper
         return true;
     }
 
-    private static unsafe bool WaitForPosition(Vector3 position)
+    private static unsafe bool WaitForPosition(Vector3 position, float breakpoint)
     {
         var distance = Vector3.Distance(position, Player.Position);
 
@@ -56,7 +60,7 @@ public static class MovementHelper
                 ActionManager.Instance()->UseAction(ActionType.GeneralAction, 4);
         }
 
-        if (distance > 1.25)
+        if (distance > breakpoint)
             return false;
 
         VNavMeshIPC.Stop();

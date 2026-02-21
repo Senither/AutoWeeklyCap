@@ -14,6 +14,20 @@ public static class GrandCompanyHelper
         _ => 130u
     };
 
+    internal static uint InnTerritoryId => GetGrandCompany() switch
+    {
+        GrandCompany.Maelstrom => 177u,
+        GrandCompany.TwinAdder => 179u,
+        _ => 178u
+    };
+
+    internal static uint InnDoorId => GetGrandCompany() switch
+    {
+        GrandCompany.Maelstrom => 2001010u,
+        GrandCompany.TwinAdder => 2000087u,
+        _ => 2001011u
+    };
+
     internal static string AetheriteName => GetGrandCompany() switch
     {
         GrandCompany.Maelstrom => "The Aftcastle",

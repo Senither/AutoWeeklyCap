@@ -4,7 +4,6 @@ using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-using GrandCompany = ECommons.ExcelServices.GrandCompany;
 
 namespace AutoWeeklyCap.Helpers;
 

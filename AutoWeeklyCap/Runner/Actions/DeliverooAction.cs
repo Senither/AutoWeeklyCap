@@ -16,6 +16,8 @@ public class DeliverooAction : BaseAction
 
         if (DeliverooIPC.IsTurnInRunning())
             DeliverooIPC.StopTurnIn();
+        
+        ActionInstance.LeaveGrandCompanyInn.Invoke();
 
         Enqueue(() =>
         {

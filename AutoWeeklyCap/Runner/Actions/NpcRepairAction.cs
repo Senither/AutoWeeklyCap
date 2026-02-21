@@ -25,6 +25,8 @@ public class NpcRepairAction : BaseAction
 
         ResetRepairState();
 
+        ActionInstance.LeaveGrandCompanyInn.Invoke();
+
         Enqueue(() =>
         {
             if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))

@@ -11,4 +11,7 @@ public static class ActionInstance
     public static readonly ReturnToHomeworldAction Homeworld = new();
     public static readonly DeliverooAction Deliveroo = new();
     public static readonly NotificationAction Notification = new();
+
+    // Sub action, used by other actions to speed them up when possible
+    public static readonly LeaveGrandCompanyInnAction LeaveGrandCompanyInn = new();
 }
