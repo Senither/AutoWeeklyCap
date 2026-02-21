@@ -152,22 +152,4 @@ public static class PlayerHelper
 
         return CharacterSwapStatus.FailedToSwitchJob;
     }
-
-    internal static unsafe uint GetGrandCompanyTerritoryType(GrandCompany grandCompany) => grandCompany switch
-    {
-        GrandCompany.Maelstrom => 128u,
-        GrandCompany.TwinAdder => 132u,
-        _ => 130u
-    };
-
-    internal static unsafe GrandCompany GetGrandCompany() => (GrandCompany)PlayerState.Instance()->GrandCompany;
-
-    internal static uint GetGrandCompanyTerritoryType() => GetGrandCompanyTerritoryType(GetGrandCompany());
-
-    internal static string GetGrandCompanyAetheriteName() => GetGrandCompany() switch
-    {
-        GrandCompany.Maelstrom => "The Aftcastle",
-        GrandCompany.TwinAdder => "New Gridania",
-        _ => "Steps of Nald",
-    };
 }

@@ -22,13 +22,13 @@ public class DeliverooAction : BaseAction
             if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
                 return false;
 
-            if (Player.Territory.RowId == PlayerHelper.GetGrandCompanyTerritoryType())
+            if (Player.Territory.RowId == GrandCompanyHelper.TerritoryId)
                 return true;
 
             if (LifestreamIPC.IsBusy())
                 return false;
 
-            LifestreamIPC.ExecuteCommand(PlayerHelper.GetGrandCompanyAetheriteName());
+            LifestreamIPC.ExecuteCommand(GrandCompanyHelper.AetheriteName);
 
             return true;
         }, "start moving to gc territory");
@@ -38,11 +38,11 @@ public class DeliverooAction : BaseAction
             if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
                 return false;
 
-            return Player.Territory.RowId == PlayerHelper.GetGrandCompanyTerritoryType() && PlayerHelper.IsReady;
+            return Player.Territory.RowId == GrandCompanyHelper.TerritoryId && PlayerHelper.IsReady;
         }, "waiting for player to be in gc territory");
 
         Enqueue(
-            () => MovementHelper.MoveTo(GrandCompanyTurnInLocation),
+            () => MovementHelper.MoveTo(GrandCompanyHelper.TurnInLocation),
             "start moving to gc NPC location",
             LongTaskTimeout
         );
@@ -62,11 +62,4 @@ public class DeliverooAction : BaseAction
 
         return true;
     }
-
-    private static Vector3 GrandCompanyTurnInLocation => PlayerHelper.GetGrandCompany() switch
-    {
-        GrandCompany.Maelstrom => new Vector3(94.02527f, 40.275368f, 75.61174f),
-        GrandCompany.TwinAdder => new Vector3(-67.994354f, -0.50152725f, -8.873131f),
-        _ => new Vector3(-142.4761f, 4.0999994f, -106.80103f),
-    };
 }

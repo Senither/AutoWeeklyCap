@@ -30,13 +30,13 @@ public class NpcRepairAction : BaseAction
             if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
                 return false;
 
-            if (Player.Territory.RowId == PlayerHelper.GetGrandCompanyTerritoryType())
+            if (Player.Territory.RowId == GrandCompanyHelper.TerritoryId)
                 return true;
 
             if (LifestreamIPC.IsBusy())
                 return false;
 
-            LifestreamIPC.ExecuteCommand(PlayerHelper.GetGrandCompanyAetheriteName());
+            LifestreamIPC.ExecuteCommand(GrandCompanyHelper.AetheriteName);
 
             return true;
         }, "start moving to gc territory");
@@ -46,11 +46,11 @@ public class NpcRepairAction : BaseAction
             if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
                 return false;
 
-            return Player.Territory.RowId == PlayerHelper.GetGrandCompanyTerritoryType() && PlayerHelper.IsReady;
+            return Player.Territory.RowId == GrandCompanyHelper.TerritoryId && PlayerHelper.IsReady;
         }, "waiting for player to be in gc territory");
 
         Enqueue(
-            () => MovementHelper.MoveTo(RepairVendorLocation),
+            () => MovementHelper.MoveTo(GrandCompanyHelper.RepairVendorLocation),
             "start moving to npc location",
             LongTaskTimeout
         );
@@ -64,7 +64,7 @@ public class NpcRepairAction : BaseAction
             {
                 unsafe
                 {
-                    var vendor = ObjectHelper.FindGameObject(RepairVendorDataId, RepairVendorLocation);
+                    var vendor = ObjectHelper.FindGameObject(GrandCompanyHelper.RepairVendorId, GrandCompanyHelper.RepairVendorLocation);
                     if (vendor == null)
                         return false;
 
@@ -130,20 +130,6 @@ public class NpcRepairAction : BaseAction
 
         return true;
     }
-
-    private static Vector3 RepairVendorLocation => PlayerHelper.GetGrandCompany() switch
-    {
-        GrandCompany.Maelstrom => new Vector3(17.715698f, 40.200005f, 3.9520264f),
-        GrandCompany.TwinAdder => new Vector3(24.826416f, -8f, 93.18677f),
-        _ => new Vector3(32.85266f, 6.999999f, -81.31531f),
-    };
-
-    private static uint RepairVendorDataId => PlayerHelper.GetGrandCompany() switch
-    {
-        GrandCompany.Maelstrom => 1003251u,
-        GrandCompany.TwinAdder => 1000394u,
-        _ => 1004416u,
-    };
 
     private static unsafe void ResetRepairState()
     {
