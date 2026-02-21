@@ -56,8 +56,11 @@ public static class MovementHelper
 
         if (PlayerHelper.IsMoving && !Player.Character->InCombat && distance >= 10)
         {
-            if (CanSprint())
+            if (CanUseSprint)
                 ActionManager.Instance()->UseAction(ActionType.GeneralAction, 4);
+
+            if (CanUsePeloton)
+                ActionManager.Instance()->UseAction(ActionType.Action, 7557);
         }
 
         if (distance > breakpoint)
@@ -68,10 +71,13 @@ public static class MovementHelper
         return true;
     }
 
-    private static unsafe bool CanSprint()
-    {
-        return ActionManager.Instance()->GetActionStatus(ActionType.GeneralAction, 4) == 0 &&
-               ActionManager.Instance()->QueuedActionId != 4 &&
-               !PlayerHelper.IsCasting;
-    }
+    private static unsafe bool CanUseSprint =>
+        ActionManager.Instance()->GetActionStatus(ActionType.GeneralAction, 4) == 0 &&
+        ActionManager.Instance()->QueuedActionId != 4 &&
+        !PlayerHelper.IsCasting;
+
+    private static unsafe bool CanUsePeloton =>
+        ActionManager.Instance()->GetActionStatus(ActionType.Action, 7557) == 0 &&
+        ActionManager.Instance()->QueuedActionId != 7557 &&
+        Player.Status.All(x => x.StatusId != 1199);
 }
