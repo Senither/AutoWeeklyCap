@@ -24,6 +24,25 @@ public static class RunnerPrerequisitesUi
     {
         ImGui.Spacing();
 
+        var returnToHomeWorld = AWC.Config.AlwaysStartOnHomeWorld;
+        if (ImGui.Checkbox("Always return to home world", ref returnToHomeWorld))
+            AWC.Config.AlwaysStartOnHomeWorld = returnToHomeWorld;
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When enabled and the runner has detected that your character is not on their");
+            ImGui.Text("home world, it will use ");
+            StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
+            ImGui.Text(" to teleport back to your home world");
+            ImGui.Text("before starting ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text(", ");
+            StatusText.Draw(AutoRetainerIPC.IsEnabled, "AutoRetainer");
+            ImGui.Text(", ");
+            StatusText.Draw(DeliverooIPC.IsEnabled, "Deliveroo");
+            ImGui.Text(", etc");
+        });
+        
         // Repair (Self & NPC)
         var repairStatus = AWC.Config.Repair;
         if (ImGui.Checkbox("Repair Gear", ref repairStatus))
