@@ -24,6 +24,7 @@ public static class RunnerPrerequisitesUi
     {
         ImGui.Spacing();
 
+        // Return to home world
         var returnToHomeWorld = AWC.Config.AlwaysStartOnHomeWorld;
         if (ImGui.Checkbox("Always return to home world", ref returnToHomeWorld))
             AWC.Config.AlwaysStartOnHomeWorld = returnToHomeWorld;
@@ -42,7 +43,27 @@ public static class RunnerPrerequisitesUi
             StatusText.Draw(DeliverooIPC.IsEnabled, "Deliveroo");
             ImGui.Text(", etc");
         });
-        
+
+        // Only start from GC inn
+        var onlyStartAutoDutyFromGcInn = AWC.Config.OnlyStartAutoDutyFromGCInn;
+        if (ImGui.Checkbox("Only start AutoDuty from GC inn", ref onlyStartAutoDutyFromGcInn))
+            AWC.Config.OnlyStartAutoDutyFromGCInn = onlyStartAutoDutyFromGcInn;
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Moves to your grand company inn before starting ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text("");
+            
+            ImGui.Text("Requires ");
+            StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
+            ImGui.Text(" and ");
+            StatusText.Draw(VNavMeshIPC.IsEnabled, "VNavMesh");
+            ImGui.Text(" to be enabled");
+        });
+
+        Card.Separator();
+
         // Repair (Self & NPC)
         var repairStatus = AWC.Config.Repair;
         if (ImGui.Checkbox("Repair Gear", ref repairStatus))

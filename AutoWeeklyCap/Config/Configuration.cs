@@ -38,6 +38,8 @@ public class Configuration : IPluginConfiguration
     public string CharacterForSwap { get; set; } = "";
 
     // Runner Options (General)
+    public bool AlwaysStartOnHomeWorld { get; set; } = true;
+    public bool OnlyStartAutoDutyFromGCInn { get; set; } = false;
     public bool Repair { get; set; } = true;
     public bool RepairSelf { get; set; } = true;
     public uint RepairPercentage { get; set; } = 50;
@@ -46,7 +48,6 @@ public class Configuration : IPluginConfiguration
     public bool SpendUncappedTomestones { get; set; } = false;
     public uint SpendUncappedTomestoneThreshold { get; set; } = 1800;
     public string? SpendUncappedTomestoneItemName { get; set; } = null;
-    public bool AlwaysStartOnHomeWorld { get; set; } = true;
 
     // Runner Options (AutoRetainer)
     public bool AutoRetainerEnabled { get; set; } = false;

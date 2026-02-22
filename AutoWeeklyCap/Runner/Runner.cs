@@ -358,6 +358,9 @@ public class Runner
             return;
         }
 
+        if (AWC.Config.OnlyStartAutoDutyFromGCInn)
+            ActionInstance.EnterGrandCompanyInn.Invoke();
+
         AWC.TaskManager.Enqueue(
             () => AWC.Config.GetOrRegisterCharacterOptions(currentCharacter).PreferredJob.SwitchToJob(),
             "switch to preferred job"
