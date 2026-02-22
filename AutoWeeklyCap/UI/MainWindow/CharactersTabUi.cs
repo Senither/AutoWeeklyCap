@@ -5,7 +5,7 @@ using Dalamud.Interface;
 
 namespace AutoWeeklyCap.UI.MainWindow;
 
-internal static class CharactersUI
+internal static class CharactersTabUi
 {
     private const int TomesPerRun = 50;
     private const int DefaultRunSeconds = 24 * 60;
@@ -46,9 +46,10 @@ internal static class CharactersUI
 
             ImGui.PushID(character);
 
-            DrawCharacterStatusIcon(character, option);
-            DrawCharacterRelogIcon(character);
-            DrawCharacterSettingsIcon(character, option);
+            CharacterElements.DrawCharacterStatusIcon(character, option);
+            CharacterElements.DrawCharacterRelogIcon(character, sameLine: true);
+            CharacterElements.DrawCharacterSettingsIcon(character, sameLine: true);
+
             DrawCharacterDetails(character, option, characterTomes, weeklyTomeLimit);
 
             ImGui.PopID();
@@ -80,63 +81,7 @@ internal static class CharactersUI
         );
     }
 
-    internal static void SaveCharacterConfigurationOption(string character, CharacterOptions options)
-    {
-        AWC.Config.Characters[character] = options;
-        AWC.Config.Save();
-    }
-
-    internal static void DrawCharacterStatusIcon(string character, CharacterOptions option)
-    {
-        var isEnabled = option.IsEnabled();
-        if (isEnabled)
-            ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
-
-        if (ImGuiEx.IconButton(FontAwesomeIcon.Rocket))
-        {
-            option.Enabled = !isEnabled;
-            SaveCharacterConfigurationOption(character, option);
-        }
-
-        ImGuiEx.Tooltip($"Click to {(isEnabled ? "disable" : "enable")} auto weekly cap for the character");
-
-        if (isEnabled)
-            ImGui.PopStyleColor();
-    }
-
-    internal static void DrawCharacterRelogIcon(string character)
-    {
-        var command = $"{AWC.CommandNameShort} relog {character}";
-
-        ImGui.SameLine(0f, 4f);
-        ImGuiEx.IconButton(FontAwesomeIcon.DoorOpen);
-
-        if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
-        {
-            ImGui.SetClipboardText(command);
-            Notify.Success("Link copied to clipboard");
-        }
-        else if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
-        {
-            ChatHelper.RunCommand(command);
-        }
-
-        ImGuiEx.Tooltip("Left click:   relog to this character\nRight click: copy relog command to clipboard");
-    }
-
-    internal static void DrawCharacterSettingsIcon(string character, CharacterOptions options)
-    {
-        ImGui.SameLine(0f, 4f);
-
-        if (ImGuiEx.IconButton(FontAwesomeIcon.UserCog))
-        {
-            AWC.Instance.OpenCharacterOptionsUi(character);
-        }
-
-        ImGuiEx.Tooltip("Configure Character");
-    }
-
-    internal static void DrawCharacterDetails(string character, CharacterOptions options, int tomes, int weeklyLimit)
+    private static void DrawCharacterDetails(string character, CharacterOptions options, int tomes, int weeklyLimit)
     {
         ImGui.SameLine(0f, 4f);
 

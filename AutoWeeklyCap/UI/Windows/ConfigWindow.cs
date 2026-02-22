@@ -17,21 +17,9 @@ public class ConfigWindow : Window
 
     public override void Draw()
     {
-        var hasHiddenCharacters = false;
-        foreach (var option in AWC.Config.Characters.Values)
-        {
-            if (option.IsHidden())
-            {
-                hasHiddenCharacters = true;
-            }
-        }
-
         Card.Draw("General Options", GeneralOptionsUi.Draw);
         Card.Draw("Duty Options", DutyOptionsUi.Draw);
-
-        if (hasHiddenCharacters)
-            Card.Draw("Hidden Characters", HiddenCharactersUi.Draw);
-
+        Card.Draw("Characters", CharactersOptionUi.Draw);
         Card.Draw("Runner Options", RunnerPrerequisitesUi.Draw);
         Card.Draw("Stop Actions", StopActionsUi.Draw);
         Card.DrawWarning("Manually reset Tomestones", ResetWeeklyTomestonesUi.Draw);

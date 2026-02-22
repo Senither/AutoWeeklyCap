@@ -92,7 +92,7 @@ public class MainWindow : Window
         DrawHeaderActionButtons();
 
         var tabs = new List<(string name, Action function, Vector4? color, bool child)>
-            { ("Characters", CharactersUI.Draw, null, true) };
+            { ("Characters", CharactersTabUi.Draw, null, true) };
 
         if (!AWC.Config.HideUiElementDependencies)
             tabs.Add(("Dependencies", DependenciesUI.Draw, null, true));
