@@ -139,9 +139,10 @@ internal static class DebugUI
             unsafe
             {
                 var t = TargetSystem.Instance()->Target;
+                var distance = Vector3.Distance(Player.Position, t->Position);
 
                 targetId = t->BaseId;
-                taget = $"{t->GetName()} [id: {t->BaseId}]";
+                taget = $"{t->GetName()} [id: {t->BaseId}, disc: {distance}]";
             }
         }
         catch (Exception)
