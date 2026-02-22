@@ -20,6 +20,9 @@ public static class MovementHelper
         if (!PlayerHelper.IsReady)
             return false;
 
+        if (Vector3.Distance(Player.Position, position.Value) < breakpoint)
+            return true;
+
         AWC.TaskManager.InsertMulti(
             new TaskManagerTask(
                 () => MoveToPosition((Vector3)position),

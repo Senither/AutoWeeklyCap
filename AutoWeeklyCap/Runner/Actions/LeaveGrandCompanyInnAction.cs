@@ -21,7 +21,7 @@ public class LeaveGrandCompanyInnAction : BaseAction
 
             var gameObject = ObjectHelper.FindGameObject(GrandCompanyHelper.InnDoorId, Player.Position);
 
-            return gameObject != null && MovementHelper.MoveTo(gameObject.Position, 4.0f);
+            return gameObject != null && MovementHelper.MoveTo(gameObject.Position, 4.75f);
         }, "start moving to GC door");
 
         Enqueue(() =>
