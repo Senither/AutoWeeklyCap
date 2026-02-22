@@ -59,8 +59,9 @@ internal static class DebugUI
         DebugActionButton("Notification", ActionInstance.Notification);
 
         Card.Separator();
-        
-        DebugActionButton("Leave GC Inn", ActionInstance.LeaveGrandCompanyInn, false);
+
+        DebugActionButton("Enter GC Inn", ActionInstance.EnterGrandCompanyInn, false);
+        DebugActionButton("Leave GC Inn", ActionInstance.LeaveGrandCompanyInn);
     }
 
     private static void DrawNotificationDebugActions()

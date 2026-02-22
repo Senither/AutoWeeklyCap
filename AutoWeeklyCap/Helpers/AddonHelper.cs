@@ -139,6 +139,19 @@ public static unsafe class AddonHelper
         return true;
     }
 
+    public static bool ClickTalk()
+    {
+        if (!EzThrottler.Throttle("ClickTalk", 500))
+            return false;
+
+        if (!TryGetReadyAddon("Talk", out var addon))
+            return false;
+
+        new AddonMaster.Talk(addon).Click();
+
+        return true;
+    }
+
     internal static bool IsLobbyErrorVisible() => TryGetLobbyError(out _);
 
     internal static bool TryGetLobbyError(out AtkUnitBase* addon)
