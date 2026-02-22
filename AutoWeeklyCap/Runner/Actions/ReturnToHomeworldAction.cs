@@ -15,9 +15,13 @@ public class ReturnToHomeworldAction : BaseAction
         if (Player.CurrentWorld.RowId == Player.HomeWorld.RowId)
             return false;
 
+        var homeworld = Player.HomeWorld.ValueNullable?.Name;
+        if (homeworld == null)
+            return false;
+
         Enqueue(() =>
         {
-            LifestreamIPC.ExecuteCommand("");
+            LifestreamIPC.ExecuteCommand(homeworld.ToString() ?? string.Empty);
             return true;
         }, "return to home world");
 
