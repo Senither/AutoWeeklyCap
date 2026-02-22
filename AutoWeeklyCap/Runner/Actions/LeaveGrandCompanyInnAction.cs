@@ -29,15 +29,15 @@ public class LeaveGrandCompanyInnAction : BaseAction
             if (EzThrottler.Throttle("LeavingGCInstance", 250))
                 return false;
 
+            if (Player.Territory.RowId != GrandCompanyHelper.InnTerritoryId)
+                return true;
+
             var gameObject = ObjectHelper.FindGameObject(GrandCompanyHelper.InnDoorId, Player.Position);
             if (gameObject == null)
                 return false;
 
             unsafe
             {
-                if (Player.Territory.RowId != GrandCompanyHelper.InnTerritoryId)
-                    return true;
-
                 if (AddonHelper.TryGetReadyAddon("SelectYesno", out _))
                     AddonHelper.ClickSelectYesno();
                 else if (PlayerHelper.IsReady)

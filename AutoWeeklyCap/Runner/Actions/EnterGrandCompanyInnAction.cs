@@ -51,15 +51,15 @@ public class EnterGrandCompanyInnAction : BaseAction
             if (EzThrottler.Throttle("EnteringGCInstance", 250))
                 return false;
 
+            if (Player.Territory.RowId == GrandCompanyHelper.InnTerritoryId)
+                return true;
+
             var gameObject = ObjectHelper.FindGameObject(GrandCompanyHelper.InnVendorId, GrandCompanyHelper.InnVendorLocation);
             if (gameObject == null)
                 return false;
 
             unsafe
             {
-                if (Player.Territory.RowId == GrandCompanyHelper.InnTerritoryId)
-                    return true;
-
                 if (AddonHelper.TryGetReadyAddon("Talk", out _))
                     AddonHelper.ClickTalk();
                 else if (AddonHelper.TryGetReadyAddon("SelectString", out _))
