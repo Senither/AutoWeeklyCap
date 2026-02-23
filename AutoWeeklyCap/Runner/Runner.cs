@@ -1,4 +1,3 @@
-using AutoWeeklyCap.Actions;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.ImGuiNotification;
 using ECommons.Automation.NeoTaskManager;
@@ -493,7 +492,7 @@ public class Runner
         }
 
         if (stopGracefully && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnRunnerStopped)
-            ActionInstance.Notification.ForceInvoke(Actions.NotificationType.RunnerStopped);
+            ActionInstance.Notification.ForceInvoke(StopNotificationType.RunnerStopped);
 
         CurrentDutyStartUtc = null;
 
@@ -531,7 +530,7 @@ public class Runner
         }
 
         if (runsCounter > 0 && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnFullyCapped)
-            ActionInstance.Notification.ForceInvoke(Actions.NotificationType.CharacterCapped);
+            ActionInstance.Notification.ForceInvoke(StopNotificationType.CharacterCapped);
 
         if (AWC.Config.StopAction == StopAction.StartUnlimitedRuns)
         {

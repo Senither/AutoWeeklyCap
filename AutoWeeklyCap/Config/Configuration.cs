@@ -1,6 +1,4 @@
-﻿using AutoWeeklyCap.Actions;
-using AutoWeeklyCap.Runner;
-using Dalamud.Configuration;
+﻿using Dalamud.Configuration;
 
 namespace AutoWeeklyCap.Config;
 

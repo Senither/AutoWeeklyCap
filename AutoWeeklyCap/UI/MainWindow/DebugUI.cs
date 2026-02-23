@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Listeners;
-using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.Runner.Actions;
 using AutoWeeklyCap.UI.Helpers;
 using ECommons.Logging;
@@ -100,8 +99,8 @@ internal static class DebugUI
 
         DebugButton("Stop Sound", () => AWC.TaskManager.Enqueue(NotificationMasterIPC.SendStopSound));
 
-        DebugButton("Notify: RunnerStopped", () => ActionInstance.Notification.Invoke(NotificationType.RunnerStopped), false);
-        DebugButton("Notify: CharacterCapped", () => ActionInstance.Notification.Invoke(NotificationType.CharacterCapped));
+        DebugButton("Notify: RunnerStopped", () => ActionInstance.Notification.Invoke(StopNotificationType.RunnerStopped), false);
+        DebugButton("Notify: CharacterCapped", () => ActionInstance.Notification.Invoke(StopNotificationType.CharacterCapped));
 
         ImGui.Spacing();
         ImGui.TextWrapped("All actions except for \"Stop Sound\" has a 1500ms delay");

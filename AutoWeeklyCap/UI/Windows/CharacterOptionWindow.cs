@@ -1,5 +1,4 @@
 ﻿using AutoWeeklyCap.Config;
-using AutoWeeklyCap.Runner;
 using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
@@ -125,7 +124,7 @@ public class CharacterOptionWindow : Window
         ImGui.Text("Preferred job");
         if (ImGui.BeginCombo($"###selected-duty-job", options.PreferredJob.GetName()))
         {
-            foreach (var job in PlayerJobExtensions.GetValues())
+            foreach (var job in PlayerJobExtensions.GetSelectableCombatJobs())
             {
                 if (ImGui.Selectable(job.GetName(), options.PreferredJob == job))
                 {

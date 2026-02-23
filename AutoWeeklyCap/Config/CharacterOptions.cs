@@ -1,6 +1,4 @@
-﻿using AutoWeeklyCap.Runner;
-
-namespace AutoWeeklyCap.Config;
+﻿namespace AutoWeeklyCap.Config;
 
 [Serializable]
 public class CharacterOptions
@@ -10,7 +8,9 @@ public class CharacterOptions
     public PlayerJob PreferredJob { get; set; } = PlayerJob.None;
     public string? PreferredTomestoneItemName { get; set; } = null;
     public uint Position { get; set; } = 0;
-    public List<int> LastDutyDurationsSeconds { get; set; } = new();
+    public List<int> LastDutyDurationsSeconds { get; set; } = [];
+
+    private const int MaxDutySamples = 5;
 
     /// <summary>
     /// Checks if the character is both enabled and not hidden
@@ -38,8 +38,7 @@ public class CharacterOptions
 
         LastDutyDurationsSeconds.Add(durationSeconds);
 
-        const int maxSamples = 5;
-        while (LastDutyDurationsSeconds.Count > maxSamples)
+        while (LastDutyDurationsSeconds.Count > MaxDutySamples)
             LastDutyDurationsSeconds.RemoveAt(0);
     }
 }

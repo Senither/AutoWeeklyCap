@@ -1,10 +1,25 @@
 ﻿// ReSharper disable InconsistentNaming
 
-namespace AutoWeeklyCap.Runner;
+namespace AutoWeeklyCap.Enums;
 
 public enum PlayerJob
 {
     None = 0,
+
+    // Crafters
+    CPR = 8,
+    BSM = 9,
+    ARM = 10,
+    GSM = 11,
+    LTW = 12,
+    WVR = 13,
+    ALC = 14,
+    CUL = 15,
+
+    // Gathers
+    MIN = 16,
+    BTN = 17,
+    FSH = 18,
 
     // Tanks
     PLD = 19,
@@ -63,7 +78,7 @@ public static class PlayerJobExtensions
         }
     }
 
-    public static PlayerJob[] GetValues()
+    public static PlayerJob[] GetSelectableCombatJobs()
     {
         return
         [

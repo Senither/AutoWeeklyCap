@@ -1,6 +1,4 @@
-﻿using AutoWeeklyCap.Runner;
-
-namespace AutoWeeklyCap.IPC.Wotsit;
+﻿namespace AutoWeeklyCap.IPC.Wotsit;
 
 public static class WotsitEntryGenerator
 {

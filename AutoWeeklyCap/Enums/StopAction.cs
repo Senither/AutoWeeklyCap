@@ -1,6 +1,6 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
 
-namespace AutoWeeklyCap.Actions;
+namespace AutoWeeklyCap.Enums;
 
 public enum StopAction
 {

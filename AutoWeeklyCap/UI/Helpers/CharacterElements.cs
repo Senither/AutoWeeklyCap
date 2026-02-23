@@ -1,5 +1,4 @@
 ﻿using AutoWeeklyCap.Config;
-using AutoWeeklyCap.Runner;
 using Dalamud.Interface;
 
 namespace AutoWeeklyCap.UI.Helpers;

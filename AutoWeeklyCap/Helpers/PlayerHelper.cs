@@ -7,59 +7,6 @@ using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
 namespace AutoWeeklyCap.Helpers;
 
-public enum CharacterSwapStatus
-{
-    FailedToSwitchJob = 0,
-    SwitchedJob = 1,
-    AlreadyOnTargetJob = 2
-}
-
-public enum PlayerJobType
-{
-    Adventurer = 0,
-    Gladiator = 1,
-    Pugilist = 2,
-    Marauder = 3,
-    Lancer = 4,
-    Archer = 5,
-    Conjurer = 6,
-    Thaumaturge = 7,
-    Carpenter = 8,
-    Blacksmith = 9,
-    Armorer = 10,
-    Goldsmith = 11,
-    Leatherworker = 12,
-    Weaver = 13,
-    Alchemist = 14,
-    Culinarian = 15,
-    Miner = 16,
-    Botanist = 17,
-    Fisher = 18,
-    Paladin = 19,
-    Monk = 20,
-    Warrior = 21,
-    Dragoon = 22,
-    Bard = 23,
-    WhiteMage = 24,
-    BlackMage = 25,
-    Arcanist = 26,
-    Summoner = 27,
-    Scholar = 28,
-    Rogue = 29,
-    Ninja = 30,
-    Machinist = 31,
-    DarkKnight = 32,
-    Astrologian = 33,
-    Samurai = 34,
-    RedMage = 35,
-    BlueMage = 36,
-    Gunbreaker = 37,
-    Dancer = 38,
-    Reaper = 39,
-    Sage = 40,
-    Pictomancer = 42
-}
-
 public static class PlayerHelper
 {
     internal static bool IsReady => IsValid && !IsOccupied;
@@ -82,12 +29,12 @@ public static class PlayerHelper
     public static bool IsJumping => Svc.Condition.Any() && (Svc.Condition[ConditionFlag.Jumping] || Svc.Condition[ConditionFlag.Jumping61]);
 
     public static bool CanSelfRepairWithCrafters =>
-        HasMaxJobLevel(PlayerJobType.Carpenter) &&
-        HasMaxJobLevel(PlayerJobType.Blacksmith) &&
-        HasMaxJobLevel(PlayerJobType.Armorer) &&
-        HasMaxJobLevel(PlayerJobType.Goldsmith) &&
-        HasMaxJobLevel(PlayerJobType.Leatherworker) &&
-        HasMaxJobLevel(PlayerJobType.Weaver);
+        HasMaxJobLevel(PlayerJob.CPR) &&
+        HasMaxJobLevel(PlayerJob.BSM) &&
+        HasMaxJobLevel(PlayerJob.ARM) &&
+        HasMaxJobLevel(PlayerJob.GSM) &&
+        HasMaxJobLevel(PlayerJob.LTW) &&
+        HasMaxJobLevel(PlayerJob.WVR);
 
     public static string? GetFullCharacterName()
     {
@@ -101,12 +48,12 @@ public static class PlayerHelper
         return AWC.PlayerState.CharacterName + "@" + world.Value.Name.ToString();
     }
 
-    public static bool HasMaxJobLevel(PlayerJobType jobType)
+    public static bool HasMaxJobLevel(PlayerJob jobType)
     {
         return GetJobLevel(jobType) == AWC.CurrentMaxLevel;
     }
 
-    public static int GetJobLevel(PlayerJobType jobType)
+    public static int GetJobLevel(PlayerJob jobType)
     {
         if (!AWC.PlayerState.IsLoaded)
             return 0;

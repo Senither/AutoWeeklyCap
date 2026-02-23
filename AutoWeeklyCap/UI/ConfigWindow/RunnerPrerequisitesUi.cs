@@ -54,7 +54,7 @@ public static class RunnerPrerequisitesUi
             ImGui.Text("Moves to your grand company inn before starting ");
             StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
             ImGui.Text("");
-            
+
             ImGui.Text("Requires ");
             StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
             ImGui.Text(" and ");

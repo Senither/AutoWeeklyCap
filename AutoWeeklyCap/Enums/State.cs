@@ -1,6 +1,6 @@
 ﻿using Dalamud.Game.Text.SeStringHandling;
 
-namespace AutoWeeklyCap.Runner;
+namespace AutoWeeklyCap.Enums;
 
 public enum State
 {

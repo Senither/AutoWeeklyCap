@@ -1,5 +1,4 @@
-﻿using AutoWeeklyCap.Actions;
-using AutoWeeklyCap.UI.Helpers;
+﻿using AutoWeeklyCap.UI.Helpers;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
 
