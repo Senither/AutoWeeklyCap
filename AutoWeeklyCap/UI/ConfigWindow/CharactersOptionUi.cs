@@ -14,6 +14,7 @@ public static class CharactersOptionUi
 
             CharacterElements.DrawCharacterVisibilityIcon(characterAndWorld, option);
             CharacterElements.DrawCharacterStatusIcon(characterAndWorld, option, sameLine: true);
+            CharacterElements.DrawCharacterPositionIcons(characterAndWorld, option, sameLine: true);
             CharacterElements.DrawCharacterSettingsIcon(characterAndWorld, sameLine: true);
 
             DrawCharacterDetails(characterAndWorld);

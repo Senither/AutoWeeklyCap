@@ -70,53 +70,12 @@ public class CharacterOptionWindow : Window
 
         ImGui.Text("Character Position");
 
-        Disabled.Draw(options.Position == 0, () =>
-        {
-            if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowUp))
-                MoveCharacterPosition(-1);
-
-            ImGuiEx.Tooltip("Move character up");
-        });
-
-        ImGui.SameLine(0f, 4f);
-
-        Disabled.Draw(options.Position == AWC.Config.Characters.Count - 1, () =>
-        {
-            if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowDown))
-                MoveCharacterPosition(1);
-
-            ImGuiEx.Tooltip("Move character down");
-        });
+        CharacterElements.DrawCharacterPositionIcons(character ?? string.Empty, options);
 
         InformationTooltip.Draw(
             "The order of the characters are used when checking tomestones in the runner, so the\n"
             + "first character with missing tomestones is selected searching from top to bottom."
         );
-    }
-
-    private void MoveCharacterPosition(int direction)
-    {
-        if (character == null)
-            return;
-
-        AWC.Config.NormalizeCharacterPositions();
-
-        var sortedCharacters = AWC.Config.GetSortedCharacters();
-        var currentIndex = sortedCharacters.IndexOf(character);
-        if (currentIndex == -1)
-            return;
-
-        var targetIndex = currentIndex + direction;
-        if (targetIndex < 0 || targetIndex >= sortedCharacters.Count)
-            return;
-
-        var otherCharacter = sortedCharacters[targetIndex];
-        var currentOptions = AWC.Config.GetOrRegisterCharacterOptions(character);
-        var otherOptions = AWC.Config.GetOrRegisterCharacterOptions(otherCharacter);
-
-        (currentOptions.Position, otherOptions.Position) = (otherOptions.Position, currentOptions.Position);
-
-        AWC.Config.NormalizeCharacterPositions();
     }
 
     private void DrawCharacterPreferences(CharacterOptions options)
