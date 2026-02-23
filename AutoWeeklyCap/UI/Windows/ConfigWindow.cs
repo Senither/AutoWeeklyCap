@@ -10,7 +10,7 @@ public class ConfigWindow : Window
     {
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(300, 125),
+            MinimumSize = new Vector2(525, 350),
             MaximumSize = new Vector2(9999, 9999)
         };
     }
