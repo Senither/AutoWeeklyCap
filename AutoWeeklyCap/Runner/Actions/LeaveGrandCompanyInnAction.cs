@@ -48,6 +48,7 @@ public class LeaveGrandCompanyInnAction : BaseAction
         }, "leave GC instance");
 
         Enqueue(() => PlayerHelper.IsReady, "wait for player to be ready");
+        EnqueueDelay(1500);
 
         return true;
     }
