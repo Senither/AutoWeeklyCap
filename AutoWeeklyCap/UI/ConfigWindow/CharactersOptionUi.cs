@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
+using Dalamud.Interface;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
 
@@ -21,14 +22,73 @@ public static class CharactersOptionUi
 
             ImGui.PopID();
         }
+
+        DrawCharacterImporter();
     }
 
-    private static void DrawCharacterDetails(string character)
+
+    private static void DrawCharacterImporter()
+    {
+        if (!AutoRetainerIPC.IsEnabled)
+            return;
+
+        try
+        {
+            List<string> characterNames = [];
+            foreach (var registeredCharacter in AutoRetainerIPC.GetRegisteredCharacters())
+            {
+                var name = AutoRetainerIPC.GetOfflineCharacterData(registeredCharacter).ToString();
+
+                if (!AWC.Config.Characters.ContainsKey(name))
+                    characterNames.Add(name);
+            }
+
+            if (characterNames.Count == 0)
+                return;
+
+            DrawCharacterImporterCard(characterNames);
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
+    }
+
+    private static void DrawCharacterImporterCard(List<string> characterNames)
+    {
+        ImGui.Spacing();
+        ImGui.Spacing();
+        ImGui.Spacing();
+
+        Card.DrawSubtle("Import Characters via AutoRetainer", () =>
+        {
+            ImGui.Text("The follow characters have been detected within AutoRetainer and are missing");
+            ImGui.Text("from AWC, you can click on the plus to add the characters.");
+
+            ImGui.Spacing();
+
+            foreach (var name in characterNames)
+            {
+                ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
+
+                if (ImGuiEx.IconButton(FontAwesomeIcon.Plus, id: $"AddCharacterViaAutoRetainer:{name}"))
+                    AWC.Config.GetOrRegisterCharacterOptions(name);
+
+                ImGui.PopStyleColor();
+
+                ImGuiEx.Tooltip($"Add {name} to AWC");
+
+                DrawCharacterDetails(name, 18);
+            }
+        }, id: "auto-retainer-character-importer");
+    }
+
+    private static void DrawCharacterDetails(string character, float padding = 8)
     {
         ImGui.SameLine(0f, 4f);
 
         var cursorPos = ImGui.GetCursorPos();
-        ImGui.ProgressBar(0, new Vector2(ImGui.GetContentRegionAvail().X - 8, ImGui.GetFrameHeight()), "");
+        ImGui.ProgressBar(0, new Vector2(ImGui.GetContentRegionAvail().X - padding, ImGui.GetFrameHeight()), "");
         ImGui.SameLine();
 
         cursorPos.X += 8;

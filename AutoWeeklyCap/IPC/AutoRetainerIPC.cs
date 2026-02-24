@@ -1,4 +1,5 @@
-﻿using ECommons.EzIpcManager;
+﻿using AutoWeeklyCap.IPC.AutoRetainer;
+using ECommons.EzIpcManager;
 
 // ReSharper disable InconsistentNaming
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
@@ -41,6 +42,12 @@ public class AutoRetainerIPC
 
     [EzIPC]
     internal static Func<ulong, long?> GetClosestRetainerVentureSecondsRemaining;
+
+    internal static List<ulong> GetRegisteredCharacters()
+        => Svc.PluginInterface.GetIpcSubscriber<List<ulong>>("AutoRetainer.GetRegisteredCIDs").InvokeFunc();
+
+    internal static OfflineCharacterData GetOfflineCharacterData(ulong cid)
+        => Svc.PluginInterface.GetIpcSubscriber<ulong, OfflineCharacterData>("AutoRetainer.GetOfflineCharacterData").InvokeFunc(cid);
 
     internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
 }
