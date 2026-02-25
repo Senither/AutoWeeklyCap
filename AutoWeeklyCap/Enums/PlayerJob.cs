@@ -65,17 +65,13 @@ public static class PlayerJobExtensions
         if (!EzThrottler.Throttle("SwitchToPreferredJob", 250))
             return false;
 
-        switch (job)
-        {
-            case PlayerJob.None:
-                return true;
+        if (job == PlayerJob.None)
+            return true;
 
-            default:
-                var status = PlayerHelper.SwitchJob((uint)job);
+        var status = PlayerHelper.SwitchJob((uint)job);
 
-                AWC.Log.Debug($"Attempted to switch to job {job}, got status: {status}");
-                return status == CharacterSwapStatus.AlreadyOnTargetJob;
-        }
+        AWC.Log.Debug($"Attempted to switch to job {job}, got status: {status}");
+        return status == CharacterSwapStatus.AlreadyOnTargetJob;
     }
 
     public static PlayerJob[] GetSelectableCombatJobs()
