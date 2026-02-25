@@ -19,6 +19,11 @@ public static class CurrencyHelper
         }
     }
 
+    public static bool IsPlayerLimitedTomestoneCapped()
+    {
+        return GetLimitedTomestoneWeeklyLimit() == GetWeeklyAcquiredTomestoneCount();
+    }
+
     public static int GetLimitedTomestoneWeeklyLimit()
     {
         return InventoryManager.GetLimitedTomestoneWeeklyLimit();

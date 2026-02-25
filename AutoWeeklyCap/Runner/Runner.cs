@@ -35,10 +35,14 @@ public class Runner
         }
 
         currentCharacter = character;
-        state = State.PreparingRunner;
         timestamp = DateTime.UtcNow;
         runsCounter = 0;
         runsCharacter = null;
+
+        state = CurrencyHelper.IsPlayerLimitedTomestoneCapped()
+                    ? State.StartingCharacterSwap
+                    : State.PreparingRunner;
+
 
         AWC.Log.Debug("Starting weekly cap runner");
 
@@ -333,7 +337,7 @@ public class Runner
         if (character == null)
             return;
 
-        var isCapped = CurrencyHelper.GetLimitedTomestoneWeeklyLimit() == CurrencyHelper.GetWeeklyAcquiredTomestoneCount();
+        var isCapped = CurrencyHelper.IsPlayerLimitedTomestoneCapped();
         if (isCapped && AWC.Config.DeliverooEnabled && !AWC.Config.DeliverooOnInterval)
             ActionInstance.Deliveroo.Invoke();
 
