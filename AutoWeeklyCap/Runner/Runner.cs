@@ -374,6 +374,8 @@ public class Runner
             }
         }, "enable BossMod Reborn AI if option is enabled");
 
+        AWC.TaskManager.Enqueue(() => timestamp = DateTime.UtcNow, "set timestamp to track timeouts");
+
         AWC.TaskManager.Enqueue(
             () =>
             {
