@@ -14,7 +14,7 @@ public class MainWindow : Window
     {
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(300, 125),
+            MinimumSize = new Vector2(425, 165),
             MaximumSize = new Vector2(9999, 9999)
         };
 
