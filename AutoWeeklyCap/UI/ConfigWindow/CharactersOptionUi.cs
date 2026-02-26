@@ -63,7 +63,7 @@ public static class CharactersOptionUi
         Card.DrawSubtle("Import Characters via AutoRetainer", () =>
         {
             ImGui.Text("The follow characters have been detected within AutoRetainer and are missing");
-            ImGui.Text("from AWC, you can click on the plus to add the characters.");
+            ImGui.Text("from AWC, you can click on the plus icon to add the characters.");
 
             ImGui.Spacing();
 

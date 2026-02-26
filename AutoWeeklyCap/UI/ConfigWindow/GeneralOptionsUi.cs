@@ -90,13 +90,13 @@ public static class GeneralOptionsUi
 
         InformationTooltip.Draw(() =>
         {
-            ImGui.Text("When enabled and a disconnect is detected while the runner is active AWC will");
+            ImGui.Text("When enabled and a disconnect is detected while the runner is active, AWC will");
             ImGui.Text("attempt to log back into your character and restart the runner.");
             ImGui.Text("");
             ImGui.Text("Note: It's recommended that ");
             StatusText.Draw(NoKillPluginIPC.IsEnabled, "No Kill Plugin");
             ImGui.Text(" is enabled when using the feature");
-            ImGui.Text("to allow recovering for prolonged internet loss without the game closing");
+            ImGui.Text("to allow recovering from prolonged internet loss without the game closing");
         });
 
         var titleMovie = AWC.Config.DisableTitleScreenMovie;
