@@ -38,7 +38,7 @@ internal static class DebugUI
 
     private static void DrawRunnerDebugSteps()
     {
-        ImGui.Text($"Current stage: {AWC.Runner.GetStatus()}");
+        ImGui.Text($"Current stage: {TitleManager.GetStatus() ?? "idle"}");
         DebugButton("Start", () => AWC.Runner.Start(), false);
         DebugButton("Start on Boot", () => AWC.Runner.AutoStartOnBoot());
         DebugButton("Stop", () => AWC.Runner.Stop());

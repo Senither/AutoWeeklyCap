@@ -17,11 +17,11 @@ public enum State
 
 public static class StateExtensions
 {
-    public static string GetStatus(this State state, bool stopGracefully, string? currentCharacter)
+    public static string? GetStatus(this State state, bool stopGracefully, string? currentCharacter)
     {
         return state switch
         {
-            State.Waiting => "idle",
+            State.Waiting => null,
             State.PreparingRunner => "Preparing runner",
             State.WaitingForAutoRetainer => "Waiting for AutoRetainer",
             State.CheckingTomestone => "Checking Tomestone",
@@ -34,7 +34,7 @@ public static class StateExtensions
         };
     }
 
-    public static string GetStatusShort(this State state, bool stopGracefully, string? currentCharacter)
+    public static string? GetStatusShort(this State state, bool stopGracefully, string? currentCharacter)
     {
         return state switch
         {

@@ -1,4 +1,5 @@
-﻿using ECommons.UIHelpers.AddonMasterImplementations;
+﻿using Dalamud.Game.Text.SeStringHandling;
+using ECommons.UIHelpers.AddonMasterImplementations;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
@@ -20,6 +21,8 @@ public class ExtractAction : BaseAction
         var stoppingCategory = AWC.Config.ExtractAll ? 6 : 0;
         var currentCategory = 0;
         var switchCategory = false;
+        
+        using var title = TitleManager.RegisterTitle(BitmapFontIcon.ElementEarth, "Extracting materia");
 
         Enqueue(() =>
         {

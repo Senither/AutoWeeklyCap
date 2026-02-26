@@ -1,4 +1,3 @@
-using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.ImGuiNotification;
 using ECommons.Automation.NeoTaskManager;
 
@@ -129,6 +128,7 @@ public class Runner
 
         LifestreamIPC.Abort();
         AutoDutyIPC.Stop();
+        TitleManager.Reset();
         AWC.TaskManager.Abort();
 
         AWC.Log.Debug("Stopped weekly cap runner");
@@ -137,12 +137,10 @@ public class Runner
     public bool IsRunning() => state != State.Waiting;
     public bool IsStopping() => stopGracefully;
 
-    public string GetStatus() => state.GetStatus(stopGracefully, currentCharacter);
-    public string GetStatusShort() => state.GetStatusShort(stopGracefully, currentCharacter);
-    public BitmapFontIcon GetStatusIcon() => state.GetStatusIcon(stopGracefully);
-
+    public State GetState() => state;
     public int GetRunsCounter() => runsCounter;
     public string? GetRunsCharacter() => runsCharacter;
+    public string? GetCurrentCharacter() => currentCharacter;
 
     public void Tick()
     {
@@ -385,6 +383,8 @@ public class Runner
             {
                 if (!EzThrottler.Throttle("RunnerStartingDuty", 1000))
                     return false;
+
+                TitleManager.Reset();
 
                 if (AWC.ClientState.TerritoryType == AWC.Config.ZoneId)
                 {

@@ -1,4 +1,5 @@
-﻿using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using Dalamud.Game.Text.SeStringHandling;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
@@ -20,6 +21,8 @@ public class SelfRepairAction : BaseAction
             LogDebug("switching to NPC repair, reason: too low quantity of dark matter");
             return ActionInstance.NpcRepair.Invoke();
         }
+
+        using var title = TitleManager.RegisterTitle(BitmapFontIcon.Blacksmith, "Repairing gear");
 
         Enqueue(() =>
         {

@@ -1,4 +1,6 @@
-﻿namespace AutoWeeklyCap.Runner.Actions;
+﻿using Dalamud.Game.Text.SeStringHandling;
+
+namespace AutoWeeklyCap.Runner.Actions;
 
 public class DeliverooAction : BaseAction
 {
@@ -16,6 +18,8 @@ public class DeliverooAction : BaseAction
             DeliverooIPC.StopTurnIn();
 
         ActionInstance.LeaveGrandCompanyInn.Invoke();
+
+        using var title = TitleManager.RegisterTitle(BitmapFontIcon.PriorityWorld, "GC delivery");
 
         Enqueue(() =>
         {

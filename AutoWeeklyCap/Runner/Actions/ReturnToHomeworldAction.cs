@@ -1,4 +1,6 @@
-﻿namespace AutoWeeklyCap.Runner.Actions;
+﻿using Dalamud.Game.Text.SeStringHandling;
+
+namespace AutoWeeklyCap.Runner.Actions;
 
 public class ReturnToHomeworldAction : BaseAction
 {
@@ -18,6 +20,8 @@ public class ReturnToHomeworldAction : BaseAction
         var homeworld = Player.HomeWorld.ValueNullable?.Name;
         if (homeworld == null)
             return false;
+
+        using var title = TitleManager.RegisterTitle(BitmapFontIcon.CrossWorld, "Returning to homeworld");
 
         Enqueue(() =>
         {

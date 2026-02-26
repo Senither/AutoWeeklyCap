@@ -1,4 +1,5 @@
-﻿using FFXIVClientStructs.FFXIV.Component.GUI;
+﻿using Dalamud.Game.Text.SeStringHandling;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
@@ -25,6 +26,8 @@ public class NpcRepairAction : BaseAction
         ResetRepairState();
 
         ActionInstance.LeaveGrandCompanyInn.Invoke();
+        
+        using var title = TitleManager.RegisterTitle(BitmapFontIcon.Blacksmith, "Repairing gear");
 
         Enqueue(() =>
         {

@@ -1,4 +1,6 @@
-﻿namespace AutoWeeklyCap.Runner.Actions;
+﻿using Dalamud.Game.Text.SeStringHandling;
+
+namespace AutoWeeklyCap.Runner.Actions;
 
 public class LeaveGrandCompanyInnAction : BaseAction
 {
@@ -13,6 +15,8 @@ public class LeaveGrandCompanyInnAction : BaseAction
 
         if (Player.Territory.RowId != GrandCompanyHelper.InnTerritoryId)
             return false;
+
+        using var title = TitleManager.RegisterTitle(BitmapFontIcon.WatchingCutscene, "Leaving GC inn");
 
         Enqueue(() =>
         {

@@ -55,15 +55,15 @@ public class DtrStatusBar : IDisposable
             return;
 
         dtrEntry.Tooltip = AWC.Config.ShowStatusAsIcons
-                               ? $"Status: {AWC.Runner.GetStatusShort()}\n\n{DtrBarTooltip}"
+                               ? $"Status: {TitleManager.GetStatusShort()}\n\n{DtrBarTooltip}"
                                : DtrBarTooltip;
 
         dtrEntry?.Shown = true;
         dtrEntry?.Text = new SeString(
             new TextPayload($"AWC: "),
             AWC.Config.ShowStatusAsIcons
-                ? new IconPayload(AWC.Runner.GetStatusIcon())
-                : new TextPayload(AWC.Runner.GetStatusShort())
+                ? new IconPayload(TitleManager.GetStatusIcon())
+                : new TextPayload(TitleManager.GetStatusShort())
         );
     }
 

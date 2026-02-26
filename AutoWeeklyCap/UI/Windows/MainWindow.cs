@@ -70,10 +70,10 @@ public class MainWindow : Window
     public override void PreDraw()
     {
         var name = $"{AWC.Name} {AWC.Version}";
-        if (AWC.Runner.IsRunning())
-        {
-            name += $" | {AWC.Runner.GetStatus()}";
-        }
+
+        var status = TitleManager.GetStatus();
+        if (status != null)
+            name += $" | {status}";
 
         WindowName = $"{name}###AWC";
 
