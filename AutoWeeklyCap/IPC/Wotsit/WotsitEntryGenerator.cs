@@ -27,8 +27,11 @@ public static class WotsitEntryGenerator
         foreach (var entry in BasicRunnerActions)
             yield return entry;
 
-        foreach (var entry2 in ThirdPartyRunnerActions())
-            yield return entry2;
+        foreach (var entry in ThirdPartyRunnerActions())
+            yield return entry;
+
+        foreach (var entry in ReloggableCharacters())
+            yield return entry;
     }
 
     private static IEnumerable<WotsitEntry> ThirdPartyRunnerActions()
@@ -48,5 +51,25 @@ public static class WotsitEntryGenerator
                 32,
                 () => ActionInstance.Deliveroo.Invoke()
             );
+    }
+
+    private static IEnumerable<WotsitEntry> ReloggableCharacters()
+    {
+        if (LifestreamIPC.IsEnabled && !PlayerHelper.InDuty)
+        {
+            var currentCharacter = PlayerHelper.GetFullCharacterName();
+            foreach (var characterAndWorld in AWC.Config.Characters.Keys)
+            {
+                if (currentCharacter == characterAndWorld)
+                    continue;
+
+                yield return new WotsitEntry(
+                    $"Relog to character: {characterAndWorld}",
+                    $"relog to character: {characterAndWorld}",
+                    112,
+                    () => ChatHelper.RunCommand($"awc relog {characterAndWorld}")
+                );
+            }
+        }
     }
 }
