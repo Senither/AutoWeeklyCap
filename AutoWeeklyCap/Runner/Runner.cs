@@ -42,7 +42,6 @@ public class Runner
                     ? State.StartingCharacterSwap
                     : State.PreparingRunner;
 
-
         AWC.Log.Debug("Starting weekly cap runner");
 
         return true;
@@ -546,8 +545,8 @@ public class Runner
             var preferredCharacter = AWC.Config.CharacterForSwap;
             if (PlayerHelper.GetFullCharacterName() == preferredCharacter)
             {
-                AWC.Log.Debug("Player is already on preferred character, starting AutoDuty");
-                state = State.StartingAutoDuty;
+                AWC.Log.Debug("Player is already on preferred character, starting runner");
+                state = State.PreparingRunner;
                 return;
             }
 
