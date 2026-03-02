@@ -25,6 +25,7 @@ internal static class DebugUI
         Card.DrawSubtle("Runner Debug Actions", DrawRunnerDebugActions, collapsible: false);
         Card.DrawSubtle("Notification Debug Actions", DrawNotificationDebugActions, collapsible: false);
         Card.DrawSubtle("Game Data State", DrawGameDataState, collapsible: false);
+        Card.DrawSubtle("Plugin Logs", DrawPluginLogs);
         Card.DrawDanger("Danger Zone", DrawDangerZone);
     }
 
@@ -206,6 +207,13 @@ internal static class DebugUI
             ImGui.SameLine(0, 0);
             ImGui.Text(" | ");
         }
+    }
+
+    private static void DrawPluginLogs()
+    {
+        ImGui.BeginChild("DebugPluginLogs", new Vector2(ImGui.GetContentRegionAvail().X - 8, 600), true);
+        InternalLog.PrintImgui();
+        ImGui.EndChild();
     }
 
     private static void DrawDangerZone()
