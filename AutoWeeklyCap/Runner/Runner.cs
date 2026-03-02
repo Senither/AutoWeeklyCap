@@ -580,7 +580,10 @@ public class Runner
         if (character == null || character != currentCharacter)
             return;
 
-        AWC.Log.Debug("Completed character swap, checking tomestones");
+        if (!PlayerHelper.IsReady)
+            return;
+
+        AWC.Log.Debug("Completed character swap, preparing runner");
         state = State.PreparingRunner;
     }
 
