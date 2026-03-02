@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using Dalamud.Game.Gui.Dtr;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
@@ -31,7 +31,6 @@ public class DtrStatusBar : IDisposable
             catch (Exception e)
             {
                 AWC.Log.Error(e, $"Failed to acquire DtrBarEntry {DtrBarTitle}");
-                Thread.Sleep(100);
             }
         });
 
