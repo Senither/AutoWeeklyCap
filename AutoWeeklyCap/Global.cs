@@ -4,6 +4,7 @@ global using AutoWeeklyCap.Helpers;
 global using AutoWeeklyCap.IPC;
 global using AutoWeeklyCap.Runner;
 global using Dalamud.Bindings.ImGui;
+global using Dalamud.Game.Text.SeStringHandling;
 global using Dalamud.Interface.Colors;
 global using Dalamud.Interface.Utility;
 global using Dalamud.Plugin.Services;

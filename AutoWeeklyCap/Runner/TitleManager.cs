@@ -1,6 +1,4 @@
-﻿using Dalamud.Game.Text.SeStringHandling;
-
-namespace AutoWeeklyCap.Runner;
+﻿namespace AutoWeeklyCap.Runner;
 
 public static class TitleManager
 {

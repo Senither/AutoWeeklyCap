@@ -1,6 +1,4 @@
-﻿using Dalamud.Game.Text.SeStringHandling;
-
-namespace AutoWeeklyCap.Runner.Actions;
+﻿namespace AutoWeeklyCap.Runner.Actions;
 
 public class EnterGrandCompanyInnAction : BaseAction
 {

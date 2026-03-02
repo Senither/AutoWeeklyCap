@@ -1,6 +1,5 @@
-using System.Threading;
+﻿using System.Threading;
 using Dalamud.Game.Gui.Dtr;
-using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 
 namespace AutoWeeklyCap.UI.Dtr;

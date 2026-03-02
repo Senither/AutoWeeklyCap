@@ -1,5 +1,4 @@
-﻿using Dalamud.Game.Text.SeStringHandling;
-using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
