@@ -304,7 +304,7 @@ public class Runner
         {
             AWC.TaskManager.Enqueue(
                 () => state = State.PreparingRunner,
-                "next stage: checking tomestone"
+                "next stage: preparing runner"
             );
             return;
         }
