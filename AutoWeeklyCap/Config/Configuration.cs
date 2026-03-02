@@ -1,5 +1,7 @@
 ﻿using Dalamud.Configuration;
 
+// ReSharper disable InconsistentNaming
+
 namespace AutoWeeklyCap.Config;
 
 [Serializable]

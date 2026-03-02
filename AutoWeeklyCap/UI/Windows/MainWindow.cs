@@ -2,13 +2,12 @@
 using AutoWeeklyCap.UI.MainWindow;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
-using ECommons.Configuration;
 
 namespace AutoWeeklyCap.UI.Windows;
 
 public class MainWindow : Window
 {
-    private TitleBarButton LockButton;
+    private readonly TitleBarButton lockButton;
 
     public MainWindow(AWC autoWeeklyCap) : base("Auto Weekly Tomestone Capper##main-window")
     {
@@ -42,14 +41,14 @@ public class MainWindow : Window
             ShowTooltip = () => ImGui.SetTooltip("Send plugin feedback"),
         });
 
-        LockButton = new TitleBarButton()
+        lockButton = new TitleBarButton()
         {
             Click = (m) =>
             {
                 if (m == ImGuiMouseButton.Left)
                 {
                     AWC.Config.Window.Pin = !AWC.Config.Window.Pin;
-                    LockButton?.Icon = AWC.Config.Window.Pin
+                    lockButton?.Icon = AWC.Config.Window.Pin
                                            ? FontAwesomeIcon.Lock
                                            : FontAwesomeIcon.LockOpen;
                 }
@@ -59,13 +58,10 @@ public class MainWindow : Window
             ShowTooltip = () => ImGui.SetTooltip("Lock window position and size"),
         };
 
-        TitleBarButtons.Add(LockButton);
+        TitleBarButtons.Add(lockButton);
     }
 
-    public override void OnClose()
-    {
-        EzConfig.Save();
-    }
+    public override void OnClose() => AWC.Config.Save();
 
     public override void PreDraw()
     {

@@ -204,7 +204,6 @@ public static class Card
             {
                 var current = ContextStack.Pop();
                 ContextStack.Push(current with { ForceOpenDescendants = forceOpenDescendants });
-                parentForceOpenDescendants = forceOpenDescendants;
             }
 
             ImGui.SetCursorScreenPos(cardMin + new Vector2(titlePadding.X, (titleBarHeight - titleLineHeight) / 2f));
@@ -226,13 +225,13 @@ public static class Card
 
             if (!collapsible || isOpen)
             {
-                ImGui.SetCursorScreenPos(cardMin + new Vector2(contentPadding.X, titleBarHeight + contentPadding.Y));
+                ImGui.SetCursorScreenPos(cardMin + contentPadding with { Y = titleBarHeight + contentPadding.Y });
                 ImGui.BeginGroup();
 
                 bodyContent();
 
                 ImGui.EndGroup();
-                ImGui.Dummy(new Vector2(0f, contentPadding.Y));
+                ImGui.Dummy(contentPadding with { X = 0f });
             }
 
             ImGui.EndGroup();
@@ -287,7 +286,7 @@ public static class Card
             drawList.AddRectFilled(bg.Min, bg.Max, bg.CardBgColor, Rounding, ImDrawFlags.RoundCornersBottom);
             drawList.AddRectFilled(
                 bg.Min,
-                new Vector2(bg.Max.X, bg.Min.Y + bg.TitleBarHeight),
+                bg.Max with { Y = bg.Min.Y + bg.TitleBarHeight },
                 bg.TitleBarColor,
                 Rounding,
                 ImDrawFlags.RoundCornersNone

@@ -69,23 +69,23 @@ public static class FileSelector
         {
             try
             {
-                using var dialog = new OpenFileDialog
-                {
-                    Title = dialogTitle,
-                    Filter = filter,
-                    CheckFileExists = true,
-                    CheckPathExists = true,
-                    RestoreDirectory = true,
-                };
+                using var dialog = new OpenFileDialog();
+
+                dialog.Title = dialogTitle;
+                dialog.Filter = filter;
+                dialog.CheckFileExists = true;
+                dialog.CheckPathExists = true;
+                dialog.RestoreDirectory = true;
 
                 var initialDirectory = GetInitialDirectory(currentPath, defaultDirectory);
                 if (!string.IsNullOrWhiteSpace(initialDirectory))
                     dialog.InitialDirectory = initialDirectory;
 
-                if (dialog.ShowDialog() == DialogResult.OK)
-                    Results.Enqueue((id, dialog.FileName));
-                else
-                    Results.Enqueue((id, null));
+                Results.Enqueue(
+                    dialog.ShowDialog() == DialogResult.OK
+                        ? (id, dialog.FileName)
+                        : (id, null)
+                );
             }
             catch (Exception e)
             {

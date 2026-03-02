@@ -2,11 +2,11 @@
 
 public class ClientListener
 {
-    public static bool IsRecoveringFromDisconnect = false;
-    public static bool IsRestarting = false;
-    public static DateTime LastRecoveryTimestamp = DateTime.MinValue;
+    public static bool IsRestarting { get; set; } = false;
+    public static bool IsRecoveringFromDisconnect { get; set; } = false;
+    public static DateTime LastRecoveryTimestamp { get; set; } = DateTime.MinValue;
 
-    public void OnLogout(int type, int code)
+    public static void OnLogout(int type, int code)
     {
         if (!AWC.Config.AttemptRecoveryFromDisconnects)
             return;

@@ -22,6 +22,9 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     internal const string Name = "Auto Weekly Cap";
     internal const string InternalName = "AutoWeeklyCap";
 
+    internal const string CommandNameShort = "/awc";
+    internal const string CommandNameLong = "/autoweeklycap";
+
     internal static AWC Instance = null!;
     internal const int CurrentMaxLevel = 100;
 
@@ -64,12 +67,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     private ConfigWindow ConfigWindow { get; init; }
     private CharacterOptionWindow CharacterOptionWindow { get; init; }
     private FeedbackWindow FeedbackWindow { get; init; }
-
     private FrameworkListener FrameworkListener { get; init; } = new();
-    private ClientListener ClientListener { get; init; } = new();
-
-    internal const string CommandNameShort = "/awc";
-    internal const string CommandNameLong = "/autoweeklycap";
 
     public AutoWeeklyCap()
     {
@@ -126,7 +124,9 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
         Log.Debug($"AWC#Startup - StartRunnerOnBoot: {Config.StartRunnerOnBoot}");
         if (Config.StartRunnerOnBoot)
-            new TickScheduler(() => Runner.AutoStartOnBoot());
+        {
+            _ = new TickScheduler(() => Runner.AutoStartOnBoot());
+        }
 
         WotsitIPC.Manager.InitializeWotsit("AWC initialization");
 

@@ -108,7 +108,7 @@ public class ExtractAction : BaseAction
             {
                 unsafe
                 {
-                    if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterialize))
+                    if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* _))
                     {
                         ActionManager.Instance()->UseAction(ActionType.GeneralAction, 14);
                         return false;

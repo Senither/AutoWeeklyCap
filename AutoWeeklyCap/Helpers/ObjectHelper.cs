@@ -23,7 +23,7 @@ public static class ObjectHelper
         }
     }
 
-    internal static unsafe IGameObject? FindGameObject(uint id, Vector3 position)
+    internal static IGameObject? FindGameObject(uint id, Vector3 position)
     {
         try
         {
