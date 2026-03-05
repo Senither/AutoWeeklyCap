@@ -501,7 +501,6 @@ public class Runner
 
         CurrentDutyStartUtc = null;
 
-        runsCharacter ??= currentCharacter;
         if (runsCharacter != currentCharacter)
         {
             runsCharacter = currentCharacter;
