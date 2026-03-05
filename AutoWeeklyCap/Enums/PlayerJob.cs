@@ -60,6 +60,47 @@ public static class PlayerJobExtensions
         return job.ToString();
     }
 
+    public static BitmapFontIcon GetIcon(this PlayerJob job)
+    {
+        return job switch
+        {
+            PlayerJob.None => BitmapFontIcon.AnyClass,
+            PlayerJob.CPR => BitmapFontIcon.Carpenter,
+            PlayerJob.BSM => BitmapFontIcon.Blacksmith,
+            PlayerJob.ARM => BitmapFontIcon.Armorer,
+            PlayerJob.GSM => BitmapFontIcon.Goldsmith,
+            PlayerJob.LTW => BitmapFontIcon.Leatherworker,
+            PlayerJob.WVR => BitmapFontIcon.Weaver,
+            PlayerJob.ALC => BitmapFontIcon.Alchemist,
+            PlayerJob.CUL => BitmapFontIcon.Culinarian,
+            PlayerJob.MIN => BitmapFontIcon.Miner,
+            PlayerJob.BTN => BitmapFontIcon.Botanist,
+            PlayerJob.FSH => BitmapFontIcon.Fisher,
+            PlayerJob.PLD => BitmapFontIcon.Paladin,
+            PlayerJob.WAR => BitmapFontIcon.Warrior,
+            PlayerJob.DRK => BitmapFontIcon.DarkKnight,
+            PlayerJob.GNB => BitmapFontIcon.Gunbreaker,
+            PlayerJob.WHM => BitmapFontIcon.WhiteMage,
+            PlayerJob.SCH => BitmapFontIcon.Scholar,
+            PlayerJob.AST => BitmapFontIcon.Astrologian,
+            PlayerJob.SGE => BitmapFontIcon.Sage,
+            PlayerJob.MNK => BitmapFontIcon.Monk,
+            PlayerJob.DRG => BitmapFontIcon.Dragoon,
+            PlayerJob.NIN => BitmapFontIcon.Ninja,
+            PlayerJob.SAM => BitmapFontIcon.Samurai,
+            PlayerJob.RPR => BitmapFontIcon.Reaper,
+            PlayerJob.VPR => BitmapFontIcon.Viper,
+            PlayerJob.BRD => BitmapFontIcon.Bard,
+            PlayerJob.MCH => BitmapFontIcon.Machinist,
+            PlayerJob.DNC => BitmapFontIcon.Dancer,
+            PlayerJob.BLM => BitmapFontIcon.BlackMage,
+            PlayerJob.SMN => BitmapFontIcon.Summoner,
+            PlayerJob.RDM => BitmapFontIcon.RedMage,
+            PlayerJob.PCT => BitmapFontIcon.Pictomancer,
+            _ => BitmapFontIcon.AnyClass,
+        };
+    }
+
     public static bool SwitchToJob(this PlayerJob job)
     {
         if (!EzThrottler.Throttle("SwitchToPreferredJob", 250))
