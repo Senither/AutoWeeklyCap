@@ -91,12 +91,12 @@ public abstract class BaseAction
         AWC.TaskManager.Enqueue(action, $"{Name}: {description}");
     }
 
-    protected void Enqueue(Func<bool> action, string description, int timelimitMS)
+    protected void Enqueue(Func<bool> action, string description, int timelimitMs)
     {
         AWC.TaskManager.Enqueue(
             action,
             $"{Name}: {description}",
-            new TaskManagerConfiguration(timelimitMS)
+            new TaskManagerConfiguration(timelimitMs)
         );
     }
 

@@ -9,10 +9,12 @@ public class NpcRepairAction : BaseAction
 
     private const int LongTaskTimeout = 120_000;
 
-    private static bool SeenAddon = false;
-    private static unsafe AtkUnitBase* AddonRepair = null;
-    private static unsafe AtkUnitBase* AddonSelectYesno = null;
-    private static unsafe AtkUnitBase* AddonSelectIconString = null;
+    private static bool _seenAddon = false;
+    private static unsafe AtkUnitBase* _addonSelectYesno = null;
+    private static unsafe AtkUnitBase* _addonSelectIconString = null;
+
+    // ReSharper disable once NotAccessedField.Local
+    private static unsafe AtkUnitBase* _addonRepair = null;
 
     protected override bool Run(params object[] args)
     {
@@ -77,16 +79,16 @@ public class NpcRepairAction : BaseAction
                         return false;
                     }
 
-                    if (GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString)) {
+                    if (GenericHelpers.TryGetAddonByName("SelectIconString", out _addonSelectIconString) && GenericHelpers.IsAddonReady(_addonSelectIconString)) {
                         AddonHelper.ClickSelectIconString(0);
-                    } else if (!GenericHelpers.TryGetAddonByName("Repair", out AddonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectYesno)) {
+                    } else if (!GenericHelpers.TryGetAddonByName("Repair", out _addonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out _addonSelectYesno)) {
                         ObjectHelper.InteractWithObject(vendor);
-                    } else if (!SeenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectYesno) || !GenericHelpers.IsAddonReady(AddonSelectYesno))) {
+                    } else if (!_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out _addonSelectYesno) || !GenericHelpers.IsAddonReady(_addonSelectYesno))) {
                         AddonHelper.ClickRepair();
-                    } else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectYesno) && GenericHelpers.IsAddonReady(AddonSelectYesno)) {
+                    } else if (GenericHelpers.TryGetAddonByName("SelectYesno", out _addonSelectYesno) && GenericHelpers.IsAddonReady(_addonSelectYesno)) {
                         AddonHelper.ClickSelectYesno();
-                        SeenAddon = true;
-                    } else if (SeenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectYesno) || !GenericHelpers.IsAddonReady(AddonSelectYesno))) {
+                        _seenAddon = true;
+                    } else if (_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out _addonSelectYesno) || !GenericHelpers.IsAddonReady(_addonSelectYesno))) {
                         return true;
                     }
                 }
@@ -128,9 +130,9 @@ public class NpcRepairAction : BaseAction
 
     private static unsafe void ResetRepairState()
     {
-        SeenAddon = false;
-        AddonRepair = null;
-        AddonSelectYesno = null;
-        AddonSelectIconString = null;
+        _seenAddon = false;
+        _addonRepair = null;
+        _addonSelectYesno = null;
+        _addonSelectIconString = null;
     }
 }

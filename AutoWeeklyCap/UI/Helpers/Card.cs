@@ -5,18 +5,24 @@ namespace AutoWeeklyCap.UI.Helpers;
 
 public static class Card
 {
-    internal const float Rounding = 1f;
-    internal const float BorderSize = 1f;
+    private const float Rounding = 1f;
+    private const float BorderSize = 1f;
 
-    internal static readonly Vector2 TitlePadding = new(10, 6);
-    internal static readonly Vector2 ContentPadding = new(10, 10);
+    private static readonly Vector2 TitlePadding = new(10, 6);
+    private static readonly Vector2 ContentPadding = new(10, 10);
 
-    internal static readonly Vector2 SubtleTitlePadding = new(8, 4);
-    internal static readonly Vector2 SubtleContentPadding = new(8, 8);
+    private static readonly Vector2 SubtleTitlePadding = new(8, 4);
+    private static readonly Vector2 SubtleContentPadding = new(8, 8);
 
-    internal static readonly Vector4 DefaultChildBg = new(0.05f, 0.05f, 0.05f, 0.2f);
-    internal static readonly Vector4 SubtleChildBg = new(0.05f, 0.05f, 0.05f, 0.12f);
+    private static readonly Vector4 DefaultChildBg = new(0.05f, 0.05f, 0.05f, 0.2f);
+    private static readonly Vector4 SubtleChildBg = new(0.05f, 0.05f, 0.05f, 0.12f);
 
+    private static int _channelSplitDepth = 0;
+    private static readonly Stack<CardContext> ContextStack = new();
+    private static List<CardBackgroundDraw>? _pendingBackgrounds = null;
+    private static readonly Dictionary<uint, bool> OpenStateById = new();
+
+    // ReSharper disable once MemberHidesStaticFromOuterClass
     private readonly record struct CardContext(uint BorderColor, Vector2 ContentPadding, float ParentPaddingX, bool ForceOpenDescendants);
 
     private readonly record struct CardBackgroundDraw(
@@ -28,13 +34,7 @@ public static class Card
         uint BorderColor
     );
 
-    private static readonly Stack<CardContext> ContextStack = new();
-    private static int ChannelSplitDepth = 0;
-    private static List<CardBackgroundDraw>? PendingBackgrounds = null;
-
-    private static readonly Dictionary<uint, bool> OpenStateById = new();
-
-    public static void Draw(string title, Action bodyContent, bool collapsible = true, bool defaultOpen = false, string? id = null)
+    internal static void Draw(string title, Action bodyContent, bool collapsible = true, bool defaultOpen = false, string? id = null)
     {
         DrawWithColors(
             title,
@@ -47,7 +47,7 @@ public static class Card
         );
     }
 
-    public static void DrawSubtle(string title, Action bodyContent, bool collapsible = true, bool defaultOpen = false, string? id = null)
+    internal static void DrawSubtle(string title, Action bodyContent, bool collapsible = true, bool defaultOpen = false, string? id = null)
     {
         DrawCore(
             title,
@@ -63,7 +63,7 @@ public static class Card
         );
     }
 
-    public static void DrawWarning(string title, Action bodyContent, bool collapsible = true, bool defaultOpen = false, string? id = null)
+    internal static void DrawWarning(string title, Action bodyContent, bool collapsible = true, bool defaultOpen = false, string? id = null)
     {
         DrawWithColors(
             title,
@@ -76,7 +76,7 @@ public static class Card
         );
     }
 
-    public static void DrawDanger(string title, Action bodyContent, bool collapsible = true, bool defaultOpen = false, string? id = null)
+    internal static void DrawDanger(string title, Action bodyContent, bool collapsible = true, bool defaultOpen = false, string? id = null)
     {
         DrawWithColors(
             title,
@@ -89,7 +89,7 @@ public static class Card
         );
     }
 
-    public static void DrawWithColors(
+    internal static void DrawWithColors(
         string title,
         Action bodyContent,
         uint backgroundColor,
@@ -137,13 +137,13 @@ public static class Card
         ContextStack.Push(new CardContext(borderColor, contentPadding, parentPaddingX, parentForceOpenDescendants));
 
         var drawList = ImGui.GetWindowDrawList();
-        var ownsChannelSplit = ChannelSplitDepth == 0;
+        var ownsChannelSplit = _channelSplitDepth == 0;
         if (ownsChannelSplit) {
             drawList.ChannelsSplit(2);
-            PendingBackgrounds = [];
+            _pendingBackgrounds = [];
         }
 
-        ChannelSplitDepth++;
+        _channelSplitDepth++;
 
         var bgIndex = -1;
         var bgRecorded = false;
@@ -176,8 +176,8 @@ public static class Card
             var titleLineHeight = ImGui.GetTextLineHeight();
             var titleBarHeight = titleLineHeight + (titlePadding.Y * 2);
 
-            bgIndex = PendingBackgrounds?.Count ?? -1;
-            PendingBackgrounds?.Add(default);
+            bgIndex = _pendingBackgrounds?.Count ?? -1;
+            _pendingBackgrounds?.Add(default);
 
             ImGui.Dummy(new Vector2(width, titleBarHeight));
 
@@ -230,8 +230,8 @@ public static class Card
             var cardMax = ImGui.GetItemRectMax();
             var cardBgU32 = ImGui.ColorConvertFloat4ToU32(ImGui.GetStyle().Colors[(int)ImGuiCol.ChildBg]);
 
-            if (PendingBackgrounds != null && bgIndex >= 0) {
-                PendingBackgrounds[bgIndex] = new CardBackgroundDraw(
+            if (_pendingBackgrounds != null && bgIndex >= 0) {
+                _pendingBackgrounds[bgIndex] = new CardBackgroundDraw(
                     cardMin,
                     cardMax,
                     titleBarHeight,
@@ -244,17 +244,17 @@ public static class Card
 
             ImGui.Spacing();
         } finally {
-            if (!bgRecorded && PendingBackgrounds != null && bgIndex >= 0 && bgIndex < PendingBackgrounds.Count) {
-                PendingBackgrounds.RemoveAt(bgIndex);
+            if (!bgRecorded && _pendingBackgrounds != null && bgIndex >= 0 && bgIndex < _pendingBackgrounds.Count) {
+                _pendingBackgrounds.RemoveAt(bgIndex);
             }
 
-            ChannelSplitDepth = Math.Max(0, ChannelSplitDepth - 1);
+            _channelSplitDepth = Math.Max(0, _channelSplitDepth - 1);
 
             if (ownsChannelSplit) {
                 FlushPendingBackgrounds(drawList);
                 drawList.ChannelsSetCurrent(1);
                 drawList.ChannelsMerge();
-                PendingBackgrounds = null;
+                _pendingBackgrounds = null;
             }
 
             ContextStack.Pop();
@@ -263,13 +263,13 @@ public static class Card
 
     private static void FlushPendingBackgrounds(ImDrawListPtr drawList)
     {
-        if (PendingBackgrounds == null || PendingBackgrounds.Count == 0) {
+        if (_pendingBackgrounds == null || _pendingBackgrounds.Count == 0) {
             return;
         }
 
         drawList.ChannelsSetCurrent(0);
 
-        foreach (var bg in PendingBackgrounds) {
+        foreach (var bg in _pendingBackgrounds) {
             drawList.AddRectFilled(bg.Min, bg.Max, bg.CardBgColor, Rounding, ImDrawFlags.RoundCornersBottom);
             drawList.AddRectFilled(
                 bg.Min,

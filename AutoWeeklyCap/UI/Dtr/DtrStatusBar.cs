@@ -10,40 +10,40 @@ public class DtrStatusBar : IDisposable
     private const string DtrBarTitle = "Auto Weekly Capper";
     private const string DtrBarTooltip = "Click => toggle the character window\nCTRL + Click => toggle runner status";
 
-    private Thread? dtrEntryLoadThread;
-    private IDtrBarEntry? dtrEntry;
+    private Thread? _dtrEntryLoadThread;
+    private IDtrBarEntry? _dtrEntry;
 
     public void Start()
     {
-        dtrEntryLoadThread = new Thread(() =>
+        _dtrEntryLoadThread = new Thread(() =>
         {
-            if (dtrEntry != null) {
+            if (_dtrEntry != null) {
                 return;
             }
 
             try {
-                dtrEntry = AWC.DtrBar.Get(DtrBarTitle);
-                dtrEntry.Text = "...";
-                dtrEntry.Shown = false;
-                dtrEntry.OnClick = _ => OnClick();
-                dtrEntry.Tooltip = DtrBarTooltip;
+                _dtrEntry = AWC.DtrBar.Get(DtrBarTitle);
+                _dtrEntry.Text = "...";
+                _dtrEntry.Shown = false;
+                _dtrEntry.OnClick = _ => OnClick();
+                _dtrEntry.Tooltip = DtrBarTooltip;
             } catch (Exception e) {
                 AWC.Log.Error(e, $"Failed to acquire DtrBarEntry {DtrBarTitle}");
             }
         });
 
-        dtrEntryLoadThread.Start();
+        _dtrEntryLoadThread.Start();
     }
 
     public void Draw()
     {
-        if (dtrEntry == null) {
+        if (_dtrEntry == null) {
             return;
         }
 
         if (!AWC.Config.ShowStatusInStatusBar) {
-            if (dtrEntry.Shown) {
-                dtrEntry.Shown = false;
+            if (_dtrEntry.Shown) {
+                _dtrEntry.Shown = false;
             }
 
             return;
@@ -53,12 +53,12 @@ public class DtrStatusBar : IDisposable
             return;
         }
 
-        dtrEntry.Tooltip = AWC.Config.ShowStatusAsIcons
+        _dtrEntry.Tooltip = AWC.Config.ShowStatusAsIcons
             ? $"Status: {TitleManager.GetStatusShort()}\n\n{DtrBarTooltip}"
             : DtrBarTooltip;
 
-        dtrEntry?.Shown = true;
-        dtrEntry?.Text = new SeString(
+        _dtrEntry?.Shown = true;
+        _dtrEntry?.Text = new SeString(
             new TextPayload($"AWC: "),
             AWC.Config.ShowStatusAsIcons
                 ? new IconPayload(TitleManager.GetStatusIcon())
@@ -89,7 +89,7 @@ public class DtrStatusBar : IDisposable
     {
         GC.SuppressFinalize(this);
 
-        dtrEntryLoadThread?.Join();
-        dtrEntry?.Remove();
+        _dtrEntryLoadThread?.Join();
+        _dtrEntry?.Remove();
     }
 }

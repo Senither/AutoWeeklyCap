@@ -6,18 +6,18 @@ namespace AutoWeeklyCap.IPC.Wotsit;
 
 public class WotsitManager : IDisposable
 {
-    private readonly Dictionary<string, WotsitEntry> registered = [];
-    private HashSet<WotsitEntry> lastEntries = [];
+    private readonly Dictionary<string, WotsitEntry> _registered = [];
+    private HashSet<WotsitEntry> _lastEntries = [];
 
-    private readonly ICallGateSubscriber<bool> faAvailable;
-    private readonly ICallGateSubscriber<string, bool> faInvoke;
+    private readonly ICallGateSubscriber<bool>? _faAvailable;
+    private readonly ICallGateSubscriber<string, bool>? _faInvoke;
 
     public WotsitManager()
     {
-        faAvailable = Svc.PluginInterface.GetIpcSubscriber<bool>("FA.Available");
-        faAvailable.Subscribe(OnAvailable);
-        faInvoke = Svc.PluginInterface.GetIpcSubscriber<string, bool>("FA.Invoke");
-        faInvoke.Subscribe(HandleInvoke);
+        _faAvailable = Svc.PluginInterface.GetIpcSubscriber<bool>("FA.Available");
+        _faAvailable.Subscribe(OnAvailable);
+        _faInvoke = Svc.PluginInterface.GetIpcSubscriber<string, bool>("FA.Invoke");
+        _faInvoke.Subscribe(HandleInvoke);
 
         ProperOnLogin.RegisterAvailable(OnLogin, true);
         Svc.ClientState.TerritoryChanged += OnTerritoryChanged;
@@ -28,8 +28,8 @@ public class WotsitManager : IDisposable
     {
         ClearWotsit();
 
-        faAvailable?.Unsubscribe(OnAvailable);
-        faInvoke?.Unsubscribe(HandleInvoke);
+        _faAvailable?.Unsubscribe(OnAvailable);
+        _faInvoke?.Unsubscribe(HandleInvoke);
 
         ProperOnLogin.Unregister(OnLogin);
         Svc.ClientState.TerritoryChanged -= OnTerritoryChanged;
@@ -68,7 +68,7 @@ public class WotsitManager : IDisposable
         AWC.Log.Debug($"Initializing WotsitManager triggered by: {trigger}, status: {WotsitIPC.IsEnabled}");
 
         var newEntries = WotsitEntryGenerator.Generate().ToHashSet();
-        if (lastEntries.Count != 0 && newEntries.SetEquals(lastEntries)) {
+        if (_lastEntries.Count != 0 && newEntries.SetEquals(_lastEntries)) {
             AWC.Log.Debug("WotsitManager: Entries have not changed, skipping re-registration");
             return;
         }
@@ -77,37 +77,37 @@ public class WotsitManager : IDisposable
 
         var faRegisterWithSearch = Svc.PluginInterface.GetIpcSubscriber<string, string, string, uint, string>("FA.RegisterWithSearch");
 
-        lastEntries = newEntries;
+        _lastEntries = newEntries;
         foreach (var entry in newEntries) {
-            var id = faRegisterWithSearch!.InvokeFunc(AWC.Name, entry.DisplayName, $"{AWC.Name} {entry.SearchString}", entry.IconId);
-            registered.Add(id, entry);
+            var id = faRegisterWithSearch.InvokeFunc(AWC.Name, entry.DisplayName, $"{AWC.Name} {entry.SearchString}", entry.IconId);
+            _registered.Add(id, entry);
 
             AWC.Log.Debug($"WotsitManager: Invoked FA.RegisterWithSearch(\"{AWC.Name}\", \"{entry.DisplayName}\", \"{entry.SearchString}\", {entry.IconId}) => {id}");
         }
     }
 
-    public void ClearWotsit()
+    private void ClearWotsit()
     {
         try {
             if (!WotsitIPC.IsEnabled) {
                 return;
             }
 
-            var faUnregisterAll = Svc.PluginInterface.GetIpcSubscriber<string, bool>("FA.UnregisterAll");
-            faUnregisterAll!.InvokeFunc(AWC.Name);
+            Svc.PluginInterface.GetIpcSubscriber<string, bool>("FA.UnregisterAll")
+                .InvokeFunc(AWC.Name);
 
             AWC.Log.Debug($"WotsitManager: Invoked FA.UnregisterAll(\"{AWC.Name}\")");
         } catch (Exception e) {
             AWC.Log.Warning($"WotsitManager: Failed to clear wotsit: {e}");
         } finally {
-            registered.Clear();
-            lastEntries.Clear();
+            _registered.Clear();
+            _lastEntries.Clear();
         }
     }
 
     private void HandleInvoke(string id)
     {
-        if (!registered.TryGetValue(id, out var entry)) {
+        if (!_registered.TryGetValue(id, out var entry)) {
             return;
         }
 

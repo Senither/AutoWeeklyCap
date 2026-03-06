@@ -47,17 +47,16 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     [PluginService] internal static IDtrBar DtrBar { get; private set; } = null!;
     [PluginService] internal static IPluginLog Log { get; private set; } = null!;
 
-    public DtrStatusBar DtrStatusBar { get; init; } = new();
-
+    public DtrStatusBar DtrStatusBar { get; } = new();
     public Configuration Configuration { get; set; }
-
-    public readonly WindowSystem WindowSystem = new("AutoWeeklyCap");
 
     private MainWindow MainWindow { get; }
     private ConfigWindow ConfigWindow { get; }
     private CharacterOptionWindow CharacterOptionWindow { get; }
     private FeedbackWindow FeedbackWindow { get; }
     private FrameworkListener FrameworkListener { get; } = new();
+
+    private readonly WindowSystem _windowSystem = new("AutoWeeklyCap");
 
     public AutoWeeklyCap()
     {
@@ -83,10 +82,10 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
         Runner = new Runner.Runner();
 
-        WindowSystem.AddWindow(ConfigWindow = new ConfigWindow());
-        WindowSystem.AddWindow(MainWindow = new MainWindow(this));
-        WindowSystem.AddWindow(CharacterOptionWindow = new CharacterOptionWindow());
-        WindowSystem.AddWindow(FeedbackWindow = new FeedbackWindow());
+        _windowSystem.AddWindow(ConfigWindow = new ConfigWindow());
+        _windowSystem.AddWindow(MainWindow = new MainWindow(this));
+        _windowSystem.AddWindow(CharacterOptionWindow = new CharacterOptionWindow());
+        _windowSystem.AddWindow(FeedbackWindow = new FeedbackWindow());
 
         CommandManager.AddHandler(CommandNameLong, new CommandInfo(OnCommand) { HelpMessage = "Toggles the Auto Weekly Cap main window", ShowInHelp = true });
 
@@ -95,7 +94,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         Framework.Update += FrameworkListener.OnFrameworkUpdate;
         ClientState.Logout += ClientListener.OnLogout;
 
-        PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
+        PluginInterface.UiBuilder.Draw += _windowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
 
@@ -119,14 +118,14 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
     public void Dispose()
     {
-        PluginInterface.UiBuilder.Draw -= WindowSystem.Draw;
+        PluginInterface.UiBuilder.Draw -= _windowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi -= ToggleMainUi;
 
         Framework.Update -= FrameworkListener.OnFrameworkUpdate;
         ClientState.Logout -= ClientListener.OnLogout;
 
-        WindowSystem.RemoveAllWindows();
+        _windowSystem.RemoveAllWindows();
 
         DtrStatusBar.Dispose();
         TaskManager.Dispose();
