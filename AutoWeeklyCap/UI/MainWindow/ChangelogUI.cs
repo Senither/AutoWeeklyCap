@@ -96,11 +96,9 @@ internal static class ChangelogUI
 
             Entries = entries;
             LastFetchUtc = DateTime.UtcNow;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             LoadError = ex.Message;
-        }
-        finally {
+        } finally {
             IsFetching = false;
         }
     }

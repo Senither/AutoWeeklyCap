@@ -26,8 +26,7 @@ public class DtrStatusBar : IDisposable
                 dtrEntry.Shown = false;
                 dtrEntry.OnClick = _ => OnClick();
                 dtrEntry.Tooltip = DtrBarTooltip;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 AWC.Log.Error(e, $"Failed to acquire DtrBarEntry {DtrBarTitle}");
             }
         });

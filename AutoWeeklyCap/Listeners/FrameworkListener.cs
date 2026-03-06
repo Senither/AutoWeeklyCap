@@ -85,8 +85,7 @@ public partial class FrameworkListener
                     returnToTitle.Ok();
                 }
             }
-        }
-        catch (Exception) {
+        } catch (Exception) {
             // ignored
         }
     }
@@ -112,8 +111,7 @@ public partial class FrameworkListener
             unsafe {
                 AgentLobby.Instance()->IdleTime = 0;
             }
-        }
-        catch (Exception) {
+        } catch (Exception) {
             // ignored
         }
     }

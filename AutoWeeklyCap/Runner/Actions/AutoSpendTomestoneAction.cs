@@ -151,8 +151,7 @@ public class AutoSpendTomestoneAction : BaseAction
 
                     addonShopExchangeCurrency->Close(true);
                 }
-            }
-            catch (Exception) {
+            } catch (Exception) {
                 // ignored
             }
 

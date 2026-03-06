@@ -65,8 +65,7 @@ public abstract class BaseAction
                         return false;
                     }
                 }
-            }
-            catch (Exception) {
+            } catch (Exception) {
                 // ignored
             }
         }

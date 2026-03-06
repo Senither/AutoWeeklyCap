@@ -19,8 +19,7 @@ public static unsafe class AddonHelper
                    && title->UldManager.NodeList[3]->Color.A == 0xFF
                    && !GenericHelpers.TryGetAddonByName<AtkUnitBase>("TitleDCWorldMap", out _)
                    && !GenericHelpers.TryGetAddonByName<AtkUnitBase>("TitleConnect", out _);
-        }
-        catch (Exception) {
+        } catch (Exception) {
             return false;
         }
     }
@@ -33,8 +32,7 @@ public static unsafe class AddonHelper
 
         try {
             Callback.Fire(addon, boolValue, args);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             AWC.Log.Error($"{ex}");
         }
     }

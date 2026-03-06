@@ -10,8 +10,7 @@ public static class CurrencyHelper
             unsafe {
                 return InventoryManager.Instance()->GetInventoryItemCount(48);
             }
-        }
-        catch (Exception) {
+        } catch (Exception) {
             return 0;
         }
     }
@@ -32,8 +31,7 @@ public static class CurrencyHelper
             unsafe {
                 return InventoryManager.Instance()->GetWeeklyAcquiredTomestoneCount();
             }
-        }
-        catch (Exception) {
+        } catch (Exception) {
             return 0;
         }
     }

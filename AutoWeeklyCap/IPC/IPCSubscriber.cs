@@ -28,8 +28,7 @@ public static class IPCSubscriber
         foreach (var token in disposalTokens) {
             try {
                 token.Dispose();
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 AWC.Log.Error($"Error while unregistering IPC: {ex}");
             }
         }

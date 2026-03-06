@@ -21,8 +21,7 @@ public static class ChatHelper
             }
 
             return true;
-        }
-        catch (Exception) {
+        } catch (Exception) {
             return false;
         }
     }

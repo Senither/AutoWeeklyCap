@@ -241,8 +241,7 @@ public static class Card
             }
 
             ImGui.Spacing();
-        }
-        finally {
+        } finally {
             if (!bgRecorded && PendingBackgrounds != null && bgIndex >= 0 && bgIndex < PendingBackgrounds.Count) {
                 PendingBackgrounds.RemoveAt(bgIndex);
             }

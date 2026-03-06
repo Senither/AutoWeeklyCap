@@ -81,11 +81,9 @@ public class WotsitManager : IDisposable
             faUnregisterAll!.InvokeFunc(AWC.Name);
 
             AWC.Log.Debug($"WotsitManager: Invoked FA.UnregisterAll(\"{AWC.Name}\")");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             AWC.Log.Warning($"WotsitManager: Failed to clear wotsit: {e}");
-        }
-        finally {
+        } finally {
             registered.Clear();
             lastEntries.Clear();
         }
@@ -101,8 +99,7 @@ public class WotsitManager : IDisposable
 
         try {
             entry.Callback.DynamicInvoke();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             AWC.Log.Error($"WotsitManager: Could not handle FA.Invoke(\"{id}\") ({entry.DisplayName}): {e}");
         }
     }

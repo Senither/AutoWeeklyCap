@@ -82,8 +82,7 @@ public class NpcRepairAction : BaseAction
                         return true;
                     }
                 }
-            }
-            catch (Exception) {
+            } catch (Exception) {
                 // ignored
             }
 
@@ -107,8 +106,7 @@ public class NpcRepairAction : BaseAction
 
                     repairAddon->Close(true);
                 }
-            }
-            catch (Exception) {
+            } catch (Exception) {
                 // ignored
             }
 

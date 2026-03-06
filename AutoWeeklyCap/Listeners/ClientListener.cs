@@ -49,8 +49,7 @@ public class ClientListener
 
                     return !AddonHelper.IsLobbyErrorVisible() && AddonHelper.IsTitleScreenReady();
                 }
-            }
-            catch (Exception) {
+            } catch (Exception) {
                 // ignored
             }
 

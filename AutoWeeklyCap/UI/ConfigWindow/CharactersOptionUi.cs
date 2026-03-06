@@ -45,8 +45,7 @@ public static class CharactersOptionUi
                 return;
 
             DrawCharacterImporterCard(characterNames);
-        }
-        catch (Exception) {
+        } catch (Exception) {
             // ignored
         }
     }

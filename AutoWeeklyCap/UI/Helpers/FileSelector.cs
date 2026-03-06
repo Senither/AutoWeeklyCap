@@ -82,16 +82,13 @@ public static class FileSelector
                         ? (id, dialog.FileName)
                         : (id, null)
                 );
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 try {
                     AWC.Log.Error(e, "FileSelectorHelper: failed to open file dialog");
-                }
-                catch {
+                } catch {
                     // ignored
                 }
-            }
-            finally {
+            } finally {
                 OpenDialogs.TryRemove(id, out _);
             }
         }) { IsBackground = true, Name = $"AWC-FileSelector-{id}", };
@@ -117,8 +114,7 @@ public static class FileSelector
 
             if (!string.IsNullOrWhiteSpace(defaultDirectory) && Directory.Exists(defaultDirectory))
                 return defaultDirectory;
-        }
-        catch {
+        } catch {
             // ignored
         }
 

@@ -146,8 +146,7 @@ internal static class DebugUI
                 targetId = t->BaseId;
                 taget = $"{t->GetName()} [id: {t->BaseId}, disc: {distance}]";
             }
-        }
-        catch (Exception) {
+        } catch (Exception) {
             // ignored
         }
 
@@ -196,8 +195,7 @@ internal static class DebugUI
 
         try {
             ImGui.TextColored(value() ? ImGuiColors.HealerGreen : ImGuiColors.DPSRed, text);
-        }
-        catch (Exception) {
+        } catch (Exception) {
             ImGui.TextColored(ImGuiColors.DalamudOrange, text);
         }
 

@@ -67,8 +67,7 @@ public static class PlayerHelper
             unsafe {
                 return PlayerState.Instance()->GetClassJobLevel((int)jobType);
             }
-        }
-        catch (Exception) {
+        } catch (Exception) {
             return 0;
         }
     }

@@ -18,8 +18,7 @@ public static class ObjectHelper
 
             GameObject* gameObjectPointer = (GameObject*)gameObject.Address;
             TargetSystem.Instance()->InteractWithObject(gameObjectPointer, false);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Svc.Log.Info($"InteractWithObject: Exception: {ex}");
         }
     }
@@ -63,8 +62,7 @@ public static class ObjectHelper
                     return obj;
                 }
             }
-        }
-        catch (Exception) {
+        } catch (Exception) {
             // ignored
         }
 

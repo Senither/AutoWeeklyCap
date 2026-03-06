@@ -84,8 +84,7 @@ public class ExtractAction : BaseAction
 
                     return false;
                 }
-            }
-            catch (Exception) {
+            } catch (Exception) {
                 // ignored
             }
 
@@ -101,8 +100,7 @@ public class ExtractAction : BaseAction
                         return false;
                     }
                 }
-            }
-            catch (Exception) {
+            } catch (Exception) {
                 // ignored
             }
 

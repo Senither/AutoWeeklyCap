@@ -33,8 +33,7 @@ public class SelfRepairAction : BaseAction
 
                     ActionManager.Instance()->UseAction(ActionType.GeneralAction, 6);
                 }
-            }
-            catch (Exception) {
+            } catch (Exception) {
                 // ignored
             }
 
@@ -59,8 +58,7 @@ public class SelfRepairAction : BaseAction
                     if (EzThrottler.Throttle("RepairAll", 1000))
                         AddonHelper.ClickRepair();
                 }
-            }
-            catch (Exception) {
+            } catch (Exception) {
                 // ignored
             }
 
@@ -82,8 +80,7 @@ public class SelfRepairAction : BaseAction
 
                     repairAddon->Close(true);
                 }
-            }
-            catch (Exception) {
+            } catch (Exception) {
                 // ignored
             }
 
