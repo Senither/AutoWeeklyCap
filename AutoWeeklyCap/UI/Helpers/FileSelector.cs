@@ -35,8 +35,9 @@ public static class FileSelector
 
         // Apply any selection results queued from the dialog thread.
         while (Results.TryPeek(out var result)) {
-            if (result.id != id)
+            if (result.id != id) {
                 break;
+            }
 
             Results.TryDequeue(out result);
             if (!string.IsNullOrWhiteSpace(result.selectedPath) && !string.Equals(path, result.selectedPath, StringComparison.Ordinal)) {
@@ -59,8 +60,9 @@ public static class FileSelector
         string currentPath,
         string? defaultDirectory)
     {
-        if (!OpenDialogs.TryAdd(id, true))
+        if (!OpenDialogs.TryAdd(id, true)) {
             return;
+        }
 
         var thread = new Thread(() =>
         {
@@ -74,8 +76,9 @@ public static class FileSelector
                 dialog.RestoreDirectory = true;
 
                 var initialDirectory = GetInitialDirectory(currentPath, defaultDirectory);
-                if (!string.IsNullOrWhiteSpace(initialDirectory))
+                if (!string.IsNullOrWhiteSpace(initialDirectory)) {
                     dialog.InitialDirectory = initialDirectory;
+                }
 
                 Results.Enqueue(
                     dialog.ShowDialog() == DialogResult.OK
@@ -91,7 +94,7 @@ public static class FileSelector
             } finally {
                 OpenDialogs.TryRemove(id, out _);
             }
-        }) { IsBackground = true, Name = $"AWC-FileSelector-{id}", };
+        }) { IsBackground = true, Name = $"AWC-FileSelector-{id}" };
 
         thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
@@ -101,19 +104,23 @@ public static class FileSelector
     {
         try {
             if (!string.IsNullOrWhiteSpace(currentPath)) {
-                if (File.Exists(currentPath))
+                if (File.Exists(currentPath)) {
                     return Path.GetDirectoryName(currentPath);
+                }
 
-                if (Directory.Exists(currentPath))
+                if (Directory.Exists(currentPath)) {
                     return currentPath;
+                }
 
                 var directory = Path.GetDirectoryName(currentPath);
-                if (!string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory))
+                if (!string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory)) {
                     return directory;
+                }
             }
 
-            if (!string.IsNullOrWhiteSpace(defaultDirectory) && Directory.Exists(defaultDirectory))
+            if (!string.IsNullOrWhiteSpace(defaultDirectory) && Directory.Exists(defaultDirectory)) {
                 return defaultDirectory;
+            }
         } catch {
             // ignored
         }

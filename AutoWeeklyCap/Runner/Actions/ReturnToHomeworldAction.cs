@@ -9,15 +9,18 @@ public class ReturnToHomeworldAction : BaseAction
 
     protected override bool Run(params object[] args)
     {
-        if (!Player.Available || !LifestreamIPC.IsEnabled)
+        if (!Player.Available || !LifestreamIPC.IsEnabled) {
             return false;
+        }
 
-        if (Player.CurrentWorld.RowId == Player.HomeWorld.RowId)
+        if (Player.CurrentWorld.RowId == Player.HomeWorld.RowId) {
             return false;
+        }
 
         var homeworld = Player.HomeWorld.ValueNullable?.Name;
-        if (homeworld == null)
+        if (homeworld == null) {
             return false;
+        }
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.CrossWorld, "Returning to homeworld");
 

@@ -19,8 +19,9 @@ public static class InformationTooltip
         ImGui.SameLine();
         ImGui.TextColored(QuestionColor, "(?)");
 
-        if (!ImGui.IsItemHovered())
+        if (!ImGui.IsItemHovered()) {
             return;
+        }
 
         Disabled.Exempt(() =>
         {

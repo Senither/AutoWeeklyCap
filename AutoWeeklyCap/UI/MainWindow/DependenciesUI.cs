@@ -19,7 +19,7 @@ internal static class DependenciesUI
     private static readonly List<PluginInstallerHelper.PluginContext> RecommendedPlugins =
     [
         BossModRebornIPC.Context,
-        RotationSolverRebornIPC.Context,
+        RotationSolverRebornIPC.Context
     ];
 
     private static readonly List<PluginInstallerHelper.PluginContext> OptionalPlugins =
@@ -29,7 +29,7 @@ internal static class DependenciesUI
         NotificationMasterIPC.Context,
         NoKillPluginIPC.Context,
         VNavMeshIPC.Context,
-        WotsitIPC.Context,
+        WotsitIPC.Context
     ];
 
     public static void Draw()

@@ -17,8 +17,8 @@ public class AutoRetainerIPC
         EzIPC.Init(typeof(AutoRetainerIPC), $"{Name}.PluginState", SafeWrapper.IPCException);
 
     internal static readonly PluginInstallerHelper.PluginContext Context = new(
-        pluginName: Name,
-        description: "Used to mange retainer ventures and deployables on all your characters.",
+        Name,
+        "Used to mange retainer ventures and deployables on all your characters.",
         websiteUrl: "https://puni.sh/",
         repositoryUrl: "https://github.com/PunishXIV/AutoRetainer"
     );
@@ -44,12 +44,19 @@ public class AutoRetainerIPC
     [EzIPC] internal static Func<ulong, long?> GetClosestRetainerVentureSecondsRemaining;
 
     internal static List<ulong> GetRegisteredCharacters()
-        => Svc.PluginInterface.GetIpcSubscriber<List<ulong>>("AutoRetainer.GetRegisteredCIDs").InvokeFunc();
+    {
+        return Svc.PluginInterface.GetIpcSubscriber<List<ulong>>("AutoRetainer.GetRegisteredCIDs").InvokeFunc();
+    }
 
     internal static OfflineCharacterData GetOfflineCharacterData(ulong cid)
-        => Svc.PluginInterface.GetIpcSubscriber<ulong, OfflineCharacterData>("AutoRetainer.GetOfflineCharacterData").InvokeFunc(cid);
+    {
+        return Svc.PluginInterface.GetIpcSubscriber<ulong, OfflineCharacterData>("AutoRetainer.GetOfflineCharacterData").InvokeFunc(cid);
+    }
 
-    internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
+    internal static void Dispose()
+    {
+        IPCSubscriber.DisposeAll(disposalTokens);
+    }
 }
 
 #pragma warning restore CS8618

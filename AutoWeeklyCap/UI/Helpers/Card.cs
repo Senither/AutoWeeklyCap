@@ -128,8 +128,9 @@ public static class Card
     {
         var (visibleTitle, idFromTitle) = SplitVisibleAndId(title);
         var stableId = !string.IsNullOrWhiteSpace(idOverride) ? idOverride : idFromTitle;
-        if (string.IsNullOrWhiteSpace(stableId))
+        if (string.IsNullOrWhiteSpace(stableId)) {
             stableId = title;
+        }
 
         var parentPaddingX = ContextStack.Count > 0 ? ContextStack.Peek().ContentPadding.X : 0f;
         var parentForceOpenDescendants = ContextStack.Count > 0 && ContextStack.Peek().ForceOpenDescendants;
@@ -188,8 +189,9 @@ public static class Card
                     isOpen = !isOpen;
                     OpenStateById[stateId] = isOpen;
 
-                    if (ImGui.GetIO().KeyCtrl && isOpen)
+                    if (ImGui.GetIO().KeyCtrl && isOpen) {
                         forceOpenDescendants = true;
+                    }
                 }
             }
 
@@ -261,8 +263,9 @@ public static class Card
 
     private static void FlushPendingBackgrounds(ImDrawListPtr drawList)
     {
-        if (PendingBackgrounds == null || PendingBackgrounds.Count == 0)
+        if (PendingBackgrounds == null || PendingBackgrounds.Count == 0) {
             return;
+        }
 
         drawList.ChannelsSetCurrent(0);
 
@@ -283,25 +286,31 @@ public static class Card
     private static (string Visible, string Id) SplitVisibleAndId(string title)
     {
         var idx = title.IndexOf("###", StringComparison.Ordinal);
-        if (idx < 0)
+        if (idx < 0) {
             return (title, title);
+        }
 
         var visible = title[..idx];
         var id = title[(idx + 3)..];
-        if (string.IsNullOrWhiteSpace(id))
+        if (string.IsNullOrWhiteSpace(id)) {
             id = title;
+        }
 
         return (visible, id);
     }
 
-    public static void Separator() => Separator(null);
+    public static void Separator()
+    {
+        Separator(null);
+    }
 
     internal static bool TryGetContentRightBoundX(out float rightBoundX)
     {
         rightBoundX = 0f;
 
-        if (ContextStack.Count == 0)
+        if (ContextStack.Count == 0) {
             return false;
+        }
 
         var context = ContextStack.Peek();
         rightBoundX = ImGui.GetCursorScreenPos().X + Math.Max(0f, ImGui.GetContentRegionAvail().X - context.ParentPaddingX - context.ContentPadding.X);
@@ -313,8 +322,9 @@ public static class Card
     {
         var drawList = ImGui.GetWindowDrawList();
 
-        if (ContextStack.Count == 0)
+        if (ContextStack.Count == 0) {
             throw new NullReferenceException("expected Card#Separator to be called inside a card body");
+        }
 
         var context = ContextStack.Peek();
         var color = borderColor ?? context.BorderColor;

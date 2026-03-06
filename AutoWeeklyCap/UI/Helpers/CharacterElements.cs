@@ -8,12 +8,14 @@ public static class CharacterElements
 {
     internal static void DrawCharacterVisibilityIcon(string character, CharacterOptions option, bool sameLine = false)
     {
-        if (sameLine)
+        if (sameLine) {
             ImGui.SameLine(0f, 4f);
+        }
 
         var isHidden = option.Hidden;
-        if (!isHidden)
+        if (!isHidden) {
             ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
+        }
 
         if (ImGuiEx.IconButton(isHidden ? FontAwesomeIcon.EyeSlash : FontAwesomeIcon.Eye)) {
             option.Hidden = !isHidden;
@@ -22,18 +24,21 @@ public static class CharacterElements
 
         ImGuiEx.Tooltip($"Click to {(isHidden ? "show" : "hide")} this character");
 
-        if (!isHidden)
+        if (!isHidden) {
             ImGui.PopStyleColor();
+        }
     }
 
     internal static void DrawCharacterStatusIcon(string character, CharacterOptions option, bool sameLine = false)
     {
-        if (sameLine)
+        if (sameLine) {
             ImGui.SameLine(0f, 4f);
+        }
 
         var isEnabled = option.IsEnabled();
-        if (isEnabled)
+        if (isEnabled) {
             ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
+        }
 
         if (ImGuiEx.IconButton(FontAwesomeIcon.Rocket)) {
             option.Enabled = !isEnabled;
@@ -45,16 +50,18 @@ public static class CharacterElements
             : $"Click to {(isEnabled ? "disable" : "enable")} this character"
         );
 
-        if (isEnabled)
+        if (isEnabled) {
             ImGui.PopStyleColor();
+        }
     }
 
     internal static void DrawCharacterRelogIcon(string character, bool sameLine = false)
     {
         var command = $"{AWC.CommandNameShort} relog {character}";
 
-        if (sameLine)
+        if (sameLine) {
             ImGui.SameLine(0f, 4f);
+        }
 
         ImGuiEx.IconButton(FontAwesomeIcon.DoorOpen);
 
@@ -70,13 +77,15 @@ public static class CharacterElements
 
     internal static void DrawCharacterPositionIcons(string? character, CharacterOptions option, bool sameLine = false)
     {
-        if (sameLine)
+        if (sameLine) {
             ImGui.SameLine(0f, 4f);
+        }
 
         Disabled.Draw(option.Position == 0, () =>
         {
-            if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowUp))
+            if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowUp)) {
                 MoveCharacterPosition(character, -1);
+            }
 
             ImGuiEx.Tooltip("Move character up");
         });
@@ -85,8 +94,9 @@ public static class CharacterElements
 
         Disabled.Draw(option.Position == AWC.Config.Characters.Count - 1, () =>
         {
-            if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowDown))
+            if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowDown)) {
                 MoveCharacterPosition(character, 1);
+            }
 
             ImGuiEx.Tooltip("Move character down");
         });
@@ -94,8 +104,9 @@ public static class CharacterElements
 
     internal static void DrawCharacterSettingsIcon(string character, bool sameLine = false)
     {
-        if (sameLine)
+        if (sameLine) {
             ImGui.SameLine(0f, 4f);
+        }
 
         if (ImGuiEx.IconButton(FontAwesomeIcon.UserCog)) {
             AWC.Instance.OpenCharacterOptionsUi(character);
@@ -106,19 +117,22 @@ public static class CharacterElements
 
     private static void MoveCharacterPosition(string? character, int direction)
     {
-        if (character == null)
+        if (character == null) {
             return;
+        }
 
         AWC.Config.NormalizeCharacterPositions();
 
         var sortedCharacters = AWC.Config.GetSortedCharacters();
         var currentIndex = sortedCharacters.IndexOf(character);
-        if (currentIndex == -1)
+        if (currentIndex == -1) {
             return;
+        }
 
         var targetIndex = currentIndex + direction;
-        if (targetIndex < 0 || targetIndex >= sortedCharacters.Count)
+        if (targetIndex < 0 || targetIndex >= sortedCharacters.Count) {
             return;
+        }
 
         var otherCharacter = sortedCharacters[targetIndex];
         var currentOptions = AWC.Config.GetOrRegisterCharacterOptions(character);

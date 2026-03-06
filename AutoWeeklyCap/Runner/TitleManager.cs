@@ -27,15 +27,24 @@ public static class TitleManager
     private static BitmapFontIcon? StatusIcon = null;
 
     public static string? GetStatus()
-        => Status ?? AWC.Runner.GetState().GetStatus(AWC.Runner.IsStopping(), AWC.Runner.GetCurrentCharacter());
+    {
+        return Status ?? AWC.Runner.GetState().GetStatus(AWC.Runner.IsStopping(), AWC.Runner.GetCurrentCharacter());
+    }
 
     public static string? GetStatusShort()
-        => StatusShort ?? AWC.Runner.GetState().GetStatusShort(AWC.Runner.IsStopping(), AWC.Runner.GetCurrentCharacter());
+    {
+        return StatusShort ?? AWC.Runner.GetState().GetStatusShort(AWC.Runner.IsStopping(), AWC.Runner.GetCurrentCharacter());
+    }
 
     public static BitmapFontIcon GetStatusIcon()
-        => StatusIcon ?? AWC.Runner.GetState().GetStatusIcon(AWC.Runner.IsStopping());
+    {
+        return StatusIcon ?? AWC.Runner.GetState().GetStatusIcon(AWC.Runner.IsStopping());
+    }
 
-    public static TemporaryTitle RegisterTitle(BitmapFontIcon icon, string status) => RegisterTitle(icon, status, status);
+    public static TemporaryTitle RegisterTitle(BitmapFontIcon icon, string status)
+    {
+        return RegisterTitle(icon, status, status);
+    }
 
     public static TemporaryTitle RegisterTitle(BitmapFontIcon icon, string status, string statusShort)
     {

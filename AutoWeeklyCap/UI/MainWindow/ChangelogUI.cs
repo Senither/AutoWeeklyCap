@@ -31,13 +31,15 @@ internal static class ChangelogUI
     {
         EnsureChangelogLoaded();
 
-        if (IsFetching)
+        if (IsFetching) {
             ImGuiEx.LineCentered(() => ImGui.TextDisabled("Loading..."));
+        }
 
-        if (Entries is { Count: > 0 })
+        if (Entries is { Count: > 0 }) {
             DrawChangelogEntries(Entries);
-        else
+        } else {
             DrawEmptyState();
+        }
     }
 
     private static void DrawEmptyState()
@@ -73,19 +75,22 @@ internal static class ChangelogUI
 
     private static void EnsureChangelogLoaded()
     {
-        if (IsFetching)
+        if (IsFetching) {
             return;
+        }
 
-        if (Entries != null && LastFetchUtc.HasValue && DateTime.UtcNow - LastFetchUtc.Value < RefreshInterval)
+        if (Entries != null && LastFetchUtc.HasValue && DateTime.UtcNow - LastFetchUtc.Value < RefreshInterval) {
             return;
+        }
 
         _ = FetchChangelogAsync();
     }
 
     private static async Task FetchChangelogAsync()
     {
-        if (IsFetching)
+        if (IsFetching) {
             return;
+        }
 
         IsFetching = true;
         LoadError = null;
@@ -107,7 +112,8 @@ internal static class ChangelogUI
     {
         using var reader = new StringReader(text);
 
-        while (reader.ReadLine() is { } line)
+        while (reader.ReadLine() is { } line) {
             yield return line;
+        }
     }
 }

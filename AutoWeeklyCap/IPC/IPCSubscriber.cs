@@ -9,8 +9,10 @@ namespace AutoWeeklyCap.IPC;
 
 public static class IPCSubscriber
 {
-    internal static bool IsReady(string pluginName) =>
-        DalamudReflector.TryGetDalamudPlugin(pluginName, out _, true, true);
+    internal static bool IsReady(string pluginName)
+    {
+        return DalamudReflector.TryGetDalamudPlugin(pluginName, out _, true, true);
+    }
 
     internal static void Dispose()
     {

@@ -46,9 +46,9 @@ public class CharacterOptionWindow : Window
 
         var options = AWC.Config.GetOrRegisterCharacterOptions(_character);
 
-        Card.Draw("Character visibility", () => DrawCharacterVisibility(options), collapsible: false);
-        Card.Draw("Character Preferences", () => DrawCharacterPreferences(options), collapsible: false);
-        Card.DrawDanger("Remove Character", DrawCharacterRemoval, collapsible: false);
+        Card.Draw("Character visibility", () => DrawCharacterVisibility(options), false);
+        Card.Draw("Character Preferences", () => DrawCharacterPreferences(options), false);
+        Card.DrawDanger("Remove Character", DrawCharacterRemoval, false);
     }
 
     private void DrawCharacterVisibility(CharacterOptions options)

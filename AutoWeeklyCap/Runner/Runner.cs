@@ -20,12 +20,14 @@ public class Runner
 
     public bool Start()
     {
-        if (state != State.Waiting || stopGracefully)
+        if (state != State.Waiting || stopGracefully) {
             return false;
+        }
 
         var zoneName = MapHelper.GetZoneNameFromId(AWC.Config.ZoneId);
-        if (zoneName == null)
+        if (zoneName == null) {
             return false;
+        }
 
         var character = PlayerHelper.GetFullCharacterName();
         if (character == null || !AWC.Config.GetOrRegisterCharacterOptions(character).IsEnabled()) {
@@ -49,26 +51,27 @@ public class Runner
 
     public bool AutoStartOnBoot()
     {
-        if (state != State.Waiting || stopGracefully)
+        if (state != State.Waiting || stopGracefully) {
             return false;
+        }
 
         var zoneName = MapHelper.GetZoneNameFromId(AWC.Config.ZoneId);
-        if (zoneName == null)
+        if (zoneName == null) {
             return false;
+        }
 
-        if (PlayerHelper.IsValid)
+        if (PlayerHelper.IsValid) {
             return false;
+        }
 
-        if (AWC.Config.GetFirstUncappedCharacter() == null)
+        if (AWC.Config.GetFirstUncappedCharacter() == null) {
             return false;
+        }
 
         const int autoStartDelay = 5;
         for (var i = 0; i < autoStartDelay; i++) {
             var seconds = autoStartDelay - i;
-            AWC.TaskManager.Enqueue(() => Svc.NotificationManager.AddNotification(new Notification
-            {
-                Content = $"Auto start AWC in {seconds}!", InitialDuration = TimeSpan.FromSeconds(1), HardExpiry = DateTime.Now.AddSeconds(1), Type = NotificationType.Warning,
-            }));
+            AWC.TaskManager.Enqueue(() => Svc.NotificationManager.AddNotification(new Notification { Content = $"Auto start AWC in {seconds}!", InitialDuration = TimeSpan.FromSeconds(1), HardExpiry = DateTime.Now.AddSeconds(1), Type = NotificationType.Warning }));
 
             AWC.TaskManager.EnqueueDelay(1000);
         }
@@ -99,11 +102,13 @@ public class Runner
 
     public void Resume()
     {
-        if (!AWC.Config.StopRunnerGracefully || !stopGracefully || AutoDutyIPC.IsStopped())
+        if (!AWC.Config.StopRunnerGracefully || !stopGracefully || AutoDutyIPC.IsStopped()) {
             return;
+        }
 
-        if (state is not (State.RunningAutoDuty or State.SwitchingCharacter))
+        if (state is not (State.RunningAutoDuty or State.SwitchingCharacter)) {
             return;
+        }
 
         stopGracefully = false;
     }
@@ -127,18 +132,41 @@ public class Runner
         AWC.Log.Debug("Stopped weekly cap runner");
     }
 
-    public bool IsRunning() => state != State.Waiting;
-    public bool IsStopping() => stopGracefully;
+    public bool IsRunning()
+    {
+        return state != State.Waiting;
+    }
 
-    public State GetState() => state;
-    public int GetRunsCounter() => runsCounter;
-    public string? GetRunsCharacter() => runsCharacter;
-    public string? GetCurrentCharacter() => currentCharacter;
+    public bool IsStopping()
+    {
+        return stopGracefully;
+    }
+
+    public State GetState()
+    {
+        return state;
+    }
+
+    public int GetRunsCounter()
+    {
+        return runsCounter;
+    }
+
+    public string? GetRunsCharacter()
+    {
+        return runsCharacter;
+    }
+
+    public string? GetCurrentCharacter()
+    {
+        return currentCharacter;
+    }
 
     public void Tick()
     {
-        if (AWC.TaskManager.IsBusy)
+        if (AWC.TaskManager.IsBusy) {
             return;
+        }
 
         switch (state) {
             case State.Waiting:
@@ -194,8 +222,9 @@ public class Runner
             return;
         }
 
-        if (AWC.Config.AlwaysStartOnHomeWorld && ActionInstance.Homeworld.Invoke())
+        if (AWC.Config.AlwaysStartOnHomeWorld && ActionInstance.Homeworld.Invoke()) {
             return;
+        }
 
         if (AWC.Config.AutoRetainerEnabled && AutoRetainerHelper.HasRetainerWithinThreshold()) {
             timestamp = DateTime.UtcNow;
@@ -210,8 +239,9 @@ public class Runner
         AWC.TaskManager.Enqueue(() =>
         {
             if (AutoRetainerIPC.IsEnabled && AutoRetainerIPC.GetMultiModeStatus()) {
-                if (!AutoRetainerIPC.IsBusy())
+                if (!AutoRetainerIPC.IsBusy()) {
                     AutoRetainerIPC.DisableMultiMode();
+                }
 
                 return false;
             }
@@ -219,14 +249,16 @@ public class Runner
             return true;
         }, "disable AutoRetainer multi mode when it's not busy");
 
-        if (AWC.Config.Extract)
+        if (AWC.Config.Extract) {
             ActionInstance.Extract.Invoke();
+        }
 
         if (AWC.Config.Repair && InventoryHelper.CanRepair(AWC.Config.RepairPercentage)) {
-            if (AWC.Config.RepairSelf)
+            if (AWC.Config.RepairSelf) {
                 ActionInstance.SelfRepair.Invoke();
-            else
+            } else {
                 ActionInstance.NpcRepair.Invoke();
+            }
         }
 
         if (AWC.Config.DeliverooEnabled) {
@@ -238,13 +270,15 @@ public class Runner
                                       && runsCounter > 0;
 
             AWC.Log.Debug($"Deliveroo check [first: {shouldRunFirst}, forCounter: {shouldRunForCounter}]");
-            if (shouldRunFirst || shouldRunForCounter)
+            if (shouldRunFirst || shouldRunForCounter) {
                 ActionInstance.Deliveroo.Invoke();
+            }
         }
 
         if (AWC.Config.SpendUncappedTomestones) {
-            if (CurrencyHelper.GetUncappedAcquiredTomestoneCount() >= AWC.Config.SpendUncappedTomestoneThreshold)
+            if (CurrencyHelper.GetUncappedAcquiredTomestoneCount() >= AWC.Config.SpendUncappedTomestoneThreshold) {
                 ActionInstance.SpendTomestone.Invoke();
+            }
         }
 
         AWC.TaskManager.Enqueue(
@@ -255,8 +289,9 @@ public class Runner
 
     private void WaitForAutoRetainer()
     {
-        if (!AutoRetainerIPC.GetMultiModeStatus())
+        if (!AutoRetainerIPC.GetMultiModeStatus()) {
             AutoRetainerIPC.EnableMultiMode();
+        }
 
         if (AutoRetainerIPC.IsBusy() || LifestreamIPC.IsBusy() || (!PlayerHelper.IsValid && !AddonHelper.IsTitleScreenReady())) {
             timestamp = DateTime.UtcNow;
@@ -312,12 +347,14 @@ public class Runner
     private void CheckTomestoneStage()
     {
         var character = PlayerHelper.GetFullCharacterName();
-        if (character == null)
+        if (character == null) {
             return;
+        }
 
         var isCapped = CurrencyHelper.IsPlayerLimitedTomestoneCapped();
-        if (isCapped && AWC.Config.DeliverooEnabled && !AWC.Config.DeliverooOnInterval)
+        if (isCapped && AWC.Config.DeliverooEnabled && !AWC.Config.DeliverooOnInterval) {
             ActionInstance.Deliveroo.Invoke();
+        }
 
         timestamp = DateTime.UtcNow;
 
@@ -337,8 +374,9 @@ public class Runner
             return;
         }
 
-        if (AWC.Config.OnlyStartAutoDutyFromGCInn)
+        if (AWC.Config.OnlyStartAutoDutyFromGCInn) {
             ActionInstance.EnterGrandCompanyInn.Invoke();
+        }
 
         using (TitleManager.RegisterTitle(AWC.Config.GetOrRegisterCharacterOptions(currentCharacter).PreferredJob.GetIcon(), "Switching Job")) {
             AWC.TaskManager.Enqueue(
@@ -359,8 +397,9 @@ public class Runner
 
         AWC.TaskManager.Enqueue(() =>
             {
-                if (!EzThrottler.Throttle("RunnerStartingDuty", 1000))
+                if (!EzThrottler.Throttle("RunnerStartingDuty", 1000)) {
                     return false;
+                }
 
                 TitleManager.Reset();
 
@@ -370,15 +409,17 @@ public class Runner
 
                     CurrentDutyStartUtc ??= DateTime.UtcNow;
 
-                    if (AutoDutyIPC.IsStopped())
+                    if (AutoDutyIPC.IsStopped()) {
                         AutoDutyIPC.Run(AWC.Config.ZoneId, 1, false);
+                    }
 
                     return true;
                 }
 
                 if (!PlayerHelper.IsReady || VNavMeshIPC.IsRunning()) {
-                    if (EzThrottler.Throttle("RunnerStartingDutyBusyLog", 2500))
+                    if (EzThrottler.Throttle("RunnerStartingDutyBusyLog", 2500)) {
                         AWC.Log.Debug($"Resetting AutoDuty start timer, reason: player is busy or VNavMesh is running");
+                    }
 
                     timestamp = DateTime.UtcNow;
                     return false;
@@ -425,10 +466,7 @@ public class Runner
                 }
 
                 if (EzThrottler.Throttle("RunnerStartingDutyStartAttempt", 1500)) {
-                    AWC.Log.Debug("Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object>
-                    {
-                        { "Seconds elapsed", (DateTime.UtcNow - timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", AWC.Config.ZoneId },
-                    });
+                    AWC.Log.Debug("Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", AWC.Config.ZoneId } });
 
                     AutoDutyIPC.Run(AWC.Config.ZoneId, 1, false);
                 }
@@ -436,17 +474,19 @@ public class Runner
                 return false;
             },
             "starting AutoDuty",
-            new TaskManagerConfiguration(timeLimitMS: 120_000) // 2 minutes
+            new TaskManagerConfiguration(120_000) // 2 minutes
         );
     }
 
     private void RunAutoDuty()
     {
-        if (!AutoDutyIPC.IsStopped())
+        if (!AutoDutyIPC.IsStopped()) {
             return;
+        }
 
-        if (AWC.ClientState.TerritoryType == AWC.Config.ZoneId)
+        if (AWC.ClientState.TerritoryType == AWC.Config.ZoneId) {
             return;
+        }
 
         AWC.Log.Debug("AutoDuty has complete a run, switching to preparations stage");
 
@@ -463,8 +503,9 @@ public class Runner
             AWC.Config.Save();
         }
 
-        if (stopGracefully && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnRunnerStopped)
+        if (stopGracefully && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnRunnerStopped) {
             ActionInstance.Notification.ForceInvoke(StopNotificationType.RunnerStopped);
+        }
 
         CurrentDutyStartUtc = null;
 
@@ -497,8 +538,9 @@ public class Runner
             return;
         }
 
-        if (runsCounter > 0 && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnFullyCapped)
+        if (runsCounter > 0 && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnFullyCapped) {
             ActionInstance.Notification.ForceInvoke(StopNotificationType.CharacterCapped);
+        }
 
         if (AWC.Config.StopAction == StopAction.StartUnlimitedRuns) {
             unlimited = true;
@@ -533,15 +575,18 @@ public class Runner
 
     private void SwitchCharacter()
     {
-        if (LifestreamIPC.IsBusy())
+        if (LifestreamIPC.IsBusy()) {
             return;
+        }
 
         var character = PlayerHelper.GetFullCharacterName();
-        if (character == null || character != currentCharacter)
+        if (character == null || character != currentCharacter) {
             return;
+        }
 
-        if (!PlayerHelper.IsReady)
+        if (!PlayerHelper.IsReady) {
             return;
+        }
 
         AWC.Log.Debug("Completed character swap, preparing runner");
         state = State.PreparingRunner;

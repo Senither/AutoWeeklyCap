@@ -163,7 +163,10 @@ public static unsafe class AddonHelper
         return true;
     }
 
-    internal static bool IsLobbyErrorVisible() => TryGetLobbyError(out _);
+    internal static bool IsLobbyErrorVisible()
+    {
+        return TryGetLobbyError(out _);
+    }
 
     internal static bool TryGetLobbyError(out AtkUnitBase* addon)
     {

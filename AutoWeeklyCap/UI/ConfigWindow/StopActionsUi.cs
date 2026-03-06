@@ -17,8 +17,9 @@ public static class StopActionsUi
             }
 
             var tooltip = action.GetTooltip();
-            if (tooltip != null)
+            if (tooltip != null) {
                 InformationTooltip.Draw(tooltip);
+            }
         }
 
         ImGui.Spacing();

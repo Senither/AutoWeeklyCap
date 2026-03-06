@@ -24,7 +24,7 @@ public class MainWindow : Window
             },
             Icon = FontAwesomeIcon.Cog,
             IconOffset = new Vector2(2, 2),
-            ShowTooltip = () => ImGui.SetTooltip("Open settings window"),
+            ShowTooltip = () => ImGui.SetTooltip("Open settings window")
         });
 
         TitleBarButtons.Add(new TitleBarButton
@@ -37,10 +37,10 @@ public class MainWindow : Window
             },
             Icon = FontAwesomeIcon.Inbox,
             IconOffset = new Vector2(2, 2),
-            ShowTooltip = () => ImGui.SetTooltip("Send plugin feedback"),
+            ShowTooltip = () => ImGui.SetTooltip("Send plugin feedback")
         });
 
-        _lockButton = new TitleBarButton()
+        _lockButton = new TitleBarButton
         {
             Click = (m) =>
             {
@@ -55,13 +55,16 @@ public class MainWindow : Window
             },
             Icon = AWC.Config.Window.Pin ? FontAwesomeIcon.Lock : FontAwesomeIcon.LockOpen,
             IconOffset = new Vector2(3, 2),
-            ShowTooltip = () => ImGui.SetTooltip("Lock window position and size"),
+            ShowTooltip = () => ImGui.SetTooltip("Lock window position and size")
         };
 
         TitleBarButtons.Add(_lockButton);
     }
 
-    public override void OnClose() => AWC.Config.Save();
+    public override void OnClose()
+    {
+        AWC.Config.Save();
+    }
 
     public override void PreDraw()
     {

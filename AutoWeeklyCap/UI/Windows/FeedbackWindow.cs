@@ -14,7 +14,7 @@ public class FeedbackWindow : Window
     [
         "General Feedback",
         "Feature Request",
-        "Bug Report",
+        "Bug Report"
     ];
 
     private bool _sentFeedback = false;

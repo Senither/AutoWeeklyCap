@@ -9,7 +9,7 @@ public static class CommandHandler
         new StartBaseCommand(),
         new StopBaseCommand(),
         new RelogBaseCommand(),
-        new DevModeBaseCommand(),
+        new DevModeBaseCommand()
     ];
 
     public static void HandleCommand(string stringArgs)

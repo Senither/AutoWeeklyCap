@@ -24,11 +24,11 @@ internal static class DebugUI
 
     internal static void Draw()
     {
-        Card.DrawSubtle("Plugin Details", DrawPluginDetails, collapsible: false);
-        Card.DrawSubtle("Runner Debug Steps", DrawRunnerDebugSteps, collapsible: false);
-        Card.DrawSubtle("Runner Debug Actions", DrawRunnerDebugActions, collapsible: false);
-        Card.DrawSubtle("Notification Debug Actions", DrawNotificationDebugActions, collapsible: false);
-        Card.DrawSubtle("Game Data State", DrawGameDataState, collapsible: false);
+        Card.DrawSubtle("Plugin Details", DrawPluginDetails, false);
+        Card.DrawSubtle("Runner Debug Steps", DrawRunnerDebugSteps, false);
+        Card.DrawSubtle("Runner Debug Actions", DrawRunnerDebugActions, false);
+        Card.DrawSubtle("Notification Debug Actions", DrawNotificationDebugActions, false);
+        Card.DrawSubtle("Game Data State", DrawGameDataState, false);
         Card.DrawSubtle("Plugin Logs", DrawPluginLogs);
         Card.DrawDanger("Danger Zone", DrawDangerZone);
     }
@@ -158,35 +158,42 @@ internal static class DebugUI
         StateText(() => PlayerHelper.IsOccupied, "Occupied");
         StateText(() => PlayerHelper.IsJumping, "Jumping");
         StateText(() => PlayerHelper.IsMoving, "Moving");
-        StateText(() => PlayerHelper.IsCasting, "Casting", seperator: false);
+        StateText(() => PlayerHelper.IsCasting, "Casting", false);
     }
 
     private static void CopyableText(string text, string propertyName, Func<string> copy)
     {
         ImGui.Text(text);
 
-        if (ImGui.IsItemClicked())
+        if (ImGui.IsItemClicked()) {
             ImGui.SetClipboardText(copy());
-        if (ImGui.IsItemHovered())
+        }
+
+        if (ImGui.IsItemHovered()) {
             ImGuiEx.Tooltip($"Click to copy {propertyName} to clipboard");
+        }
     }
 
     private static void DebugButton(string text, Action action, bool sameLine = true)
     {
-        if (sameLine)
+        if (sameLine) {
             ImGui.SameLine();
+        }
 
-        if (ImGui.Button(text))
+        if (ImGui.Button(text)) {
             action();
+        }
     }
 
     private static void DebugActionButton(string text, BaseAction action, bool sameLine = true)
     {
-        if (sameLine)
+        if (sameLine) {
             ImGui.SameLine();
+        }
 
-        if (ImGui.Button(text))
+        if (ImGui.Button(text)) {
             DuoLog.Warning($"{action.GetName()}: {action.Invoke()}");
+        }
     }
 
     private static void StateText(Func<bool> value, string text, bool seperator = true)
@@ -217,8 +224,9 @@ internal static class DebugUI
         ImGui.TextWrapped("Clicking the button below will reset the main plugin config file to use the default values, it's recommended that you backup the file if you want to save your current settings.");
         ImGui.Spacing();
 
-        if (ImGui.Button("Reset Plugin Config") && ImGuiEx.Ctrl)
+        if (ImGui.Button("Reset Plugin Config") && ImGuiEx.Ctrl) {
             AWC.Instance.Configuration = new Configuration();
+        }
 
         ImGuiEx.Tooltip("Hold down CTRL + Click to reset the plugin configuration to all the default values");
     }

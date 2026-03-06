@@ -97,7 +97,7 @@ public static class PlayerJobExtensions
             PlayerJob.SMN => BitmapFontIcon.Summoner,
             PlayerJob.RDM => BitmapFontIcon.RedMage,
             PlayerJob.PCT => BitmapFontIcon.Pictomancer,
-            _ => BitmapFontIcon.AnyClass,
+            _ => BitmapFontIcon.AnyClass
         };
     }
 

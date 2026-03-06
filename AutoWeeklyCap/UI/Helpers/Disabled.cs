@@ -4,9 +4,15 @@ public static class Disabled
 {
     internal static bool IsDisabled { get; private set; }
 
-    public static void Draw(Action content) => Draw(true, content);
+    public static void Draw(Action content)
+    {
+        Draw(true, content);
+    }
 
-    public static void Draw(Action content, int indent) => Draw(true, content, indent);
+    public static void Draw(Action content, int indent)
+    {
+        Draw(true, content, indent);
+    }
 
     public static void Draw(bool isDisabled, Action content)
     {
@@ -36,20 +42,23 @@ public static class Disabled
             ImGui.SetCursorPosX(previousCursorPosX);
         }
 
-        if (isDisabled)
+        if (isDisabled) {
             ImGui.EndDisabled();
+        }
 
         IsDisabled = previousState;
     }
 
     public static void Exempt(Action content)
     {
-        if (IsDisabled)
+        if (IsDisabled) {
             ImGui.EndDisabled();
+        }
 
         content.Invoke();
 
-        if (IsDisabled)
+        if (IsDisabled) {
             ImGui.BeginDisabled();
+        }
     }
 }

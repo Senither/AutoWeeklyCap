@@ -38,10 +38,25 @@ public class WotsitManager : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private void OnAvailable() => InitializeWotsit("FA.Available");
-    private void OnLogin() => InitializeWotsit("ProperOnLogin.Available");
-    private void OnTerritoryChanged(ushort territory) => InitializeWotsit("OnTerritoryChanged");
-    private void OnLogout(int type, int code) => ClearWotsit();
+    private void OnAvailable()
+    {
+        InitializeWotsit("FA.Available");
+    }
+
+    private void OnLogin()
+    {
+        InitializeWotsit("ProperOnLogin.Available");
+    }
+
+    private void OnTerritoryChanged(ushort territory)
+    {
+        InitializeWotsit("OnTerritoryChanged");
+    }
+
+    private void OnLogout(int type, int code)
+    {
+        ClearWotsit();
+    }
 
     public void InitializeWotsit(string trigger)
     {
@@ -74,8 +89,9 @@ public class WotsitManager : IDisposable
     public void ClearWotsit()
     {
         try {
-            if (!WotsitIPC.IsEnabled)
+            if (!WotsitIPC.IsEnabled) {
                 return;
+            }
 
             var faUnregisterAll = Svc.PluginInterface.GetIpcSubscriber<string, bool>("FA.UnregisterAll");
             faUnregisterAll!.InvokeFunc(AWC.Name);

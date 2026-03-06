@@ -16,7 +16,7 @@ public static class ObjectHelper
                 return;
             }
 
-            GameObject* gameObjectPointer = (GameObject*)gameObject.Address;
+            var gameObjectPointer = (GameObject*)gameObject.Address;
             TargetSystem.Instance()->InteractWithObject(gameObjectPointer, false);
         } catch (Exception ex) {
             Svc.Log.Info($"InteractWithObject: Exception: {ex}");

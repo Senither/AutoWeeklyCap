@@ -88,9 +88,9 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         WindowSystem.AddWindow(CharacterOptionWindow = new CharacterOptionWindow());
         WindowSystem.AddWindow(FeedbackWindow = new FeedbackWindow());
 
-        CommandManager.AddHandler(CommandNameLong, new CommandInfo(OnCommand) { HelpMessage = "Toggles the Auto Weekly Cap main window", ShowInHelp = true, });
+        CommandManager.AddHandler(CommandNameLong, new CommandInfo(OnCommand) { HelpMessage = "Toggles the Auto Weekly Cap main window", ShowInHelp = true });
 
-        CommandManager.AddHandler(CommandNameShort, new CommandInfo(OnCommand) { ShowInHelp = false, });
+        CommandManager.AddHandler(CommandNameShort, new CommandInfo(OnCommand) { ShowInHelp = false });
 
         Framework.Update += FrameworkListener.OnFrameworkUpdate;
         ClientState.Logout += ClientListener.OnLogout;
@@ -143,14 +143,35 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         CommandHandler.HandleCommand(args);
     }
 
-    public void ToggleConfigUi() => ConfigWindow.Toggle();
-    public void OpenConfigUi() => ConfigWindow.IsOpen = true;
-    public void ToggleMainUi() => MainWindow.Toggle();
-    public void OpenMainUi() => MainWindow.IsOpen = true;
-    public void ToggleFeedbackUi() => FeedbackWindow.Toggle();
+    public void ToggleConfigUi()
+    {
+        ConfigWindow.Toggle();
+    }
 
-    public void OpenCharacterOptionsUi(string character) =>
+    public void OpenConfigUi()
+    {
+        ConfigWindow.IsOpen = true;
+    }
+
+    public void ToggleMainUi()
+    {
+        MainWindow.Toggle();
+    }
+
+    public void OpenMainUi()
+    {
+        MainWindow.IsOpen = true;
+    }
+
+    public void ToggleFeedbackUi()
+    {
+        FeedbackWindow.Toggle();
+    }
+
+    public void OpenCharacterOptionsUi(string character)
+    {
         CharacterOptionWindow.ToggleForCharacterWithOptions(character);
+    }
 
     public static bool IsRequiredPluginsEnabled()
     {

@@ -7,7 +7,7 @@ public static class WotsitEntryGenerator
         new("Start Runner", "start tome cap runner", 16, () => AWC.Runner.Start()),
         new("Resume Runner", "resume tome cap runner", 16, () => AWC.Runner.Resume()),
         new("Stop Runner", "stop tome cap runner", 26, () => AWC.Runner.Stop()),
-        new("Force Stop Runner", "force-stop tome cap runner", 26, () => AWC.Runner.Abort()),
+        new("Force Stop Runner", "force-stop tome cap runner", 26, () => AWC.Runner.Abort())
     ];
 
     private static readonly List<WotsitEntry> BasicRunnerActions =
@@ -16,7 +16,7 @@ public static class WotsitEntryGenerator
         new("Extract Materia", "extract materia from spriritbonded gear", 109, () => ActionInstance.Extract.Invoke()),
         new("Repair Gear", "repair gear", 106, () => ActionInstance.SelfRepair.Invoke()),
         new("Enter Grand Company inn", "enter gc (grand company) inn", 113, () => ActionInstance.EnterGrandCompanyInn.Invoke()),
-        new("Leave Grand Company inn", "leave gc (grand company) inn", 114, () => ActionInstance.LeaveGrandCompanyInn.Invoke()),
+        new("Leave Grand Company inn", "leave gc (grand company) inn", 114, () => ActionInstance.LeaveGrandCompanyInn.Invoke())
     ];
 
     public static IEnumerable<WotsitEntry> Generate()

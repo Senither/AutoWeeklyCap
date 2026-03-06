@@ -6,8 +6,15 @@ namespace AutoWeeklyCap.Helpers;
 
 public static unsafe class InventoryHelper
 {
-    internal static bool CanRepair() => CanRepair(AWC.Config.RepairPercentage);
-    internal static bool CanRepair(uint percent) => (LowestEquippedItem().Condition / 300f) <= percent;
+    internal static bool CanRepair()
+    {
+        return CanRepair(AWC.Config.RepairPercentage);
+    }
+
+    internal static bool CanRepair(uint percent)
+    {
+        return (LowestEquippedItem().Condition / 300f) <= percent;
+    }
 
     internal static InventoryItem LowestEquippedItem()
     {

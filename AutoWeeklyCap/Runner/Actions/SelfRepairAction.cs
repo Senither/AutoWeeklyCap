@@ -23,13 +23,15 @@ public class SelfRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (!EzThrottler.Throttle("RepairOpen", 250))
+            if (!EzThrottler.Throttle("RepairOpen", 250)) {
                 return false;
+            }
 
             try {
                 unsafe {
-                    if (AddonHelper.TryGetReadyAddon("Repair", out _))
+                    if (AddonHelper.TryGetReadyAddon("Repair", out _)) {
                         return true;
+                    }
 
                     ActionManager.Instance()->UseAction(ActionType.GeneralAction, 6);
                 }
@@ -44,19 +46,22 @@ public class SelfRepairAction : BaseAction
         {
             try {
                 unsafe {
-                    if (!AddonHelper.TryGetReadyAddon("Repair", out _))
+                    if (!AddonHelper.TryGetReadyAddon("Repair", out _)) {
                         return false;
+                    }
 
                     if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
                         AddonHelper.ClickSelectYesno();
                         return true;
                     }
 
-                    if (!InventoryHelper.CanRepair(99))
+                    if (!InventoryHelper.CanRepair(99)) {
                         return true;
+                    }
 
-                    if (EzThrottler.Throttle("RepairAll", 1000))
+                    if (EzThrottler.Throttle("RepairAll", 1000)) {
                         AddonHelper.ClickRepair();
+                    }
                 }
             } catch (Exception) {
                 // ignored
@@ -67,16 +72,19 @@ public class SelfRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (!EzThrottler.Throttle("RepairClose", 250))
+            if (!EzThrottler.Throttle("RepairClose", 250)) {
                 return false;
+            }
 
             try {
                 unsafe {
-                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _))
+                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
                         return false;
+                    }
 
-                    if (!AddonHelper.TryGetReadyAddon("Repair", out var repairAddon))
+                    if (!AddonHelper.TryGetReadyAddon("Repair", out var repairAddon)) {
                         return true;
+                    }
 
                     repairAddon->Close(true);
                 }

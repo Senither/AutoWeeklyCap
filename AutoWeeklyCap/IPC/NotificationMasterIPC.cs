@@ -15,32 +15,44 @@ public static class NotificationMasterIPC
         EzIPC.Init(typeof(NotificationMasterIPC), $"{Name}API", SafeWrapper.IPCException);
 
     internal static readonly PluginInstallerHelper.PluginContext Context = new(
-        pluginName: Name,
-        description: "Used to send notifications outside the game to notify you when the runner is done, such as making the game icon in the taskbar flash, sending toast notifications, and playing audio.",
+        Name,
+        "Used to send notifications outside the game to notify you when the runner is done, such as making the game icon in the taskbar flash, sending toast notifications, and playing audio.",
         repositoryUrl: "https://github.com/NightmareXIV/NotificationMaster",
         nativeDalamudPlugin: true
     );
 
     [EzIPC] private static Func<string, bool> FlashTaskbarIcon;
 
-    internal static bool SendFlashTaskbarIcon() => IsEnabled && FlashTaskbarIcon(AWC.InternalName);
+    internal static bool SendFlashTaskbarIcon()
+    {
+        return IsEnabled && FlashTaskbarIcon(AWC.InternalName);
+    }
 
     [EzIPC] private static Func<string, string, string, bool> DisplayToastNotification;
 
     internal static bool SendDisplayToastNotification(string title, string content)
-        => IsEnabled && DisplayToastNotification(AWC.InternalName, title, content);
+    {
+        return IsEnabled && DisplayToastNotification(AWC.InternalName, title, content);
+    }
 
     [EzIPC] private static Func<string, string, float, bool, bool, bool> PlaySound;
 
     internal static bool SendPlaySound(string path, float volume, bool repeat, bool stopOnceFocused)
-        => IsEnabled && PlaySound(AWC.InternalName, path, volume, repeat, stopOnceFocused);
+    {
+        return IsEnabled && PlaySound(AWC.InternalName, path, volume, repeat, stopOnceFocused);
+    }
 
     [EzIPC] private static Func<string, bool> StopSound;
 
     internal static bool SendStopSound()
-        => IsEnabled && StopSound(AWC.InternalName);
+    {
+        return IsEnabled && StopSound(AWC.InternalName);
+    }
 
-    internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
+    internal static void Dispose()
+    {
+        IPCSubscriber.DisposeAll(disposalTokens);
+    }
 }
 
 #pragma warning restore CS8618

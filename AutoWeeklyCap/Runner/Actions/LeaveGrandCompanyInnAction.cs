@@ -8,18 +8,21 @@ public class LeaveGrandCompanyInnAction : BaseAction
 
     protected override bool Run(params object[] args)
     {
-        if (!VNavMeshIPC.IsEnabled)
+        if (!VNavMeshIPC.IsEnabled) {
             return false;
+        }
 
-        if (Player.Territory.RowId != GrandCompanyHelper.InnTerritoryId)
+        if (Player.Territory.RowId != GrandCompanyHelper.InnTerritoryId) {
             return false;
+        }
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.WatchingCutscene, "Leaving GC inn");
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("MoveToGCDoorPosition", 250))
+            if (EzThrottler.Throttle("MoveToGCDoorPosition", 250)) {
                 return false;
+            }
 
             var gameObject = ObjectHelper.FindGameObject(GrandCompanyHelper.InnDoorId, Player.Position);
 
@@ -28,21 +31,25 @@ public class LeaveGrandCompanyInnAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("LeavingGCInstance", 250))
+            if (EzThrottler.Throttle("LeavingGCInstance", 250)) {
                 return false;
+            }
 
-            if (Player.Territory.RowId != GrandCompanyHelper.InnTerritoryId)
+            if (Player.Territory.RowId != GrandCompanyHelper.InnTerritoryId) {
                 return true;
+            }
 
             var gameObject = ObjectHelper.FindGameObject(GrandCompanyHelper.InnDoorId, Player.Position);
-            if (gameObject == null)
+            if (gameObject == null) {
                 return false;
+            }
 
             unsafe {
-                if (AddonHelper.TryGetReadyAddon("SelectYesno", out _))
+                if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
                     AddonHelper.ClickSelectYesno();
-                else if (PlayerHelper.IsReady)
+                } else if (PlayerHelper.IsReady) {
                     ObjectHelper.InteractWithObject(gameObject);
+                }
             }
 
             return false;

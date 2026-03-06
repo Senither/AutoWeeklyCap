@@ -16,11 +16,13 @@ public class NpcRepairAction : BaseAction
 
     protected override bool Run(params object[] args)
     {
-        if (InventoryHelper.GetItemsNeedingRepairCount(99) == 0)
+        if (InventoryHelper.GetItemsNeedingRepairCount(99) == 0) {
             return false;
+        }
 
-        if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled)
+        if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled) {
             return false;
+        }
 
         ResetRepairState();
 
@@ -30,14 +32,17 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
+            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
                 return false;
+            }
 
-            if (Player.Territory.RowId == GrandCompanyHelper.TerritoryId)
+            if (Player.Territory.RowId == GrandCompanyHelper.TerritoryId) {
                 return true;
+            }
 
-            if (LifestreamIPC.IsBusy())
+            if (LifestreamIPC.IsBusy()) {
                 return false;
+            }
 
             LifestreamIPC.ExecuteCommand(GrandCompanyHelper.AetheriteName);
 
@@ -46,8 +51,9 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
+            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
                 return false;
+            }
 
             return Player.Territory.RowId == GrandCompanyHelper.TerritoryId && PlayerHelper.IsReady;
         }, "waiting for player to be in gc territory");
@@ -60,14 +66,16 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("RepairingGearViaNPC", 250))
+            if (EzThrottler.Throttle("RepairingGearViaNPC", 250)) {
                 return false;
+            }
 
             try {
                 unsafe {
                     var vendor = ObjectHelper.FindGameObject(GrandCompanyHelper.RepairVendorId, GrandCompanyHelper.RepairVendorLocation);
-                    if (vendor == null)
+                    if (vendor == null) {
                         return false;
+                    }
 
                     if (GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString)) {
                         AddonHelper.ClickSelectIconString(0);
@@ -91,13 +99,15 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (!EzThrottler.Throttle("RepairClose", 250))
+            if (!EzThrottler.Throttle("RepairClose", 250)) {
                 return false;
+            }
 
             try {
                 unsafe {
-                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _))
+                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
                         return false;
+                    }
 
                     if (!AddonHelper.TryGetReadyAddon("Repair", out var repairAddon)) {
                         ResetRepairState();

@@ -25,11 +25,13 @@ public class ExtractAction : BaseAction
 
         Enqueue(() =>
         {
-            if (!EzThrottler.Throttle("Extract", 250))
+            if (!EzThrottler.Throttle("Extract", 250)) {
                 return false;
+            }
 
-            if (currentCategory > stoppingCategory)
+            if (currentCategory > stoppingCategory) {
                 return true;
+            }
 
             try {
                 unsafe {
@@ -38,8 +40,9 @@ public class ExtractAction : BaseAction
                         return true;
                     }
 
-                    if (PlayerHelper.IsOccupied)
+                    if (PlayerHelper.IsOccupied) {
                         return false;
+                    }
 
                     if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog) &&
                         GenericHelpers.IsAddonReady(addonMaterializeDialog)) {
@@ -53,19 +56,22 @@ public class ExtractAction : BaseAction
                         return false;
                     }
 
-                    if (!GenericHelpers.IsAddonReady(addonMaterialize))
+                    if (!GenericHelpers.IsAddonReady(addonMaterialize)) {
                         return false;
+                    }
 
-                    AtkComponentList* list = addonMaterialize->GetNodeById(12)->GetAsAtkComponentList();
-                    if (list == null)
+                    var list = addonMaterialize->GetNodeById(12)->GetAsAtkComponentList();
+                    if (list == null) {
                         return false;
+                    }
 
-                    AtkTextNode* spiritbondTextNode = list->UldManager.NodeList[2]->GetComponent()->GetTextNodeById(5)->GetAsAtkTextNode();
-                    AtkTextNode* categoryTextNode = addonMaterialize->GetNodeById(4)->GetAsAtkComponentDropdownList()->UldManager.NodeList[1]
+                    var spiritbondTextNode = list->UldManager.NodeList[2]->GetComponent()->GetTextNodeById(5)->GetAsAtkTextNode();
+                    var categoryTextNode = addonMaterialize->GetNodeById(4)->GetAsAtkComponentDropdownList()->UldManager.NodeList[1]
                         ->GetAsAtkComponentCheckBox()->GetTextNodeById(3)->GetAsAtkTextNode();
 
-                    if (spiritbondTextNode == null || categoryTextNode == null)
+                    if (spiritbondTextNode == null || categoryTextNode == null) {
                         return false;
+                    }
 
                     if (switchCategory) {
                         LogDebug($"Switching to Category: {currentCategory}");

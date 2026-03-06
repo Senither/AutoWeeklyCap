@@ -15,8 +15,9 @@ public partial class FrameworkListener
         AWC.Instance.DtrStatusBar.Draw();
 
         var unixNow = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        if (EnforceUpdateStateAt > unixNow)
+        if (EnforceUpdateStateAt > unixNow) {
             return;
+        }
 
         EnforceUpdateStateAt = unixNow + 500;
 
@@ -27,14 +28,16 @@ public partial class FrameworkListener
 
     private static void AttemptErrorRecovery()
     {
-        if (!AWC.Config.AttemptRecoveryFromDisconnects || !ClientListener.IsRecoveringFromDisconnect)
+        if (!AWC.Config.AttemptRecoveryFromDisconnects || !ClientListener.IsRecoveringFromDisconnect) {
             return;
+        }
 
         if (PlayerHelper.IsValid) {
             ClientListener.IsRecoveringFromDisconnect = false;
 
-            if (!AWC.Runner.IsRunning())
+            if (!AWC.Runner.IsRunning()) {
                 AWC.Runner.Start();
+            }
 
             return;
         }
@@ -46,19 +49,22 @@ public partial class FrameworkListener
             return;
         }
 
-        if (AWC.TaskManager.IsBusy || LifestreamIPC.IsBusy())
+        if (AWC.TaskManager.IsBusy || LifestreamIPC.IsBusy()) {
             return;
+        }
 
-        if ((DateTime.UtcNow - ClientListener.LastRecoveryTimestamp).Seconds < 45)
+        if ((DateTime.UtcNow - ClientListener.LastRecoveryTimestamp).Seconds < 45) {
             return;
+        }
 
         if (AddonHelper.IsTitleScreenReady()) {
             ClientListener.EnqueueRestart();
             return;
         }
 
-        if (!EzThrottler.Throttle("RecoveryFromDisconnect.AddonAttempt", 250))
+        if (!EzThrottler.Throttle("RecoveryFromDisconnect.AddonAttempt", 250)) {
             return;
+        }
 
         try {
             unsafe {
@@ -98,14 +104,17 @@ public partial class FrameworkListener
 
     private static void DisableTitleScreenMovie()
     {
-        if (!AWC.Config.DisableTitleScreenMovie)
+        if (!AWC.Config.DisableTitleScreenMovie) {
             return;
+        }
 
-        if (PlayerHelper.IsValid)
+        if (PlayerHelper.IsValid) {
             return;
+        }
 
-        if (!AddonHelper.IsTitleScreenReady())
+        if (!AddonHelper.IsTitleScreenReady()) {
             return;
+        }
 
         try {
             unsafe {

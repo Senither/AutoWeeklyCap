@@ -32,27 +32,32 @@ public class AutoSpendTomestoneAction : BaseAction
     protected override bool Run(params object[] args)
     {
         var name = PlayerHelper.GetFullCharacterName();
-        if (name is null)
+        if (name is null) {
             return false;
+        }
 
         var itemToBuy = TomestoneItemHelper.GetTomestoneItemFromNames(
             AWC.Config.GetOrRegisterCharacterOptions(name).PreferredTomestoneItemName,
             AWC.Config.SpendUncappedTomestoneItemName
         );
 
-        if (itemToBuy == null)
+        if (itemToBuy == null) {
             return false;
+        }
 
         var quantity = itemToBuy.CalculateQuantityForGivenTomestones(CurrencyHelper.GetUncappedAcquiredTomestoneCount());
-        if (quantity == 0)
+        if (quantity == 0) {
             return false;
+        }
 
-        if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled)
+        if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled) {
             return false;
+        }
 
         unsafe {
-            if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
+            if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1) {
                 return false;
+            }
 
             // Reset state before starting
             AddonSelectIconString = null;
@@ -68,14 +73,17 @@ public class AutoSpendTomestoneAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500))
+            if (EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500)) {
                 return false;
+            }
 
-            if (Player.Territory.RowId == territoryID)
+            if (Player.Territory.RowId == territoryID) {
                 return true;
+            }
 
-            if (LifestreamIPC.IsBusy())
+            if (LifestreamIPC.IsBusy()) {
                 return false;
+            }
 
             LifestreamIPC.ExecuteCommand(aetheriteName);
 
@@ -84,8 +92,9 @@ public class AutoSpendTomestoneAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500))
+            if (EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500)) {
                 return false;
+            }
 
             return Player.Territory.RowId == territoryID && PlayerHelper.IsReady && !LifestreamIPC.IsBusy();
         }, "waiting for player to be in territory");
@@ -98,20 +107,23 @@ public class AutoSpendTomestoneAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("OpeningTomestoneVendorWindow", 250))
+            if (EzThrottler.Throttle("OpeningTomestoneVendorWindow", 250)) {
                 return false;
+            }
 
             var vendor = ObjectHelper.FindGameObject(vendorId, position);
-            if (vendor == null)
+            if (vendor == null) {
                 return false;
+            }
 
             unsafe {
-                if (GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString))
+                if (GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString)) {
                     AddonHelper.ClickSelectIconString(sectionId);
-                else if (GenericHelpers.TryGetAddonByName("ShopExchangeCurrency", out AddonShopExchangeCurrency) && GenericHelpers.IsAddonReady(AddonShopExchangeCurrency))
+                } else if (GenericHelpers.TryGetAddonByName("ShopExchangeCurrency", out AddonShopExchangeCurrency) && GenericHelpers.IsAddonReady(AddonShopExchangeCurrency)) {
                     return true;
-                else if (!GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString))
+                } else if (!GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString)) {
                     ObjectHelper.InteractWithObject(vendor);
+                }
             }
 
             return false;
@@ -119,8 +131,9 @@ public class AutoSpendTomestoneAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("BuyingTomestoneItem", 500))
+            if (EzThrottler.Throttle("BuyingTomestoneItem", 500)) {
                 return false;
+            }
 
             unsafe {
                 if (GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString)) {
@@ -128,8 +141,9 @@ public class AutoSpendTomestoneAction : BaseAction
                     return true;
                 }
 
-                if (GenericHelpers.TryGetAddonByName("ShopExchangeCurrency", out AddonShopExchangeCurrency) && GenericHelpers.IsAddonReady(AddonShopExchangeCurrency))
+                if (GenericHelpers.TryGetAddonByName("ShopExchangeCurrency", out AddonShopExchangeCurrency) && GenericHelpers.IsAddonReady(AddonShopExchangeCurrency)) {
                     AddonHelper.ClickShopExchangeItem(itemToBuy.Index, quantity);
+                }
             }
 
             return false;
@@ -138,16 +152,19 @@ public class AutoSpendTomestoneAction : BaseAction
         EnqueueDelay(500);
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("BuyingTomestoneItemClose", 500))
+            if (EzThrottler.Throttle("BuyingTomestoneItemClose", 500)) {
                 return false;
+            }
 
             try {
                 unsafe {
-                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _))
+                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
                         return false;
+                    }
 
-                    if (!AddonHelper.TryGetReadyAddon("ShopExchangeCurrency", out var addonShopExchangeCurrency))
+                    if (!AddonHelper.TryGetReadyAddon("ShopExchangeCurrency", out var addonShopExchangeCurrency)) {
                         return true;
+                    }
 
                     addonShopExchangeCurrency->Close(true);
                 }

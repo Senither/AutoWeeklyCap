@@ -7,8 +7,15 @@ namespace AutoWeeklyCap.Helpers;
 
 public static class MovementHelper
 {
-    public static bool MoveTo(Vector3? position) => MoveTo(position, 1.25f, 300_000);
-    public static bool MoveTo(Vector3? position, float breakpoint) => MoveTo(position, breakpoint, 300_000);
+    public static bool MoveTo(Vector3? position)
+    {
+        return MoveTo(position, 1.25f, 300_000);
+    }
+
+    public static bool MoveTo(Vector3? position, float breakpoint)
+    {
+        return MoveTo(position, breakpoint, 300_000);
+    }
 
     public static bool MoveTo(Vector3? position, float breakpoint, int timeLimitMs)
     {
@@ -32,12 +39,12 @@ public static class MovementHelper
             new TaskManagerTask(
                 () => MoveToPosition((Vector3)position),
                 "MovementHelper: start moving to location",
-                new TaskManagerConfiguration(timeLimitMS: timeLimitMs)
+                new TaskManagerConfiguration(timeLimitMs)
             ),
             new TaskManagerTask(
                 () => WaitForPosition((Vector3)position, breakpoint),
                 "MovementHelper: waiting for player movement to location",
-                new TaskManagerConfiguration(timeLimitMS: timeLimitMs)
+                new TaskManagerConfiguration(timeLimitMs)
             ),
             new DelayTask(250)
         );

@@ -15,8 +15,8 @@ public static class DeliverooIPC
         EzIPC.Init(typeof(DeliverooIPC), Name, SafeWrapper.IPCException);
 
     internal static readonly PluginInstallerHelper.PluginContext Context = new(
-        pluginName: Name,
-        description: "Used to automate your grand company deliveries to get GC seals, and spend them to buy your preferred items.",
+        Name,
+        "Used to automate your grand company deliveries to get GC seals, and spend them to buy your preferred items.",
         repositoryUrl: "https://github.com/VeraNala/Deliveroo"
     );
 
@@ -36,7 +36,10 @@ public static class DeliverooIPC
 
     [EzIPC] internal static Func<bool> IsTurnInRunning;
 
-    internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
+    internal static void Dispose()
+    {
+        IPCSubscriber.DisposeAll(disposalTokens);
+    }
 }
 
 #pragma warning restore CS8618

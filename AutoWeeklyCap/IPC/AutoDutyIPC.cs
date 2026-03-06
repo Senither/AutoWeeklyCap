@@ -15,8 +15,8 @@ public class AutoDutyIPC
         EzIPC.Init(typeof(AutoDutyIPC), Name, SafeWrapper.IPCException);
 
     internal static readonly PluginInstallerHelper.PluginContext Context = new(
-        pluginName: Name,
-        description: "Used to run the duties when farming tomestones.",
+        Name,
+        "Used to run the duties when farming tomestones.",
         repositoryUrl: "https://github.com/erdelf/AutoDuty"
     );
 
@@ -26,7 +26,10 @@ public class AutoDutyIPC
 
     [EzIPC] internal static Func<bool> IsStopped;
 
-    internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
+    internal static void Dispose()
+    {
+        IPCSubscriber.DisposeAll(disposalTokens);
+    }
 }
 
 #pragma warning restore CS8618

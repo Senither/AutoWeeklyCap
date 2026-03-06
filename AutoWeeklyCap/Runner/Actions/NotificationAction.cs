@@ -6,11 +6,13 @@ public class NotificationAction : BaseAction
 
     protected override bool Run(params object[] args)
     {
-        if (!NotificationMasterIPC.IsEnabled)
+        if (!NotificationMasterIPC.IsEnabled) {
             return false;
+        }
 
-        if (args.Length == 0 || args[0] is not StopNotificationType)
+        if (args.Length == 0 || args[0] is not StopNotificationType) {
             return false;
+        }
 
         var type = (StopNotificationType)args[0];
         LogDebug($"Called for type: {type}");

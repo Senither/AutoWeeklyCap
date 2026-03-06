@@ -21,8 +21,8 @@ public class VNavMeshIPC
         EzIPC.Init(typeof(VNavMeshIPC), Name, SafeWrapper.IPCException);
 
     internal static readonly PluginInstallerHelper.PluginContext Context = new(
-        pluginName: Name,
-        description: "Handles navigating within a zone, moving your character to retainer bells and NPCs for repairs or buying materials.",
+        Name,
+        "Handles navigating within a zone, moving your character to retainer bells and NPCs for repairs or buying materials.",
         repositoryUrl: "https://github.com/awgil/ffxiv_navmesh"
     );
 
@@ -42,7 +42,10 @@ public class VNavMeshIPC
 
     [EzIPC("Path.SetTolerance")] internal static Action<float> SetTolerance;
 
-    internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
+    internal static void Dispose()
+    {
+        IPCSubscriber.DisposeAll(disposalTokens);
+    }
 }
 
 #pragma warning restore CS8618

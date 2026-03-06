@@ -15,8 +15,8 @@ public class LifestreamIPC
         EzIPC.Init(typeof(LifestreamIPC), Name, SafeWrapper.IPCException);
 
     internal static readonly PluginInstallerHelper.PluginContext Context = new(
-        pluginName: Name,
-        description: "Used to travel to aethernet shards in cities, and switch between characters.",
+        Name,
+        "Used to travel to aethernet shards in cities, and switch between characters.",
         repositoryUrl: "https://github.com/NightmareXIV/Lifestream"
     );
 
@@ -32,7 +32,10 @@ public class LifestreamIPC
 
     [EzIPC] internal static Func<ErrorCode> Logout;
 
-    internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
+    internal static void Dispose()
+    {
+        IPCSubscriber.DisposeAll(disposalTokens);
+    }
 }
 
 #pragma warning restore CS8618

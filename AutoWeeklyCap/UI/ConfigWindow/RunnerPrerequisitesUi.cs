@@ -27,8 +27,9 @@ public static class RunnerPrerequisitesUi
 
         // Return to home world
         var returnToHomeWorld = AWC.Config.AlwaysStartOnHomeWorld;
-        if (ImGui.Checkbox("Always return to home world", ref returnToHomeWorld))
+        if (ImGui.Checkbox("Always return to home world", ref returnToHomeWorld)) {
             AWC.Config.AlwaysStartOnHomeWorld = returnToHomeWorld;
+        }
 
         InformationTooltip.Draw(() =>
         {
@@ -47,8 +48,9 @@ public static class RunnerPrerequisitesUi
 
         // Only start from GC inn
         var onlyStartAutoDutyFromGcInn = AWC.Config.OnlyStartAutoDutyFromGCInn;
-        if (ImGui.Checkbox("Only start AutoDuty from GC inn", ref onlyStartAutoDutyFromGcInn))
+        if (ImGui.Checkbox("Only start AutoDuty from GC inn", ref onlyStartAutoDutyFromGcInn)) {
             AWC.Config.OnlyStartAutoDutyFromGCInn = onlyStartAutoDutyFromGcInn;
+        }
 
         InformationTooltip.Draw(() =>
         {
@@ -67,14 +69,16 @@ public static class RunnerPrerequisitesUi
 
         // Repair (Self & NPC)
         var repairStatus = AWC.Config.Repair;
-        if (ImGui.Checkbox("Repair Gear", ref repairStatus))
+        if (ImGui.Checkbox("Repair Gear", ref repairStatus)) {
             AWC.Config.Repair = repairStatus;
+        }
 
         Disabled.Draw(!AWC.Config.Repair, () =>
         {
             ImGui.SameLine();
-            if (ImGui.RadioButton("Self", AWC.Config.RepairSelf))
+            if (ImGui.RadioButton("Self", AWC.Config.RepairSelf)) {
                 AWC.Config.RepairSelf = true;
+            }
 
             InformationTooltip.Draw(() =>
             {
@@ -83,8 +87,9 @@ public static class RunnerPrerequisitesUi
             });
 
             ImGui.SameLine();
-            if (ImGui.RadioButton("City NPC", !AWC.Config.RepairSelf))
+            if (ImGui.RadioButton("City NPC", !AWC.Config.RepairSelf)) {
                 AWC.Config.RepairSelf = false;
+            }
 
             InformationTooltip.Draw(() =>
             {
@@ -104,8 +109,9 @@ public static class RunnerPrerequisitesUi
             ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
 
             var autoRepairPercentage = AWC.Config.RepairPercentage;
-            if (Range.Draw("##Repair@", ref autoRepairPercentage, 1, 99, "%d%%"))
+            if (Range.Draw("##Repair@", ref autoRepairPercentage, 1, 99, "%d%%")) {
                 AWC.Config.RepairPercentage = Math.Min(100, Math.Max(1, autoRepairPercentage));
+            }
 
             ImGui.PopItemWidth();
 
@@ -115,24 +121,28 @@ public static class RunnerPrerequisitesUi
 
         // Auto Extract
         var autoExtract = AWC.Config.Extract;
-        if (ImGui.Checkbox("Extract Materia", ref autoExtract))
+        if (ImGui.Checkbox("Extract Materia", ref autoExtract)) {
             AWC.Config.Extract = autoExtract;
+        }
 
         Disabled.Draw(!AWC.Config.Extract, () =>
         {
             ImGui.SameLine(0, 10);
-            if (ImGui.RadioButton("Equipped", !AWC.Config.ExtractAll))
+            if (ImGui.RadioButton("Equipped", !AWC.Config.ExtractAll)) {
                 AWC.Config.ExtractAll = false;
+            }
 
             ImGui.SameLine(0, 5);
-            if (ImGui.RadioButton("All", AWC.Config.ExtractAll))
+            if (ImGui.RadioButton("All", AWC.Config.ExtractAll)) {
                 AWC.Config.ExtractAll = true;
+            }
         });
 
         // Auto Spend Tomestones
         var autoSpendUncappedTomestones = AWC.Config.SpendUncappedTomestones;
-        if (ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones))
+        if (ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones)) {
             AWC.Config.SpendUncappedTomestones = autoSpendUncappedTomestones;
+        }
 
         InformationTooltip.Draw(() =>
         {
@@ -155,8 +165,9 @@ public static class RunnerPrerequisitesUi
             ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
 
             var autoBuyWithUncappedTomestones = AWC.Config.SpendUncappedTomestoneThreshold;
-            if (Range.Draw("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000))
+            if (Range.Draw("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000)) {
                 AWC.Config.SpendUncappedTomestoneThreshold = autoBuyWithUncappedTomestones;
+            }
 
             ImGui.PopItemWidth();
 
@@ -164,8 +175,9 @@ public static class RunnerPrerequisitesUi
             var selectedItem = TomestoneItemHelper.GetTomestoneItemFromName(AWC.Config.SpendUncappedTomestoneItemName);
             if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", selectedItem != null ? selectedItem.Name : "Not selected")) {
                 foreach (var item in TomestoneItemHelper.GetTomestoneItems()) {
-                    if (ImGui.Selectable(item.Name))
+                    if (ImGui.Selectable(item.Name)) {
                         AWC.Config.SpendUncappedTomestoneItemName = item.Name;
+                    }
                 }
 
                 ImGui.EndCombo();
@@ -178,8 +190,9 @@ public static class RunnerPrerequisitesUi
         ImGui.Spacing();
 
         var useAutoRetainer = AWC.Config.AutoRetainerEnabled;
-        if (ImGui.Checkbox("Use Auto Retainer", ref useAutoRetainer))
+        if (ImGui.Checkbox("Use Auto Retainer", ref useAutoRetainer)) {
             AWC.Config.AutoRetainerEnabled = useAutoRetainer;
+        }
 
         InformationTooltip.Draw(() =>
         {
@@ -203,8 +216,9 @@ public static class RunnerPrerequisitesUi
             ImGui.SameLine();
 
             var autoRetainerRemainingTime = AWC.Config.AutoRetainerThreshold;
-            if (Range.Draw("###AutoRetainerTimeWaitingRange", ref autoRetainerRemainingTime, 0, 300))
+            if (Range.Draw("###AutoRetainerTimeWaitingRange", ref autoRetainerRemainingTime, 0, 300)) {
                 AWC.Config.AutoRetainerThreshold = autoRetainerRemainingTime;
+            }
 
             ImGui.SameLine();
             ImGui.Text("seconds");
@@ -218,8 +232,9 @@ public static class RunnerPrerequisitesUi
         ImGui.Spacing();
 
         var useDeliveroo = AWC.Config.DeliverooEnabled;
-        if (ImGui.Checkbox("Use Deliveroo", ref useDeliveroo))
+        if (ImGui.Checkbox("Use Deliveroo", ref useDeliveroo)) {
             AWC.Config.DeliverooEnabled = useDeliveroo;
+        }
 
         InformationTooltip.Draw(() =>
         {
@@ -242,15 +257,17 @@ public static class RunnerPrerequisitesUi
 
             ImGui.Text("When should Deliveroo be used?");
 
-            if (ImGui.RadioButton("After", AWC.Config.DeliverooOnInterval))
+            if (ImGui.RadioButton("After", AWC.Config.DeliverooOnInterval)) {
                 AWC.Config.DeliverooOnInterval = true;
+            }
 
             ImGui.SameLine();
             ImGui.PushItemWidth(80 * ImGuiHelpers.GlobalScale);
 
             var configDeliverooRunInterval = AWC.Config.DeliverooRunInterval;
-            if (Range.Draw("runs###deliveroo-run-interval", ref configDeliverooRunInterval, 1, 10))
+            if (Range.Draw("runs###deliveroo-run-interval", ref configDeliverooRunInterval, 1, 10)) {
                 AWC.Config.DeliverooRunInterval = configDeliverooRunInterval;
+            }
 
             InformationTooltip.Draw(() =>
             {
@@ -260,15 +277,17 @@ public static class RunnerPrerequisitesUi
 
             ImGui.PopItemWidth();
 
-            if (ImGui.RadioButton("After character is tomestone capped", !AWC.Config.DeliverooOnInterval))
+            if (ImGui.RadioButton("After character is tomestone capped", !AWC.Config.DeliverooOnInterval)) {
                 AWC.Config.DeliverooOnInterval = false;
+            }
 
             Card.Separator();
             ImGui.Spacing();
 
             var runOnFirstLoop = AWC.Config.DeliverooRunOnFirstLoop;
-            if (ImGui.Checkbox("Always run before the first AutoDuty run", ref runOnFirstLoop))
+            if (ImGui.Checkbox("Always run before the first AutoDuty run", ref runOnFirstLoop)) {
                 AWC.Config.DeliverooRunOnFirstLoop = runOnFirstLoop;
+            }
         });
     }
 
@@ -277,8 +296,9 @@ public static class RunnerPrerequisitesUi
         ImGui.Spacing();
 
         var useNotificationMaster = AWC.Config.NotificationMasterEnabled;
-        if (ImGui.Checkbox("Use Notification Master", ref useNotificationMaster))
+        if (ImGui.Checkbox("Use Notification Master", ref useNotificationMaster)) {
             AWC.Config.NotificationMasterEnabled = useNotificationMaster;
+        }
 
         InformationTooltip.Draw(() =>
         {
@@ -299,8 +319,9 @@ public static class RunnerPrerequisitesUi
             ImGui.Text("When do you want to be notified?");
 
             var usingOnRunnerStopped = AWC.Config.NotificationMasterUsingOnRunnerStopped;
-            if (ImGui.Checkbox("When the runner is stopped", ref usingOnRunnerStopped))
+            if (ImGui.Checkbox("When the runner is stopped", ref usingOnRunnerStopped)) {
                 AWC.Config.NotificationMasterUsingOnRunnerStopped = usingOnRunnerStopped;
+            }
 
             InformationTooltip.Draw(() =>
             {
@@ -309,8 +330,9 @@ public static class RunnerPrerequisitesUi
             });
 
             var usingOnFullyCapped = AWC.Config.NotificationMasterUsingOnFullyCapped;
-            if (ImGui.Checkbox("When all characters are tome capped", ref usingOnFullyCapped))
+            if (ImGui.Checkbox("When all characters are tome capped", ref usingOnFullyCapped)) {
                 AWC.Config.NotificationMasterUsingOnFullyCapped = usingOnFullyCapped;
+            }
 
             InformationTooltip.Draw(() =>
             {
@@ -322,8 +344,9 @@ public static class RunnerPrerequisitesUi
             ImGui.Text("How do you want to be notified?");
 
             var usingFlashTaskbarIcon = AWC.Config.NotificationMasterUsingFlashTaskbarIcon;
-            if (ImGui.Checkbox("Flash the taskbar icon", ref usingFlashTaskbarIcon))
+            if (ImGui.Checkbox("Flash the taskbar icon", ref usingFlashTaskbarIcon)) {
                 AWC.Config.NotificationMasterUsingFlashTaskbarIcon = usingFlashTaskbarIcon;
+            }
 
             InformationTooltip.Draw(() =>
             {
@@ -332,25 +355,29 @@ public static class RunnerPrerequisitesUi
             });
 
             var usingToastNotification = AWC.Config.NotificationMasterUsingToastNotification;
-            if (ImGui.Checkbox("Send a toast notification", ref usingToastNotification))
+            if (ImGui.Checkbox("Send a toast notification", ref usingToastNotification)) {
                 AWC.Config.NotificationMasterUsingToastNotification = usingToastNotification;
+            }
 
             var usingPlaySound = AWC.Config.NotificationMasterUsingPlaySound;
-            if (ImGui.Checkbox("Play audio track", ref usingPlaySound))
+            if (ImGui.Checkbox("Play audio track", ref usingPlaySound)) {
                 AWC.Config.NotificationMasterUsingPlaySound = usingPlaySound;
+            }
 
             Disabled.Draw(!AWC.Config.NotificationMasterUsingPlaySound, () =>
             {
                 var usingPlaySoundOptionFilePath = AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath;
                 ImGui.Text("Select the file that should be played:");
 
-                if (ImGui.InputText("###audio-file-path", ref usingPlaySoundOptionFilePath, 1000))
+                if (ImGui.InputText("###audio-file-path", ref usingPlaySoundOptionFilePath, 1000)) {
                     AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath = usingPlaySoundOptionFilePath;
+                }
 
                 ImGui.SameLine();
 
-                if (FileSelector.Draw("runner-audio-file-selector", ref usingPlaySoundOptionFilePath, filter: FileSelector.AudioFilter))
+                if (FileSelector.Draw("runner-audio-file-selector", ref usingPlaySoundOptionFilePath, filter: FileSelector.AudioFilter)) {
                     AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath = usingPlaySoundOptionFilePath;
+                }
 
                 Disabled.Draw(AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath.Length == 0, () =>
                 {
@@ -364,18 +391,21 @@ public static class RunnerPrerequisitesUi
 
                     ImGui.SameLine();
 
-                    if (ImGui.Button("Stop"))
+                    if (ImGui.Button("Stop")) {
                         NotificationMasterIPC.SendStopSound();
+                    }
                 });
 
                 ImGui.Text("Sound volume:");
                 var usingPlaySoundOptionVolume = AWC.Config.NotificationMasterUsingPlaySoundOptionVolume;
-                if (Range.Draw("###runner-option-audio-volume", ref usingPlaySoundOptionVolume, 1, 100, "%d%%"))
+                if (Range.Draw("###runner-option-audio-volume", ref usingPlaySoundOptionVolume, 1, 100, "%d%%")) {
                     AWC.Config.NotificationMasterUsingPlaySoundOptionVolume = usingPlaySoundOptionVolume;
+                }
 
                 var usingPlaySoundOptionRepeat = AWC.Config.NotificationMasterUsingPlaySoundOptionRepeat;
-                if (ImGui.Checkbox("Repeat audio track", ref usingPlaySoundOptionRepeat))
+                if (ImGui.Checkbox("Repeat audio track", ref usingPlaySoundOptionRepeat)) {
                     AWC.Config.NotificationMasterUsingPlaySoundOptionRepeat = usingPlaySoundOptionRepeat;
+                }
 
                 InformationTooltip.Draw(() =>
                 {
@@ -389,15 +419,16 @@ public static class RunnerPrerequisitesUi
                 ImGui.SameLine();
 
                 var usingPlaySoundOptionStopOnFocus = AWC.Config.NotificationMasterUsingPlaySoundOptionStopOnFocus;
-                if (ImGui.Checkbox("Stop on game focus", ref usingPlaySoundOptionStopOnFocus))
+                if (ImGui.Checkbox("Stop on game focus", ref usingPlaySoundOptionStopOnFocus)) {
                     AWC.Config.NotificationMasterUsingPlaySoundOptionStopOnFocus = usingPlaySoundOptionStopOnFocus;
+                }
 
                 InformationTooltip.Draw(() =>
                 {
                     ImGui.Text("When enabled, the sound will only be played while the game window is not in focus, and will");
                     ImGui.Text("be stopped automatically as soon as the game window becomes the main focus target");
                 });
-            }, indent: 12);
+            }, 12);
         });
     }
 
@@ -406,13 +437,15 @@ public static class RunnerPrerequisitesUi
         var plugin = context.GetExposedPlugin();
 
         if (plugin is { IsLoaded: true }) {
-            if (RightAlignedButton.Draw($"Open Settings###ExposedPluginSettings:{context.PluginName}"))
+            if (RightAlignedButton.Draw($"Open Settings###ExposedPluginSettings:{context.PluginName}")) {
                 plugin.OpenConfigUi();
+            }
 
             return;
         }
 
-        if (RightAlignedButton.Draw($"Install Plugin###ExposedPluginSettings:{context.PluginName}"))
+        if (RightAlignedButton.Draw($"Install Plugin###ExposedPluginSettings:{context.PluginName}")) {
             context.InstallPlugin();
+        }
     }
 }

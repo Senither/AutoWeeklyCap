@@ -17,8 +17,9 @@ public class DtrStatusBar : IDisposable
     {
         dtrEntryLoadThread = new Thread(() =>
         {
-            if (dtrEntry != null)
+            if (dtrEntry != null) {
                 return;
+            }
 
             try {
                 dtrEntry = AWC.DtrBar.Get(DtrBarTitle);
@@ -36,18 +37,21 @@ public class DtrStatusBar : IDisposable
 
     public void Draw()
     {
-        if (dtrEntry == null)
+        if (dtrEntry == null) {
             return;
+        }
 
         if (!AWC.Config.ShowStatusInStatusBar) {
-            if (dtrEntry.Shown)
+            if (dtrEntry.Shown) {
                 dtrEntry.Shown = false;
+            }
 
             return;
         }
 
-        if (!EzThrottler.Throttle(nameof(DtrStatusBar), 250))
+        if (!EzThrottler.Throttle(nameof(DtrStatusBar), 250)) {
             return;
+        }
 
         dtrEntry.Tooltip = AWC.Config.ShowStatusAsIcons
             ? $"Status: {TitleManager.GetStatusShort()}\n\n{DtrBarTooltip}"
@@ -74,10 +78,11 @@ public class DtrStatusBar : IDisposable
             return;
         }
 
-        if (AWC.Runner.IsStopping())
+        if (AWC.Runner.IsStopping()) {
             AWC.Runner.Resume();
-        else
+        } else {
             AWC.Runner.Stop();
+        }
     }
 
     public void Dispose()

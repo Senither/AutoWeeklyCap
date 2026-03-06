@@ -19,8 +19,9 @@ internal static class CharactersTabUi
 
         foreach (var character in AWC.Config.GetSortedCharacters()) {
             var option = AWC.Config.Characters[character];
-            if (option.IsHidden())
+            if (option.IsHidden()) {
                 continue;
+            }
 
             var characterTomes = AWC.Config.GetWeeklyTomes(character);
 
@@ -34,19 +35,22 @@ internal static class CharactersTabUi
                 if (option.LastDutyDurationsSeconds.Count > 0)
                     // Adding 30 seconds to the timer to account for waiting time outside
                     // the instance, AutoRetainer, repairs, extracting, etc
+                {
                     averageSeconds = (int)option.LastDutyDurationsSeconds.Average() + 30;
+                }
 
                 totalEtaSeconds += runsNeeded * averageSeconds;
             }
 
-            if (option.IsEnabled())
+            if (option.IsEnabled()) {
                 charactersEnabled++;
+            }
 
             ImGui.PushID(character);
 
             CharacterElements.DrawCharacterStatusIcon(character, option);
-            CharacterElements.DrawCharacterRelogIcon(character, sameLine: true);
-            CharacterElements.DrawCharacterSettingsIcon(character, sameLine: true);
+            CharacterElements.DrawCharacterRelogIcon(character, true);
+            CharacterElements.DrawCharacterSettingsIcon(character, true);
 
             DrawCharacterDetails(character, option, characterTomes, weeklyTomeLimit);
 
@@ -59,13 +63,14 @@ internal static class CharactersTabUi
         );
 
         var time = TimeSpan.FromSeconds(totalEtaSeconds);
-        if (AWC.Runner.CurrentDutyStartUtc != null)
+        if (AWC.Runner.CurrentDutyStartUtc != null) {
             time -= DateTime.UtcNow - AWC.Runner.CurrentDutyStartUtc.Value;
+        }
 
         var etaText = time switch
         {
             { TotalDays: >= 1 } => $"{(int)time.TotalDays}d {time.Hours}h {time.Minutes}m",
-            _ => $"{time.Hours}h {time.Minutes}m {time.Seconds}s",
+            _ => $"{time.Hours}h {time.Minutes}m {time.Seconds}s"
         };
 
         ImGuiEx.LineCentered(
@@ -91,8 +96,9 @@ internal static class CharactersTabUi
         ImGui.SetCursorPos(cursorPos);
 
         var characterText = character;
-        if (options.PreferredJob != PlayerJob.None)
+        if (options.PreferredJob != PlayerJob.None) {
             characterText += $"  ({options.PreferredJob.GetName()})";
+        }
 
         ImGui.TextWrapped(characterText);
 
