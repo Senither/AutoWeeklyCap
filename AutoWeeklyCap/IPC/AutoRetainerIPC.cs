@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.IPC.AutoRetainer;
+
 using ECommons.EzIpcManager;
 
 // ReSharper disable InconsistentNaming
@@ -24,24 +25,23 @@ public class AutoRetainerIPC
 
     internal static void EnableMultiMode()
     {
-        if (IsEnabled && !GetMultiModeStatus())
+        if (IsEnabled && !GetMultiModeStatus()) {
             ChatHelper.RunCommand("autoretainer multi enable");
+        }
     }
 
     internal static void DisableMultiMode()
     {
-        if (IsEnabled && GetMultiModeStatus())
+        if (IsEnabled && GetMultiModeStatus()) {
             ChatHelper.RunCommand("autoretainer multi disable");
+        }
     }
 
-    [EzIPC]
-    internal static Func<bool> IsBusy;
+    [EzIPC] internal static Func<bool> IsBusy;
 
-    [EzIPC]
-    internal static Func<bool> GetMultiModeStatus;
+    [EzIPC] internal static Func<bool> GetMultiModeStatus;
 
-    [EzIPC]
-    internal static Func<ulong, long?> GetClosestRetainerVentureSecondsRemaining;
+    [EzIPC] internal static Func<ulong, long?> GetClosestRetainerVentureSecondsRemaining;
 
     internal static List<ulong> GetRegisteredCharacters()
         => Svc.PluginInterface.GetIpcSubscriber<List<ulong>>("AutoRetainer.GetRegisteredCIDs").InvokeFunc();

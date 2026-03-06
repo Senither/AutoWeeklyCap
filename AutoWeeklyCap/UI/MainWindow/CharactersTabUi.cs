@@ -1,5 +1,6 @@
 ﻿using AutoWeeklyCap.Config;
 using AutoWeeklyCap.UI.Helpers;
+
 using Dalamud.Interface;
 
 namespace AutoWeeklyCap.UI.MainWindow;
@@ -16,16 +17,14 @@ internal static class CharactersTabUi
         var weeklyTomeLimit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
         var totalEtaSeconds = 0.0;
 
-        foreach (var character in AWC.Config.GetSortedCharacters())
-        {
+        foreach (var character in AWC.Config.GetSortedCharacters()) {
             var option = AWC.Config.Characters[character];
             if (option.IsHidden())
                 continue;
 
             var characterTomes = AWC.Config.GetWeeklyTomes(character);
 
-            if (option.IsEnabled())
-            {
+            if (option.IsEnabled()) {
                 totalTomesCollected += characterTomes;
 
                 var remainingTomes = Math.Max(0, weeklyTomeLimit - characterTomes);
@@ -97,8 +96,7 @@ internal static class CharactersTabUi
 
         ImGui.TextWrapped(characterText);
 
-        if (options.HasOverrideSettingsEnabled())
-        {
+        if (options.HasOverrideSettingsEnabled()) {
             ImGui.SameLine();
             ImGuiEx.IconWithText(ColorUtils.HexToVector(0x9B, 0x9B, 0xE9, 0.65f), FontAwesomeIcon.Flask, "");
         }

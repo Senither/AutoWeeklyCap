@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
+
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
@@ -161,10 +162,8 @@ public static class RunnerPrerequisitesUi
 
             ImGui.Text("Item to buy");
             var selectedItem = TomestoneItemHelper.GetTomestoneItemFromName(AWC.Config.SpendUncappedTomestoneItemName);
-            if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", selectedItem != null ? selectedItem.Name : "Not selected"))
-            {
-                foreach (var item in TomestoneItemHelper.GetTomestoneItems())
-                {
+            if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", selectedItem != null ? selectedItem.Name : "Not selected")) {
+                foreach (var item in TomestoneItemHelper.GetTomestoneItems()) {
                     if (ImGui.Selectable(item.Name))
                         AWC.Config.SpendUncappedTomestoneItemName = item.Name;
                 }
@@ -355,8 +354,7 @@ public static class RunnerPrerequisitesUi
 
                 Disabled.Draw(AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath.Length == 0, () =>
                 {
-                    if (ImGui.Button("Test"))
-                    {
+                    if (ImGui.Button("Test")) {
                         NotificationMasterIPC.SendPlaySound(
                             AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath,
                             AWC.Config.NotificationMasterUsingPlaySoundOptionVolume / 100f,
@@ -407,8 +405,7 @@ public static class RunnerPrerequisitesUi
     {
         var plugin = context.GetExposedPlugin();
 
-        if (plugin is { IsLoaded: true })
-        {
+        if (plugin is { IsLoaded: true }) {
             if (RightAlignedButton.Draw($"Open Settings###ExposedPluginSettings:{context.PluginName}"))
                 plugin.OpenConfigUi();
 

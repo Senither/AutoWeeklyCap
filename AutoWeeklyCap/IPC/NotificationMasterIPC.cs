@@ -21,25 +21,21 @@ public static class NotificationMasterIPC
         nativeDalamudPlugin: true
     );
 
-    [EzIPC]
-    private static Func<string, bool> FlashTaskbarIcon;
+    [EzIPC] private static Func<string, bool> FlashTaskbarIcon;
 
     internal static bool SendFlashTaskbarIcon() => IsEnabled && FlashTaskbarIcon(AWC.InternalName);
 
-    [EzIPC]
-    private static Func<string, string, string, bool> DisplayToastNotification;
+    [EzIPC] private static Func<string, string, string, bool> DisplayToastNotification;
 
     internal static bool SendDisplayToastNotification(string title, string content)
         => IsEnabled && DisplayToastNotification(AWC.InternalName, title, content);
 
-    [EzIPC]
-    private static Func<string, string, float, bool, bool, bool> PlaySound;
+    [EzIPC] private static Func<string, string, float, bool, bool, bool> PlaySound;
 
     internal static bool SendPlaySound(string path, float volume, bool repeat, bool stopOnceFocused)
         => IsEnabled && PlaySound(AWC.InternalName, path, volume, repeat, stopOnceFocused);
 
-    [EzIPC]
-    private static Func<string, bool> StopSound;
+    [EzIPC] private static Func<string, bool> StopSound;
 
     internal static bool SendStopSound()
         => IsEnabled && StopSound(AWC.InternalName);

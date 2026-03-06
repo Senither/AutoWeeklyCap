@@ -13,10 +13,8 @@ public static class DutyOptionsUi
                 TomestoneZone.IsSupportedTomestoneZone(AWC.Config.ZoneId)
                     ? MapHelper.GetZoneNameFromId(AWC.Config.ZoneId)
                     : "Not selected"
-            ))
-        {
-            foreach (var zoneId in TomestoneZone.AvailableTomestoneZones)
-            {
+            )) {
+            foreach (var zoneId in TomestoneZone.AvailableTomestoneZones) {
                 if (ImGui.Selectable(MapHelper.GetZoneNameFromId(zoneId), AWC.Config.ZoneId == zoneId))
                     AWC.Config.ZoneId = zoneId;
             }

@@ -1,4 +1,5 @@
 ﻿using Dalamud.Plugin.Ipc;
+
 using ECommons.Events;
 
 namespace AutoWeeklyCap.IPC.Wotsit;
@@ -44,8 +45,7 @@ public class WotsitManager : IDisposable
 
     public void InitializeWotsit(string trigger)
     {
-        if (!WotsitIPC.IsEnabled)
-        {
+        if (!WotsitIPC.IsEnabled) {
             ClearWotsit();
             return;
         }
@@ -53,8 +53,7 @@ public class WotsitManager : IDisposable
         AWC.Log.Debug($"Initializing WotsitManager triggered by: {trigger}, status: {WotsitIPC.IsEnabled}");
 
         var newEntries = WotsitEntryGenerator.Generate().ToHashSet();
-        if (lastEntries.Count != 0 && newEntries.SetEquals(lastEntries))
-        {
+        if (lastEntries.Count != 0 && newEntries.SetEquals(lastEntries)) {
             AWC.Log.Debug("WotsitManager: Entries have not changed, skipping re-registration");
             return;
         }
@@ -64,8 +63,7 @@ public class WotsitManager : IDisposable
         var faRegisterWithSearch = Svc.PluginInterface.GetIpcSubscriber<string, string, string, uint, string>("FA.RegisterWithSearch");
 
         lastEntries = newEntries;
-        foreach (var entry in newEntries)
-        {
+        foreach (var entry in newEntries) {
             var id = faRegisterWithSearch!.InvokeFunc(AWC.Name, entry.DisplayName, $"{AWC.Name} {entry.SearchString}", entry.IconId);
             registered.Add(id, entry);
 
@@ -75,8 +73,7 @@ public class WotsitManager : IDisposable
 
     public void ClearWotsit()
     {
-        try
-        {
+        try {
             if (!WotsitIPC.IsEnabled)
                 return;
 
@@ -85,11 +82,10 @@ public class WotsitManager : IDisposable
 
             AWC.Log.Debug($"WotsitManager: Invoked FA.UnregisterAll(\"{AWC.Name}\")");
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             AWC.Log.Warning($"WotsitManager: Failed to clear wotsit: {e}");
-        } finally
-        {
+        }
+        finally {
             registered.Clear();
             lastEntries.Clear();
         }
@@ -97,17 +93,16 @@ public class WotsitManager : IDisposable
 
     private void HandleInvoke(string id)
     {
-        if (!registered.TryGetValue(id, out var entry))
+        if (!registered.TryGetValue(id, out var entry)) {
             return;
+        }
 
         AWC.Log.Debug($"WotsitManager: Received FA.Invoke(\"{id}\") => {entry.DisplayName}");
 
-        try
-        {
+        try {
             entry.Callback.DynamicInvoke();
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             AWC.Log.Error($"WotsitManager: Could not handle FA.Invoke(\"{id}\") ({entry.DisplayName}): {e}");
         }
     }

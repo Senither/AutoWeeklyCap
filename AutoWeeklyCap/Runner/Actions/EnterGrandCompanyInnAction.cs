@@ -60,8 +60,7 @@ public class EnterGrandCompanyInnAction : BaseAction
             if (gameObject == null)
                 return false;
 
-            unsafe
-            {
+            unsafe {
                 if (AddonHelper.TryGetReadyAddon("Talk", out _))
                     AddonHelper.ClickTalk();
                 else if (AddonHelper.TryGetReadyAddon("SelectString", out _))

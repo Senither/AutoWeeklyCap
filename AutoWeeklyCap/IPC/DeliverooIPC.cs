@@ -22,18 +22,19 @@ public static class DeliverooIPC
 
     internal static void StartTurnIn()
     {
-        if (!IsTurnInRunning())
+        if (!IsTurnInRunning()) {
             ChatHelper.RunCommand("deliveroo enable");
+        }
     }
 
     internal static void StopTurnIn()
     {
-        if (IsTurnInRunning())
+        if (IsTurnInRunning()) {
             ChatHelper.RunCommand("deliveroo disable");
+        }
     }
 
-    [EzIPC]
-    internal static Func<bool> IsTurnInRunning;
+    [EzIPC] internal static Func<bool> IsTurnInRunning;
 
     internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
 }

@@ -4,15 +4,18 @@ public static class AutoRetainerHelper
 {
     public static bool HasRetainerWithinThreshold()
     {
-        if (!AutoRetainerIPC.IsEnabled)
+        if (!AutoRetainerIPC.IsEnabled) {
             return false;
+        }
 
-        if (!PlayerHelper.IsValid)
+        if (!PlayerHelper.IsValid) {
             return false;
+        }
 
         var seconds = AutoRetainerIPC.GetClosestRetainerVentureSecondsRemaining(Player.CID);
-        if (!seconds.HasValue)
+        if (!seconds.HasValue) {
             return false;
+        }
 
         return seconds.Value <= AWC.Config.AutoRetainerThreshold;
     }

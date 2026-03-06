@@ -21,55 +21,62 @@ public static class WotsitEntryGenerator
 
     public static IEnumerable<WotsitEntry> Generate()
     {
-        foreach (var entry in RunnerEntries)
+        foreach (var entry in RunnerEntries) {
             yield return entry;
+        }
 
-        foreach (var entry in BasicRunnerActions)
+        foreach (var entry in BasicRunnerActions) {
             yield return entry;
+        }
 
-        foreach (var entry in ThirdPartyRunnerActions())
+        foreach (var entry in ThirdPartyRunnerActions()) {
             yield return entry;
+        }
 
-        foreach (var entry in ReloggableCharacters())
+        foreach (var entry in ReloggableCharacters()) {
             yield return entry;
+        }
     }
 
     private static IEnumerable<WotsitEntry> ThirdPartyRunnerActions()
     {
-        if (VNavMeshIPC.IsEnabled && LifestreamIPC.IsEnabled)
+        if (VNavMeshIPC.IsEnabled && LifestreamIPC.IsEnabled) {
             yield return new WotsitEntry(
                 "Auto Spend Uncapped Tomestone",
                 "auto spend uncapped tomestone to buy preferred item",
                 3,
                 () => ActionInstance.SpendTomestone.Invoke()
             );
+        }
 
-        if (VNavMeshIPC.IsEnabled && LifestreamIPC.IsEnabled && DeliverooIPC.IsEnabled)
+        if (VNavMeshIPC.IsEnabled && LifestreamIPC.IsEnabled && DeliverooIPC.IsEnabled) {
             yield return new WotsitEntry(
                 "GC Turnins with Deliveroo",
                 "gc turn-ins with deliveroo",
                 32,
                 () => ActionInstance.Deliveroo.Invoke()
             );
+        }
     }
 
     private static IEnumerable<WotsitEntry> ReloggableCharacters()
     {
-        if (LifestreamIPC.IsEnabled && !PlayerHelper.InDuty)
-        {
-            var currentCharacter = PlayerHelper.GetFullCharacterName();
-            foreach (var characterAndWorld in AWC.Config.Characters.Keys)
-            {
-                if (currentCharacter == characterAndWorld)
-                    continue;
+        if (!LifestreamIPC.IsEnabled || PlayerHelper.InDuty) {
+            yield break;
+        }
 
-                yield return new WotsitEntry(
-                    $"Relog to character: {characterAndWorld}",
-                    $"relog to character: {characterAndWorld}",
-                    112,
-                    () => ChatHelper.RunCommand($"awc relog {characterAndWorld}")
-                );
+        var currentCharacter = PlayerHelper.GetFullCharacterName();
+        foreach (var characterAndWorld in AWC.Config.Characters.Keys) {
+            if (currentCharacter == characterAndWorld) {
+                continue;
             }
+
+            yield return new WotsitEntry(
+                $"Relog to character: {characterAndWorld}",
+                $"relog to character: {characterAndWorld}",
+                112,
+                () => ChatHelper.RunCommand($"awc relog {characterAndWorld}")
+            );
         }
     }
 }

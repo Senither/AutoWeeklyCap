@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.IPC.Wotsit;
+
 using ECommons.EzIpcManager;
 using ECommons.Reflection;
 
@@ -24,14 +25,11 @@ public static class IPCSubscriber
 
     internal static void DisposeAll(EzIPCDisposalToken[] disposalTokens)
     {
-        foreach (var token in disposalTokens)
-        {
-            try
-            {
+        foreach (var token in disposalTokens) {
+            try {
                 token.Dispose();
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 AWC.Log.Error($"Error while unregistering IPC: {ex}");
             }
         }

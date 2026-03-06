@@ -17,26 +17,23 @@ public class NotificationAction : BaseAction
 
         EnqueueDelay(500);
 
-        if (AWC.Config.NotificationMasterUsingFlashTaskbarIcon)
-        {
+        if (AWC.Config.NotificationMasterUsingFlashTaskbarIcon) {
             Enqueue(NotificationMasterIPC.SendFlashTaskbarIcon, "Flash taskbar icon");
         }
 
-        if (AWC.Config.NotificationMasterUsingToastNotification)
-        {
+        if (AWC.Config.NotificationMasterUsingToastNotification) {
             Enqueue(() => NotificationMasterIPC.SendDisplayToastNotification(
-                        AWC.Name, type.GetMessage()), "Toast notification"
+                    AWC.Name, type.GetMessage()), "Toast notification"
             );
         }
 
-        if (AWC.Config.NotificationMasterUsingPlaySound && AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath.Length > 0)
-        {
+        if (AWC.Config.NotificationMasterUsingPlaySound && AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath.Length > 0) {
             Enqueue(() => NotificationMasterIPC.SendPlaySound(
-                        AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath,
-                        AWC.Config.NotificationMasterUsingPlaySoundOptionVolume / 100f,
-                        AWC.Config.NotificationMasterUsingPlaySoundOptionRepeat,
-                        AWC.Config.NotificationMasterUsingPlaySoundOptionStopOnFocus
-                    ), "Play sound");
+                AWC.Config.NotificationMasterUsingPlaySoundOptionFilePath,
+                AWC.Config.NotificationMasterUsingPlaySoundOptionVolume / 100f,
+                AWC.Config.NotificationMasterUsingPlaySoundOptionRepeat,
+                AWC.Config.NotificationMasterUsingPlaySoundOptionStopOnFocus
+            ), "Play sound");
         }
 
         return true;

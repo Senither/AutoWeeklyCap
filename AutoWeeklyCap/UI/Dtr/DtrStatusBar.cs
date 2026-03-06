@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+
 using Dalamud.Game.Gui.Dtr;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 
@@ -19,16 +20,14 @@ public class DtrStatusBar : IDisposable
             if (dtrEntry != null)
                 return;
 
-            try
-            {
+            try {
                 dtrEntry = AWC.DtrBar.Get(DtrBarTitle);
                 dtrEntry.Text = "...";
                 dtrEntry.Shown = false;
                 dtrEntry.OnClick = _ => OnClick();
                 dtrEntry.Tooltip = DtrBarTooltip;
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 AWC.Log.Error(e, $"Failed to acquire DtrBarEntry {DtrBarTitle}");
             }
         });
@@ -41,8 +40,7 @@ public class DtrStatusBar : IDisposable
         if (dtrEntry == null)
             return;
 
-        if (!AWC.Config.ShowStatusInStatusBar)
-        {
+        if (!AWC.Config.ShowStatusInStatusBar) {
             if (dtrEntry.Shown)
                 dtrEntry.Shown = false;
 
@@ -53,8 +51,8 @@ public class DtrStatusBar : IDisposable
             return;
 
         dtrEntry.Tooltip = AWC.Config.ShowStatusAsIcons
-                               ? $"Status: {TitleManager.GetStatusShort()}\n\n{DtrBarTooltip}"
-                               : DtrBarTooltip;
+            ? $"Status: {TitleManager.GetStatusShort()}\n\n{DtrBarTooltip}"
+            : DtrBarTooltip;
 
         dtrEntry?.Shown = true;
         dtrEntry?.Text = new SeString(
@@ -67,14 +65,12 @@ public class DtrStatusBar : IDisposable
 
     public void OnClick()
     {
-        if (!ImGui.GetIO().KeyCtrl)
-        {
+        if (!ImGui.GetIO().KeyCtrl) {
             AWC.Instance.ToggleMainUi();
             return;
         }
 
-        if (!AWC.Runner.IsRunning())
-        {
+        if (!AWC.Runner.IsRunning()) {
             AWC.Runner.Start();
             return;
         }

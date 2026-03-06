@@ -51,19 +51,18 @@ public static class StopActionExtensions
     {
         AWC.Log.Debug($"Executing action: {action.GetName()}");
 
-        switch (action)
-        {
+        switch (action) {
             case StopAction.None:
                 break;
 
             case StopAction.SwitchCharacter:
                 var characterToSwapTo = AWC.Config.CharacterForSwap;
-                if (characterToSwapTo.Length == 0 || characterToSwapTo == PlayerHelper.GetFullCharacterName())
+                if (characterToSwapTo.Length == 0 || characterToSwapTo == PlayerHelper.GetFullCharacterName()) {
                     break;
+                }
 
                 var parts = characterToSwapTo.Split("@");
-                if (parts.Length == 2)
-                {
+                if (parts.Length == 2) {
                     LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
                 }
 

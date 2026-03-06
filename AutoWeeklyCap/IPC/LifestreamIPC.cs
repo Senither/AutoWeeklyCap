@@ -20,23 +20,17 @@ public class LifestreamIPC
         repositoryUrl: "https://github.com/NightmareXIV/Lifestream"
     );
 
-    [EzIPC]
-    internal static Func<bool> IsBusy;
+    [EzIPC] internal static Func<bool> IsBusy;
 
-    [EzIPC]
-    internal static Func<string, string, ErrorCode> ChangeCharacter;
+    [EzIPC] internal static Func<string, string, ErrorCode> ChangeCharacter;
 
-    [EzIPC]
-    internal static Func<string, bool> AethernetTeleport;
+    [EzIPC] internal static Func<string, bool> AethernetTeleport;
 
-    [EzIPC]
-    internal static Action<string> ExecuteCommand;
+    [EzIPC] internal static Action<string> ExecuteCommand;
 
-    [EzIPC]
-    internal static Action Abort;
+    [EzIPC] internal static Action Abort;
 
-    [EzIPC]
-    internal static Func<ErrorCode> Logout;
+    [EzIPC] internal static Func<ErrorCode> Logout;
 
     internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
 }

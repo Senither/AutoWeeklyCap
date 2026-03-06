@@ -137,8 +137,7 @@ public static class Card
 
         var drawList = ImGui.GetWindowDrawList();
         var ownsChannelSplit = ChannelSplitDepth == 0;
-        if (ownsChannelSplit)
-        {
+        if (ownsChannelSplit) {
             drawList.ChannelsSplit(2);
             PendingBackgrounds = [];
         }
@@ -148,23 +147,19 @@ public static class Card
         var bgIndex = -1;
         var bgRecorded = false;
 
-        try
-        {
+        try {
             using var id = ImRaii.PushId(stableId);
             using var color = ImRaii.PushColor(ImGuiCol.ChildBg, childBg);
 
             var stateId = ImGui.GetID("###card-open-state");
             var isOpen = true;
-            if (collapsible)
-            {
-                if (!OpenStateById.TryGetValue(stateId, out isOpen))
-                {
+            if (collapsible) {
+                if (!OpenStateById.TryGetValue(stateId, out isOpen)) {
                     isOpen = defaultOpen;
                     OpenStateById[stateId] = defaultOpen;
                 }
 
-                if (parentForceOpenDescendants)
-                {
+                if (parentForceOpenDescendants) {
                     isOpen = true;
                     OpenStateById[stateId] = true;
                 }
@@ -187,11 +182,9 @@ public static class Card
 
             var forceOpenDescendants = parentForceOpenDescendants;
 
-            if (collapsible)
-            {
+            if (collapsible) {
                 ImGui.SetCursorScreenPos(cardMin);
-                if (ImGui.InvisibleButton("###toggle-card-open", new Vector2(width, titleBarHeight)))
-                {
+                if (ImGui.InvisibleButton("###toggle-card-open", new Vector2(width, titleBarHeight))) {
                     isOpen = !isOpen;
                     OpenStateById[stateId] = isOpen;
 
@@ -200,19 +193,16 @@ public static class Card
                 }
             }
 
-            if (forceOpenDescendants != parentForceOpenDescendants)
-            {
+            if (forceOpenDescendants != parentForceOpenDescendants) {
                 var current = ContextStack.Pop();
                 ContextStack.Push(current with { ForceOpenDescendants = forceOpenDescendants });
             }
 
             ImGui.SetCursorScreenPos(cardMin + new Vector2(titlePadding.X, (titleBarHeight - titleLineHeight) / 2f));
 
-            if (collapsible)
-            {
+            if (collapsible) {
                 var icon = isOpen ? FontAwesomeIcon.ChevronDown : FontAwesomeIcon.ChevronRight;
-                using (ImRaii.PushFont(UiBuilder.IconFont))
-                {
+                using (ImRaii.PushFont(UiBuilder.IconFont)) {
                     ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey2);
                     ImGui.TextUnformatted(icon.ToIconString());
                     ImGui.PopStyleColor();
@@ -223,8 +213,7 @@ public static class Card
 
             ImGui.TextUnformatted(visibleTitle);
 
-            if (!collapsible || isOpen)
-            {
+            if (!collapsible || isOpen) {
                 ImGui.SetCursorScreenPos(cardMin + contentPadding with { Y = titleBarHeight + contentPadding.Y });
                 ImGui.BeginGroup();
 
@@ -239,8 +228,7 @@ public static class Card
             var cardMax = ImGui.GetItemRectMax();
             var cardBgU32 = ImGui.ColorConvertFloat4ToU32(ImGui.GetStyle().Colors[(int)ImGuiCol.ChildBg]);
 
-            if (PendingBackgrounds != null && bgIndex >= 0)
-            {
+            if (PendingBackgrounds != null && bgIndex >= 0) {
                 PendingBackgrounds[bgIndex] = new CardBackgroundDraw(
                     cardMin,
                     cardMax,
@@ -253,17 +241,15 @@ public static class Card
             }
 
             ImGui.Spacing();
-        } finally
-        {
-            if (!bgRecorded && PendingBackgrounds != null && bgIndex >= 0 && bgIndex < PendingBackgrounds.Count)
-            {
+        }
+        finally {
+            if (!bgRecorded && PendingBackgrounds != null && bgIndex >= 0 && bgIndex < PendingBackgrounds.Count) {
                 PendingBackgrounds.RemoveAt(bgIndex);
             }
 
             ChannelSplitDepth = Math.Max(0, ChannelSplitDepth - 1);
 
-            if (ownsChannelSplit)
-            {
+            if (ownsChannelSplit) {
                 FlushPendingBackgrounds(drawList);
                 drawList.ChannelsSetCurrent(1);
                 drawList.ChannelsMerge();
@@ -281,8 +267,7 @@ public static class Card
 
         drawList.ChannelsSetCurrent(0);
 
-        foreach (var bg in PendingBackgrounds)
-        {
+        foreach (var bg in PendingBackgrounds) {
             drawList.AddRectFilled(bg.Min, bg.Max, bg.CardBgColor, Rounding, ImDrawFlags.RoundCornersBottom);
             drawList.AddRectFilled(
                 bg.Min,

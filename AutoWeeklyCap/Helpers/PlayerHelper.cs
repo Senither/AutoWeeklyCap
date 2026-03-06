@@ -1,5 +1,6 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Utility;
+
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
@@ -39,12 +40,14 @@ public static class PlayerHelper
 
     public static string? GetFullCharacterName()
     {
-        if (!AWC.PlayerState.IsLoaded)
+        if (!AWC.PlayerState.IsLoaded) {
             return null;
+        }
 
         var world = AWC.PlayerState.HomeWorld.ValueNullable;
-        if (world == null)
+        if (world == null) {
             return null;
+        }
 
         return AWC.PlayerState.CharacterName + "@" + world.Value.Name.ToString();
     }
@@ -56,41 +59,41 @@ public static class PlayerHelper
 
     public static int GetJobLevel(PlayerJob jobType)
     {
-        if (!AWC.PlayerState.IsLoaded)
+        if (!AWC.PlayerState.IsLoaded) {
             return 0;
+        }
 
-        try
-        {
-            unsafe
-            {
+        try {
+            unsafe {
                 return PlayerState.Instance()->GetClassJobLevel((int)jobType);
             }
         }
-        catch (Exception)
-        {
+        catch (Exception) {
             return 0;
         }
     }
 
     public static CharacterSwapStatus SwitchJob(uint targetJobId)
     {
-        if (!AWC.PlayerState.IsLoaded)
+        if (!AWC.PlayerState.IsLoaded) {
             return CharacterSwapStatus.FailedToSwitchJob;
+        }
 
         var currentJobId = AWC.PlayerState.ClassJob.RowId;
-        if (currentJobId == targetJobId)
+        if (currentJobId == targetJobId) {
             return CharacterSwapStatus.AlreadyOnTargetJob;
+        }
 
-        unsafe
-        {
+        unsafe {
             var gearsetModule = RaptureGearsetModule.Instance();
-            if (gearsetModule == null)
+            if (gearsetModule == null) {
                 return CharacterSwapStatus.FailedToSwitchJob;
+            }
 
-            for (byte i = 0; i < 100; i++)
-            {
-                if (!gearsetModule->IsValidGearset(i) || gearsetModule->GetGearset(i)->ClassJob != targetJobId)
+            for (byte i = 0; i < 100; i++) {
+                if (!gearsetModule->IsValidGearset(i) || gearsetModule->GetGearset(i)->ClassJob != targetJobId) {
                     continue;
+                }
 
                 ChatHelper.RunCommand($"gs change {i + 1}");
                 return CharacterSwapStatus.SwitchedJob;

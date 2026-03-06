@@ -1,5 +1,6 @@
 ﻿using AutoWeeklyCap.UI.ConfigWindow;
 using AutoWeeklyCap.UI.Helpers;
+
 using Dalamud.Interface.Windowing;
 
 namespace AutoWeeklyCap.UI.Windows;
@@ -8,11 +9,7 @@ public class ConfigWindow : Window
 {
     public ConfigWindow() : base("Auto Weekly Tomestone Settings")
     {
-        SizeConstraints = new WindowSizeConstraints
-        {
-            MinimumSize = new Vector2(525, 350),
-            MaximumSize = new Vector2(9999, 9999)
-        };
+        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(525, 350), MaximumSize = new Vector2(9999, 9999) };
     }
 
     public override void Draw()

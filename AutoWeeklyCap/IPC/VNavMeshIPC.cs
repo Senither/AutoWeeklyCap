@@ -26,8 +26,7 @@ public class VNavMeshIPC
         repositoryUrl: "https://github.com/awgil/ffxiv_navmesh"
     );
 
-    [EzIPC("Nav.IsReady")]
-    internal static Func<bool> IsReady;
+    [EzIPC("Nav.IsReady")] internal static Func<bool> IsReady;
 
     /// <summary>
     /// Vector3 position, bool canFly
@@ -35,17 +34,13 @@ public class VNavMeshIPC
     [EzIPC("SimpleMove.PathfindAndMoveTo")]
     internal static Delegates.PathfindAndMoveTo PathfindAndMoveTo;
 
-    [EzIPC("Path.Stop")]
-    internal static Action Stop;
+    [EzIPC("Path.Stop")] internal static Action Stop;
 
-    [EzIPC("Path.IsRunning")]
-    internal static Func<bool> IsRunning;
+    [EzIPC("Path.IsRunning")] internal static Func<bool> IsRunning;
 
-    [EzIPC("Path.SetAlignCamera")]
-    internal static Action<bool> SetAlignCamera;
+    [EzIPC("Path.SetAlignCamera")] internal static Action<bool> SetAlignCamera;
 
-    [EzIPC("Path.SetTolerance")]
-    internal static Action<float> SetTolerance;
+    [EzIPC("Path.SetTolerance")] internal static Action<float> SetTolerance;
 
     internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
 }

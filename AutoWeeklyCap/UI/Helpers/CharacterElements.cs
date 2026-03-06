@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.Config;
+
 using Dalamud.Interface;
 
 namespace AutoWeeklyCap.UI.Helpers;
@@ -14,8 +15,7 @@ public static class CharacterElements
         if (!isHidden)
             ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
 
-        if (ImGuiEx.IconButton(isHidden ? FontAwesomeIcon.EyeSlash : FontAwesomeIcon.Eye))
-        {
+        if (ImGuiEx.IconButton(isHidden ? FontAwesomeIcon.EyeSlash : FontAwesomeIcon.Eye)) {
             option.Hidden = !isHidden;
             SaveCharacterConfigurationOption(character, option);
         }
@@ -35,15 +35,14 @@ public static class CharacterElements
         if (isEnabled)
             ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
 
-        if (ImGuiEx.IconButton(FontAwesomeIcon.Rocket))
-        {
+        if (ImGuiEx.IconButton(FontAwesomeIcon.Rocket)) {
             option.Enabled = !isEnabled;
             SaveCharacterConfigurationOption(character, option);
         }
 
         ImGuiEx.Tooltip(option.IsHidden()
-                            ? "Character is automatically disabled because it's hidden"
-                            : $"Click to {(isEnabled ? "disable" : "enable")} this character"
+            ? "Character is automatically disabled because it's hidden"
+            : $"Click to {(isEnabled ? "disable" : "enable")} this character"
         );
 
         if (isEnabled)
@@ -59,13 +58,10 @@ public static class CharacterElements
 
         ImGuiEx.IconButton(FontAwesomeIcon.DoorOpen);
 
-        if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
-        {
+        if (ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
             ImGui.SetClipboardText(command);
             Notify.Success("Link copied to clipboard");
-        }
-        else if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
-        {
+        } else if (ImGui.IsItemClicked(ImGuiMouseButton.Left)) {
             ChatHelper.RunCommand(command);
         }
 
@@ -101,8 +97,7 @@ public static class CharacterElements
         if (sameLine)
             ImGui.SameLine(0f, 4f);
 
-        if (ImGuiEx.IconButton(FontAwesomeIcon.UserCog))
-        {
+        if (ImGuiEx.IconButton(FontAwesomeIcon.UserCog)) {
             AWC.Instance.OpenCharacterOptionsUi(character);
         }
 

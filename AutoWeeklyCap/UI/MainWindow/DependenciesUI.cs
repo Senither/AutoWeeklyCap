@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.IPC.Wotsit;
+
 using Dalamud.Interface;
 using Dalamud.Plugin;
 using Dalamud.Utility;
@@ -53,8 +54,7 @@ internal static class DependenciesUI
     {
         ImGui.Spacing();
 
-        foreach (var plugin in plugins)
-        {
+        foreach (var plugin in plugins) {
             DrawPlugin(plugin);
             ImGui.Spacing();
         }
@@ -73,19 +73,23 @@ internal static class DependenciesUI
         ImGui.SetCursorPosX(indent);
         ImGui.TextWrapped(pluginInfo.Description);
 
-        if (plugin != null)
+        if (plugin != null) {
             return;
+        }
 
         ImGui.SetCursorPosX(indent);
 
-        if (pluginInfo.InstallUrl != null)
+        if (pluginInfo.InstallUrl != null) {
             DrawActionButton(FontAwesomeIcon.Download, $"Install###Install{pluginInfo.PluginName}", () => pluginInfo.InstallPlugin());
+        }
 
-        if (pluginInfo.WebsiteUrl != null)
+        if (pluginInfo.WebsiteUrl != null) {
             DrawLinkButton(FontAwesomeIcon.Globe, $"Open Website###WebsiteFor{pluginInfo.PluginName}", pluginInfo.WebsiteUrl);
+        }
 
-        if (pluginInfo.RepositoryUrl != null)
+        if (pluginInfo.RepositoryUrl != null) {
             DrawLinkButton(FontAwesomeIcon.Code, $"Open Repository###RepositoryFor{pluginInfo.PluginName}", pluginInfo.RepositoryUrl);
+        }
 
         ImGui.NewLine();
     }
@@ -106,16 +110,18 @@ internal static class DependenciesUI
 
     private static void DrawLinkButton(FontAwesomeIcon icon, string text, string url)
     {
-        if (ImGuiEx.IconButtonWithText(icon, text))
+        if (ImGuiEx.IconButtonWithText(icon, text)) {
             Util.OpenLink(url);
+        }
 
         ImGui.SameLine();
     }
 
     private static void DrawActionButton(FontAwesomeIcon icon, string text, Action action)
     {
-        if (ImGuiEx.IconButtonWithText(icon, text))
+        if (ImGuiEx.IconButtonWithText(icon, text)) {
             action();
+        }
 
         ImGui.SameLine();
     }

@@ -1,4 +1,5 @@
 ﻿using ECommons.ExcelServices;
+
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace AutoWeeklyCap.Helpers;

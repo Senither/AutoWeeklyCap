@@ -38,8 +38,7 @@ public class LeaveGrandCompanyInnAction : BaseAction
             if (gameObject == null)
                 return false;
 
-            unsafe
-            {
+            unsafe {
                 if (AddonHelper.TryGetReadyAddon("SelectYesno", out _))
                     AddonHelper.ClickSelectYesno();
                 else if (PlayerHelper.IsReady)

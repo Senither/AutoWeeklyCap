@@ -20,14 +20,11 @@ public class AutoDutyIPC
         repositoryUrl: "https://github.com/erdelf/AutoDuty"
     );
 
-    [EzIPC]
-    internal static Action<uint, int, bool> Run;
+    [EzIPC] internal static Action<uint, int, bool> Run;
 
-    [EzIPC]
-    internal static Action Stop;
+    [EzIPC] internal static Action Stop;
 
-    [EzIPC]
-    internal static Func<bool> IsStopped;
+    [EzIPC] internal static Func<bool> IsStopped;
 
     internal static void Dispose() => IPCSubscriber.DisposeAll(disposalTokens);
 }

@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
+
 using Dalamud.Interface;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
@@ -7,8 +8,7 @@ public static class CharactersOptionUi
 {
     public static void Draw()
     {
-        foreach (var characterAndWorld in AWC.Config.GetSortedCharacters())
-        {
+        foreach (var characterAndWorld in AWC.Config.GetSortedCharacters()) {
             var option = AWC.Config.Characters[characterAndWorld];
 
             ImGui.PushID(characterAndWorld);
@@ -32,11 +32,9 @@ public static class CharactersOptionUi
         if (!AutoRetainerIPC.IsEnabled)
             return;
 
-        try
-        {
+        try {
             List<string> characterNames = [];
-            foreach (var registeredCharacter in AutoRetainerIPC.GetRegisteredCharacters())
-            {
+            foreach (var registeredCharacter in AutoRetainerIPC.GetRegisteredCharacters()) {
                 var name = AutoRetainerIPC.GetOfflineCharacterData(registeredCharacter).ToString();
 
                 if (!AWC.Config.Characters.ContainsKey(name))
@@ -48,8 +46,7 @@ public static class CharactersOptionUi
 
             DrawCharacterImporterCard(characterNames);
         }
-        catch (Exception)
-        {
+        catch (Exception) {
             // ignored
         }
     }
@@ -67,8 +64,7 @@ public static class CharactersOptionUi
 
             ImGui.Spacing();
 
-            foreach (var name in characterNames)
-            {
+            foreach (var name in characterNames) {
                 ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
 
                 if (ImGuiEx.IconButton(FontAwesomeIcon.Plus, id: $"AddCharacterViaAutoRetainer:{name}"))

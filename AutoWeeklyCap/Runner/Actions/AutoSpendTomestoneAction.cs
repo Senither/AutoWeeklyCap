@@ -50,8 +50,7 @@ public class AutoSpendTomestoneAction : BaseAction
         if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled)
             return false;
 
-        unsafe
-        {
+        unsafe {
             if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1)
                 return false;
 
@@ -106,8 +105,7 @@ public class AutoSpendTomestoneAction : BaseAction
             if (vendor == null)
                 return false;
 
-            unsafe
-            {
+            unsafe {
                 if (GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString))
                     AddonHelper.ClickSelectIconString(sectionId);
                 else if (GenericHelpers.TryGetAddonByName("ShopExchangeCurrency", out AddonShopExchangeCurrency) && GenericHelpers.IsAddonReady(AddonShopExchangeCurrency))
@@ -124,10 +122,8 @@ public class AutoSpendTomestoneAction : BaseAction
             if (EzThrottler.Throttle("BuyingTomestoneItem", 500))
                 return false;
 
-            unsafe
-            {
-                if (GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString))
-                {
+            unsafe {
+                if (GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString)) {
                     AddonHelper.ClickSelectYesno();
                     return true;
                 }
@@ -145,10 +141,8 @@ public class AutoSpendTomestoneAction : BaseAction
             if (EzThrottler.Throttle("BuyingTomestoneItemClose", 500))
                 return false;
 
-            try
-            {
-                unsafe
-                {
+            try {
+                unsafe {
                     if (AddonHelper.TryGetReadyAddon("SelectYesno", out _))
                         return false;
 
@@ -158,8 +152,7 @@ public class AutoSpendTomestoneAction : BaseAction
                     addonShopExchangeCurrency->Close(true);
                 }
             }
-            catch (Exception)
-            {
+            catch (Exception) {
                 // ignored
             }
 

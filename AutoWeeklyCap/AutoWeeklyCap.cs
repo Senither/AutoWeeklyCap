@@ -1,17 +1,22 @@
 using System.Reflection;
+
 using AutoWeeklyCap.Commands;
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.IPC.Wotsit;
 using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.UI.Dtr;
 using AutoWeeklyCap.UI.Windows;
+
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
+
 using ECommons.Automation.NeoTaskManager;
 using ECommons.Schedulers;
+
 using Newtonsoft.Json;
+
 using Module = ECommons.Module;
 
 namespace AutoWeeklyCap;
@@ -29,33 +34,18 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     internal const int CurrentMaxLevel = 100;
 
     internal static Configuration Config => Instance.Configuration;
-    internal static Runner.Runner Runner { get; set; } = null!;
-    internal static TaskManager TaskManager { get; set; } = null!;
+    internal static Runner.Runner Runner { get; private set; } = null!;
+    internal static TaskManager TaskManager { get; private set; } = null!;
     internal static string Version => Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
 
-    [PluginService]
-    internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
-
-    [PluginService]
-    internal static ICommandManager CommandManager { get; private set; } = null!;
-
-    [PluginService]
-    internal static IFramework Framework { get; private set; } = null!;
-
-    [PluginService]
-    internal static IClientState ClientState { get; private set; } = null!;
-
-    [PluginService]
-    internal static IPlayerState PlayerState { get; private set; } = null!;
-
-    [PluginService]
-    internal static IDataManager DataManager { get; private set; } = null!;
-
-    [PluginService]
-    internal static IDtrBar DtrBar { get; private set; } = null!;
-
-    [PluginService]
-    internal static IPluginLog Log { get; private set; } = null!;
+    [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
+    [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
+    [PluginService] internal static IFramework Framework { get; private set; } = null!;
+    [PluginService] internal static IClientState ClientState { get; private set; } = null!;
+    [PluginService] internal static IPlayerState PlayerState { get; private set; } = null!;
+    [PluginService] internal static IDataManager DataManager { get; private set; } = null!;
+    [PluginService] internal static IDtrBar DtrBar { get; private set; } = null!;
+    [PluginService] internal static IPluginLog Log { get; private set; } = null!;
 
     public DtrStatusBar DtrStatusBar { get; init; } = new();
 
@@ -63,11 +53,11 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
     public readonly WindowSystem WindowSystem = new("AutoWeeklyCap");
 
-    private MainWindow MainWindow { get; init; }
-    private ConfigWindow ConfigWindow { get; init; }
-    private CharacterOptionWindow CharacterOptionWindow { get; init; }
-    private FeedbackWindow FeedbackWindow { get; init; }
-    private FrameworkListener FrameworkListener { get; init; } = new();
+    private MainWindow MainWindow { get; }
+    private ConfigWindow ConfigWindow { get; }
+    private CharacterOptionWindow CharacterOptionWindow { get; }
+    private FeedbackWindow FeedbackWindow { get; }
+    private FrameworkListener FrameworkListener { get; } = new();
 
     public AutoWeeklyCap()
     {
@@ -78,17 +68,16 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         TaskManager = new TaskManager(new TaskManagerConfiguration(abortOnTimeout: true, timeLimitMS: 20000, showDebug: true));
         TomestoneItemHelper.RegisterTomestoneItems();
 
-        try
-        {
+        try {
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Configuration.NormalizeCharacterPositions();
         }
-        catch (Exception e)
-        {
-            if (e is JsonSerializationException or AggregateException)
+        catch (Exception e) {
+            if (e is JsonSerializationException or AggregateException) {
                 Configuration = new Configuration();
-            else
+            } else {
                 throw;
+            }
         }
 
         DtrStatusBar.Start();
@@ -100,16 +89,9 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         WindowSystem.AddWindow(CharacterOptionWindow = new CharacterOptionWindow());
         WindowSystem.AddWindow(FeedbackWindow = new FeedbackWindow());
 
-        CommandManager.AddHandler(CommandNameLong, new CommandInfo(OnCommand)
-        {
-            HelpMessage = "Toggles the Auto Weekly Cap main window",
-            ShowInHelp = true,
-        });
+        CommandManager.AddHandler(CommandNameLong, new CommandInfo(OnCommand) { HelpMessage = "Toggles the Auto Weekly Cap main window", ShowInHelp = true, });
 
-        CommandManager.AddHandler(CommandNameShort, new CommandInfo(OnCommand)
-        {
-            ShowInHelp = false,
-        });
+        CommandManager.AddHandler(CommandNameShort, new CommandInfo(OnCommand) { ShowInHelp = false, });
 
         Framework.Update += FrameworkListener.OnFrameworkUpdate;
         ClientState.Logout += ClientListener.OnLogout;
@@ -119,12 +101,12 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
 
         Log.Debug($"AWC#Startup - OpenWindowOnStartup: {Config.OpenWindowOnStartup}");
-        if (Config.OpenWindowOnStartup)
+        if (Config.OpenWindowOnStartup) {
             OpenMainUi();
+        }
 
         Log.Debug($"AWC#Startup - StartRunnerOnBoot: {Config.StartRunnerOnBoot}");
-        if (Config.StartRunnerOnBoot)
-        {
+        if (Config.StartRunnerOnBoot) {
             _ = new TickScheduler(() => Runner.AutoStartOnBoot());
         }
 

@@ -35,15 +35,12 @@ public class ClientListener
         AWC.Runner.Abort();
         AWC.TaskManager.Enqueue(() =>
         {
-            try
-            {
-                unsafe
-                {
+            try {
+                unsafe {
                     if (!EzThrottler.Throttle("AttemptDisconnectedRecovery", 250))
                         return false;
 
-                    if (AddonHelper.TryGetLobbyError(out var errorAddon) && errorAddon->IsVisible)
-                    {
+                    if (AddonHelper.TryGetLobbyError(out var errorAddon) && errorAddon->IsVisible) {
                         var dialogueStatus = AddonHelper.ClickDialogueOk();
 
                         AWC.Log.Debug($"Found lobby error [Addon: {errorAddon->GetType()}, Click: {dialogueStatus}]");
@@ -53,8 +50,7 @@ public class ClientListener
                     return !AddonHelper.IsLobbyErrorVisible() && AddonHelper.IsTitleScreenReady();
                 }
             }
-            catch (Exception)
-            {
+            catch (Exception) {
                 // ignored
             }
 

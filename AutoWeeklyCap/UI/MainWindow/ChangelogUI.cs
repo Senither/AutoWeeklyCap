@@ -1,7 +1,9 @@
 ﻿using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+
 using AutoWeeklyCap.UI.Helpers;
+
 using Newtonsoft.Json;
 
 // ReSharper disable InconsistentNaming
@@ -40,8 +42,7 @@ internal static class ChangelogUI
 
     private static void DrawEmptyState()
     {
-        if (!string.IsNullOrWhiteSpace(LoadError))
-        {
+        if (!string.IsNullOrWhiteSpace(LoadError)) {
             ImGui.TextColored(ImGuiColors.DPSRed, "Failed to load changelog.");
             ImGui.TextWrapped(LoadError);
             return;
@@ -53,25 +54,20 @@ internal static class ChangelogUI
     private static void DrawChangelogEntries(List<ChangelogEntry> entries)
     {
         var IsFirst = true;
-        foreach (var entry in entries)
-        {
-            Card.DrawSubtle(
-                $"{entry.Version} ({entry.CreatedAt:yyyy-MM-dd})",
-                () =>
-                {
-                    foreach (var line in ReadLines(entry.Changelog))
-                    {
-                        if (string.IsNullOrWhiteSpace(line))
-                        {
-                            ImGui.Spacing();
-                            continue;
-                        }
-
-                        ImGui.TextWrapped(line);
+        foreach (var entry in entries) {
+            Card.DrawSubtle($"{entry.Version} ({entry.CreatedAt:yyyy-MM-dd})", () =>
+            {
+                foreach (var line in ReadLines(entry.Changelog)) {
+                    if (string.IsNullOrWhiteSpace(line)) {
+                        ImGui.Spacing();
+                        continue;
                     }
 
-                    IsFirst = false;
-                }, defaultOpen: IsFirst, id: entry.Version);
+                    ImGui.TextWrapped(line);
+                }
+
+                IsFirst = false;
+            }, defaultOpen: IsFirst, id: entry.Version);
         }
     }
 
@@ -94,19 +90,17 @@ internal static class ChangelogUI
         IsFetching = true;
         LoadError = null;
 
-        try
-        {
+        try {
             var json = await HttpClient.GetStringAsync(ChangelogUrl).ConfigureAwait(false);
             var entries = JsonConvert.DeserializeObject<List<ChangelogEntry>>(json) ?? [];
 
             Entries = entries;
             LastFetchUtc = DateTime.UtcNow;
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             LoadError = ex.Message;
-        } finally
-        {
+        }
+        finally {
             IsFetching = false;
         }
     }

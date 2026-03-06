@@ -7,17 +7,12 @@ public class StartBaseCommand : BaseCommand
 
     public override void Run(string[] args)
     {
-        if (AWC.Runner.IsRunning())
-        {
-            if (AWC.Runner.IsStopping())
-            {
+        if (AWC.Runner.IsRunning()) {
+            if (AWC.Runner.IsStopping()) {
                 AWC.Runner.Resume();
             }
-        }
-        else
-        {
-            if (AWC.IsRequiredPluginsEnabled())
-            {
+        } else {
+            if (AWC.IsRequiredPluginsEnabled()) {
                 AWC.Runner.Start();
             }
         }

@@ -33,12 +33,14 @@ public class CharacterOptions
 
     public void AddDutyDurationSeconds(int durationSeconds)
     {
-        if (durationSeconds <= 0)
+        if (durationSeconds <= 0) {
             return;
+        }
 
         LastDutyDurationsSeconds.Add(durationSeconds);
 
-        while (LastDutyDurationsSeconds.Count > MaxDutySamples)
+        while (LastDutyDurationsSeconds.Count > MaxDutySamples) {
             LastDutyDurationsSeconds.RemoveAt(0);
+        }
     }
 }

@@ -19,22 +19,19 @@ public static class Disabled
         var shouldIndent = indent > 0;
         var previousCursorPosX = shouldIndent ? ImGui.GetCursorPosX() : 0;
 
-        if (isDisabled)
-        {
+        if (isDisabled) {
             ImGui.BeginDisabled();
             IsDisabled = true;
         }
 
-        if (shouldIndent)
-        {
+        if (shouldIndent) {
             ImGui.SetCursorPosX(previousCursorPosX + indent);
             ImGui.BeginGroup();
         }
 
         content.Invoke();
 
-        if (shouldIndent)
-        {
+        if (shouldIndent) {
             ImGui.EndGroup();
             ImGui.SetCursorPosX(previousCursorPosX);
         }

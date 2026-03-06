@@ -1,5 +1,7 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
+
 using ECommons.Automation.NeoTaskManager;
+
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoWeeklyCap.Runner.Actions;
@@ -55,21 +57,16 @@ public abstract class BaseAction
 
     private bool CloseAddons()
     {
-        foreach (var name in AddonsToClose)
-        {
-            try
-            {
-                unsafe
-                {
-                    if (GenericHelpers.TryGetAddonByName(name, out AtkUnitBase* atkUnitBase) && atkUnitBase->IsReady())
-                    {
+        foreach (var name in AddonsToClose) {
+            try {
+                unsafe {
+                    if (GenericHelpers.TryGetAddonByName(name, out AtkUnitBase* atkUnitBase) && atkUnitBase->IsReady()) {
                         atkUnitBase->FireCallbackInt(-1);
                         return false;
                     }
                 }
             }
-            catch (Exception)
-            {
+            catch (Exception) {
                 // ignored
             }
         }

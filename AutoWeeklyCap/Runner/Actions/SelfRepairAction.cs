@@ -9,14 +9,12 @@ public class SelfRepairAction : BaseAction
 
     protected override bool Run(params object[] args)
     {
-        if (!PlayerHelper.CanSelfRepairWithCrafters)
-        {
+        if (!PlayerHelper.CanSelfRepairWithCrafters) {
             LogDebug("switching to NPC repair, reason: player does not have all the required crafters leveled");
             return ActionInstance.NpcRepair.Invoke();
         }
 
-        if (InventoryHelper.GetItemsNeedingRepairCount(99) > InventoryHelper.GetDarkMatterCount())
-        {
+        if (InventoryHelper.GetItemsNeedingRepairCount(99) > InventoryHelper.GetDarkMatterCount()) {
             LogDebug("switching to NPC repair, reason: too low quantity of dark matter");
             return ActionInstance.NpcRepair.Invoke();
         }
@@ -28,18 +26,15 @@ public class SelfRepairAction : BaseAction
             if (!EzThrottler.Throttle("RepairOpen", 250))
                 return false;
 
-            try
-            {
-                unsafe
-                {
+            try {
+                unsafe {
                     if (AddonHelper.TryGetReadyAddon("Repair", out _))
                         return true;
 
                     ActionManager.Instance()->UseAction(ActionType.GeneralAction, 6);
                 }
             }
-            catch (Exception)
-            {
+            catch (Exception) {
                 // ignored
             }
 
@@ -48,15 +43,12 @@ public class SelfRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            try
-            {
-                unsafe
-                {
+            try {
+                unsafe {
                     if (!AddonHelper.TryGetReadyAddon("Repair", out _))
                         return false;
 
-                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _))
-                    {
+                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
                         AddonHelper.ClickSelectYesno();
                         return true;
                     }
@@ -68,8 +60,7 @@ public class SelfRepairAction : BaseAction
                         AddonHelper.ClickRepair();
                 }
             }
-            catch (Exception)
-            {
+            catch (Exception) {
                 // ignored
             }
 
@@ -81,10 +72,8 @@ public class SelfRepairAction : BaseAction
             if (!EzThrottler.Throttle("RepairClose", 250))
                 return false;
 
-            try
-            {
-                unsafe
-                {
+            try {
+                unsafe {
                     if (AddonHelper.TryGetReadyAddon("SelectYesno", out _))
                         return false;
 
@@ -94,8 +83,7 @@ public class SelfRepairAction : BaseAction
                     repairAddon->Close(true);
                 }
             }
-            catch (Exception)
-            {
+            catch (Exception) {
                 // ignored
             }
 
