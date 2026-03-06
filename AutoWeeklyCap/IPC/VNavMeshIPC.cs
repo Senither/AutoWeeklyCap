@@ -1,6 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
-
-using ECommons.EzIpcManager;
+﻿using ECommons.EzIpcManager;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value null
@@ -17,7 +15,7 @@ public class VNavMeshIPC
     internal const string Name = "vnavmesh";
     internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 
-    internal static readonly EzIPCDisposalToken[] disposalTokens =
+    internal static readonly EzIPCDisposalToken[] DisposalTokens =
         EzIPC.Init(typeof(VNavMeshIPC), Name, SafeWrapper.IPCException);
 
     internal static readonly PluginInstallerHelper.PluginContext Context = new(
@@ -35,16 +33,13 @@ public class VNavMeshIPC
     internal static Delegates.PathfindAndMoveTo PathfindAndMoveTo;
 
     [EzIPC("Path.Stop")] internal static Action Stop;
-
     [EzIPC("Path.IsRunning")] internal static Func<bool> IsRunning;
-
     [EzIPC("Path.SetAlignCamera")] internal static Action<bool> SetAlignCamera;
-
     [EzIPC("Path.SetTolerance")] internal static Action<float> SetTolerance;
 
     internal static void Dispose()
     {
-        IPCSubscriber.DisposeAll(disposalTokens);
+        IPCSubscriber.DisposeAll(DisposalTokens);
     }
 }
 

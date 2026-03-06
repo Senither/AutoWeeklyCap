@@ -1,6 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
-
-namespace AutoWeeklyCap.IPC;
+﻿namespace AutoWeeklyCap.IPC;
 
 public static class BossModRebornIPC
 {

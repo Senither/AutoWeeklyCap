@@ -3,8 +3,6 @@
 using ECommons.EzIpcManager;
 using ECommons.Reflection;
 
-// ReSharper disable InconsistentNaming
-
 namespace AutoWeeklyCap.IPC;
 
 public static class IPCSubscriber

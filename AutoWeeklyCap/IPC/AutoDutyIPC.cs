@@ -1,6 +1,5 @@
 ﻿using ECommons.EzIpcManager;
 
-// ReSharper disable InconsistentNaming
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value null
 
@@ -11,7 +10,7 @@ public class AutoDutyIPC
     internal const string Name = "AutoDuty";
     internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 
-    internal static readonly EzIPCDisposalToken[] disposalTokens =
+    internal static readonly EzIPCDisposalToken[] DisposalTokens =
         EzIPC.Init(typeof(AutoDutyIPC), Name, SafeWrapper.IPCException);
 
     internal static readonly PluginInstallerHelper.PluginContext Context = new(
@@ -21,14 +20,12 @@ public class AutoDutyIPC
     );
 
     [EzIPC] internal static Action<uint, int, bool> Run;
-
     [EzIPC] internal static Action Stop;
-
     [EzIPC] internal static Func<bool> IsStopped;
 
     internal static void Dispose()
     {
-        IPCSubscriber.DisposeAll(disposalTokens);
+        IPCSubscriber.DisposeAll(DisposalTokens);
     }
 }
 

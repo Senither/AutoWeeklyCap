@@ -2,10 +2,10 @@
 
 public class WotsitEntry(string displayName, string searchString, uint iconId, Delegate callback)
 {
-    public string DisplayName { get; init; } = displayName;
-    public string SearchString { get; init; } = searchString;
-    public uint IconId { get; init; } = iconId;
-    public Delegate Callback { get; init; } = callback;
+    public string DisplayName { get; } = displayName;
+    public string SearchString { get; } = searchString;
+    public uint IconId { get; } = iconId;
+    public Delegate Callback { get; } = callback;
 
     public override int GetHashCode()
     {
