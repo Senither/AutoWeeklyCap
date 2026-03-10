@@ -8,15 +8,17 @@ public static class AutoRetainerHelper
             return false;
         }
 
-        if (!PlayerHelper.IsValid) {
-            return false;
+        foreach (var option in AWC.Config.Characters.Values) {
+            var seconds = AutoRetainerIPC.GetClosestRetainerVentureSecondsRemaining(option.ID);
+            if (!seconds.HasValue) {
+                continue;
+            }
+
+            if (seconds.Value <= AWC.Config.AutoRetainerThreshold) {
+                return true;
+            }
         }
 
-        var seconds = AutoRetainerIPC.GetClosestRetainerVentureSecondsRemaining(Player.CID);
-        if (!seconds.HasValue) {
-            return false;
-        }
-
-        return seconds.Value <= AWC.Config.AutoRetainerThreshold;
+        return false;
     }
 }
