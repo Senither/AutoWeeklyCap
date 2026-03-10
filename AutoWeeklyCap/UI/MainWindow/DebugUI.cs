@@ -131,6 +131,12 @@ internal static class DebugUI
     private static void DrawGameDataState()
     {
         CopyableText(
+            $"Player:     {PlayerHelper.GetFullCharacterName() ?? "<unknown>"} [id: {Player.CID}]",
+            "player ID",
+            () => $"{Player.CID}"
+        );
+
+        CopyableText(
             $"Position:  T:{Player.Territory.RowId} P:{Player.Position}",
             "position",
             () => $"{Player.Position.X.ToString(CultureInfo.InvariantCulture)}f, {Player.Position.Y.ToString(CultureInfo.InvariantCulture)}f, {Player.Position.Z.ToString(CultureInfo.InvariantCulture)}f"
