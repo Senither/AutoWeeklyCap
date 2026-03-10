@@ -223,6 +223,15 @@ public static class RunnerPrerequisitesUi
             ImGui.SameLine();
             ImGui.Text("seconds");
 
+            ImGui.Text("Tip");
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text("If you're using options such as the Auto Spend Tomestone, Grand Company Deliveries, etc, that moves");
+                ImGui.Text("your character around your character might not be near a retainer bell, in order for you to continue");
+                ImGui.Text("collecting your retainer ventures it's recommended that you enable Teleportation in AutoRetainer.");
+                ImGui.Text("You can enable the option in: AutoRetainer Settings -> Multi Mode -> Common Settings -> Teleportation");
+            });
+
             ImGui.PopItemWidth();
         });
     }
