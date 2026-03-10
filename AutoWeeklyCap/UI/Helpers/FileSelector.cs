@@ -34,21 +34,19 @@ public static class FileSelector
         var changed = false;
 
         // Apply any selection results queued from the dialog thread.
-        while (Results.TryPeek(out var result))
-        {
-            if (result.id != id)
+        while (Results.TryPeek(out var result)) {
+            if (result.id != id) {
                 break;
+            }
 
             Results.TryDequeue(out result);
-            if (!string.IsNullOrWhiteSpace(result.selectedPath) && !string.Equals(path, result.selectedPath, StringComparison.Ordinal))
-            {
+            if (!string.IsNullOrWhiteSpace(result.selectedPath) && !string.Equals(path, result.selectedPath, StringComparison.Ordinal)) {
                 path = result.selectedPath;
                 changed = true;
             }
         }
 
-        if (ImGui.Button($"{buttonLabel}###awc-file-selector-{id}"))
-        {
+        if (ImGui.Button($"{buttonLabel}###awc-file-selector-{id}")) {
             OpenFileDialogAsync(id, dialogTitle, filter, path, defaultDirectory);
         }
 
@@ -62,13 +60,13 @@ public static class FileSelector
         string currentPath,
         string? defaultDirectory)
     {
-        if (!OpenDialogs.TryAdd(id, true))
+        if (!OpenDialogs.TryAdd(id, true)) {
             return;
+        }
 
         var thread = new Thread(() =>
         {
-            try
-            {
+            try {
                 using var dialog = new OpenFileDialog();
 
                 dialog.Title = dialogTitle;
@@ -78,34 +76,25 @@ public static class FileSelector
                 dialog.RestoreDirectory = true;
 
                 var initialDirectory = GetInitialDirectory(currentPath, defaultDirectory);
-                if (!string.IsNullOrWhiteSpace(initialDirectory))
+                if (!string.IsNullOrWhiteSpace(initialDirectory)) {
                     dialog.InitialDirectory = initialDirectory;
+                }
 
                 Results.Enqueue(
                     dialog.ShowDialog() == DialogResult.OK
                         ? (id, dialog.FileName)
                         : (id, null)
                 );
-            }
-            catch (Exception e)
-            {
-                try
-                {
+            } catch (Exception e) {
+                try {
                     AWC.Log.Error(e, "FileSelectorHelper: failed to open file dialog");
-                }
-                catch
-                {
+                } catch {
                     // ignored
                 }
-            } finally
-            {
+            } finally {
                 OpenDialogs.TryRemove(id, out _);
             }
-        })
-        {
-            IsBackground = true,
-            Name = $"AWC-FileSelector-{id}",
-        };
+        }) { IsBackground = true, Name = $"AWC-FileSelector-{id}" };
 
         thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
@@ -113,26 +102,26 @@ public static class FileSelector
 
     private static string? GetInitialDirectory(string currentPath, string? defaultDirectory)
     {
-        try
-        {
-            if (!string.IsNullOrWhiteSpace(currentPath))
-            {
-                if (File.Exists(currentPath))
+        try {
+            if (!string.IsNullOrWhiteSpace(currentPath)) {
+                if (File.Exists(currentPath)) {
                     return Path.GetDirectoryName(currentPath);
+                }
 
-                if (Directory.Exists(currentPath))
+                if (Directory.Exists(currentPath)) {
                     return currentPath;
+                }
 
                 var directory = Path.GetDirectoryName(currentPath);
-                if (!string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory))
+                if (!string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory)) {
                     return directory;
+                }
             }
 
-            if (!string.IsNullOrWhiteSpace(defaultDirectory) && Directory.Exists(defaultDirectory))
+            if (!string.IsNullOrWhiteSpace(defaultDirectory) && Directory.Exists(defaultDirectory)) {
                 return defaultDirectory;
-        }
-        catch
-        {
+            }
+        } catch {
             // ignored
         }
 

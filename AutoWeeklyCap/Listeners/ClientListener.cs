@@ -8,23 +8,27 @@ public class ClientListener
 
     public static void OnLogout(int type, int code)
     {
-        if (!AWC.Config.AttemptRecoveryFromDisconnects)
+        if (!AWC.Config.AttemptRecoveryFromDisconnects) {
             return;
+        }
 
-        if (!IsDisconnectErrorCode(code))
+        if (!IsDisconnectErrorCode(code)) {
             return;
+        }
 
         AWC.Log.Debug($"Disconnection detected, runner status: {(AWC.Runner.IsRunning() ? "active" : "idle")}");
-        if (!AWC.Runner.IsRunning())
+        if (!AWC.Runner.IsRunning()) {
             return;
+        }
 
         EnqueueRestart();
     }
 
     public static void EnqueueRestart()
     {
-        if (IsRestarting && (DateTime.UtcNow - LastRecoveryTimestamp).Seconds < 10)
+        if (IsRestarting && (DateTime.UtcNow - LastRecoveryTimestamp).Seconds < 10) {
             return;
+        }
 
         IsRecoveringFromDisconnect = true;
         IsRestarting = true;
@@ -35,15 +39,13 @@ public class ClientListener
         AWC.Runner.Abort();
         AWC.TaskManager.Enqueue(() =>
         {
-            try
-            {
-                unsafe
-                {
-                    if (!EzThrottler.Throttle("AttemptDisconnectedRecovery", 250))
+            try {
+                unsafe {
+                    if (!EzThrottler.Throttle("AttemptDisconnectedRecovery", 250)) {
                         return false;
+                    }
 
-                    if (AddonHelper.TryGetLobbyError(out var errorAddon) && errorAddon->IsVisible)
-                    {
+                    if (AddonHelper.TryGetLobbyError(out var errorAddon) && errorAddon->IsVisible) {
                         var dialogueStatus = AddonHelper.ClickDialogueOk();
 
                         AWC.Log.Debug($"Found lobby error [Addon: {errorAddon->GetType()}, Click: {dialogueStatus}]");
@@ -52,9 +54,7 @@ public class ClientListener
 
                     return !AddonHelper.IsLobbyErrorVisible() && AddonHelper.IsTitleScreenReady();
                 }
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 // ignored
             }
 
@@ -63,8 +63,9 @@ public class ClientListener
 
         AWC.TaskManager.Enqueue(() =>
         {
-            if (!AddonHelper.IsTitleScreenReady())
+            if (!AddonHelper.IsTitleScreenReady()) {
                 return false;
+            }
 
             AWC.Runner.Start();
             IsRestarting = false;

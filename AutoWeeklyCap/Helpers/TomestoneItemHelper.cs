@@ -45,24 +45,15 @@ public static class TomestoneItemHelper
 
     public static TomestoneItem? GetTomestoneItemFromNames(string? first, string? second)
     {
-        var item = GetTomestoneItemFromName(first);
-        if (item != null)
-            return item;
-
-        return GetTomestoneItemFromName(second);
+        return GetTomestoneItemFromName(first) ?? GetTomestoneItemFromName(second);
     }
 
     public static TomestoneItem? GetTomestoneItemFromName(string? name)
     {
-        if (name == null)
+        if (name == null) {
             return null;
-
-        foreach (var item in Items)
-        {
-            if (item.Name == name)
-                return item;
         }
 
-        return null;
+        return Items.FirstOrDefault(item => item.Name == name);
     }
 }

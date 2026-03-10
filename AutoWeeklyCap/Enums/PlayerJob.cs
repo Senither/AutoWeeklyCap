@@ -27,7 +27,7 @@ public enum PlayerJob
     DRK = 32,
     GNB = 37,
 
-    // Healers   
+    // Healers
     WHM = 24,
     SCH = 28,
     AST = 33,
@@ -97,17 +97,19 @@ public static class PlayerJobExtensions
             PlayerJob.SMN => BitmapFontIcon.Summoner,
             PlayerJob.RDM => BitmapFontIcon.RedMage,
             PlayerJob.PCT => BitmapFontIcon.Pictomancer,
-            _ => BitmapFontIcon.AnyClass,
+            _ => BitmapFontIcon.AnyClass
         };
     }
 
     public static bool SwitchToJob(this PlayerJob job)
     {
-        if (!EzThrottler.Throttle("SwitchToPreferredJob", 250))
+        if (!EzThrottler.Throttle("SwitchToPreferredJob", 250)) {
             return false;
+        }
 
-        if (job == PlayerJob.None)
+        if (job == PlayerJob.None) {
             return true;
+        }
 
         var status = PlayerHelper.SwitchJob((uint)job);
 
@@ -124,7 +126,7 @@ public static class PlayerJobExtensions
 
             // Tanks
             PlayerJob.PLD, PlayerJob.WAR, PlayerJob.DRK, PlayerJob.GNB,
-            // Healers   
+            // Healers
             PlayerJob.WHM, PlayerJob.SCH, PlayerJob.AST, PlayerJob.SGE,
             // Melees
             PlayerJob.MNK, PlayerJob.DRG, PlayerJob.NIN, PlayerJob.SAM, PlayerJob.RPR, PlayerJob.VPR,

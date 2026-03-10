@@ -1,38 +1,50 @@
 ﻿using ECommons.Automation.NeoTaskManager;
 using ECommons.Automation.NeoTaskManager.Tasks;
+
 using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Helpers;
 
 public static class MovementHelper
 {
-    public static bool MoveTo(Vector3? position) => MoveTo(position, 1.25f, 300_000);
-    public static bool MoveTo(Vector3? position, float breakpoint) => MoveTo(position, breakpoint, 300_000);
+    public static bool MoveTo(Vector3? position)
+    {
+        return MoveTo(position, 1.25f, 300_000);
+    }
+
+    public static bool MoveTo(Vector3? position, float breakpoint)
+    {
+        return MoveTo(position, breakpoint, 300_000);
+    }
 
     public static bool MoveTo(Vector3? position, float breakpoint, int timeLimitMs)
     {
-        if (position == null)
+        if (position == null) {
             return false;
+        }
 
-        if (!VNavMeshIPC.IsEnabled)
+        if (!VNavMeshIPC.IsEnabled) {
             return false;
+        }
 
-        if (!PlayerHelper.IsReady)
+        if (!PlayerHelper.IsReady) {
             return false;
+        }
 
-        if (Vector3.Distance(Player.Position, position.Value) < breakpoint)
+        if (Vector3.Distance(Player.Position, position.Value) < breakpoint) {
             return true;
+        }
 
         AWC.TaskManager.InsertMulti(
             new TaskManagerTask(
                 () => MoveToPosition((Vector3)position),
                 "MovementHelper: start moving to location",
-                new TaskManagerConfiguration(timeLimitMS: timeLimitMs)
+                new TaskManagerConfiguration(timeLimitMs)
             ),
             new TaskManagerTask(
                 () => WaitForPosition((Vector3)position, breakpoint),
                 "MovementHelper: waiting for player movement to location",
-                new TaskManagerConfiguration(timeLimitMS: timeLimitMs)
+                new TaskManagerConfiguration(timeLimitMs)
             ),
             new DelayTask(250)
         );
@@ -42,8 +54,9 @@ public static class MovementHelper
 
     private static bool MoveToPosition(Vector3 position)
     {
-        if (VNavMeshIPC.IsRunning() || !VNavMeshIPC.IsReady())
+        if (VNavMeshIPC.IsRunning() || !VNavMeshIPC.IsReady()) {
             return false;
+        }
 
         ChatHelper.RunCommand("automove off");
         VNavMeshIPC.SetTolerance(.25f);
@@ -57,17 +70,19 @@ public static class MovementHelper
     {
         var distance = Vector3.Distance(position, Player.Position);
 
-        if (PlayerHelper.IsMoving && !Player.Character->InCombat && distance >= 10)
-        {
-            if (CanUseSprint)
+        if (PlayerHelper.IsMoving && !Player.Character->InCombat && distance >= 10) {
+            if (CanUseSprint) {
                 ActionManager.Instance()->UseAction(ActionType.GeneralAction, 4);
+            }
 
-            if (CanUsePeloton)
+            if (CanUsePeloton) {
                 ActionManager.Instance()->UseAction(ActionType.Action, 7557);
+            }
         }
 
-        if (distance > breakpoint)
+        if (distance > breakpoint) {
             return false;
+        }
 
         VNavMeshIPC.Stop();
 

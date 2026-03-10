@@ -1,37 +1,33 @@
 ﻿using AutoWeeklyCap.Config;
 using AutoWeeklyCap.UI.Helpers;
+
 using Dalamud.Interface.Windowing;
 
 namespace AutoWeeklyCap.UI.Windows;
 
 public class CharacterOptionWindow : Window
 {
-    private string? character = null;
+    private string? _character = null;
 
     public CharacterOptionWindow() : base("Character Options##character-options-window")
     {
-        SizeConstraints = new WindowSizeConstraints
-        {
-            MinimumSize = new Vector2(300, 125),
-            MaximumSize = new Vector2(9999, 9999)
-        };
+        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(300, 125), MaximumSize = new Vector2(9999, 9999) };
     }
 
     public void ToggleForCharacterWithOptions(string characterAndWorld)
     {
-        if (IsOpen && character == characterAndWorld)
-        {
+        if (IsOpen && _character == characterAndWorld) {
             OnClose();
             return;
         }
 
-        character = characterAndWorld;
+        _character = characterAndWorld;
         IsOpen = true;
     }
 
     public override void OnClose()
     {
-        character = null;
+        _character = null;
         IsOpen = false;
 
         AWC.Config.Save();
@@ -39,26 +35,26 @@ public class CharacterOptionWindow : Window
 
     public override void PreDraw()
     {
-        WindowName = $"{character} Configuration###character-options-window";
+        WindowName = $"{_character} Configuration###character-options-window";
     }
 
     public override void Draw()
     {
-        if (character == null)
+        if (_character == null) {
             return;
+        }
 
-        var options = AWC.Config.GetOrRegisterCharacterOptions(character);
+        var options = AWC.Config.GetOrRegisterCharacterOptions(_character);
 
-        Card.Draw("Character visibility", () => DrawCharacterVisibility(options), collapsible: false);
-        Card.Draw("Character Preferences", () => DrawCharacterPreferences(options), collapsible: false);
-        Card.DrawDanger("Remove Character", DrawCharacterRemoval, collapsible: false);
+        Card.Draw("Character visibility", () => DrawCharacterVisibility(options), false);
+        Card.Draw("Character Preferences", () => DrawCharacterPreferences(options), false);
+        Card.DrawDanger("Remove Character", DrawCharacterRemoval, false);
     }
 
     private void DrawCharacterVisibility(CharacterOptions options)
     {
         var hidden = options.IsHidden();
-        if (ImGui.Checkbox("Hide Character###character-visibility", ref hidden))
-        {
+        if (ImGui.Checkbox("Hide Character###character-visibility", ref hidden)) {
             options.Hidden = hidden;
         }
 
@@ -69,7 +65,7 @@ public class CharacterOptionWindow : Window
 
         ImGui.Text("Character Position");
 
-        CharacterElements.DrawCharacterPositionIcons(character ?? string.Empty, options);
+        CharacterElements.DrawCharacterPositionIcons(_character ?? string.Empty, options);
 
         InformationTooltip.Draw(
             "The order of the characters are used when checking tomestones in the runner, so the\n"
@@ -80,12 +76,9 @@ public class CharacterOptionWindow : Window
     private void DrawCharacterPreferences(CharacterOptions options)
     {
         ImGui.Text("Preferred job");
-        if (ImGui.BeginCombo($"###selected-duty-job", options.PreferredJob.GetName()))
-        {
-            foreach (var job in PlayerJobExtensions.GetSelectableCombatJobs())
-            {
-                if (ImGui.Selectable(job.GetName(), options.PreferredJob == job))
-                {
+        if (ImGui.BeginCombo($"###selected-duty-job", options.PreferredJob.GetName())) {
+            foreach (var job in PlayerJobExtensions.GetSelectableCombatJobs()) {
+                if (ImGui.Selectable(job.GetName(), options.PreferredJob == job)) {
                     options.PreferredJob = job;
                 }
             }
@@ -100,17 +93,19 @@ public class CharacterOptionWindow : Window
         });
 
         ImGui.Text("Preferred items to buy");
-        if (ImGui.BeginCombo($"###selected-item-name", options.PreferredTomestoneItemName ?? "Use default"))
-        {
-            if (ImGui.Selectable("Use default", options.PreferredTomestoneItemName == null))
+        if (ImGui.BeginCombo($"###selected-item-name", options.PreferredTomestoneItemName ?? "Use default")) {
+            if (ImGui.Selectable("Use default", options.PreferredTomestoneItemName == null)) {
                 options.PreferredTomestoneItemName = null;
-            if (ImGui.Selectable("--------------------------------"))
-                options.PreferredTomestoneItemName = null;
+            }
 
-            foreach (var item in TomestoneItemHelper.GetTomestoneItems())
-            {
-                if (ImGui.Selectable(item.Name, options.PreferredTomestoneItemName == item.Name))
+            if (ImGui.Selectable("--------------------------------")) {
+                options.PreferredTomestoneItemName = null;
+            }
+
+            foreach (var item in TomestoneItemHelper.GetTomestoneItems()) {
+                if (ImGui.Selectable(item.Name, options.PreferredTomestoneItemName == item.Name)) {
                     options.PreferredTomestoneItemName = item.Name;
+                }
             }
 
             ImGui.EndCombo();
@@ -132,15 +127,13 @@ public class CharacterOptionWindow : Window
         ImGui.Spacing();
         ImGui.Spacing();
 
-        ActionButton.Draw(
-            "Remove Character",
-            "Hold down CTRL to remove " + character,
-            () =>
+        ActionButton.Draw("Remove Character", "Hold down CTRL to remove " + _character, () =>
             {
-                if (character == null)
+                if (_character == null) {
                     return;
+                }
 
-                var removedCharacter = character;
+                var removedCharacter = _character;
 
                 AWC.Config.Characters.Remove(removedCharacter);
                 AWC.Config.CollectedTomes.Remove(removedCharacter);

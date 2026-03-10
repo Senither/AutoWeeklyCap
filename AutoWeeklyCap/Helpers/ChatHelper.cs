@@ -8,10 +8,8 @@ public static class ChatHelper
 {
     public static bool RunCommand(string commandString)
     {
-        try
-        {
-            unsafe
-            {
+        try {
+            unsafe {
                 var command = new Utf8String(
                     commandString.StartsWith('/')
                         ? commandString
@@ -23,9 +21,7 @@ public static class ChatHelper
             }
 
             return true;
-        }
-        catch (Exception)
-        {
+        } catch (Exception) {
             return false;
         }
     }

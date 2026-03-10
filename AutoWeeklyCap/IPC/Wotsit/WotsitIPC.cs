@@ -6,7 +6,7 @@ public static class WotsitIPC
     internal static bool IsEnabled => IPCSubscriber.IsReady(Name);
 
     internal static readonly PluginInstallerHelper.PluginContext Context = new(
-        pluginName: Name,
+        Name,
         displayName: "Wotsit",
         description: "Adds a spotlight like quick search, can be used to start and stop the runner, or run individual features.",
         repositoryUrl: "https://github.com/goaaats/Dalamud.FindAnything",
@@ -15,5 +15,8 @@ public static class WotsitIPC
 
     internal static readonly WotsitManager Manager = new();
 
-    internal static void Dispose() => Manager.Dispose();
+    internal static void Dispose()
+    {
+        Manager.Dispose();
+    }
 }

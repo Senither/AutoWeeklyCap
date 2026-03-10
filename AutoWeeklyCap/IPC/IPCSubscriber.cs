@@ -1,15 +1,16 @@
 ﻿using AutoWeeklyCap.IPC.Wotsit;
+
 using ECommons.EzIpcManager;
 using ECommons.Reflection;
-
-// ReSharper disable InconsistentNaming
 
 namespace AutoWeeklyCap.IPC;
 
 public static class IPCSubscriber
 {
-    internal static bool IsReady(string pluginName) =>
-        DalamudReflector.TryGetDalamudPlugin(pluginName, out _, true, true);
+    internal static bool IsReady(string pluginName)
+    {
+        return DalamudReflector.TryGetDalamudPlugin(pluginName, out _, true, true);
+    }
 
     internal static void Dispose()
     {
@@ -24,14 +25,10 @@ public static class IPCSubscriber
 
     internal static void DisposeAll(EzIPCDisposalToken[] disposalTokens)
     {
-        foreach (var token in disposalTokens)
-        {
-            try
-            {
+        foreach (var token in disposalTokens) {
+            try {
                 token.Dispose();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 AWC.Log.Error($"Error while unregistering IPC: {ex}");
             }
         }

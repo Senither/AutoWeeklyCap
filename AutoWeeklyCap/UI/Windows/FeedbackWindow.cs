@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+
 using Dalamud.Interface.Windowing;
 
 namespace AutoWeeklyCap.UI.Windows;
@@ -13,30 +14,27 @@ public class FeedbackWindow : Window
     [
         "General Feedback",
         "Feature Request",
-        "Bug Report",
+        "Bug Report"
     ];
 
-    private bool sentFeedback = false;
-    private string type = "-- select your feedback type --";
-    private string message = "";
+    private bool _sentFeedback = false;
+    private string _type = "-- select your feedback type --";
+    private string _message = "";
 
     public FeedbackWindow() : base("Auto Weekly Tomestone Capper Feedback##feedback-window")
     {
-        SizeConstraints = new WindowSizeConstraints
-        {
-            MinimumSize = new Vector2(580, 125),
-            MaximumSize = new Vector2(580, 9999)
-        };
+        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(580, 125), MaximumSize = new Vector2(580, 9999) };
 
         Flags = ImGuiWindowFlags.AlwaysAutoResize;
     }
 
     public override void Draw()
     {
-        if (sentFeedback)
+        if (_sentFeedback) {
             DrawFeedbackSentMessage();
-        else
+        } else {
             DrawFeedbackForm();
+        }
     }
 
     private static void DrawFeedbackSentMessage()
@@ -56,38 +54,37 @@ public class FeedbackWindow : Window
 
         ImGui.Text("Feedback Type");
 
-        if (ImGui.BeginCombo("###feedback-type", type))
-        {
-            foreach (var option in FeedbackTypes)
-            {
-                if (ImGui.Selectable(option, option == type))
-                    type = option;
+        if (ImGui.BeginCombo("###feedback-type", _type)) {
+            foreach (var option in FeedbackTypes) {
+                if (ImGui.Selectable(option, option == _type)) {
+                    _type = option;
+                }
             }
 
             ImGui.EndCombo();
         }
 
         ImGui.Text("Message");
-        ImGuiEx.InputTextWrapMultilineExpanding("###feedback-message", ref message, 1000, 6, 20);
-        ImGui.Text($"{message.Length} / 1000");
+        ImGuiEx.InputTextWrapMultilineExpanding("###feedback-message", ref _message, 1000, 6, 20);
+        ImGui.Text($"{_message.Length} / 1000");
 
-        if (ImGui.Button("Send Feedback"))
-        {
-            if (ValidateFormData())
-                SendFeedback();
+        if (!ImGui.Button("Send Feedback")) {
+            return;
+        }
+
+        if (ValidateFormData()) {
+            SendFeedback();
         }
     }
 
     private bool ValidateFormData()
     {
-        if (!FeedbackTypes.Contains(type))
-        {
+        if (!FeedbackTypes.Contains(_type)) {
             Notify.Warning("You must select a feedback type.");
             return false;
         }
 
-        if (message.Length < 30)
-        {
+        if (_message.Length < 30) {
             Notify.Warning("The message is too short, it must be at least 30 characters.");
             return false;
         }
@@ -102,17 +99,7 @@ public class FeedbackWindow : Window
             var character = PlayerHelper.GetFullCharacterName() ?? "<unknown>";
 
             using var client = new HttpClient();
-            var payload = new
-            {
-                embeds = new[]
-                {
-                    new
-                    {
-                        title = type,
-                        description = $"**Version:**\nv{AWC.Version}\n\n**Character:**\n{character}\n\n**Message:**\n{message}"
-                    }
-                }
-            };
+            var payload = new { embeds = new[] { new { title = _type, description = $"**Version:**\nv{AWC.Version}\n\n**Character:**\n{character}\n\n**Message:**\n{_message}" } } };
 
             var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -120,6 +107,6 @@ public class FeedbackWindow : Window
             await client.PostAsync(WebhookUrl, content);
         });
 
-        sentFeedback = true;
+        _sentFeedback = true;
     }
 }

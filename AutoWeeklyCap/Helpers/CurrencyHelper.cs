@@ -6,15 +6,11 @@ public static class CurrencyHelper
 {
     public static int GetUncappedAcquiredTomestoneCount()
     {
-        try
-        {
-            unsafe
-            {
+        try {
+            unsafe {
                 return InventoryManager.Instance()->GetInventoryItemCount(48);
             }
-        }
-        catch (Exception)
-        {
+        } catch (Exception) {
             return 0;
         }
     }
@@ -31,15 +27,11 @@ public static class CurrencyHelper
 
     public static int GetWeeklyAcquiredTomestoneCount()
     {
-        try
-        {
-            unsafe
-            {
+        try {
+            unsafe {
                 return InventoryManager.Instance()->GetWeeklyAcquiredTomestoneCount();
             }
-        }
-        catch (Exception)
-        {
+        } catch (Exception) {
             return 0;
         }
     }
@@ -47,21 +39,23 @@ public static class CurrencyHelper
     public static bool UpdateWeeklyAcquiredTomestonesForCurrentCharacter()
     {
         var characterAndWorld = PlayerHelper.GetFullCharacterName();
-        if (characterAndWorld == null)
+        if (characterAndWorld == null) {
             return false;
+        }
 
         var options = AWC.Config.GetOrRegisterCharacterOptions(characterAndWorld);
-        if (!options.IsEnabled() && !AWC.Config.TrackDisabledCharacters)
+        if (!options.IsEnabled() && !AWC.Config.TrackDisabledCharacters) {
             return false;
+        }
 
         var weeklyTomes = GetWeeklyAcquiredTomestoneCount();
         var storedTomes = AWC.Config.CollectedTomes.GetValueOrDefault(characterAndWorld);
 
-        if (weeklyTomes == storedTomes)
+        if (weeklyTomes == storedTomes) {
             return false;
+        }
 
-        if (storedTomes > weeklyTomes)
-        {
+        if (storedTomes > weeklyTomes) {
             AWC.Config.CollectedTomes.Clear();
         }
 

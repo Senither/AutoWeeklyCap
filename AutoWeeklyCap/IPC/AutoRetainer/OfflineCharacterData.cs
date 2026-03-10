@@ -15,7 +15,10 @@ public class OfflineCharacterData
     public string World = "";
 
     [SuppressMessage("Performance", "CA1822:Mark members as static")]
-    public bool ShouldSerializeIdentity() => false;
+    public bool ShouldSerializeIdentity()
+    {
+        return false;
+    }
 
     public override string ToString()
     {

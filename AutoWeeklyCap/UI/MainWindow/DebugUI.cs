@@ -1,10 +1,14 @@
 ﻿using System.Globalization;
+
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.Runner.Actions;
 using AutoWeeklyCap.UI.Helpers;
+
 using ECommons.Logging;
+
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
+
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 // ReSharper disable InconsistentNaming
@@ -20,11 +24,11 @@ internal static class DebugUI
 
     internal static void Draw()
     {
-        Card.DrawSubtle("Plugin Details", DrawPluginDetails, collapsible: false);
-        Card.DrawSubtle("Runner Debug Steps", DrawRunnerDebugSteps, collapsible: false);
-        Card.DrawSubtle("Runner Debug Actions", DrawRunnerDebugActions, collapsible: false);
-        Card.DrawSubtle("Notification Debug Actions", DrawNotificationDebugActions, collapsible: false);
-        Card.DrawSubtle("Game Data State", DrawGameDataState, collapsible: false);
+        Card.DrawSubtle("Plugin Details", DrawPluginDetails, false);
+        Card.DrawSubtle("Runner Debug Steps", DrawRunnerDebugSteps, false);
+        Card.DrawSubtle("Runner Debug Actions", DrawRunnerDebugActions, false);
+        Card.DrawSubtle("Notification Debug Actions", DrawNotificationDebugActions, false);
+        Card.DrawSubtle("Game Data State", DrawGameDataState, false);
         Card.DrawSubtle("Plugin Logs", DrawPluginLogs);
         Card.DrawDanger("Danger Zone", DrawDangerZone);
     }
@@ -134,19 +138,15 @@ internal static class DebugUI
 
         var taget = "<no target>";
         uint targetId = 0;
-        try
-        {
-            unsafe
-            {
+        try {
+            unsafe {
                 var t = TargetSystem.Instance()->Target;
                 var distance = Vector3.Distance(Player.Position, t->Position);
 
                 targetId = t->BaseId;
                 taget = $"{t->GetName()} [id: {t->BaseId}, disc: {distance}]";
             }
-        }
-        catch (Exception)
-        {
+        } catch (Exception) {
             // ignored
         }
 
@@ -158,52 +158,55 @@ internal static class DebugUI
         StateText(() => PlayerHelper.IsOccupied, "Occupied");
         StateText(() => PlayerHelper.IsJumping, "Jumping");
         StateText(() => PlayerHelper.IsMoving, "Moving");
-        StateText(() => PlayerHelper.IsCasting, "Casting", seperator: false);
+        StateText(() => PlayerHelper.IsCasting, "Casting", false);
     }
 
     private static void CopyableText(string text, string propertyName, Func<string> copy)
     {
         ImGui.Text(text);
 
-        if (ImGui.IsItemClicked())
+        if (ImGui.IsItemClicked()) {
             ImGui.SetClipboardText(copy());
-        if (ImGui.IsItemHovered())
+        }
+
+        if (ImGui.IsItemHovered()) {
             ImGuiEx.Tooltip($"Click to copy {propertyName} to clipboard");
+        }
     }
 
     private static void DebugButton(string text, Action action, bool sameLine = true)
     {
-        if (sameLine)
+        if (sameLine) {
             ImGui.SameLine();
+        }
 
-        if (ImGui.Button(text))
+        if (ImGui.Button(text)) {
             action();
+        }
     }
 
     private static void DebugActionButton(string text, BaseAction action, bool sameLine = true)
     {
-        if (sameLine)
+        if (sameLine) {
             ImGui.SameLine();
+        }
 
-        if (ImGui.Button(text))
+        if (ImGui.Button(text)) {
             DuoLog.Warning($"{action.GetName()}: {action.Invoke()}");
+        }
     }
 
     private static void StateText(Func<bool> value, string text, bool seperator = true)
     {
         ImGui.SameLine(0, 0);
 
-        try
-        {
+        try {
             ImGui.TextColored(value() ? ImGuiColors.HealerGreen : ImGuiColors.DPSRed, text);
-        }
-        catch (Exception)
-        {
+        } catch (Exception) {
             ImGui.TextColored(ImGuiColors.DalamudOrange, text);
         }
 
-        if (seperator)
-        {
+        if (seperator) {
             ImGui.SameLine(0, 0);
             ImGui.Text(" | ");
         }
@@ -221,8 +224,9 @@ internal static class DebugUI
         ImGui.TextWrapped("Clicking the button below will reset the main plugin config file to use the default values, it's recommended that you backup the file if you want to save your current settings.");
         ImGui.Spacing();
 
-        if (ImGui.Button("Reset Plugin Config") && ImGuiEx.Ctrl)
+        if (ImGui.Button("Reset Plugin Config") && ImGuiEx.Ctrl) {
             AWC.Instance.Configuration = new Configuration();
+        }
 
         ImGuiEx.Tooltip("Hold down CTRL + Click to reset the plugin configuration to all the default values");
     }

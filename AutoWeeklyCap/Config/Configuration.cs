@@ -86,15 +86,16 @@ public class Configuration : IPluginConfiguration
     {
         var limit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
 
-        foreach (var character in GetSortedCharacters())
-        {
+        foreach (var character in GetSortedCharacters()) {
             var option = GetOrRegisterCharacterOptions(character);
-            if (!option.IsEnabled())
+            if (!option.IsEnabled()) {
                 continue;
+            }
 
             var tomes = CollectedTomes.GetValueOrDefault(character, 0);
-            if (tomes == limit)
+            if (tomes == limit) {
                 continue;
+            }
 
             return character;
         }
@@ -114,8 +115,8 @@ public class Configuration : IPluginConfiguration
             var compare = aOption.Position.CompareTo(bOption.Position);
 
             return compare != 0
-                       ? compare
-                       : string.Compare(a, b, StringComparison.Ordinal);
+                ? compare
+                : string.Compare(a, b, StringComparison.Ordinal);
         });
 
         return characters;
@@ -126,14 +127,14 @@ public class Configuration : IPluginConfiguration
         var sortedCharacters = GetSortedCharacters();
         var changed = false;
 
-        for (var index = 0; index < sortedCharacters.Count; index++)
-        {
+        for (var index = 0; index < sortedCharacters.Count; index++) {
             var character = sortedCharacters[index];
             var options = GetOrRegisterCharacterOptions(character);
             var newPosition = (uint)index;
 
-            if (options.Position == newPosition)
+            if (options.Position == newPosition) {
                 continue;
+            }
 
             options.Position = newPosition;
             changed = true;
@@ -144,14 +145,15 @@ public class Configuration : IPluginConfiguration
 
     public CharacterOptions GetOrRegisterCharacterOptions(string character)
     {
-        if (Characters.TryGetValue(character, out var value))
+        if (Characters.TryGetValue(character, out var value)) {
             return value;
+        }
 
         uint nextPosition = 0;
-        foreach (var options in Characters.Values)
-        {
-            if (options.Position >= nextPosition)
+        foreach (var options in Characters.Values) {
+            if (options.Position >= nextPosition) {
                 nextPosition = options.Position + 1;
+            }
         }
 
         return Characters[character] = new CharacterOptions { Position = nextPosition };

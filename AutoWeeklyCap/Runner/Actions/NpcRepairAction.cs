@@ -9,18 +9,22 @@ public class NpcRepairAction : BaseAction
 
     private const int LongTaskTimeout = 120_000;
 
-    private static bool SeenAddon = false;
-    private static unsafe AtkUnitBase* AddonRepair = null;
-    private static unsafe AtkUnitBase* AddonSelectYesno = null;
-    private static unsafe AtkUnitBase* AddonSelectIconString = null;
+    private static bool _seenAddon = false;
+    private static unsafe AtkUnitBase* _addonSelectYesno = null;
+    private static unsafe AtkUnitBase* _addonSelectIconString = null;
+
+    // ReSharper disable once NotAccessedField.Local
+    private static unsafe AtkUnitBase* _addonRepair = null;
 
     protected override bool Run(params object[] args)
     {
-        if (InventoryHelper.GetItemsNeedingRepairCount(99) == 0)
+        if (InventoryHelper.GetItemsNeedingRepairCount(99) == 0) {
             return false;
+        }
 
-        if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled)
+        if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled) {
             return false;
+        }
 
         ResetRepairState();
 
@@ -30,14 +34,17 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
+            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
                 return false;
+            }
 
-            if (Player.Territory.RowId == GrandCompanyHelper.TerritoryId)
+            if (Player.Territory.RowId == GrandCompanyHelper.TerritoryId) {
                 return true;
+            }
 
-            if (LifestreamIPC.IsBusy())
+            if (LifestreamIPC.IsBusy()) {
                 return false;
+            }
 
             LifestreamIPC.ExecuteCommand(GrandCompanyHelper.AetheriteName);
 
@@ -46,8 +53,9 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
+            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
                 return false;
+            }
 
             return Player.Territory.RowId == GrandCompanyHelper.TerritoryId && PlayerHelper.IsReady;
         }, "waiting for player to be in gc territory");
@@ -60,42 +68,31 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("RepairingGearViaNPC", 250))
+            if (EzThrottler.Throttle("RepairingGearViaNPC", 250)) {
                 return false;
+            }
 
-            try
-            {
-                unsafe
-                {
+            try {
+                unsafe {
                     var vendor = ObjectHelper.FindGameObject(GrandCompanyHelper.RepairVendorId, GrandCompanyHelper.RepairVendorLocation);
-                    if (vendor == null)
+                    if (vendor == null) {
                         return false;
+                    }
 
-                    if (GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString))
-                    {
+                    if (GenericHelpers.TryGetAddonByName("SelectIconString", out _addonSelectIconString) && GenericHelpers.IsAddonReady(_addonSelectIconString)) {
                         AddonHelper.ClickSelectIconString(0);
-                    }
-                    else if (!GenericHelpers.TryGetAddonByName("Repair", out AddonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectYesno))
-                    {
+                    } else if (!GenericHelpers.TryGetAddonByName("Repair", out _addonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out _addonSelectYesno)) {
                         ObjectHelper.InteractWithObject(vendor);
-                    }
-                    else if (!SeenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectYesno) || !GenericHelpers.IsAddonReady(AddonSelectYesno)))
-                    {
+                    } else if (!_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out _addonSelectYesno) || !GenericHelpers.IsAddonReady(_addonSelectYesno))) {
                         AddonHelper.ClickRepair();
-                    }
-                    else if (GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectYesno) && GenericHelpers.IsAddonReady(AddonSelectYesno))
-                    {
+                    } else if (GenericHelpers.TryGetAddonByName("SelectYesno", out _addonSelectYesno) && GenericHelpers.IsAddonReady(_addonSelectYesno)) {
                         AddonHelper.ClickSelectYesno();
-                        SeenAddon = true;
-                    }
-                    else if (SeenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectYesno) || !GenericHelpers.IsAddonReady(AddonSelectYesno)))
-                    {
+                        _seenAddon = true;
+                    } else if (_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out _addonSelectYesno) || !GenericHelpers.IsAddonReady(_addonSelectYesno))) {
                         return true;
                     }
                 }
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 // ignored
             }
 
@@ -104,27 +101,24 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (!EzThrottler.Throttle("RepairClose", 250))
+            if (!EzThrottler.Throttle("RepairClose", 250)) {
                 return false;
+            }
 
-            try
-            {
-                unsafe
-                {
-                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _))
+            try {
+                unsafe {
+                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
                         return false;
+                    }
 
-                    if (!AddonHelper.TryGetReadyAddon("Repair", out var repairAddon))
-                    {
+                    if (!AddonHelper.TryGetReadyAddon("Repair", out var repairAddon)) {
                         ResetRepairState();
                         return true;
                     }
 
                     repairAddon->Close(true);
                 }
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 // ignored
             }
 
@@ -136,9 +130,9 @@ public class NpcRepairAction : BaseAction
 
     private static unsafe void ResetRepairState()
     {
-        SeenAddon = false;
-        AddonRepair = null;
-        AddonSelectYesno = null;
-        AddonSelectIconString = null;
+        _seenAddon = false;
+        _addonRepair = null;
+        _addonSelectYesno = null;
+        _addonSelectIconString = null;
     }
 }

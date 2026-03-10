@@ -11,39 +11,37 @@ public class RelogBaseCommand : BaseCommand
 
     public override void Run(string[] args)
     {
-        if (!LifestreamIPC.IsEnabled)
-        {
+        if (!LifestreamIPC.IsEnabled) {
             DuoLog.Warning("Lifestream is not enabled");
             return;
         }
 
-        if (LifestreamIPC.IsBusy())
-        {
+        if (LifestreamIPC.IsBusy()) {
             DuoLog.Warning("Lifestream is already busy, can't relog to character");
             return;
         }
 
-        if (AWC.Runner.IsRunning() || AWC.TaskManager.IsBusy)
-        {
+        if (AWC.Runner.IsRunning() || AWC.TaskManager.IsBusy) {
             DuoLog.Warning("AutoWeeklyCap is busy, can't relog to character");
             return;
         }
 
         var characterAndWorld = args.Join(" ");
-        if (!AWC.Config.Characters.ContainsKey(characterAndWorld))
-        {
+        if (!AWC.Config.Characters.ContainsKey(characterAndWorld)) {
             DuoLog.Warning($"Unknown character '{characterAndWorld}', please specify a valid character");
             return;
         }
 
-        if (characterAndWorld.Equals(PlayerHelper.GetFullCharacterName()))
+        if (characterAndWorld.Equals(PlayerHelper.GetFullCharacterName())) {
             return;
+        }
 
         var parts = characterAndWorld.Split("@");
-        if (parts.Length == 2)
-        {
-            AutoRetainerIPC.DisableMultiMode();
-            LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
+        if (parts.Length != 2) {
+            return;
         }
+
+        AutoRetainerIPC.DisableMultiMode();
+        LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
     }
 }

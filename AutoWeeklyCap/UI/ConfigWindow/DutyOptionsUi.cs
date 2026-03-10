@@ -13,12 +13,11 @@ public static class DutyOptionsUi
                 TomestoneZone.IsSupportedTomestoneZone(AWC.Config.ZoneId)
                     ? MapHelper.GetZoneNameFromId(AWC.Config.ZoneId)
                     : "Not selected"
-            ))
-        {
-            foreach (var zoneId in TomestoneZone.AvailableTomestoneZones)
-            {
-                if (ImGui.Selectable(MapHelper.GetZoneNameFromId(zoneId), AWC.Config.ZoneId == zoneId))
+            )) {
+            foreach (var zoneId in TomestoneZone.AvailableTomestoneZones) {
+                if (ImGui.Selectable(MapHelper.GetZoneNameFromId(zoneId), AWC.Config.ZoneId == zoneId)) {
                     AWC.Config.ZoneId = zoneId;
+                }
             }
 
             ImGui.EndCombo();
@@ -28,14 +27,16 @@ public static class DutyOptionsUi
         ImGui.Spacing();
 
         var stopGracefully = AWC.Config.StopRunnerGracefully;
-        if (ImGui.Checkbox("Stop runs gracefully", ref stopGracefully))
+        if (ImGui.Checkbox("Stop runs gracefully", ref stopGracefully)) {
             AWC.Config.StopRunnerGracefully = stopGracefully;
+        }
 
         InformationTooltip.Draw("When stopping the runner mid duty, graceful stopping will finish the run before stopping completely");
 
         var useBossModRebornAi = AWC.Config.UseBossModRebornAI;
-        if (ImGui.Checkbox("Use BossMod Reborn AI", ref useBossModRebornAi))
+        if (ImGui.Checkbox("Use BossMod Reborn AI", ref useBossModRebornAi)) {
             AWC.Config.UseBossModRebornAI = useBossModRebornAi;
+        }
 
         InformationTooltip.Draw(() =>
         {

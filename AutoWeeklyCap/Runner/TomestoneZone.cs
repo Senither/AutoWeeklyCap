@@ -8,7 +8,7 @@ public static class TomestoneZone
         1292, // The Meso Terminal
         1266, // The Underkeep
         1242, // Yuweyawata Field Station
-        1199, // Alexandria
+        1199 // Alexandria
     };
 
     public static bool IsSupportedTomestoneZone(uint zoneId)

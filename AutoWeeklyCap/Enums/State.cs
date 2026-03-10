@@ -53,7 +53,7 @@ public static class StateExtensions
             State.StartingAutoDuty => BitmapFontIcon.WaitingForDutyFinder,
             State.RunningAutoDuty => stopGracefully ? BitmapFontIcon.SwordSheathed : BitmapFontIcon.SwordUnsheathed,
             State.StartingCharacterSwap or State.SwitchingCharacter => BitmapFontIcon.WatchingCutscene,
-            _ => BitmapFontIcon.Disconnecting,
+            _ => BitmapFontIcon.Disconnecting
         };
     }
 }

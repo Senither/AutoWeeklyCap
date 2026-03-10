@@ -1,7 +1,9 @@
 ﻿using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+
 using AutoWeeklyCap.UI.Helpers;
+
 using Newtonsoft.Json;
 
 // ReSharper disable InconsistentNaming
@@ -29,19 +31,20 @@ internal static class ChangelogUI
     {
         EnsureChangelogLoaded();
 
-        if (IsFetching)
+        if (IsFetching) {
             ImGuiEx.LineCentered(() => ImGui.TextDisabled("Loading..."));
+        }
 
-        if (Entries is { Count: > 0 })
+        if (Entries is { Count: > 0 }) {
             DrawChangelogEntries(Entries);
-        else
+        } else {
             DrawEmptyState();
+        }
     }
 
     private static void DrawEmptyState()
     {
-        if (!string.IsNullOrWhiteSpace(LoadError))
-        {
+        if (!string.IsNullOrWhiteSpace(LoadError)) {
             ImGui.TextColored(ImGuiColors.DPSRed, "Failed to load changelog.");
             ImGui.TextWrapped(LoadError);
             return;
@@ -53,60 +56,54 @@ internal static class ChangelogUI
     private static void DrawChangelogEntries(List<ChangelogEntry> entries)
     {
         var IsFirst = true;
-        foreach (var entry in entries)
-        {
-            Card.DrawSubtle(
-                $"{entry.Version} ({entry.CreatedAt:yyyy-MM-dd})",
-                () =>
-                {
-                    foreach (var line in ReadLines(entry.Changelog))
-                    {
-                        if (string.IsNullOrWhiteSpace(line))
-                        {
-                            ImGui.Spacing();
-                            continue;
-                        }
-
-                        ImGui.TextWrapped(line);
+        foreach (var entry in entries) {
+            Card.DrawSubtle($"{entry.Version} ({entry.CreatedAt:yyyy-MM-dd})", () =>
+            {
+                foreach (var line in ReadLines(entry.Changelog)) {
+                    if (string.IsNullOrWhiteSpace(line)) {
+                        ImGui.Spacing();
+                        continue;
                     }
 
-                    IsFirst = false;
-                }, defaultOpen: IsFirst, id: entry.Version);
+                    ImGui.TextWrapped(line);
+                }
+
+                IsFirst = false;
+            }, defaultOpen: IsFirst, id: entry.Version);
         }
     }
 
     private static void EnsureChangelogLoaded()
     {
-        if (IsFetching)
+        if (IsFetching) {
             return;
+        }
 
-        if (Entries != null && LastFetchUtc.HasValue && DateTime.UtcNow - LastFetchUtc.Value < RefreshInterval)
+        if (Entries != null && LastFetchUtc.HasValue && DateTime.UtcNow - LastFetchUtc.Value < RefreshInterval) {
             return;
+        }
 
         _ = FetchChangelogAsync();
     }
 
     private static async Task FetchChangelogAsync()
     {
-        if (IsFetching)
+        if (IsFetching) {
             return;
+        }
 
         IsFetching = true;
         LoadError = null;
 
-        try
-        {
+        try {
             var json = await HttpClient.GetStringAsync(ChangelogUrl).ConfigureAwait(false);
             var entries = JsonConvert.DeserializeObject<List<ChangelogEntry>>(json) ?? [];
 
             Entries = entries;
             LastFetchUtc = DateTime.UtcNow;
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             LoadError = ex.Message;
-        } finally
-        {
+        } finally {
             IsFetching = false;
         }
     }
@@ -115,7 +112,8 @@ internal static class ChangelogUI
     {
         using var reader = new StringReader(text);
 
-        while (reader.ReadLine() is { } line)
+        while (reader.ReadLine() is { } line) {
             yield return line;
+        }
     }
 }

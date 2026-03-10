@@ -6,16 +6,17 @@ public static class GeneralOptionsUi
 {
     public static void Draw()
     {
-        Card.DrawSubtle("General Options", GeneralOptions, collapsible: false);
-        Card.DrawSubtle("UI Elements & Windows", UiElementsAndWindows, collapsible: false);
-        Card.DrawSubtle("Network Options", NetworkOptions, collapsible: false);
+        Card.DrawSubtle("General Options", GeneralOptions, false);
+        Card.DrawSubtle("UI Elements & Windows", UiElementsAndWindows, false);
+        Card.DrawSubtle("Network Options", NetworkOptions, false);
     }
 
     private static void GeneralOptions()
     {
         var startOnBoot = AWC.Config.StartRunnerOnBoot;
-        if (ImGui.Checkbox("Start runner automatically on startup", ref startOnBoot))
+        if (ImGui.Checkbox("Start runner automatically on startup", ref startOnBoot)) {
             AWC.Config.StartRunnerOnBoot = startOnBoot;
+        }
 
         InformationTooltip.Draw(() =>
         {
@@ -27,19 +28,22 @@ public static class GeneralOptionsUi
         });
 
         var trackDisabled = AWC.Config.TrackDisabledCharacters;
-        if (ImGui.Checkbox("Track tomestones for disabled characters", ref trackDisabled))
+        if (ImGui.Checkbox("Track tomestones for disabled characters", ref trackDisabled)) {
             AWC.Config.TrackDisabledCharacters = trackDisabled;
+        }
     }
 
     private static void UiElementsAndWindows()
     {
         var openWindow = AWC.Config.OpenWindowOnStartup;
-        if (ImGui.Checkbox("Open Character UI window on startup", ref openWindow))
+        if (ImGui.Checkbox("Open Character UI window on startup", ref openWindow)) {
             AWC.Config.OpenWindowOnStartup = openWindow;
+        }
 
         var useSliders = AWC.Config.UseSliders;
-        if (ImGui.Checkbox("Slider inputs", ref useSliders))
+        if (ImGui.Checkbox("Slider inputs", ref useSliders)) {
             AWC.Config.UseSliders = useSliders;
+        }
 
         InformationTooltip.Draw(
             "When enabled, ranged inputs will be shown as sliders\n" +
@@ -47,8 +51,9 @@ public static class GeneralOptionsUi
         );
 
         var dtrBar = AWC.Config.ShowStatusInStatusBar;
-        if (ImGui.Checkbox("Show status in DTR bar", ref dtrBar))
+        if (ImGui.Checkbox("Show status in DTR bar", ref dtrBar)) {
             AWC.Config.ShowStatusInStatusBar = dtrBar;
+        }
 
         InformationTooltip.Draw(() =>
         {
@@ -60,33 +65,39 @@ public static class GeneralOptionsUi
         {
             ImGui.SameLine(0f, 20f);
             var iconsDtr = AWC.Config.ShowStatusAsIcons;
-            if (ImGui.Checkbox("Show status as icons instead of text", ref iconsDtr))
+            if (ImGui.Checkbox("Show status as icons instead of text", ref iconsDtr)) {
                 AWC.Config.ShowStatusAsIcons = iconsDtr;
+            }
         });
 
         Card.Separator();
 
         var hideElementDependencies = AWC.Config.HideUiElementDependencies;
-        if (ImGui.Checkbox("Hide dependencies tab", ref hideElementDependencies))
+        if (ImGui.Checkbox("Hide dependencies tab", ref hideElementDependencies)) {
             AWC.Config.HideUiElementDependencies = hideElementDependencies;
+        }
 
         var hideElementChangelog = AWC.Config.HideUiElementChangelog;
-        if (ImGui.Checkbox("Hide changelog tab", ref hideElementChangelog))
+        if (ImGui.Checkbox("Hide changelog tab", ref hideElementChangelog)) {
             AWC.Config.HideUiElementChangelog = hideElementChangelog;
+        }
 
-        if (!AWC.Config.DevMode)
+        if (!AWC.Config.DevMode) {
             return;
+        }
 
         var showElementDebug = AWC.Config.ShowUiElementDebug;
-        if (ImGui.Checkbox("Show debug tab", ref showElementDebug))
+        if (ImGui.Checkbox("Show debug tab", ref showElementDebug)) {
             AWC.Config.ShowUiElementDebug = showElementDebug;
+        }
     }
 
     private static void NetworkOptions()
     {
         var recovery = AWC.Config.AttemptRecoveryFromDisconnects;
-        if (ImGui.Checkbox("Recovery from disconnects", ref recovery))
+        if (ImGui.Checkbox("Recovery from disconnects", ref recovery)) {
             AWC.Config.AttemptRecoveryFromDisconnects = recovery;
+        }
 
         InformationTooltip.Draw(() =>
         {
@@ -100,8 +111,9 @@ public static class GeneralOptionsUi
         });
 
         var titleMovie = AWC.Config.DisableTitleScreenMovie;
-        if (ImGui.Checkbox("Disable title screen movie", ref titleMovie))
+        if (ImGui.Checkbox("Disable title screen movie", ref titleMovie)) {
             AWC.Config.DisableTitleScreenMovie = titleMovie;
+        }
 
         InformationTooltip.Draw(() =>
         {

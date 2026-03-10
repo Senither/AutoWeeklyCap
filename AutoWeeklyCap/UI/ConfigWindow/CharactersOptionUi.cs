@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
+
 using Dalamud.Interface;
 
 namespace AutoWeeklyCap.UI.ConfigWindow;
@@ -7,16 +8,15 @@ public static class CharactersOptionUi
 {
     public static void Draw()
     {
-        foreach (var characterAndWorld in AWC.Config.GetSortedCharacters())
-        {
+        foreach (var characterAndWorld in AWC.Config.GetSortedCharacters()) {
             var option = AWC.Config.Characters[characterAndWorld];
 
             ImGui.PushID(characterAndWorld);
 
             CharacterElements.DrawCharacterVisibilityIcon(characterAndWorld, option);
-            CharacterElements.DrawCharacterStatusIcon(characterAndWorld, option, sameLine: true);
-            CharacterElements.DrawCharacterPositionIcons(characterAndWorld, option, sameLine: true);
-            CharacterElements.DrawCharacterSettingsIcon(characterAndWorld, sameLine: true);
+            CharacterElements.DrawCharacterStatusIcon(characterAndWorld, option, true);
+            CharacterElements.DrawCharacterPositionIcons(characterAndWorld, option, true);
+            CharacterElements.DrawCharacterSettingsIcon(characterAndWorld, true);
 
             DrawCharacterDetails(characterAndWorld);
 
@@ -29,27 +29,26 @@ public static class CharactersOptionUi
 
     private static void DrawCharacterImporter()
     {
-        if (!AutoRetainerIPC.IsEnabled)
+        if (!AutoRetainerIPC.IsEnabled) {
             return;
+        }
 
-        try
-        {
+        try {
             List<string> characterNames = [];
-            foreach (var registeredCharacter in AutoRetainerIPC.GetRegisteredCharacters())
-            {
+            foreach (var registeredCharacter in AutoRetainerIPC.GetRegisteredCharacters()) {
                 var name = AutoRetainerIPC.GetOfflineCharacterData(registeredCharacter).ToString();
 
-                if (!AWC.Config.Characters.ContainsKey(name))
+                if (!AWC.Config.Characters.ContainsKey(name)) {
                     characterNames.Add(name);
+                }
             }
 
-            if (characterNames.Count == 0)
+            if (characterNames.Count == 0) {
                 return;
+            }
 
             DrawCharacterImporterCard(characterNames);
-        }
-        catch (Exception)
-        {
+        } catch (Exception) {
             // ignored
         }
     }
@@ -67,12 +66,12 @@ public static class CharactersOptionUi
 
             ImGui.Spacing();
 
-            foreach (var name in characterNames)
-            {
+            foreach (var name in characterNames) {
                 ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
 
-                if (ImGuiEx.IconButton(FontAwesomeIcon.Plus, id: $"AddCharacterViaAutoRetainer:{name}"))
+                if (ImGuiEx.IconButton(FontAwesomeIcon.Plus, $"AddCharacterViaAutoRetainer:{name}")) {
                     AWC.Config.GetOrRegisterCharacterOptions(name);
+                }
 
                 ImGui.PopStyleColor();
 

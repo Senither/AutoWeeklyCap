@@ -8,9 +8,9 @@ public static class TitleManager
         {
             AWC.TaskManager.Enqueue(() =>
             {
-                StatusIcon = icon;
-                Status = status;
-                StatusShort = statusShort;
+                _statusIcon = icon;
+                _status = status;
+                _statusShort = statusShort;
             }, "set temporary title");
         }
 
@@ -22,20 +22,29 @@ public static class TitleManager
         }
     }
 
-    private static string? Status = null;
-    private static string? StatusShort = null;
-    private static BitmapFontIcon? StatusIcon = null;
+    private static string? _status = null;
+    private static string? _statusShort = null;
+    private static BitmapFontIcon? _statusIcon = null;
 
     public static string? GetStatus()
-        => Status ?? AWC.Runner.GetState().GetStatus(AWC.Runner.IsStopping(), AWC.Runner.GetCurrentCharacter());
+    {
+        return _status ?? AWC.Runner.GetState().GetStatus(AWC.Runner.IsStopping(), AWC.Runner.GetCurrentCharacter());
+    }
 
     public static string? GetStatusShort()
-        => StatusShort ?? AWC.Runner.GetState().GetStatusShort(AWC.Runner.IsStopping(), AWC.Runner.GetCurrentCharacter());
+    {
+        return _statusShort ?? AWC.Runner.GetState().GetStatusShort(AWC.Runner.IsStopping(), AWC.Runner.GetCurrentCharacter());
+    }
 
     public static BitmapFontIcon GetStatusIcon()
-        => StatusIcon ?? AWC.Runner.GetState().GetStatusIcon(AWC.Runner.IsStopping());
+    {
+        return _statusIcon ?? AWC.Runner.GetState().GetStatusIcon(AWC.Runner.IsStopping());
+    }
 
-    public static TemporaryTitle RegisterTitle(BitmapFontIcon icon, string status) => RegisterTitle(icon, status, status);
+    public static TemporaryTitle RegisterTitle(BitmapFontIcon icon, string status)
+    {
+        return RegisterTitle(icon, status, status);
+    }
 
     public static TemporaryTitle RegisterTitle(BitmapFontIcon icon, string status, string statusShort)
     {
@@ -44,9 +53,9 @@ public static class TitleManager
 
     public static bool Reset()
     {
-        Status = null;
-        StatusShort = null;
-        StatusIcon = null;
+        _status = null;
+        _statusShort = null;
+        _statusIcon = null;
 
         return true;
     }

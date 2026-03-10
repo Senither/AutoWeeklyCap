@@ -11,16 +11,15 @@ public static class StopActionsUi
         ImGui.Spacing();
         ImGui.Spacing();
 
-        foreach (StopAction action in Enum.GetValues(typeof(StopAction)))
-        {
-            if (ImGui.RadioButton(action.GetName(), AWC.Config.StopAction == action))
-            {
+        foreach (StopAction action in Enum.GetValues(typeof(StopAction))) {
+            if (ImGui.RadioButton(action.GetName(), AWC.Config.StopAction == action)) {
                 AWC.Config.StopAction = action;
             }
 
             var tooltip = action.GetTooltip();
-            if (tooltip != null)
+            if (tooltip != null) {
                 InformationTooltip.Draw(tooltip);
+            }
         }
 
         ImGui.Spacing();
@@ -43,12 +42,9 @@ public static class StopActionsUi
                 AWC.Config.Characters.ContainsKey(AWC.Config.CharacterForSwap)
                     ? AWC.Config.CharacterForSwap
                     : "Not selected"
-            ))
-        {
-            foreach (var character in AWC.Config.GetSortedCharacters())
-            {
-                if (ImGui.Selectable(character, AWC.Config.CharacterForSwap == character))
-                {
+            )) {
+            foreach (var character in AWC.Config.GetSortedCharacters()) {
+                if (ImGui.Selectable(character, AWC.Config.CharacterForSwap == character)) {
                     AWC.Config.CharacterForSwap = character;
                 }
             }

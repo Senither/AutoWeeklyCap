@@ -1,5 +1,7 @@
 ﻿using System.Text.RegularExpressions;
+
 using ECommons.UIHelpers.AddonMasterImplementations;
+
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace AutoWeeklyCap.Listeners;
@@ -13,8 +15,9 @@ public partial class FrameworkListener
         AWC.Instance.DtrStatusBar.Draw();
 
         var unixNow = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        if (EnforceUpdateStateAt > unixNow)
+        if (EnforceUpdateStateAt > unixNow) {
             return;
+        }
 
         EnforceUpdateStateAt = unixNow + 500;
 
@@ -25,57 +28,54 @@ public partial class FrameworkListener
 
     private static void AttemptErrorRecovery()
     {
-        if (!AWC.Config.AttemptRecoveryFromDisconnects || !ClientListener.IsRecoveringFromDisconnect)
+        if (!AWC.Config.AttemptRecoveryFromDisconnects || !ClientListener.IsRecoveringFromDisconnect) {
             return;
+        }
 
-        if (PlayerHelper.IsValid)
-        {
+        if (PlayerHelper.IsValid) {
             ClientListener.IsRecoveringFromDisconnect = false;
 
-            if (!AWC.Runner.IsRunning())
+            if (!AWC.Runner.IsRunning()) {
                 AWC.Runner.Start();
+            }
 
             return;
         }
 
-        if (AddonHelper.IsLobbyErrorVisible())
-        {
+        if (AddonHelper.IsLobbyErrorVisible()) {
             AWC.Log.Debug($"Lobby error detected (likely 2002), attempting to reconnect");
             ClientListener.EnqueueRestart();
 
             return;
         }
 
-        if (AWC.TaskManager.IsBusy || LifestreamIPC.IsBusy())
+        if (AWC.TaskManager.IsBusy || LifestreamIPC.IsBusy()) {
             return;
+        }
 
-        if ((DateTime.UtcNow - ClientListener.LastRecoveryTimestamp).Seconds < 45)
+        if ((DateTime.UtcNow - ClientListener.LastRecoveryTimestamp).Seconds < 45) {
             return;
+        }
 
-        if (AddonHelper.IsTitleScreenReady())
-        {
+        if (AddonHelper.IsTitleScreenReady()) {
             ClientListener.EnqueueRestart();
             return;
         }
 
-        if (!EzThrottler.Throttle("RecoveryFromDisconnect.AddonAttempt", 250))
+        if (!EzThrottler.Throttle("RecoveryFromDisconnect.AddonAttempt", 250)) {
             return;
+        }
 
-        try
-        {
-            unsafe
-            {
-                if (AddonHelper.ClickSelectYesno())
-                {
+        try {
+            unsafe {
+                if (AddonHelper.ClickSelectYesno()) {
                     AWC.Log.Debug("Found Selectyesno addon, clicked yes");
                     return;
                 }
 
-                if (AddonHelper.TryGetReadyAddon("SelectOk", out var selectAddon))
-                {
+                if (AddonHelper.TryGetReadyAddon("SelectOk", out var selectAddon)) {
                     var select = new AddonMaster.SelectOk(selectAddon);
-                    if (!LoginQueueRegex().IsMatch(select.Text.Trim()))
-                    {
+                    if (!LoginQueueRegex().IsMatch(select.Text.Trim())) {
                         AWC.Log.Debug($"Found SelectOk addon that is not queue, clicking OK button");
                         select.Ok();
                     }
@@ -84,17 +84,14 @@ public partial class FrameworkListener
                     return;
                 }
 
-                if (AddonHelper.TryGetReadyAddon("_CharaSelectReturn", out var returnAddon))
-                {
+                if (AddonHelper.TryGetReadyAddon("_CharaSelectReturn", out var returnAddon)) {
                     AWC.Log.Debug($"Found _CharaSelectReturn addon, returning to main title screen");
 
                     var returnToTitle = new AddonMaster.Dialogue(returnAddon);
                     returnToTitle.Ok();
                 }
             }
-        }
-        catch (Exception)
-        {
+        } catch (Exception) {
             // ignored
         }
     }
@@ -107,24 +104,23 @@ public partial class FrameworkListener
 
     private static void DisableTitleScreenMovie()
     {
-        if (!AWC.Config.DisableTitleScreenMovie)
+        if (!AWC.Config.DisableTitleScreenMovie) {
             return;
+        }
 
-        if (PlayerHelper.IsValid)
+        if (PlayerHelper.IsValid) {
             return;
+        }
 
-        if (!AddonHelper.IsTitleScreenReady())
+        if (!AddonHelper.IsTitleScreenReady()) {
             return;
+        }
 
-        try
-        {
-            unsafe
-            {
+        try {
+            unsafe {
                 AgentLobby.Instance()->IdleTime = 0;
             }
-        }
-        catch (Exception)
-        {
+        } catch (Exception) {
             // ignored
         }
     }

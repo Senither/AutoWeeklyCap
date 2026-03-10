@@ -12,8 +12,9 @@ public static class RightAlignedButton
         var cursor = ImGui.GetCursorScreenPos();
         var rightBoundX = cursor.X + ImGui.GetContentRegionAvail().X;
 
-        if (Card.TryGetContentRightBoundX(out var cardRightBoundX))
+        if (Card.TryGetContentRightBoundX(out var cardRightBoundX)) {
             rightBoundX = Math.Min(rightBoundX, cardRightBoundX);
+        }
 
         ImGui.SetCursorScreenPos(cursor with { X = Math.Max(cursor.X, rightBoundX - buttonWidth) });
 

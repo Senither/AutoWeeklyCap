@@ -16,15 +16,13 @@ internal static class AboutTabUi
 
         ImGuiEx.LineCentered(() =>
         {
-            if (ImGui.Button("Plugin List"))
-            {
+            if (ImGui.Button("Plugin List")) {
                 ImGui.SetClipboardText("https://dalamud-plugins.senither.com");
                 Notify.Success("Link copied to clipboard");
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Plugin Repository"))
-            {
+            if (ImGui.Button("Plugin Repository")) {
                 ImGui.SetClipboardText("https://dalamud-plugins.senither.com/plugin/AutoWeeklyCap.json");
                 Notify.Success("Link copied to clipboard");
             }

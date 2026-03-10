@@ -9,11 +9,13 @@ public class DeliverooAction : BaseAction
 
     protected override bool Run(params object[] args)
     {
-        if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled || !DeliverooIPC.IsEnabled)
+        if (!VNavMeshIPC.IsEnabled || !LifestreamIPC.IsEnabled || !DeliverooIPC.IsEnabled) {
             return false;
+        }
 
-        if (DeliverooIPC.IsTurnInRunning())
+        if (DeliverooIPC.IsTurnInRunning()) {
             DeliverooIPC.StopTurnIn();
+        }
 
         ActionInstance.LeaveGrandCompanyInn.Invoke();
 
@@ -21,14 +23,17 @@ public class DeliverooAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
+            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
                 return false;
+            }
 
-            if (Player.Territory.RowId == GrandCompanyHelper.TerritoryId)
+            if (Player.Territory.RowId == GrandCompanyHelper.TerritoryId) {
                 return true;
+            }
 
-            if (LifestreamIPC.IsBusy())
+            if (LifestreamIPC.IsBusy()) {
                 return false;
+            }
 
             LifestreamIPC.ExecuteCommand(GrandCompanyHelper.AetheriteName);
 
@@ -37,8 +42,9 @@ public class DeliverooAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500))
+            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
                 return false;
+            }
 
             return Player.Territory.RowId == GrandCompanyHelper.TerritoryId && PlayerHelper.IsReady;
         }, "waiting for player to be in gc territory");
@@ -51,11 +57,13 @@ public class DeliverooAction : BaseAction
 
         Enqueue(() =>
         {
-            if (DeliverooIPC.IsTurnInRunning())
+            if (DeliverooIPC.IsTurnInRunning()) {
                 return true;
+            }
 
-            if (EzThrottler.Throttle("StartingDeliverooTurnIn", 500))
+            if (EzThrottler.Throttle("StartingDeliverooTurnIn", 500)) {
                 DeliverooIPC.StartTurnIn();
+            }
 
             return false;
         }, "starting deliveroo turn in");
