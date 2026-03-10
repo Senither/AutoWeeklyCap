@@ -30,7 +30,7 @@ public class Runner
         }
 
         var character = PlayerHelper.GetFullCharacterName();
-        if (character == null || !AWC.Config.GetOrRegisterCharacterOptions(character).IsEnabled()) {
+        if (character == null || !(AWC.Config.GetOrRegisterCharacterOptions(character)?.IsEnabled() ?? false)) {
             StartCharacterSwap();
             return true;
         }
@@ -378,9 +378,10 @@ public class Runner
             ActionInstance.EnterGrandCompanyInn.Invoke();
         }
 
-        using (TitleManager.RegisterTitle(AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter).PreferredJob.GetIcon(), "Switching Job")) {
+        var icon = AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.GetIcon() ?? BitmapFontIcon.AnyClass;
+        using (TitleManager.RegisterTitle(icon, "Switching Job")) {
             AWC.TaskManager.Enqueue(
-                () => AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter).PreferredJob.SwitchToJob(),
+                () => AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.SwitchToJob(),
                 "switch to preferred job"
             );
         }
@@ -499,7 +500,7 @@ public class Runner
             var durationSeconds = (int)(DateTime.UtcNow - CurrentDutyStartUtc.Value).TotalSeconds;
             AWC.Log.Debug($"Finished the run in {durationSeconds} seconds");
 
-            AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter).AddDutyDurationSeconds(durationSeconds);
+            AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.AddDutyDurationSeconds(durationSeconds);
             AWC.Config.Save();
         }
 

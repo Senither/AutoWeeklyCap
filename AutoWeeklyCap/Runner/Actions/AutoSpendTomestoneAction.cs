@@ -25,7 +25,7 @@ public class AutoSpendTomestoneAction : BaseAction
     private const uint RelicVendorTerritoryID = 1278u;
     private const string RelicVendorAetheriteName = "Phantom Village";
 
-    // Pointers for game instances to open and interact with windows 
+    // Pointers for game instances to open and interact with windows
     private unsafe AtkUnitBase* AddonSelectIconString = null;
     private unsafe AtkUnitBase* AddonShopExchangeCurrency = null;
 
@@ -37,7 +37,7 @@ public class AutoSpendTomestoneAction : BaseAction
         }
 
         var itemToBuy = TomestoneItemHelper.GetTomestoneItemFromNames(
-            AWC.Config.GetOrRegisterCharacterOptions(name).PreferredTomestoneItemName,
+            AWC.Config.GetOrRegisterCharacterOptions(name)?.PreferredTomestoneItemName,
             AWC.Config.SpendUncappedTomestoneItemName
         );
 

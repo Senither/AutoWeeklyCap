@@ -135,8 +135,8 @@ public static class CharacterElements
         }
 
         var otherCharacter = sortedCharacters[targetIndex];
-        var currentOptions = AWC.Config.GetOrRegisterCharacterOptions(character);
-        var otherOptions = AWC.Config.GetOrRegisterCharacterOptions(otherCharacter);
+        var currentOptions = AWC.Config.GetOrRegisterCharacterOptions(character)!;
+        var otherOptions = AWC.Config.GetOrRegisterCharacterOptions(otherCharacter)!;
 
         (currentOptions.Position, otherOptions.Position) = (otherOptions.Position, currentOptions.Position);
 

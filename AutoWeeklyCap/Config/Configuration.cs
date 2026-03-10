@@ -88,7 +88,7 @@ public class Configuration : IPluginConfiguration
 
         foreach (var character in GetSortedCharacters()) {
             var option = GetOrRegisterCharacterOptions(character);
-            if (!option.IsEnabled()) {
+            if (option == null || !option.IsEnabled()) {
                 continue;
             }
 
@@ -109,8 +109,8 @@ public class Configuration : IPluginConfiguration
 
         characters.Sort((a, b) =>
         {
-            var aOption = GetOrRegisterCharacterOptions(a);
-            var bOption = GetOrRegisterCharacterOptions(b);
+            var aOption = GetOrRegisterCharacterOptions(a)!;
+            var bOption = GetOrRegisterCharacterOptions(b)!;
 
             var compare = aOption.Position.CompareTo(bOption.Position);
 
@@ -130,8 +130,11 @@ public class Configuration : IPluginConfiguration
         for (var index = 0; index < sortedCharacters.Count; index++) {
             var character = sortedCharacters[index];
             var options = GetOrRegisterCharacterOptions(character);
-            var newPosition = (uint)index;
+            if (options == null) {
+                continue;
+            }
 
+            var newPosition = (uint)index;
             if (options.Position == newPosition) {
                 continue;
             }
@@ -143,10 +146,27 @@ public class Configuration : IPluginConfiguration
         return changed;
     }
 
-    public CharacterOptions GetOrRegisterCharacterOptions(string character)
+    public CharacterOptions? GetOrRegisterCharacterOptions(string character)
     {
-        if (Characters.TryGetValue(character, out var value)) {
-            return value;
+        return Characters.GetValueOrDefault(character);
+    }
+
+    public CharacterOptions GetOrRegisterCharacterOptions(ulong id, string character)
+    {
+        var option = Characters.GetValueOrDefault(character);
+        if (option != null) {
+            return ApplyCharacterPropertiesToOptions(option, id, character);
+        }
+
+        var keyPair = Characters.FirstOrDefault(item => item.Value.ID == id);
+        if (keyPair.Value != null) {
+            AWC.Log.Info($"Config: Found renamed character with ID {id}, character: {keyPair.Value.Name}@{keyPair.Value.World} => {character}");
+
+            Characters.Remove(keyPair.Key);
+            Characters[character] = ApplyCharacterPropertiesToOptions(keyPair.Value, id, character);
+            Save();
+
+            return Characters[character];
         }
 
         uint nextPosition = 0;
@@ -156,12 +176,15 @@ public class Configuration : IPluginConfiguration
             }
         }
 
-        return Characters[character] = new CharacterOptions { Position = nextPosition };
+        AWC.Log.Info($"Config: Registering new character: {character} (id: {id})");
+        Characters[character] = ApplyCharacterPropertiesToOptions(new CharacterOptions { Position = nextPosition }, id, character);
+        Save();
+
+        return Characters[character];
     }
 
-    public CharacterOptions GetOrRegisterCharacterOptions(ulong id, string character)
+    private CharacterOptions ApplyCharacterPropertiesToOptions(CharacterOptions option, ulong id, string character)
     {
-        var option = GetOrRegisterCharacterOptions(character);
         var wasChanged = false;
 
         if (option.ID != id) {

@@ -45,6 +45,9 @@ public class CharacterOptionWindow : Window
         }
 
         var options = AWC.Config.GetOrRegisterCharacterOptions(_character);
+        if (options == null) {
+            return;
+        }
 
         Card.Draw("Character visibility", () => DrawCharacterVisibility(options), false);
         Card.Draw("Character Preferences", () => DrawCharacterPreferences(options), false);
