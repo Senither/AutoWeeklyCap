@@ -43,7 +43,7 @@ public static class CurrencyHelper
             return false;
         }
 
-        var options = AWC.Config.GetOrRegisterCharacterOptions(characterAndWorld);
+        var options = AWC.Config.GetOrRegisterCharacterOptions(Player.CID, characterAndWorld);
         if (!options.IsEnabled() && !AWC.Config.TrackDisabledCharacters) {
             return false;
         }

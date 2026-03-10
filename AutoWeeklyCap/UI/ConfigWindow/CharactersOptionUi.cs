@@ -1,4 +1,5 @@
-﻿using AutoWeeklyCap.UI.Helpers;
+﻿using AutoWeeklyCap.IPC.AutoRetainer;
+using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface;
 
@@ -34,12 +35,12 @@ public static class CharactersOptionUi
         }
 
         try {
-            List<string> characterNames = [];
+            Dictionary<ulong, string> characterNames = [];
             foreach (var registeredCharacter in AutoRetainerIPC.GetRegisteredCharacters()) {
-                var name = AutoRetainerIPC.GetOfflineCharacterData(registeredCharacter).ToString();
+                OfflineCharacterData character = AutoRetainerIPC.GetOfflineCharacterData(registeredCharacter);
 
-                if (!AWC.Config.Characters.ContainsKey(name)) {
-                    characterNames.Add(name);
+                if (!AWC.Config.Characters.ContainsKey(character.ToString())) {
+                    characterNames.Add(character.CID, character.ToString());
                 }
             }
 
@@ -53,7 +54,7 @@ public static class CharactersOptionUi
         }
     }
 
-    private static void DrawCharacterImporterCard(List<string> characterNames)
+    private static void DrawCharacterImporterCard(Dictionary<ulong, string> characterNames)
     {
         ImGui.Spacing();
         ImGui.Spacing();
@@ -66,11 +67,11 @@ public static class CharactersOptionUi
 
             ImGui.Spacing();
 
-            foreach (var name in characterNames) {
+            foreach (var (id, name) in characterNames) {
                 ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
 
                 if (ImGuiEx.IconButton(FontAwesomeIcon.Plus, $"AddCharacterViaAutoRetainer:{name}")) {
-                    AWC.Config.GetOrRegisterCharacterOptions(name);
+                    AWC.Config.GetOrRegisterCharacterOptions(id, name);
                 }
 
                 ImGui.PopStyleColor();

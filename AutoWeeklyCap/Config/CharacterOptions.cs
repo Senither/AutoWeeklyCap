@@ -3,6 +3,10 @@
 [Serializable]
 public class CharacterOptions
 {
+    // ReSharper disable once InconsistentNaming
+    public ulong ID { get; set; } = 0u;
+    public string Name { get; set; } = string.Empty;
+    public string World { get; set; } = string.Empty;
     public bool Enabled { get; set; } = true;
     public bool Hidden { get; set; } = false;
     public PlayerJob PreferredJob { get; set; } = PlayerJob.None;

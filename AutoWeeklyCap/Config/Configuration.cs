@@ -159,6 +159,30 @@ public class Configuration : IPluginConfiguration
         return Characters[character] = new CharacterOptions { Position = nextPosition };
     }
 
+    public CharacterOptions GetOrRegisterCharacterOptions(ulong id, string character)
+    {
+        var option = GetOrRegisterCharacterOptions(character);
+        var wasChanged = false;
+
+        if (option.ID != id) {
+            wasChanged = true;
+            option.ID = id;
+        }
+
+        var parts = character.Split("@");
+        if (parts.Length == 2 && (parts[0] != option.Name || parts[1] != option.World)) {
+            wasChanged = true;
+            option.Name = parts[0];
+            option.World = parts[1];
+        }
+
+        if (wasChanged) {
+            Save();
+        }
+
+        return option;
+    }
+
     public bool IsRequiredSettingsSetup()
     {
         return TomestoneZone.IsSupportedTomestoneZone(ZoneId);
