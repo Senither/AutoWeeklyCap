@@ -44,7 +44,7 @@ public class Runner
             ? State.StartingCharacterSwap
             : State.PreparingRunner;
 
-        AWC.Log.Debug("Starting weekly cap runner");
+        AWC.Log.Info("Starting weekly cap runner");
 
         return true;
     }
@@ -129,7 +129,7 @@ public class Runner
         TitleManager.Reset();
         AWC.TaskManager.Abort();
 
-        AWC.Log.Debug("Stopped weekly cap runner");
+        AWC.Log.Info("Stopped weekly cap runner");
     }
 
     public bool IsRunning()
@@ -217,7 +217,7 @@ public class Runner
         }
 
         if (_currentCharacter == null) {
-            AWC.Log.Debug("Stopping runner due to character being NULL");
+            AWC.Log.Debug("Runner: Stopping runner due to character being NULL");
             Stop();
             return;
         }
@@ -269,7 +269,7 @@ public class Runner
                                       && _runsCounter % AWC.Config.DeliverooRunInterval == 0
                                       && _runsCounter > 0;
 
-            AWC.Log.Debug($"Deliveroo check [first: {shouldRunFirst}, forCounter: {shouldRunForCounter}]");
+            AWC.Log.Debug($"Runner: Deliveroo check [first: {shouldRunFirst}, forCounter: {shouldRunForCounter}]");
             if (shouldRunFirst || shouldRunForCounter) {
                 ActionInstance.Deliveroo.Invoke();
             }
@@ -338,7 +338,7 @@ public class Runner
 
         var parts = _currentCharacter.Split("@");
 
-        AWC.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
+        AWC.Log.Info($"Switching character to {parts[0]} on {parts[1]}");
         _state = State.SwitchingCharacter;
         _timestamp = DateTime.UtcNow;
         LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
@@ -369,7 +369,7 @@ public class Runner
     private void StartAutoDuty()
     {
         if (_currentCharacter == null) {
-            AWC.Log.Debug("Stopping runner due to character being NULL");
+            AWC.Log.Debug("Runner: Stopping runner due to character being NULL");
             Stop();
             return;
         }
@@ -389,7 +389,7 @@ public class Runner
         AWC.TaskManager.Enqueue(() =>
         {
             if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled) {
-                AWC.Log.Debug("UseBossModRebornAI: enabling AI");
+                AWC.Log.Debug("Runner: enabling BossMod Reborn AI");
                 ChatHelper.RunCommand("bmrai on");
             }
         }, "enable BossMod Reborn AI if option is enabled");
@@ -405,7 +405,7 @@ public class Runner
                 TitleManager.Reset();
 
                 if (AWC.ClientState.TerritoryType == AWC.Config.ZoneId) {
-                    AWC.Log.Debug("Player detected in the duty zone, switching to RunningAutoDuty stage");
+                    AWC.Log.Debug("Runner: Player detected in the duty zone, switching to RunningAutoDuty stage");
                     _state = State.RunningAutoDuty;
 
                     CurrentDutyStartUtc ??= DateTime.UtcNow;
@@ -419,7 +419,7 @@ public class Runner
 
                 if (!PlayerHelper.IsReady || VNavMeshIPC.IsRunning()) {
                     if (EzThrottler.Throttle("RunnerStartingDutyBusyLog", 2500)) {
-                        AWC.Log.Debug($"Resetting AutoDuty start timer, reason: player is busy or VNavMesh is running");
+                        AWC.Log.Debug($"Runner: Resetting AutoDuty start timer, reason: player is busy or VNavMesh is running");
                     }
 
                     _timestamp = DateTime.UtcNow;
@@ -428,8 +428,8 @@ public class Runner
 
                 unsafe {
                     if ((DateTime.UtcNow - _timestamp).Seconds > 5 && !AutoDutyIPC.IsStopped() && AddonHelper.TryGetReadyAddon("Repair", out _)) {
-                        AWC.Log.Debug("Detected repairing attempt to have been idle for 5+ seconds while trying to start AutoDuty");
-                        AWC.Log.Debug("Stopping AutoDuty and repairing through AWC instead, and then restarting");
+                        AWC.Log.Debug("Runner: Detected repairing attempt to have been idle for 5+ seconds while trying to start AutoDuty");
+                        AWC.Log.Debug("Runner: Stopping AutoDuty and repairing through AWC instead, and then restarting");
 
                         AutoDutyIPC.Stop();
                         AWC.TaskManager.Abort();
@@ -445,15 +445,15 @@ public class Runner
                 }
 
                 if ((DateTime.UtcNow - _timestamp).Seconds > 30) {
-                    AWC.Log.Debug("Timed out while trying to start AutoDuty");
+                    AWC.Log.Debug("Runner: Timed out while trying to start AutoDuty");
 
                     if (_currentCharacter == null) {
-                        AWC.Log.Debug("Stopping runner due to character being NULL");
+                        AWC.Log.Debug("Runner: Stopping runner due to character being NULL");
                         Stop();
                         return true;
                     }
 
-                    AWC.Log.Debug($"Disabling AWC for {_currentCharacter} and switching character");
+                    AWC.Log.Debug($"Runner: Disabling AWC for {_currentCharacter} and switching character");
 
                     AWC.Config.Characters[_currentCharacter].Enabled = false;
                     AWC.Config.Save();
@@ -467,7 +467,7 @@ public class Runner
                 }
 
                 if (EzThrottler.Throttle("RunnerStartingDutyStartAttempt", 1500)) {
-                    AWC.Log.Debug("Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - _timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", AWC.Config.ZoneId } });
+                    AWC.Log.Debug("Runner: Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - _timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", AWC.Config.ZoneId } });
 
                     AutoDutyIPC.Run(AWC.Config.ZoneId, 1, false);
                 }
@@ -489,16 +489,16 @@ public class Runner
             return;
         }
 
-        AWC.Log.Debug("AutoDuty has complete a run, switching to preparations stage");
+        AWC.Log.Debug("Runner: AutoDuty has complete a run, switching to preparations stage");
 
         if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled) {
-            AWC.Log.Debug("UseBossModRebornAI: disabling AI");
+            AWC.Log.Debug("Runner: disabling BossMod Reborn AI");
             ChatHelper.RunCommand("bmrai off");
         }
 
         if (CurrentDutyStartUtc.HasValue && _currentCharacter != null) {
             var durationSeconds = (int)(DateTime.UtcNow - CurrentDutyStartUtc.Value).TotalSeconds;
-            AWC.Log.Debug($"Finished the run in {durationSeconds} seconds");
+            AWC.Log.Debug($"Runner: Finished the run in {durationSeconds} seconds");
 
             AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.AddDutyDurationSeconds(durationSeconds);
             AWC.Config.Save();
@@ -530,7 +530,7 @@ public class Runner
                 return;
             }
 
-            AWC.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
+            AWC.Log.Info($"Switching character to {parts[0]} on {parts[1]}");
             _currentCharacter = character;
             _state = State.SwitchingCharacter;
             _timestamp = DateTime.UtcNow;
@@ -545,11 +545,11 @@ public class Runner
 
         if (AWC.Config.StopAction == StopAction.StartUnlimitedRuns) {
             _unlimited = true;
-            AWC.Log.Debug("All characters have been fully capped, starting unlimited runs");
+            AWC.Log.Info("All characters have been fully capped, starting unlimited runs");
 
             var preferredCharacter = AWC.Config.CharacterForSwap;
             if (PlayerHelper.GetFullCharacterName() == preferredCharacter) {
-                AWC.Log.Debug("Player is already on preferred character, starting runner");
+                AWC.Log.Debug("Runner: Player is already on preferred character, starting runner");
                 _state = State.PreparingRunner;
                 return;
             }
@@ -561,7 +561,7 @@ public class Runner
                 return;
             }
 
-            AWC.Log.Debug($"Switching character to {parts[0]} on {parts[1]}");
+            AWC.Log.Info($"Switching character to {parts[0]} on {parts[1]}");
             _currentCharacter = preferredCharacter;
             _state = State.SwitchingCharacter;
             _timestamp = DateTime.UtcNow;
@@ -570,7 +570,7 @@ public class Runner
             return;
         }
 
-        AWC.Log.Debug("Found no character with missing weekly capped tomestones, stopping runner");
+        AWC.Log.Info("Found no character with missing weekly capped tomestones, stopping runner");
         _state = State.StoppingRunner;
     }
 
@@ -589,7 +589,7 @@ public class Runner
             return;
         }
 
-        AWC.Log.Debug("Completed character swap, preparing runner");
+        AWC.Log.Info("Completed character swap, preparing runner");
         _state = State.PreparingRunner;
     }
 

@@ -113,7 +113,7 @@ public static class PlayerJobExtensions
 
         var status = PlayerHelper.SwitchJob((uint)job);
 
-        AWC.Log.Debug($"Attempted to switch to job {job}, got status: {status}");
+        AWC.Log.Debug($"PlayerJob: Attempted to switch to job {job}, got status: {status}");
         return status == CharacterSwapStatus.AlreadyOnTargetJob;
     }
 

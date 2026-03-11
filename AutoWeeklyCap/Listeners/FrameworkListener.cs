@@ -8,18 +8,18 @@ namespace AutoWeeklyCap.Listeners;
 
 public partial class FrameworkListener
 {
-    protected long EnforceUpdateStateAt = 0;
+    private long _enforceUpdateStateAt = 0;
 
     public void OnFrameworkUpdate(IFramework _)
     {
         AWC.Instance.DtrStatusBar.Draw();
 
         var unixNow = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        if (EnforceUpdateStateAt > unixNow) {
+        if (_enforceUpdateStateAt > unixNow) {
             return;
         }
 
-        EnforceUpdateStateAt = unixNow + 500;
+        _enforceUpdateStateAt = unixNow + 500;
 
         AttemptErrorRecovery();
         UpdateRunnerLoop();
@@ -43,7 +43,7 @@ public partial class FrameworkListener
         }
 
         if (AddonHelper.IsLobbyErrorVisible()) {
-            AWC.Log.Debug($"Lobby error detected (likely 2002), attempting to reconnect");
+            AWC.Log.Debug($"Network: Lobby error detected (likely 2002), attempting to reconnect");
             ClientListener.EnqueueRestart();
 
             return;
@@ -69,23 +69,23 @@ public partial class FrameworkListener
         try {
             unsafe {
                 if (AddonHelper.ClickSelectYesno()) {
-                    AWC.Log.Debug("Found Selectyesno addon, clicked yes");
+                    AWC.Log.Debug("Network: Found Selectyesno addon, clicked yes");
                     return;
                 }
 
                 if (AddonHelper.TryGetReadyAddon("SelectOk", out var selectAddon)) {
                     var select = new AddonMaster.SelectOk(selectAddon);
                     if (!LoginQueueRegex().IsMatch(select.Text.Trim())) {
-                        AWC.Log.Debug($"Found SelectOk addon that is not queue, clicking OK button");
+                        AWC.Log.Debug($"Network: Found SelectOk addon that is not queue, clicking OK button");
                         select.Ok();
                     }
 
-                    AWC.Log.Debug($"Found SelectOk addon is queue, doing nothing");
+                    AWC.Log.Debug($"Network: Found SelectOk addon is queue, doing nothing");
                     return;
                 }
 
                 if (AddonHelper.TryGetReadyAddon("_CharaSelectReturn", out var returnAddon)) {
-                    AWC.Log.Debug($"Found _CharaSelectReturn addon, returning to main title screen");
+                    AWC.Log.Debug($"Network: Found _CharaSelectReturn addon, returning to main title screen");
 
                     var returnToTitle = new AddonMaster.Dialogue(returnAddon);
                     returnToTitle.Ok();

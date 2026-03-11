@@ -65,7 +65,7 @@ public class WotsitManager : IDisposable
             return;
         }
 
-        AWC.Log.Debug($"Initializing WotsitManager triggered by: {trigger}, status: {WotsitIPC.IsEnabled}");
+        AWC.Log.Debug($"WotsitManager: Initializing triggered by: {trigger}, status: {WotsitIPC.IsEnabled}");
 
         var newEntries = WotsitEntryGenerator.Generate().ToHashSet();
         if (_lastEntries.Count != 0 && newEntries.SetEquals(_lastEntries)) {

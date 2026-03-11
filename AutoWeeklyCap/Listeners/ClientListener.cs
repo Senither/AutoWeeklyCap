@@ -16,7 +16,7 @@ public class ClientListener
             return;
         }
 
-        AWC.Log.Debug($"Disconnection detected, runner status: {(AWC.Runner.IsRunning() ? "active" : "idle")}");
+        AWC.Log.Debug($"Network: Disconnection detected, runner status: {(AWC.Runner.IsRunning() ? "active" : "idle")}");
         if (!AWC.Runner.IsRunning()) {
             return;
         }
@@ -34,7 +34,7 @@ public class ClientListener
         IsRestarting = true;
         LastRecoveryTimestamp = DateTime.UtcNow;
 
-        AWC.Log.Debug($"Queueing up restart tasks to recover from disconnect");
+        AWC.Log.Debug($"Network: Queueing up restart tasks to recover from disconnect");
 
         AWC.Runner.Abort();
         AWC.TaskManager.Enqueue(() =>
@@ -48,7 +48,7 @@ public class ClientListener
                     if (AddonHelper.TryGetLobbyError(out var errorAddon) && errorAddon->IsVisible) {
                         var dialogueStatus = AddonHelper.ClickDialogueOk();
 
-                        AWC.Log.Debug($"Found lobby error [Addon: {errorAddon->GetType()}, Click: {dialogueStatus}]");
+                        AWC.Log.Debug($"Network: Found lobby error [Addon: {errorAddon->GetType()}, Click: {dialogueStatus}]");
                         return false;
                     }
 

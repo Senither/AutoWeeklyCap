@@ -49,7 +49,7 @@ public static class StopActionExtensions
 
     public static void Execute(this StopAction action)
     {
-        AWC.Log.Debug($"Executing action: {action.GetName()}");
+        AWC.Log.Debug($"StopAction: Executing action: {action.GetName()}");
 
         switch (action) {
             case StopAction.None:
@@ -70,7 +70,7 @@ public static class StopActionExtensions
 
             case StopAction.LogoutToMenu:
                 var status = LifestreamIPC.Logout();
-                AWC.Log.Debug($"Logging out via Lifestream with status: {status}");
+                AWC.Log.Debug($"StopAction: Logging out via Lifestream with status: {status}");
                 break;
 
             case StopAction.ShutdownGame:
