@@ -1,4 +1,4 @@
-﻿using AutoWeeklyCap.UI.Helpers;
+using AutoWeeklyCap.UI.Helpers;
 
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
@@ -222,6 +222,19 @@ public static class RunnerPrerequisitesUi
 
             ImGui.SameLine();
             ImGui.Text("seconds");
+
+            ImGui.Text($"Which characters should be within {AWC.Config.AutoRetainerThreshold} seconds?");
+
+            var retainerTrigger = AWC.Config.AutoRetainerTrigger;
+            if (ImGui.BeginCombo("##AutoRetainerTrigger", retainerTrigger.GetName())) {
+                foreach (var trigger in Enum.GetValues<RetainerTrigger>()) {
+                    if (ImGui.Selectable(trigger.GetName())) {
+                        AWC.Config.AutoRetainerTrigger = trigger;
+                    }
+                }
+
+                ImGui.EndCombo();
+            }
 
             ImGui.Text("Tip");
             InformationTooltip.Draw(() =>

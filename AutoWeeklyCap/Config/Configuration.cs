@@ -52,7 +52,7 @@ public class Configuration : IPluginConfiguration
     // Runner Options (AutoRetainer)
     public bool AutoRetainerEnabled { get; set; } = false;
     public uint AutoRetainerThreshold { get; set; } = 90;
-    // TODO: Add summoning bell location here...
+    public RetainerTrigger AutoRetainerTrigger { get; set; } = RetainerTrigger.AnyCharacter;
 
     // Runner Options (Deliveroo)
     public bool DeliverooEnabled { get; set; } = false;

@@ -226,7 +226,7 @@ public class Runner
             return;
         }
 
-        if (AWC.Config.AutoRetainerEnabled && AutoRetainerHelper.HasRetainerWithinThreshold()) {
+        if (AWC.Config.AutoRetainerEnabled && AWC.Config.AutoRetainerTrigger.IsWithinThreshold()) {
             _timestamp = DateTime.UtcNow;
 
             AWC.TaskManager.Enqueue(
