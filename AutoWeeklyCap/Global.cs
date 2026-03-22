@@ -17,6 +17,8 @@ global using ECommons.ImGuiMethods;
 global using ECommons.Throttlers;
 global using ECommons;
 
+global using AutoWeeklyCap.UI.Layouts;
+
 global using System.Collections.Generic;
 global using System.Linq;
 global using System.Numerics;

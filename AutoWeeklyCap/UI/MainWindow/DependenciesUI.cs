@@ -96,7 +96,7 @@ internal static class DependenciesUI
 
     private static void DrawPluginStatusIcon(bool status)
     {
-        ImGui.PushStyleColor(ImGuiCol.Text, status ? ImGuiColors.HealerGreen : ImGuiColors.DPSRed);
+        ImGui.PushStyleColor(ImGuiCol.Text, status ? Theme.TextSuccess : Theme.TextDanger);
         ImGuiEx.Icon(status ? FontAwesomeIcon.Check : FontAwesomeIcon.PlugCircleXmark);
         ImGui.PopStyleColor();
 

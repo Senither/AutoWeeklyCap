@@ -14,7 +14,7 @@ public static class CharacterElements
 
         var isHidden = option.Hidden;
         if (!isHidden) {
-            ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
+            ImGui.PushStyleColor(ImGuiCol.Button, Theme.ButtonSuccess);
         }
 
         if (ImGuiEx.IconButton(isHidden ? FontAwesomeIcon.EyeSlash : FontAwesomeIcon.Eye)) {
@@ -37,7 +37,7 @@ public static class CharacterElements
 
         var isEnabled = option.IsEnabled();
         if (isEnabled) {
-            ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
+            ImGui.PushStyleColor(ImGuiCol.Button, Theme.ButtonSuccess);
         }
 
         if (ImGuiEx.IconButton(FontAwesomeIcon.Rocket)) {

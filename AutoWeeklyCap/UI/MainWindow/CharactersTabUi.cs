@@ -104,7 +104,7 @@ internal static class CharactersTabUi
 
         if (options.HasOverrideSettingsEnabled()) {
             ImGui.SameLine();
-            ImGuiEx.IconWithText(ColorUtils.HexToVector(0x9B, 0x9B, 0xE9, 0.65f), FontAwesomeIcon.Flask, "");
+            ImGuiEx.IconWithText(Theme.TextPrimary, FontAwesomeIcon.Flask, "");
         }
 
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - 64 + ImGui.GetStyle().ItemSpacing.X);

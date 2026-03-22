@@ -14,12 +14,14 @@ public class ConfigWindow : Window
 
     public override void Draw()
     {
-        Card.Draw("General Options", GeneralOptionsUi.Draw);
-        Card.Draw("Duty Options", DutyOptionsUi.Draw);
-        Card.Draw("Characters", CharactersOptionUi.Draw);
-        Card.Draw("Runner Options", RunnerPrerequisitesUi.Draw);
-        Card.Draw("Stop Actions", StopActionsUi.Draw);
-        Card.DrawWarning("Manually reset Tomestones", ResetWeeklyTomestonesUi.Draw);
+        using (Theme.Push()) {
+            Card.Draw("General Options", GeneralOptionsUi.Draw);
+            Card.Draw("Duty Options", DutyOptionsUi.Draw);
+            Card.Draw("Characters", CharactersOptionUi.Draw);
+            Card.Draw("Runner Options", RunnerPrerequisitesUi.Draw);
+            Card.Draw("Stop Actions", StopActionsUi.Draw);
+            Card.DrawWarning("Manually reset Tomestones", ResetWeeklyTomestonesUi.Draw);
+        }
     }
 
     public override void OnClose()

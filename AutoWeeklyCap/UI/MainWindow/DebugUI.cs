@@ -207,15 +207,17 @@ internal static class DebugUI
         ImGui.SameLine(0, 0);
 
         try {
-            ImGui.TextColored(value() ? ImGuiColors.HealerGreen : ImGuiColors.DPSRed, text);
+            ImGui.TextColored(value() ? Theme.TextSuccess : Theme.TextDanger, text);
         } catch (Exception) {
-            ImGui.TextColored(ImGuiColors.DalamudOrange, text);
+            ImGui.TextColored(Theme.TextWarning, text);
         }
 
-        if (seperator) {
-            ImGui.SameLine(0, 0);
-            ImGui.Text(" | ");
+        if (!seperator) {
+            return;
         }
+
+        ImGui.SameLine(0, 0);
+        ImGui.Text(" | ");
     }
 
     private static void DrawPluginLogs()

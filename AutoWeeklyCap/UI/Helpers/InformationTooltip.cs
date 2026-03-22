@@ -2,14 +2,12 @@
 
 public static class InformationTooltip
 {
-    private static readonly uint QuestionColor = ColorUtils.HexToUInt(0xFF, 0xFF, 0xFF, 0.45f);
-
     public static void Draw(string tooltip)
     {
         Disabled.Exempt(() =>
         {
             ImGui.SameLine();
-            ImGui.TextColored(QuestionColor, "(?)");
+            ImGui.TextColored(Theme.TextMuted, "(?)");
             ImGuiEx.Tooltip(tooltip);
         });
     }
@@ -17,7 +15,7 @@ public static class InformationTooltip
     public static void Draw(Action action)
     {
         ImGui.SameLine();
-        ImGui.TextColored(QuestionColor, "(?)");
+        ImGui.TextColored(Theme.TextMuted, "(?)");
 
         if (!ImGui.IsItemHovered()) {
             return;

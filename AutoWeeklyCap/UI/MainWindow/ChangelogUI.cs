@@ -45,7 +45,7 @@ internal static class ChangelogUI
     private static void DrawEmptyState()
     {
         if (!string.IsNullOrWhiteSpace(LoadError)) {
-            ImGui.TextColored(ImGuiColors.DPSRed, "Failed to load changelog.");
+            ImGui.TextColored(Theme.TextDanger, "Failed to load changelog.");
             ImGui.TextWrapped(LoadError);
             return;
         }

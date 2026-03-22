@@ -23,15 +23,15 @@ public static class Card
     private static readonly Dictionary<uint, bool> OpenStateById = new();
 
     // ReSharper disable once MemberHidesStaticFromOuterClass
-    private readonly record struct CardContext(uint BorderColor, Vector2 ContentPadding, float ParentPaddingX, bool ForceOpenDescendants);
+    private readonly record struct CardContext(Vector4 BorderColor, Vector2 ContentPadding, float ParentPaddingX, bool ForceOpenDescendants);
 
     private readonly record struct CardBackgroundDraw(
         Vector2 Min,
         Vector2 Max,
         float TitleBarHeight,
-        uint CardBgColor,
-        uint TitleBarColor,
-        uint BorderColor
+        Vector4 CardBgColor,
+        Vector4 TitleBarColor,
+        Vector4 BorderColor
     );
 
     internal static void Draw(string title, Action bodyContent, bool collapsible = true, bool defaultOpen = false, string? id = null)
@@ -39,8 +39,8 @@ public static class Card
         DrawWithColors(
             title,
             bodyContent,
-            ColorUtils.HexToUInt(0xAA, 0xAA, 0xAA, 0.2f),
-            ColorUtils.HexToUInt(0x5A, 0x5A, 0x59),
+            Theme.BackgroundDefault,
+            Theme.BorderDefault,
             collapsible,
             defaultOpen,
             id
@@ -52,8 +52,8 @@ public static class Card
         DrawCore(
             title,
             bodyContent,
-            ColorUtils.HexToUInt(0xAA, 0xAA, 0xAA, 0.12f),
-            ColorUtils.HexToUInt(0x5A, 0x5A, 0x59, 0.45f),
+            Theme.BackgroundMuted,
+            Theme.BorderMuted,
             SubtleChildBg,
             SubtleTitlePadding,
             SubtleContentPadding,
@@ -68,8 +68,8 @@ public static class Card
         DrawWithColors(
             title,
             bodyContent,
-            ColorUtils.HexToUInt(0xFF, 0xC6, 0x3C, 0.3f),
-            ColorUtils.HexToUInt(0xAB, 0x8E, 0x1B, 0.8f),
+            Theme.BackgroundWarning,
+            Theme.BorderWarning,
             collapsible,
             defaultOpen,
             id
@@ -81,8 +81,8 @@ public static class Card
         DrawWithColors(
             title,
             bodyContent,
-            ColorUtils.HexToUInt(0xFF, 0x3C, 0x3C, 0.3f),
-            ColorUtils.HexToUInt(0xAB, 0x1B, 0x1B, 0.8f),
+            Theme.BackgroundDanger,
+            Theme.BorderDanger,
             collapsible,
             defaultOpen,
             id
@@ -92,8 +92,8 @@ public static class Card
     internal static void DrawWithColors(
         string title,
         Action bodyContent,
-        uint backgroundColor,
-        uint borderColor,
+        Vector4 backgroundColor,
+        Vector4 borderColor,
         bool collapsible = true,
         bool defaultOpen = false,
         string? id = null
@@ -116,8 +116,8 @@ public static class Card
     private static void DrawCore(
         string title,
         Action bodyContent,
-        uint backgroundColor,
-        uint borderColor,
+        Vector4 backgroundColor,
+        Vector4 borderColor,
         Vector4 childBg,
         Vector2 titlePadding,
         Vector2 contentPadding,
@@ -228,14 +228,14 @@ public static class Card
             ImGui.EndGroup();
 
             var cardMax = ImGui.GetItemRectMax();
-            var cardBgU32 = ImGui.ColorConvertFloat4ToU32(ImGui.GetStyle().Colors[(int)ImGuiCol.ChildBg]);
+            var cardBgColor = ImGui.GetStyle().Colors[(int)ImGuiCol.ChildBg];
 
             if (_pendingBackgrounds != null && bgIndex >= 0) {
                 _pendingBackgrounds[bgIndex] = new CardBackgroundDraw(
                     cardMin,
                     cardMax,
                     titleBarHeight,
-                    cardBgU32,
+                    cardBgColor,
                     backgroundColor,
                     borderColor
                 );
@@ -270,16 +270,16 @@ public static class Card
         drawList.ChannelsSetCurrent(0);
 
         foreach (var bg in _pendingBackgrounds) {
-            drawList.AddRectFilled(bg.Min, bg.Max, bg.CardBgColor, Rounding, ImDrawFlags.RoundCornersBottom);
+            drawList.AddRectFilled(bg.Min, bg.Max, ImGui.ColorConvertFloat4ToU32(bg.CardBgColor), Rounding, ImDrawFlags.RoundCornersBottom);
             drawList.AddRectFilled(
                 bg.Min,
                 bg.Max with { Y = bg.Min.Y + bg.TitleBarHeight },
-                bg.TitleBarColor,
+                ImGui.ColorConvertFloat4ToU32(bg.TitleBarColor),
                 Rounding,
                 ImDrawFlags.RoundCornersNone
             );
 
-            drawList.AddRect(bg.Min, bg.Max, bg.BorderColor, Rounding, ImDrawFlags.RoundCornersBottom, BorderSize);
+            drawList.AddRect(bg.Min, bg.Max, ImGui.ColorConvertFloat4ToU32(bg.BorderColor), Rounding, ImDrawFlags.RoundCornersBottom, BorderSize);
         }
     }
 
@@ -318,7 +318,7 @@ public static class Card
         return true;
     }
 
-    private static void Separator(uint? borderColor)
+    private static void Separator(Vector4? borderColor)
     {
         var drawList = ImGui.GetWindowDrawList();
 
@@ -338,7 +338,7 @@ public static class Card
         drawList.AddLine(
             new Vector2(cursor.X - context.ContentPadding.X, lineY),
             new Vector2(cursor.X + width, lineY),
-            color, BorderSize
+            ImGui.ColorConvertFloat4ToU32(color), BorderSize
         );
 
         ImGui.Dummy(new Vector2(0f, paddingY * 2f));

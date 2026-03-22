@@ -87,33 +87,35 @@ public class MainWindow : Window
 
     public override void Draw()
     {
-        DrawPluginStatus();
-        DrawHeaderActionButtons();
+        using (Theme.Push()) {
+            DrawPluginStatus();
+            DrawHeaderActionButtons();
 
-        var tabs = new List<(string name, Action function, Vector4? color, bool child)> { ("Characters", CharactersTabUi.Draw, null, true) };
+            var tabs = new List<(string name, Action function, Vector4? color, bool child)> { ("Characters", CharactersTabUi.Draw, null, true) };
 
-        if (!AWC.Config.HideUiElementDependencies) {
-            tabs.Add(("Dependencies", DependenciesUI.Draw, null, true));
+            if (!AWC.Config.HideUiElementDependencies) {
+                tabs.Add(("Dependencies", DependenciesUI.Draw, null, true));
+            }
+
+            tabs.Add(("About", AboutTabUi.Draw, null, true));
+
+            if (!AWC.Config.HideUiElementChangelog) {
+                tabs.Add(("Changelog", ChangelogUI.Draw, null, true));
+            }
+
+            if (AWC.Config.DevMode && AWC.Config.ShowUiElementDebug) {
+                tabs.Add(("Debug", DebugUI.Draw, null, true));
+            }
+
+            ImGuiEx.EzTabBar("main-awc-tabbar", "Test", tabs.ToArray());
+
+            if (AWC.Config.Window.Pin) {
+                return;
+            }
+
+            AWC.Config.Window.Position = ImGui.GetWindowPos();
+            AWC.Config.Window.Size = ImGui.GetWindowSize();
         }
-
-        tabs.Add(("About", AboutTabUi.Draw, null, true));
-
-        if (!AWC.Config.HideUiElementChangelog) {
-            tabs.Add(("Changelog", ChangelogUI.Draw, null, true));
-        }
-
-        if (AWC.Config.DevMode && AWC.Config.ShowUiElementDebug) {
-            tabs.Add(("Debug", DebugUI.Draw, null, true));
-        }
-
-        ImGuiEx.EzTabBar("main-awc-tabbar", "Test", tabs.ToArray());
-
-        if (AWC.Config.Window.Pin) {
-            return;
-        }
-
-        AWC.Config.Window.Position = ImGui.GetWindowPos();
-        AWC.Config.Window.Size = ImGui.GetWindowSize();
     }
 
     private void DrawPluginStatus()
@@ -122,9 +124,9 @@ public class MainWindow : Window
         ImGui.SameLine(0f, 6f);
 
         if (AWC.IsRequiredPluginsEnabled()) {
-            ImGui.TextColored(ImGuiColors.HealerGreen, "✓ Ready");
+            ImGui.TextColored(Theme.TextSuccess, "✓ Ready");
         } else {
-            ImGui.TextColored(ImGuiColors.DalamudOrange, "X Unavailable");
+            ImGui.TextColored(Theme.TextWarning, "X Unavailable");
         }
 
         if (!ImGui.IsItemHovered()) {
@@ -143,7 +145,7 @@ public class MainWindow : Window
 
     private void DrawPluginStatusTooltipWithContent(bool status, string name)
     {
-        ImGui.PushStyleColor(ImGuiCol.Text, status ? ImGuiColors.HealerGreen : ImGuiColors.DalamudRed);
+        ImGui.PushStyleColor(ImGuiCol.Text, status ? Theme.TextSuccess : Theme.TextWarning);
         ImGui.TextUnformatted(status ? " ✓" : " X");
         ImGui.PopStyleColor();
         ImGui.SameLine(0.0f, 0.0f);
