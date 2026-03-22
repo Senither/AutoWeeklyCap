@@ -12,7 +12,7 @@ namespace AutoWeeklyCap.UI.MainWindow;
 
 internal static class ChangelogUI
 {
-    private const string ChangelogUrl = "https://dalamud-plugins.senither.com/changelog/Senither/AutoWeeklyCap";
+    private const string ChangelogUrl = "https://dalamud-plugins.senither.com/changelog/Senither/AutoWeeklyCap.json";
     private static readonly TimeSpan RefreshInterval = TimeSpan.FromMinutes(30);
     private static readonly HttpClient HttpClient = new();
 
