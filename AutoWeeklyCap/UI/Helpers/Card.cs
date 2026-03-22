@@ -205,7 +205,7 @@ public static class Card
             if (collapsible) {
                 var icon = isOpen ? FontAwesomeIcon.ChevronDown : FontAwesomeIcon.ChevronRight;
                 using (ImRaii.PushFont(UiBuilder.IconFont)) {
-                    ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey2);
+                    ImGui.PushStyleColor(ImGuiCol.Text, Theme.TextMuted);
                     ImGui.TextUnformatted(icon.ToIconString());
                     ImGui.PopStyleColor();
                 }

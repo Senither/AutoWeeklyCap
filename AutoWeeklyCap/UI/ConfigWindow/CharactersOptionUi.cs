@@ -68,13 +68,11 @@ public static class CharactersOptionUi
             ImGui.Spacing();
 
             foreach (var (id, name) in characterNames) {
-                ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
-
-                if (ImGuiEx.IconButton(FontAwesomeIcon.Plus, $"AddCharacterViaAutoRetainer:{name}")) {
-                    AWC.Config.GetOrRegisterCharacterOptions(id, name);
+                using (Theme.PushSuccessButton()) {
+                    if (ImGuiEx.IconButton(FontAwesomeIcon.Plus, $"AddCharacterViaAutoRetainer:{name}")) {
+                        AWC.Config.GetOrRegisterCharacterOptions(id, name);
+                    }
                 }
-
-                ImGui.PopStyleColor();
 
                 ImGuiEx.Tooltip($"Add {name} to AWC");
 

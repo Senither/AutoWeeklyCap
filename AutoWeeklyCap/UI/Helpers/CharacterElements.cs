@@ -13,9 +13,9 @@ public static class CharacterElements
         }
 
         var isHidden = option.Hidden;
-        if (!isHidden) {
-            ImGui.PushStyleColor(ImGuiCol.Button, Theme.ButtonSuccess);
-        }
+        using var buttonColor = !isHidden
+            ? Theme.PushSuccessButton()
+            : null;
 
         if (ImGuiEx.IconButton(isHidden ? FontAwesomeIcon.EyeSlash : FontAwesomeIcon.Eye)) {
             option.Hidden = !isHidden;
@@ -23,10 +23,6 @@ public static class CharacterElements
         }
 
         ImGuiEx.Tooltip($"Click to {(isHidden ? "show" : "hide")} this character");
-
-        if (!isHidden) {
-            ImGui.PopStyleColor();
-        }
     }
 
     internal static void DrawCharacterStatusIcon(string character, CharacterOptions option, bool sameLine = false)
@@ -36,9 +32,9 @@ public static class CharacterElements
         }
 
         var isEnabled = option.IsEnabled();
-        if (isEnabled) {
-            ImGui.PushStyleColor(ImGuiCol.Button, Theme.ButtonSuccess);
-        }
+        using var buttonColor = isEnabled
+            ? Theme.PushSuccessButton()
+            : null;
 
         if (ImGuiEx.IconButton(FontAwesomeIcon.Rocket)) {
             option.Enabled = !isEnabled;
@@ -49,10 +45,6 @@ public static class CharacterElements
             ? "Character is automatically disabled because it's hidden"
             : $"Click to {(isEnabled ? "disable" : "enable")} this character"
         );
-
-        if (isEnabled) {
-            ImGui.PopStyleColor();
-        }
     }
 
     internal static void DrawCharacterRelogIcon(string character, bool sameLine = false)

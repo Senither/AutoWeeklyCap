@@ -7,14 +7,15 @@ namespace AutoWeeklyCap.UI.Layouts;
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 internal static class Theme
 {
-    internal static Vector4 Accent = ColorUtils.HexToVector("#D9712B");
+    internal static Vector4 Accent = ColorUtils.HexToVector("#9B9BE9");
 
-    internal static Vector4 InteractiveDefault = ColorUtils.HexToVector("#303031");
+    internal static Vector4 InteractiveDefault = ColorUtils.HexToVector("#444444");
     internal static Vector4 InteractiveHovered = ColorUtils.HexToVector("#4C4C9A", 0.85f);
     internal static Vector4 InteractiveActive = ColorUtils.HexToVector("#4C4C9A");
     internal static Vector4 InteractiveUnfocused = ColorUtils.HexToVector("#4C4C9A", 0.7f);
 
     internal static Vector4 ButtonSuccess = ColorUtils.HexToVector("#007009");
+    internal static Vector4 ButtonSuccessHovered = ColorUtils.HexToVector("#007009", 0.65f);
 
     internal static Vector4 BackgroundDefault = ColorUtils.HexToVector("#AAAAAA", 0.2f);
     internal static Vector4 BackgroundMuted = ColorUtils.HexToVector("#AAAAAA", 0.12f);
@@ -55,6 +56,14 @@ internal static class Theme
             ImGui.PushStyleColor(color, value);
             colorCount++;
         }
+    }
+
+    internal static IDisposable PushSuccessButton()
+    {
+        ImGui.PushStyleColor(ImGuiCol.Button, ButtonSuccess);
+        ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ButtonSuccessHovered);
+
+        return new ThemeScope(2, 0);
     }
 
     private static (ImGuiCol Color, Vector4 Value)[] GetThemeColors()
