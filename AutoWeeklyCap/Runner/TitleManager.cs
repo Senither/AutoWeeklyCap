@@ -2,7 +2,7 @@
 
 public static class TitleManager
 {
-    public class TemporaryTitle : IDisposable
+    private class TemporaryTitle : IDisposable
     {
         public TemporaryTitle(BitmapFontIcon icon, string status, string statusShort)
         {
@@ -41,12 +41,12 @@ public static class TitleManager
         return _statusIcon ?? AWC.Runner.GetState().GetStatusIcon(AWC.Runner.IsStopping());
     }
 
-    public static TemporaryTitle RegisterTitle(BitmapFontIcon icon, string status)
+    public static IDisposable RegisterTitle(BitmapFontIcon icon, string status)
     {
         return RegisterTitle(icon, status, status);
     }
 
-    public static TemporaryTitle RegisterTitle(BitmapFontIcon icon, string status, string statusShort)
+    public static IDisposable RegisterTitle(BitmapFontIcon icon, string status, string statusShort)
     {
         return new TemporaryTitle(icon, status, statusShort);
     }
