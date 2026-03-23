@@ -87,7 +87,7 @@ public class MainWindow : Window
 
     public override void Draw()
     {
-        using (Theme.Push()) {
+        using (Theme.Push(withBackground: false)) {
             DrawPluginStatus();
             DrawHeaderActionButtons();
 

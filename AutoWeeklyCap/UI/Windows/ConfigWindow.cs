@@ -7,7 +7,7 @@ namespace AutoWeeklyCap.UI.Windows;
 
 public class ConfigWindow : Window
 {
-    private string _view = "general_options";
+    private SettingsWindowOption _option = SettingsWindowOption.GeneralOptions;
 
     public ConfigWindow() : base("Auto Weekly Tomestone Settings")
     {
@@ -19,59 +19,14 @@ public class ConfigWindow : Window
         using (Theme.Push()) {
             SidebarLayout.DrawSidebar(() =>
             {
-                if (ImGui.Button("General Options")) {
-                    _view = "general_options";
-                }
-
-                if (ImGui.Button("Duty Options")) {
-                    _view = "duty_options";
-                }
-
-                if (ImGui.Button("Characters")) {
-                    _view = "characters";
-                }
-
-                if (ImGui.Button("Runner Options")) {
-                    _view = "runner_options";
-                }
-
-                if (ImGui.Button("Stop Actions")) {
-                    _view = "stop_actions";
-                }
-
-                if (ImGui.Button("Manually reset Tomestones")) {
-                    _view = "reset_tomestones";
+                foreach (var option in Enum.GetValues(typeof(SettingsWindowOption)).Cast<SettingsWindowOption>()) {
+                    if (MenuButton.Draw(option.GetIcon(), option.GetName(), _option == option)) {
+                        _option = option;
+                    }
                 }
             });
 
-            SidebarLayout.DrawContent(() =>
-            {
-                switch (_view) {
-                    case "general_options":
-                        GeneralOptionsUi.Draw();
-                        break;
-
-                    case "duty_options":
-                        DutyOptionsUi.Draw();
-                        break;
-
-                    case "characters":
-                        CharactersOptionUi.Draw();
-                        break;
-
-                    case "runner_options":
-                        RunnerPrerequisitesUi.Draw();
-                        break;
-
-                    case "stop_actions":
-                        StopActionsUi.Draw();
-                        break;
-
-                    case "reset_tomestones":
-                        ResetWeeklyTomestonesUi.Draw();
-                        break;
-                }
-            });
+            SidebarLayout.DrawContent(() => _option.Draw());
         }
     }
 

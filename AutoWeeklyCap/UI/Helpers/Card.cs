@@ -31,7 +31,8 @@ public static class Card
         float TitleBarHeight,
         Vector4 CardBgColor,
         Vector4 TitleBarColor,
-        Vector4 BorderColor
+        Vector4 BorderColor,
+        bool DrawTitleDivider
     );
 
     internal static void Draw(string title, Action bodyContent, bool collapsible = true, bool defaultOpen = false, string? id = null)
@@ -237,7 +238,8 @@ public static class Card
                     titleBarHeight,
                     cardBgColor,
                     titleBackgroundColor,
-                    borderColor
+                    borderColor,
+                    !collapsible || isOpen
                 );
                 bgRecorded = true;
             }
@@ -270,22 +272,26 @@ public static class Card
         drawList.ChannelsSetCurrent(0);
 
         foreach (var bg in _pendingBackgrounds) {
+            var titleBarRounding = bg.DrawTitleDivider ? ImDrawFlags.RoundCornersTop : ImDrawFlags.RoundCornersAll;
+
             drawList.AddRectFilled(bg.Min, bg.Max, ImGui.ColorConvertFloat4ToU32(bg.CardBgColor), Rounding, ImDrawFlags.RoundCornersAll);
             drawList.AddRectFilled(
                 bg.Min,
                 bg.Max with { Y = bg.Min.Y + bg.TitleBarHeight },
                 ImGui.ColorConvertFloat4ToU32(bg.TitleBarColor),
                 Rounding,
-                ImDrawFlags.RoundCornersTop
+                titleBarRounding
             );
 
-            var titleDividerY = bg.Min.Y + bg.TitleBarHeight;
-            drawList.AddLine(
-                new Vector2(bg.Min.X, titleDividerY),
-                new Vector2(bg.Max.X, titleDividerY),
-                ImGui.ColorConvertFloat4ToU32(bg.BorderColor),
-                BorderSize
-            );
+            if (bg.DrawTitleDivider) {
+                var titleDividerY = bg.Min.Y + bg.TitleBarHeight;
+                drawList.AddLine(
+                    new Vector2(bg.Min.X, titleDividerY),
+                    new Vector2(bg.Max.X, titleDividerY),
+                    ImGui.ColorConvertFloat4ToU32(bg.BorderColor),
+                    BorderSize
+                );
+            }
 
             drawList.AddRect(bg.Min, bg.Max, ImGui.ColorConvertFloat4ToU32(bg.BorderColor), Rounding, ImDrawFlags.RoundCornersAll, BorderSize);
         }

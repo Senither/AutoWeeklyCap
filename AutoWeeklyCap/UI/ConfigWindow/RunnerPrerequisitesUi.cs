@@ -11,14 +11,14 @@ public static class RunnerPrerequisitesUi
         ImGui.TextWrapped("Select what should happen before and between runs.");
         ImGui.Spacing();
 
-        Card.DrawSubtle("General Options###runner-prereq-general", DrawGeneralOptions, defaultOpen: true);
+        Card.Draw("General Options###runner-prereq-general", DrawGeneralOptions, defaultOpen: true);
 
         ImGui.TextWrapped("Select how third-party plugins should be integrated into the runner.");
         ImGui.Spacing();
 
-        Card.DrawSubtle("Auto Retainer###runner-prereq-auto-retainer", DrawAutoRetainer);
-        Card.DrawSubtle("Deliveroo###runner-prereq-deliveroo", DrawDeliveroo);
-        Card.DrawSubtle("Notification Master###runner-prereq-notification-master", DrawNotificationMaster);
+        Card.Draw("Auto Retainer###runner-prereq-auto-retainer", DrawAutoRetainer);
+        Card.Draw("Deliveroo###runner-prereq-deliveroo", DrawDeliveroo);
+        Card.Draw("Notification Master###runner-prereq-notification-master", DrawNotificationMaster);
     }
 
     private static void DrawGeneralOptions()

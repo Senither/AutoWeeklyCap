@@ -35,7 +35,7 @@ internal static class Theme
     internal static Vector4 TextDanger = ColorUtils.HexToVector("#CC0000");
     internal static Vector4 TextMuted = ColorUtils.HexToVector("#FFFFFF", 0.45f);
 
-    internal static IDisposable Push()
+    internal static IDisposable Push(bool withBackground = true)
     {
         var colorCount = 0;
         var styleCount = 0;
@@ -44,7 +44,13 @@ internal static class Theme
 
         foreach (var (styleVar, value) in GetThemeStyles()) { PushVar(styleVar, value); }
 
-        return new ThemeScope(colorCount, styleCount);
+        if (!withBackground) {
+            return new ThemeScope(colorCount, styleCount);
+        }
+
+        var backgrounds = PushBackgroundColors();
+
+        return new ThemeScope(colorCount + backgrounds.ColorCount, styleCount + backgrounds.StyleCount);
 
         void PushVar(ImGuiStyleVar styleVar, float value)
         {
@@ -59,6 +65,15 @@ internal static class Theme
         }
     }
 
+    private static ThemeScope PushBackgroundColors()
+    {
+        ImGui.PushStyleColor(ImGuiCol.WindowBg, BackgroundDefault);
+        ImGui.PushStyleColor(ImGuiCol.ChildBg, BackgroundDefault);
+        ImGui.PushStyleColor(ImGuiCol.PopupBg, BackgroundDefault);
+
+        return new ThemeScope(3, 0);
+    }
+
     internal static IDisposable PushSuccessButton()
     {
         ImGui.PushStyleColor(ImGuiCol.Button, ButtonSuccess);
@@ -71,9 +86,6 @@ internal static class Theme
     {
         return
         [
-            // (ImGuiCol.WindowBg, BackgroundDefault),
-            // (ImGuiCol.ChildBg, BackgroundDefault),
-            // (ImGuiCol.PopupBg, BackgroundDefault),
             (ImGuiCol.ScrollbarBg, BackgroundDark),
 
             (ImGuiCol.Border, BorderDark),
@@ -110,12 +122,15 @@ internal static class Theme
         ];
     }
 
-    private class ThemeScope(int colorCount, int styleCount) : IDisposable
+    public class ThemeScope(int colorCount, int styleCount) : IDisposable
     {
+        public readonly int ColorCount = colorCount;
+        public readonly int StyleCount = styleCount;
+
         public void Dispose()
         {
-            ImGui.PopStyleColor(colorCount);
-            ImGui.PopStyleVar(styleCount);
+            ImGui.PopStyleColor(ColorCount);
+            ImGui.PopStyleVar(StyleCount);
         }
     }
 }
