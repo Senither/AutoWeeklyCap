@@ -5,11 +5,11 @@ using Dalamud.Interface.Windowing;
 
 namespace AutoWeeklyCap.UI.Windows;
 
-public class ConfigWindow : Window
+public class ControlPanel : Window
 {
     private SettingsWindowOption _option = SettingsWindowOption.GeneralOptions;
 
-    public ConfigWindow() : base("Auto Weekly Tomestone Settings")
+    public ControlPanel() : base("Auto Weekly Cap Control Panel")
     {
         SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(525, 350), MaximumSize = new Vector2(9999, 9999) };
     }
