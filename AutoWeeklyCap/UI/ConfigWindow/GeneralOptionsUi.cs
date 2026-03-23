@@ -6,9 +6,9 @@ public static class GeneralOptionsUi
 {
     public static void Draw()
     {
-        Card.DrawSubtle("General Options", GeneralOptions, false);
-        Card.DrawSubtle("UI Elements & Windows", UiElementsAndWindows, false);
-        Card.DrawSubtle("Network Options", NetworkOptions, false);
+        Card.DrawWarning("General Options", GeneralOptions, false);
+        Card.Draw("UI Elements & Windows", UiElementsAndWindows, false);
+        Card.Draw("Network Options", NetworkOptions, false);
     }
 
     private static void GeneralOptions()
