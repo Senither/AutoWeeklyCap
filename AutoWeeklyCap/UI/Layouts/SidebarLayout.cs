@@ -12,7 +12,7 @@ public static class SidebarLayout
     {
         var sidebarWidth = GetSidebarWidth();
 
-        using var sidebarBackground = ImRaii.PushColor(ImGuiCol.ChildBg, Theme.BackgroundDefault);
+        using var background = ImRaii.PushColor(ImGuiCol.ChildBg, Theme.BackgroundDefault);
 
         using (ImRaii.Child("##awc-sidebar", new Vector2(sidebarWidth, 0f), true)) {
             render();
@@ -23,9 +23,9 @@ public static class SidebarLayout
     {
         ImGui.SameLine();
 
-        using var sidebarBackground = ImRaii.PushColor(ImGuiCol.ChildBg, Theme.BackgroundDefault);
+        using var background = ImRaii.PushColor(ImGuiCol.ChildBg, Theme.BackgroundMedium);
 
-        using (ImRaii.Child("###Content", new Vector2(0, ImGui.GetContentRegionAvail().Y), true)) {
+        using (ImRaii.Child("###awc-content", new Vector2(0, ImGui.GetContentRegionAvail().Y), true)) {
             render();
         }
     }

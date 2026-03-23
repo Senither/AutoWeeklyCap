@@ -17,17 +17,18 @@ internal static class Theme
     internal static Vector4 ButtonSuccess = ColorUtils.HexToVector("#007009");
     internal static Vector4 ButtonSuccessHovered = ColorUtils.HexToVector("#007009", 0.65f);
 
-    internal static Vector4 BackgroundDefault = ColorUtils.HexToVector("#232323");
-    internal static Vector4 BackgroundMuted = ColorUtils.HexToVector("#0F0F10");
+    internal static Vector4 BackgroundDefault = ColorUtils.HexToVector("#161616");
+    internal static Vector4 BackgroundMedium = ColorUtils.HexToVector("#0C0C0C");
+    internal static Vector4 BackgroundDark = ColorUtils.HexToVector("#0A0A0A");
     internal static Vector4 BackgroundWarning = ColorUtils.HexToVector("#FFC63C");
     internal static Vector4 BackgroundDanger = ColorUtils.HexToVector("#FF3C3C");
 
-    internal static Vector4 BorderDefault = ColorUtils.HexToVector("#5A5A59", 0.2f);
-    internal static Vector4 BorderMuted = ColorUtils.HexToVector("#5A5A59", 0.45f);
+    internal static Vector4 BorderDefault = ColorUtils.HexToVector("#262626");
+    internal static Vector4 BorderDark = ColorUtils.HexToVector("#262626");
     internal static Vector4 BorderWarning = ColorUtils.HexToVector("#AB8E1B", 0.8f);
     internal static Vector4 BorderDanger = ColorUtils.HexToVector("#AB1B1B", 0.8f);
 
-    internal static Vector4 TextDefault = ColorUtils.HexToVector("#F3F3F3");
+    internal static Vector4 TextDefault = ColorUtils.HexToVector("#FAFAFA");
     internal static Vector4 TextPrimary = ColorUtils.HexToVector("#9B9BE9");
     internal static Vector4 TextSuccess = ColorUtils.HexToVector("#00CC22");
     internal static Vector4 TextWarning = ColorUtils.HexToVector("#D9BE08");
@@ -70,13 +71,13 @@ internal static class Theme
     {
         return
         [
-            // (ImGuiCol.WindowBg, BackgroundDefault),
-            // (ImGuiCol.ChildBg, BackgroundMuted),
-            // (ImGuiCol.PopupBg, BackgroundDefault),
-            (ImGuiCol.ScrollbarBg, BackgroundMuted),
+            (ImGuiCol.WindowBg, BackgroundDefault),
+            (ImGuiCol.ChildBg, BackgroundDefault),
+            (ImGuiCol.PopupBg, BackgroundDefault),
+            (ImGuiCol.ScrollbarBg, BackgroundDark),
 
-            (ImGuiCol.Border, BorderMuted),
-            (ImGuiCol.Separator, BorderMuted),
+            (ImGuiCol.Border, BorderDark),
+            (ImGuiCol.Separator, BorderDark),
 
             (ImGuiCol.Text, TextDefault),
             (ImGuiCol.TextDisabled, TextMuted),

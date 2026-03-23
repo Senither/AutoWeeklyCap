@@ -5,7 +5,7 @@ namespace AutoWeeklyCap.UI.Helpers;
 
 public static class Card
 {
-    private const float Rounding = 1f;
+    private const float Rounding = 8f;
     private const float BorderSize = 1f;
 
     private static readonly Vector2 TitlePadding = new(10, 6);
@@ -14,8 +14,8 @@ public static class Card
     private static readonly Vector2 SubtleTitlePadding = new(8, 4);
     private static readonly Vector2 SubtleContentPadding = new(8, 8);
 
-    private static readonly Vector4 DefaultChildBg = new(0.05f, 0.05f, 0.05f, 0.2f);
-    private static readonly Vector4 SubtleChildBg = new(0.05f, 0.05f, 0.05f, 0.12f);
+    private static readonly Vector4 DefaultChildBg = Theme.BackgroundDefault with { W = 0.35f };
+    private static readonly Vector4 SubtleChildBg = Theme.BackgroundDark with { W = 0.35f };
 
     private static int _channelSplitDepth = 0;
     private static readonly Stack<CardContext> ContextStack = new();
@@ -52,8 +52,8 @@ public static class Card
         DrawCore(
             title,
             bodyContent,
-            Theme.BackgroundMuted,
-            Theme.BorderMuted,
+            Theme.BackgroundDark,
+            Theme.BorderDark,
             SubtleChildBg,
             SubtleTitlePadding,
             SubtleContentPadding,
@@ -92,7 +92,7 @@ public static class Card
     internal static void DrawWithColors(
         string title,
         Action bodyContent,
-        Vector4 backgroundColor,
+        Vector4 titleBackgroundColor,
         Vector4 borderColor,
         bool collapsible = true,
         bool defaultOpen = false,
@@ -102,7 +102,7 @@ public static class Card
         DrawCore(
             title,
             bodyContent,
-            backgroundColor,
+            titleBackgroundColor,
             borderColor,
             DefaultChildBg,
             TitlePadding,
@@ -116,7 +116,7 @@ public static class Card
     private static void DrawCore(
         string title,
         Action bodyContent,
-        Vector4 backgroundColor,
+        Vector4 titleBackgroundColor,
         Vector4 borderColor,
         Vector4 childBg,
         Vector2 titlePadding,
@@ -236,7 +236,7 @@ public static class Card
                     cardMax,
                     titleBarHeight,
                     cardBgColor,
-                    backgroundColor,
+                    titleBackgroundColor,
                     borderColor
                 );
                 bgRecorded = true;
@@ -270,16 +270,16 @@ public static class Card
         drawList.ChannelsSetCurrent(0);
 
         foreach (var bg in _pendingBackgrounds) {
-            drawList.AddRectFilled(bg.Min, bg.Max, ImGui.ColorConvertFloat4ToU32(bg.CardBgColor), Rounding, ImDrawFlags.RoundCornersBottom);
+            drawList.AddRectFilled(bg.Min, bg.Max, ImGui.ColorConvertFloat4ToU32(bg.CardBgColor), Rounding, ImDrawFlags.RoundCornersAll);
             drawList.AddRectFilled(
                 bg.Min,
                 bg.Max with { Y = bg.Min.Y + bg.TitleBarHeight },
                 ImGui.ColorConvertFloat4ToU32(bg.TitleBarColor),
                 Rounding,
-                ImDrawFlags.RoundCornersNone
+                ImDrawFlags.RoundCornersTop
             );
 
-            drawList.AddRect(bg.Min, bg.Max, ImGui.ColorConvertFloat4ToU32(bg.BorderColor), Rounding, ImDrawFlags.RoundCornersBottom, BorderSize);
+            drawList.AddRect(bg.Min, bg.Max, ImGui.ColorConvertFloat4ToU32(bg.BorderColor), Rounding, ImDrawFlags.RoundCornersAll, BorderSize);
         }
     }
 
