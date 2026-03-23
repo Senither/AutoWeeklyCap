@@ -279,6 +279,14 @@ public static class Card
                 ImDrawFlags.RoundCornersTop
             );
 
+            var titleDividerY = bg.Min.Y + bg.TitleBarHeight;
+            drawList.AddLine(
+                new Vector2(bg.Min.X, titleDividerY),
+                new Vector2(bg.Max.X, titleDividerY),
+                ImGui.ColorConvertFloat4ToU32(bg.BorderColor),
+                BorderSize
+            );
+
             drawList.AddRect(bg.Min, bg.Max, ImGui.ColorConvertFloat4ToU32(bg.BorderColor), Rounding, ImDrawFlags.RoundCornersAll, BorderSize);
         }
     }

@@ -71,9 +71,9 @@ internal static class Theme
     {
         return
         [
-            (ImGuiCol.WindowBg, BackgroundDefault),
-            (ImGuiCol.ChildBg, BackgroundDefault),
-            (ImGuiCol.PopupBg, BackgroundDefault),
+            // (ImGuiCol.WindowBg, BackgroundDefault),
+            // (ImGuiCol.ChildBg, BackgroundDefault),
+            // (ImGuiCol.PopupBg, BackgroundDefault),
             (ImGuiCol.ScrollbarBg, BackgroundDark),
 
             (ImGuiCol.Border, BorderDark),
