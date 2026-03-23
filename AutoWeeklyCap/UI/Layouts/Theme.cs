@@ -17,10 +17,10 @@ internal static class Theme
     internal static Vector4 ButtonSuccess = ColorUtils.HexToVector("#007009");
     internal static Vector4 ButtonSuccessHovered = ColorUtils.HexToVector("#007009", 0.65f);
 
-    internal static Vector4 BackgroundDefault = ColorUtils.HexToVector("#AAAAAA", 0.2f);
-    internal static Vector4 BackgroundMuted = ColorUtils.HexToVector("#AAAAAA", 0.12f);
-    internal static Vector4 BackgroundWarning = ColorUtils.HexToVector("#FFC63C", 0.3f);
-    internal static Vector4 BackgroundDanger = ColorUtils.HexToVector("#FF3C3C", 0.3f);
+    internal static Vector4 BackgroundDefault = ColorUtils.HexToVector("#232323");
+    internal static Vector4 BackgroundMuted = ColorUtils.HexToVector("#0F0F10");
+    internal static Vector4 BackgroundWarning = ColorUtils.HexToVector("#FFC63C");
+    internal static Vector4 BackgroundDanger = ColorUtils.HexToVector("#FF3C3C");
 
     internal static Vector4 BorderDefault = ColorUtils.HexToVector("#5A5A59", 0.2f);
     internal static Vector4 BorderMuted = ColorUtils.HexToVector("#5A5A59", 0.45f);

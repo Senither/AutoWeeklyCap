@@ -23,7 +23,7 @@ public static class SidebarLayout
     {
         ImGui.SameLine();
 
-        using var sidebarBackground = ImRaii.PushColor(ImGuiCol.ChildBg, Theme.BackgroundMuted);
+        using var sidebarBackground = ImRaii.PushColor(ImGuiCol.ChildBg, Theme.BackgroundDefault);
 
         using (ImRaii.Child("###Content", new Vector2(0, ImGui.GetContentRegionAvail().Y), true)) {
             render();

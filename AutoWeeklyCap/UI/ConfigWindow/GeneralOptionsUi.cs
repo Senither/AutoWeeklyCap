@@ -6,7 +6,7 @@ public static class GeneralOptionsUi
 {
     public static void Draw()
     {
-        Card.DrawWarning("General Options", GeneralOptions, false);
+        Card.Draw("General Options", GeneralOptions, false);
         Card.Draw("UI Elements & Windows", UiElementsAndWindows, false);
         Card.Draw("Network Options", NetworkOptions, false);
     }
