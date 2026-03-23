@@ -13,9 +13,9 @@ using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 // ReSharper disable InconsistentNaming
 
-namespace AutoWeeklyCap.UI.MainWindow;
+namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
-internal static class DebugUI
+internal static class DeveloperToolbox
 {
     private static string DebugAudioFilePath = "";
     private static uint DebugAudioVolume = 50;
@@ -24,12 +24,12 @@ internal static class DebugUI
 
     internal static void Draw()
     {
-        Card.DrawSubtle("Plugin Details", DrawPluginDetails, false);
-        Card.DrawSubtle("Runner Debug Steps", DrawRunnerDebugSteps, false);
-        Card.DrawSubtle("Runner Debug Actions", DrawRunnerDebugActions, false);
-        Card.DrawSubtle("Notification Debug Actions", DrawNotificationDebugActions, false);
-        Card.DrawSubtle("Game Data State", DrawGameDataState, false);
-        Card.DrawSubtle("Plugin Logs", DrawPluginLogs);
+        Card.Draw("Plugin Details", DrawPluginDetails, false);
+        Card.Draw("Runner Debug Steps", DrawRunnerDebugSteps, false);
+        Card.Draw("Runner Debug Actions", DrawRunnerDebugActions, false);
+        Card.Draw("Notification Debug Actions", DrawNotificationDebugActions, false);
+        Card.Draw("Game Data State", DrawGameDataState, false);
+        Card.Draw("Plugin Logs", DrawPluginLogs);
         Card.DrawDanger("Danger Zone", DrawDangerZone);
     }
 

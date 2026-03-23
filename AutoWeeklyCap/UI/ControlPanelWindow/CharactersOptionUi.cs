@@ -3,7 +3,7 @@ using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface;
 
-namespace AutoWeeklyCap.UI.ConfigWindow;
+namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
 public static class CharactersOptionUi
 {

@@ -1,5 +1,4 @@
-﻿using AutoWeeklyCap.UI.ConfigWindow;
-using AutoWeeklyCap.UI.Helpers;
+﻿using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface.Windowing;
 
@@ -20,6 +19,10 @@ public class ControlPanel : Window
             SidebarLayout.DrawSidebar(() =>
             {
                 foreach (var option in Enum.GetValues(typeof(SettingsWindowOption)).Cast<SettingsWindowOption>()) {
+                    if (!option.IsDrawable()) {
+                        continue;
+                    }
+
                     if (MenuButton.Draw(option.GetIcon(), option.GetName(), _option == option)) {
                         _option = option;
                     }

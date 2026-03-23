@@ -2,7 +2,7 @@ using AutoWeeklyCap.UI.Helpers;
 
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
-namespace AutoWeeklyCap.UI.ConfigWindow;
+namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
 public static class RunnerPrerequisitesUi
 {

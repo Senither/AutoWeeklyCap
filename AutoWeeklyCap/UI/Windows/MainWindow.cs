@@ -91,23 +91,7 @@ public class MainWindow : Window
             DrawPluginStatus();
             DrawHeaderActionButtons();
 
-            var tabs = new List<(string name, Action function, Vector4? color, bool child)> { ("Characters", CharactersTabUi.Draw, null, true) };
-
-            if (!AWC.Config.HideUiElementDependencies) {
-                tabs.Add(("Dependencies", DependenciesUI.Draw, null, true));
-            }
-
-            tabs.Add(("About", AboutTabUi.Draw, null, true));
-
-            if (!AWC.Config.HideUiElementChangelog) {
-                tabs.Add(("Changelog", ChangelogUI.Draw, null, true));
-            }
-
-            if (AWC.Config.DevMode && AWC.Config.ShowUiElementDebug) {
-                tabs.Add(("Debug", DebugUI.Draw, null, true));
-            }
-
-            ImGuiEx.EzTabBar("main-awc-tabbar", "Test", tabs.ToArray());
+            CharactersTabUi.Draw();
 
             if (AWC.Config.Window.Pin) {
                 return;

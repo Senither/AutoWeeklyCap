@@ -1,6 +1,6 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
 
-namespace AutoWeeklyCap.UI.ConfigWindow;
+namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
 public static class GeneralOptionsUi
 {
@@ -69,27 +69,6 @@ public static class GeneralOptionsUi
                 AWC.Config.ShowStatusAsIcons = iconsDtr;
             }
         });
-
-        Card.Separator();
-
-        var hideElementDependencies = AWC.Config.HideUiElementDependencies;
-        if (ImGui.Checkbox("Hide dependencies tab", ref hideElementDependencies)) {
-            AWC.Config.HideUiElementDependencies = hideElementDependencies;
-        }
-
-        var hideElementChangelog = AWC.Config.HideUiElementChangelog;
-        if (ImGui.Checkbox("Hide changelog tab", ref hideElementChangelog)) {
-            AWC.Config.HideUiElementChangelog = hideElementChangelog;
-        }
-
-        if (!AWC.Config.DevMode) {
-            return;
-        }
-
-        var showElementDebug = AWC.Config.ShowUiElementDebug;
-        if (ImGui.Checkbox("Show debug tab", ref showElementDebug)) {
-            AWC.Config.ShowUiElementDebug = showElementDebug;
-        }
     }
 
     private static void NetworkOptions()

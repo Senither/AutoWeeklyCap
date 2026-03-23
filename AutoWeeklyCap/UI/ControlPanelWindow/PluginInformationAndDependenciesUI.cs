@@ -6,9 +6,9 @@ using Dalamud.Utility;
 
 // ReSharper disable InconsistentNaming
 
-namespace AutoWeeklyCap.UI.MainWindow;
+namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
-internal static class DependenciesUI
+internal static class PluginInformationAndDependenciesUI
 {
     private static readonly List<PluginInstallerHelper.PluginContext> RequiredPlugins =
     [
@@ -34,6 +34,12 @@ internal static class DependenciesUI
 
     public static void Draw()
     {
+        DrawPluginAboutInformation();
+
+        ImGui.Spacing();
+        ImGui.Spacing();
+        ImGui.Separator();
+
         ImGui.TextWrapped($"{AWC.Name} requires the following plugins to work:");
         DrawPluginList(RequiredPlugins);
 
@@ -48,6 +54,33 @@ internal static class DependenciesUI
 
         ImGui.TextWrapped($"The following plugins are recommended, but not required:");
         DrawPluginList(OptionalPlugins);
+    }
+
+    private static void DrawPluginAboutInformation()
+    {
+        ImGuiHelpers.ScaledDummy(5f);
+        ImGuiEx.TextCentered($"{AWC.Name} v{AWC.Version}");
+        ImGuiHelpers.ScaledDummy(1f);
+
+        ImGuiEx.TextCentered("Developed and published by Senither");
+        ImGuiEx.TextCentered("Original idea by Tuffic");
+        ImGuiEx.TextCentered("Additional ideas by Naru, Myuri & Yoite");
+
+        ImGuiHelpers.ScaledDummy(5f);
+
+        ImGuiEx.LineCentered(() =>
+        {
+            if (ImGui.Button("Plugin List")) {
+                ImGui.SetClipboardText("https://dalamud-plugins.senither.com");
+                Notify.Success("Link copied to clipboard");
+            }
+
+            ImGui.SameLine();
+            if (ImGui.Button("Plugin Repository")) {
+                ImGui.SetClipboardText("https://dalamud-plugins.senither.com/plugin/AutoWeeklyCap.json");
+                Notify.Success("Link copied to clipboard");
+            }
+        });
     }
 
     private static void DrawPluginList(List<PluginInstallerHelper.PluginContext> plugins)

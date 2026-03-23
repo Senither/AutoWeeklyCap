@@ -1,6 +1,6 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
 
-namespace AutoWeeklyCap.UI.ConfigWindow;
+namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
 public static class DutyOptionsUi
 {
