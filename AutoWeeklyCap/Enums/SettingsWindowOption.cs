@@ -7,13 +7,12 @@ namespace AutoWeeklyCap.Enums;
 public enum SettingsWindowOption
 {
     GeneralOptions = 0,
-    DutyOptions = 1,
-    Characters = 2,
-    RunnerOptions = 3,
-    StopOptions = 4,
-    ManuallyResetTomestone = 5,
-    Changelog = 6,
-    PluginInformationAndDependencies = 7,
+    Characters = 1,
+    RunnerOptions = 2,
+    StopOptions = 3,
+    ManuallyResetTomestone = 4,
+    Changelog = 5,
+    PluginInformationAndDependencies = 6,
 
     DeveloperToolbox = 99,
 }
@@ -27,7 +26,6 @@ public static class SettingsWindowOptionsExtensions
             return option switch
             {
                 SettingsWindowOption.GeneralOptions => "General Options",
-                SettingsWindowOption.DutyOptions => "Duty Options",
                 SettingsWindowOption.Characters => "Characters",
                 SettingsWindowOption.RunnerOptions => "Runner Options",
                 SettingsWindowOption.StopOptions => "Stop Actions",
@@ -44,7 +42,6 @@ public static class SettingsWindowOptionsExtensions
             return option switch
             {
                 SettingsWindowOption.GeneralOptions => FontAwesomeIcon.Computer,
-                SettingsWindowOption.DutyOptions => FontAwesomeIcon.Gamepad,
                 SettingsWindowOption.Characters => FontAwesomeIcon.Users,
                 SettingsWindowOption.RunnerOptions => FontAwesomeIcon.Gamepad,
                 SettingsWindowOption.StopOptions => FontAwesomeIcon.StopCircle,
@@ -70,9 +67,6 @@ public static class SettingsWindowOptionsExtensions
             switch (option) {
                 case SettingsWindowOption.GeneralOptions:
                     GeneralOptionsUi.Draw();
-                    break;
-                case SettingsWindowOption.DutyOptions:
-                    DutyOptionsUi.Draw();
                     break;
                 case SettingsWindowOption.Characters:
                     CharactersOptionUi.Draw();

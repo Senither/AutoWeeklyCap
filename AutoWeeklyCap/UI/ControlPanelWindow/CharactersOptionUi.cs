@@ -9,6 +9,16 @@ public static class CharactersOptionUi
 {
     public static void Draw()
     {
+        Card.Draw("Characters", DrawCharacterList, collapsible: false);
+        DrawCharacterImporter();
+    }
+
+    private static void DrawCharacterList()
+    {
+        ImGui.TextWrapped("Lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum");
+
+        Card.Separator();
+
         foreach (var characterAndWorld in AWC.Config.GetSortedCharacters()) {
             var option = AWC.Config.Characters[characterAndWorld];
 
@@ -23,10 +33,7 @@ public static class CharactersOptionUi
 
             ImGui.PopID();
         }
-
-        DrawCharacterImporter();
     }
-
 
     private static void DrawCharacterImporter()
     {

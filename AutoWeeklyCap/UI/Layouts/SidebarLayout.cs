@@ -4,8 +4,8 @@ namespace AutoWeeklyCap.UI.Layouts;
 
 public static class SidebarLayout
 {
-    private const float SidebarMinWidth = 140f;
-    private const float SidebarMaxWidth = 260f;
+    private const float SidebarMinWidth = 200f;
+    private const float SidebarMaxWidth = 220f;
     private const float SidebarWidthRatio = 0.28f;
 
     internal static void DrawSidebar(Action render)

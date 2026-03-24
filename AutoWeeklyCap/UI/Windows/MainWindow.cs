@@ -91,7 +91,9 @@ public class MainWindow : Window
             DrawPluginStatus();
             DrawHeaderActionButtons();
 
+            ImGui.Spacing();
             CharactersTabUi.Draw();
+            ImGui.Spacing();
 
             if (AWC.Config.Window.Pin) {
                 return;
