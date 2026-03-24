@@ -4,9 +4,10 @@ namespace AutoWeeklyCap.UI.Layouts;
 
 public static class SidebarLayout
 {
-    private const float SidebarMinWidth = 200f;
-    private const float SidebarMaxWidth = 220f;
+    private const float SidebarMinWidth = 60f;
+    private const float SidebarMaxWidth = 200f;
     private const float SidebarWidthRatio = 0.28f;
+    private const float SidebarTextBreakpoint = 180f;
 
     internal static void DrawSidebar(Action render)
     {
@@ -30,10 +31,21 @@ public static class SidebarLayout
         }
     }
 
+    internal static float GetSidebarContentTextBreakpoint()
+    {
+        var style = ImGui.GetStyle();
+        return SidebarTextBreakpoint - (style.WindowPadding.X * 2f);
+    }
+
     private static float GetSidebarWidth()
     {
         var availableWidth = ImGui.GetContentRegionAvail().X;
         var proportionalWidth = availableWidth * SidebarWidthRatio;
+
+        if (proportionalWidth < SidebarTextBreakpoint) {
+            return SidebarMinWidth;
+        }
+
         return Math.Clamp(proportionalWidth, SidebarMinWidth, SidebarMaxWidth);
     }
 }

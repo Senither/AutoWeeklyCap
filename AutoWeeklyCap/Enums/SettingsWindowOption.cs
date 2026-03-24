@@ -29,7 +29,7 @@ public static class SettingsWindowOptionsExtensions
                 SettingsWindowOption.Characters => "Characters",
                 SettingsWindowOption.RunnerOptions => "Runner Options",
                 SettingsWindowOption.StopOptions => "Stop Actions",
-                SettingsWindowOption.ManuallyResetTomestone => "Manually Reset Tomestones",
+                SettingsWindowOption.ManuallyResetTomestone => "Reset Tomestones",
                 SettingsWindowOption.Changelog => "Changelog",
                 SettingsWindowOption.PluginInformationAndDependencies => "About & Dependencies",
                 SettingsWindowOption.DeveloperToolbox => "Developer Toolbox",

@@ -23,7 +23,7 @@ public class ControlPanel : Window
                         continue;
                     }
 
-                    if (MenuButton.Draw(option.GetIcon(), option.GetName(), _option == option)) {
+                    if (MenuButton.Draw(option.GetIcon(), option.GetName(), _option == option, widthBreakpoint: SidebarLayout.GetSidebarContentTextBreakpoint())) {
                         _option = option;
                     }
                 }

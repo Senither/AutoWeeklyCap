@@ -11,11 +11,12 @@ public static class MenuButton
     private const float ActiveIndicatorInset = 2f;
     private const float ActiveOutlineThickness = 1.5f;
 
-    public static bool Draw(FontAwesomeIcon icon, string text, bool isActive = false, string? id = null, Vector2? padding = null)
+    public static bool Draw(FontAwesomeIcon icon, string text, bool isActive = false, string? id = null, Vector2? padding = null, float? widthBreakpoint = null)
     {
         var contentPadding = padding ?? DefaultPadding;
         var buttonSize = new Vector2(ImGui.GetContentRegionAvail().X, 0f);
         var buttonId = string.IsNullOrWhiteSpace(id) ? text : id;
+        var showText = !widthBreakpoint.HasValue || buttonSize.X >= widthBreakpoint.Value;
 
         using var buttonColor = ImRaii.PushColor(ImGuiCol.Button, Theme.InteractiveDefault);
         using var hoverColor = ImRaii.PushColor(ImGuiCol.ButtonHovered, Theme.InteractiveHovered);
@@ -51,7 +52,7 @@ public static class MenuButton
         }
 
         var iconText = icon.ToIconString();
-        var textSize = ImGui.CalcTextSize(text);
+        var textSize = showText ? ImGui.CalcTextSize(text) : Vector2.Zero;
 
         Vector2 iconSize;
         using (ImRaii.PushFont(UiBuilder.IconFont)) {
@@ -66,7 +67,11 @@ public static class MenuButton
             drawList.AddText(new Vector2(startX, iconY), ImGui.GetColorU32(ImGuiCol.Text), iconText);
         }
 
-        drawList.AddText(new Vector2(startX + iconSize.X + IconSpacing, textY), ImGui.GetColorU32(ImGuiCol.Text), text);
+        if (showText) {
+            drawList.AddText(new Vector2(startX + iconSize.X + IconSpacing, textY), ImGui.GetColorU32(ImGuiCol.Text), text);
+        } else {
+            ImGuiEx.Tooltip(text);
+        }
 
         return clicked;
     }
