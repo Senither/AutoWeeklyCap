@@ -9,6 +9,7 @@ public static class GeneralOptionsUi
         Card.Draw("General Options", GeneralOptions, false);
         Card.Draw("UI Elements & Windows", UiElementsAndWindows, false);
         Card.Draw("Network Options", NetworkOptions, false);
+        Card.DrawWarning("Reset Weekly Tomestones", ResetWeeklyTomestones);
     }
 
     private static void GeneralOptions()
@@ -99,5 +100,22 @@ public static class GeneralOptionsUi
             ImGui.Text("When enabled the title screen movie will be disabled, regardless");
             ImGui.Text("of if the runner is actually running or not.");
         });
+    }
+
+    private static void ResetWeeklyTomestones()
+    {
+        ImGui.TextWrapped(
+            "The tomestones will reset automatically during the weekly reset, however, " +
+            "if you want to reset the tomes manually you can use the button below."
+        );
+
+        ImGui.Spacing();
+        ImGui.Spacing();
+
+        ActionButton.Draw(
+            "Reset Weekly Tomestones",
+            "Hold down CTRL to reset your weekly tomestones",
+            () => AWC.Config.CollectedTomes.Clear()
+        );
     }
 }

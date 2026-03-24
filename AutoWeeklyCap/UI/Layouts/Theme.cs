@@ -31,7 +31,7 @@ internal static class Theme
     internal static Vector4 TextDefault = ColorUtils.HexToVector("#FAFAFA");
     internal static Vector4 TextPrimary = ColorUtils.HexToVector("#9B9BE9");
     internal static Vector4 TextSuccess = ColorUtils.HexToVector("#00CC22");
-    internal static Vector4 TextWarning = ColorUtils.HexToVector("#D9BE08");
+    internal static Vector4 TextWarning = ColorUtils.HexToVector("#EBD22A");
     internal static Vector4 TextDanger = ColorUtils.HexToVector("#CC0000");
     internal static Vector4 TextMuted = ColorUtils.HexToVector("#FFFFFF", 0.45f);
 

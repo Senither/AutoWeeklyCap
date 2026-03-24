@@ -10,9 +10,8 @@ public enum SettingsWindowOption
     Characters = 1,
     RunnerOptions = 2,
     StopOptions = 3,
-    ManuallyResetTomestone = 4,
-    Changelog = 5,
-    PluginInformationAndDependencies = 6,
+    Changelog = 4,
+    PluginInformationAndDependencies = 5,
 
     DeveloperToolbox = 99,
 }
@@ -29,7 +28,6 @@ public static class SettingsWindowOptionsExtensions
                 SettingsWindowOption.Characters => "Characters",
                 SettingsWindowOption.RunnerOptions => "Runner Options",
                 SettingsWindowOption.StopOptions => "Stop Actions",
-                SettingsWindowOption.ManuallyResetTomestone => "Reset Tomestones",
                 SettingsWindowOption.Changelog => "Changelog",
                 SettingsWindowOption.PluginInformationAndDependencies => "About & Dependencies",
                 SettingsWindowOption.DeveloperToolbox => "Developer Toolbox",
@@ -45,7 +43,6 @@ public static class SettingsWindowOptionsExtensions
                 SettingsWindowOption.Characters => FontAwesomeIcon.Users,
                 SettingsWindowOption.RunnerOptions => FontAwesomeIcon.Gamepad,
                 SettingsWindowOption.StopOptions => FontAwesomeIcon.StopCircle,
-                SettingsWindowOption.ManuallyResetTomestone => FontAwesomeIcon.Trash,
                 SettingsWindowOption.Changelog => FontAwesomeIcon.List,
                 SettingsWindowOption.PluginInformationAndDependencies => FontAwesomeIcon.InfoCircle,
                 SettingsWindowOption.DeveloperToolbox => FontAwesomeIcon.Code,
@@ -76,9 +73,6 @@ public static class SettingsWindowOptionsExtensions
                     break;
                 case SettingsWindowOption.StopOptions:
                     StopActionsUi.Draw();
-                    break;
-                case SettingsWindowOption.ManuallyResetTomestone:
-                    ResetWeeklyTomestonesUi.Draw();
                     break;
                 case SettingsWindowOption.Changelog:
                     ChangelogUI.Draw();
