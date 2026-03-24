@@ -15,7 +15,7 @@ public static class CharactersOptionUi
 
     private static void DrawCharacterList()
     {
-        ImGui.TextWrapped("Lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum, lorem ipsum");
+        ImGui.TextWrapped("Here you can sort your characters as well as manage their status. This will affect the order in which they will be processed when the runner is going, as well as how they will appear in the plugin interface.");
 
         Card.Separator();
 
