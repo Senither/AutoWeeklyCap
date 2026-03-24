@@ -8,11 +8,8 @@ public static class RunnerPrerequisitesUi
 {
     public static void Draw()
     {
-        ImGui.TextWrapped("Select what should happen before and between runs.");
-        ImGui.Spacing();
-
         Card.Draw("Duty Options###runner-duty-options", DrawTest, defaultOpen: true);
-        Card.Draw("General Options###runner-prereq-general", DrawGeneralOptions, defaultOpen: true);
+        Card.Draw("Between Runs###runner-prereq-general", DrawBetweenRunsOptions, defaultOpen: true);
 
         ImGui.TextWrapped("Select how third-party plugins should be integrated into the runner.");
         ImGui.Spacing();
@@ -66,8 +63,9 @@ public static class RunnerPrerequisitesUi
         });
     }
 
-    private static void DrawGeneralOptions()
+    private static void DrawBetweenRunsOptions()
     {
+        ImGui.TextWrapped("Select what should happen before and between runs.");
         ImGui.Spacing();
 
         // Return to home world

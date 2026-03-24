@@ -6,26 +6,31 @@ public static class StopActionsUi
 {
     public static void Draw()
     {
-        ImGui.TextWrapped("Select what should happen when all characters have been tomestone capped.");
+        Card.Draw("Stop Actions", () =>
+        {
+            ImGui.TextWrapped("Select what should happen when all characters have been tomestone capped.");
 
-        ImGui.Spacing();
-        ImGui.Spacing();
+            Card.Separator();
 
-        foreach (StopAction action in Enum.GetValues(typeof(StopAction))) {
-            if (ImGui.RadioButton(action.GetName(), AWC.Config.StopAction == action)) {
-                AWC.Config.StopAction = action;
+            ImGui.Spacing();
+            ImGui.Spacing();
+
+            foreach (StopAction action in Enum.GetValues(typeof(StopAction))) {
+                if (ImGui.RadioButton(action.GetName(), AWC.Config.StopAction == action)) {
+                    AWC.Config.StopAction = action;
+                }
+
+                var tooltip = action.GetTooltip();
+                if (tooltip != null) {
+                    InformationTooltip.Draw(tooltip);
+                }
             }
 
-            var tooltip = action.GetTooltip();
-            if (tooltip != null) {
-                InformationTooltip.Draw(tooltip);
-            }
-        }
+            ImGui.Spacing();
+            ImGui.Spacing();
 
-        ImGui.Spacing();
-        ImGui.Spacing();
-
-        Disabled.Draw(!IsDrawCharacterSwitchEnabled(AWC.Config.StopAction), DrawCharacterSwitch);
+            Disabled.Draw(!IsDrawCharacterSwitchEnabled(AWC.Config.StopAction), DrawCharacterSwitch);
+        }, collapsible: false);
     }
 
     private static bool IsDrawCharacterSwitchEnabled(StopAction action)

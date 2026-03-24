@@ -10,7 +10,7 @@ public class ControlPanel : Window
 
     public ControlPanel() : base("Auto Weekly Cap Control Panel")
     {
-        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(525, 350), MaximumSize = new Vector2(9999, 9999) };
+        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(575, 400), MaximumSize = new Vector2(9999, 9999) };
     }
 
     public override void Draw()

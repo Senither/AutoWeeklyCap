@@ -20,7 +20,7 @@ internal static class Theme
     internal static Vector4 BackgroundDefault = ColorUtils.HexToVector("#161616");
     internal static Vector4 BackgroundMedium = ColorUtils.HexToVector("#0C0C0C");
     internal static Vector4 BackgroundDark = ColorUtils.HexToVector("#0A0A0A");
-    internal static Vector4 BackgroundWarning = ColorUtils.HexToVector("#FFC63C");
+    internal static Vector4 BackgroundWarning = ColorUtils.HexToVector("#C08C1D");
     internal static Vector4 BackgroundDanger = ColorUtils.HexToVector("#FF3C3C");
 
     internal static Vector4 BorderDefault = ColorUtils.HexToVector("#262626");
