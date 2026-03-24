@@ -30,13 +30,13 @@ public static class MenuButton
         var drawList = ImGui.GetWindowDrawList();
 
         if (isActive) {
-            var activeTint = Theme.Accent with { W = 0.12f };
+            var activeTint = Theme.Primary with { W = 0.12f };
 
             drawList.AddRectFilled(min, max, ImGui.ColorConvertFloat4ToU32(activeTint), 4f, ImDrawFlags.RoundCornersAll);
             drawList.AddRectFilled(
                 new Vector2(min.X, min.Y + ActiveIndicatorInset),
                 new Vector2(min.X + ActiveIndicatorWidth, max.Y - ActiveIndicatorInset),
-                ImGui.ColorConvertFloat4ToU32(Theme.Accent),
+                ImGui.ColorConvertFloat4ToU32(Theme.Primary),
                 ActiveIndicatorWidth,
                 ImDrawFlags.RoundCornersAll
             );
@@ -44,7 +44,7 @@ public static class MenuButton
             drawList.AddRect(
                 min,
                 max,
-                ImGui.ColorConvertFloat4ToU32(Theme.Accent),
+                ImGui.ColorConvertFloat4ToU32(Theme.Primary),
                 4f,
                 ImDrawFlags.RoundCornersAll,
                 ActiveOutlineThickness

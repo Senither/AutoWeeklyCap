@@ -32,10 +32,9 @@ internal static class CharactersTabUi
                 var runsNeeded = (int)Math.Ceiling(remainingTomes / (double)TomesPerRun);
                 var averageSeconds = DefaultRunSeconds;
 
-                if (option.LastDutyDurationsSeconds.Count > 0)
+                if (option.LastDutyDurationsSeconds.Count > 0) {
                     // Adding 30 seconds to the timer to account for waiting time outside
                     // the instance, AutoRetainer, repairs, extracting, etc
-                {
                     averageSeconds = (int)option.LastDutyDurationsSeconds.Average() + 30;
                 }
 

@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
 
 namespace AutoWeeklyCap.UI.Helpers;
 
@@ -17,6 +19,16 @@ public static class ColorUtils
             uint.Parse(hex.Substring(2, 2), NumberStyles.HexNumber),
             uint.Parse(hex.Substring(4, 2), NumberStyles.HexNumber),
             a
+        );
+    }
+
+    public static Vector4 DarkenVector4(Vector4 color, float correctionFactor)
+    {
+        return new Vector4(
+            color.X * (1 - correctionFactor),
+            color.Y * (1 - correctionFactor),
+            color.Z * (1 - correctionFactor),
+            color.W
         );
     }
 
