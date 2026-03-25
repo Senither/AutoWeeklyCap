@@ -12,7 +12,7 @@ public class MainWindow : Window
 
     public MainWindow(AWC autoWeeklyCap) : base("Auto Weekly Tomestone Capper##main-window")
     {
-        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(425, 165), MaximumSize = new Vector2(9999, 9999) };
+        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(425, 135), MaximumSize = new Vector2(9999, 9999) };
 
         TitleBarButtons.Add(new TitleBarButton
         {
