@@ -15,8 +15,8 @@ internal static class Theme
     internal static Vector4 InteractiveUnfocused => ColorUtils.DarkenVector4(Primary, 0.10f) with { W = 0.7f };
     internal static Vector4 InteractiveLighter => ColorUtils.DarkenVector4(Primary, -0.75f);
 
-    internal static Vector4 ButtonSuccess = ColorUtils.HexToVector("#007009");
-    internal static Vector4 ButtonSuccessHovered = ColorUtils.HexToVector("#007009", 0.65f);
+    internal static Vector4 ButtonSuccess => ColorUtils.DarkenVector4(Primary, 0.35f);
+    internal static Vector4 ButtonSuccessHovered => ColorUtils.DarkenVector4(Primary, 0.35f) with { W = 0.65f };
 
     internal static Vector4 BackgroundDefault = ColorUtils.HexToVector("#161616");
     internal static Vector4 BackgroundMedium = ColorUtils.HexToVector("#0C0C0C");
