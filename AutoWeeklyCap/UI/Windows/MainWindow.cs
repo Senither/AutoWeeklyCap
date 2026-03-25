@@ -80,9 +80,13 @@ public class MainWindow : Window
         if (AWC.Config.Window.Pin) {
             ImGuiHelpers.SetNextWindowPosRelativeMainViewport(AWC.Config.Window.Position);
             ImGui.SetNextWindowSize(AWC.Config.Window.Size);
+        } else if (AWC.Config.AutoResizeCharacterWindow) {
+            ImGui.SetNextWindowSize(new Vector2(SizeConstraints!.Value.MinimumSize.X, 0));
         }
 
-        Flags = AWC.Config.Window.Pin ? ImGuiWindowFlags.NoResize : ImGuiWindowFlags.None;
+        Flags = (AWC.Config.Window.Pin || AWC.Config.AutoResizeCharacterWindow)
+            ? ImGuiWindowFlags.NoResize
+            : ImGuiWindowFlags.None;
     }
 
     public override void Draw()

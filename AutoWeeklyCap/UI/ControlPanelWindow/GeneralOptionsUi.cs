@@ -51,6 +51,16 @@ public static class GeneralOptionsUi
             "When disabled, ranged inputs will be shown as text inputs with increment and decrement step buttons"
         );
 
+        var autoResizeWindow = AWC.Config.AutoResizeCharacterWindow;
+        if (ImGui.Checkbox("Auto-resize characters window", ref autoResizeWindow)) {
+            AWC.Config.AutoResizeCharacterWindow = autoResizeWindow;
+        }
+
+        InformationTooltip.Draw(
+            "When enabled, the character window will automatically adjust to fit its content.\n" +
+            "Manual resizing of the window will be disabled."
+        );
+
         var dtrBar = AWC.Config.ShowStatusInStatusBar;
         if (ImGui.Checkbox("Show status in DTR bar", ref dtrBar)) {
             AWC.Config.ShowStatusInStatusBar = dtrBar;
