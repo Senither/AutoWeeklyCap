@@ -70,6 +70,35 @@ public static class GeneralOptionsUi
                 AWC.Config.ShowStatusAsIcons = iconsDtr;
             }
         });
+
+        Card.Separator();
+
+        ImGui.Text("UI Theme:");
+
+        var selectedTheme = AWC.Config.SelectedColorTheme;
+        if (ImGui.BeginCombo("###theme-selector", selectedTheme.GetName())) {
+            foreach (var theme in Enum.GetValues(typeof(ColorTheme)).Cast<ColorTheme>()) {
+                if (ImGui.Selectable(theme.GetName())) {
+                    AWC.Config.SelectedColorTheme = theme;
+                }
+            }
+
+            ImGui.EndCombo();
+        }
+
+        ImGui.SameLine();
+        if (ImGui.ArrowButton("###previous-ui-theme", ImGuiDir.Left)) {
+            AWC.Config.SelectedColorTheme = selectedTheme.GetPreviousTheme();
+        }
+
+        ImGuiEx.Tooltip("Previous theme");
+
+        ImGui.SameLine(0f, 2f);
+        if (ImGui.ArrowButton("###next-ui-theme", ImGuiDir.Right)) {
+            AWC.Config.SelectedColorTheme = selectedTheme.GetNextTheme();
+        }
+
+        ImGuiEx.Tooltip("Next theme");
     }
 
     private static void NetworkOptions()

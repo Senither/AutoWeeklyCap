@@ -7,13 +7,13 @@ namespace AutoWeeklyCap.UI.Layouts;
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 internal static class Theme
 {
-    internal static Vector4 Primary = ColorUtils.HexToVector("#8144C0");
+    internal static Vector4 Primary => AWC.Config.SelectedColorTheme.GetPrimaryColor();
 
     internal static Vector4 InteractiveDefault = ColorUtils.HexToVector("#444444");
-    internal static Vector4 InteractiveHovered = ColorUtils.DarkenVector4(Primary, 0.15f) with { W = 0.85f };
-    internal static Vector4 InteractiveActive = ColorUtils.DarkenVector4(Primary, 0.15f);
-    internal static Vector4 InteractiveUnfocused = ColorUtils.DarkenVector4(Primary, 0.10f) with { W = 0.7f };
-    internal static Vector4 InteractiveLighter = ColorUtils.DarkenVector4(Primary, -0.75f);
+    internal static Vector4 InteractiveHovered => ColorUtils.DarkenVector4(Primary, 0.15f) with { W = 0.85f };
+    internal static Vector4 InteractiveActive => ColorUtils.DarkenVector4(Primary, 0.15f);
+    internal static Vector4 InteractiveUnfocused => ColorUtils.DarkenVector4(Primary, 0.10f) with { W = 0.7f };
+    internal static Vector4 InteractiveLighter => ColorUtils.DarkenVector4(Primary, -0.75f);
 
     internal static Vector4 ButtonSuccess = ColorUtils.HexToVector("#007009");
     internal static Vector4 ButtonSuccessHovered = ColorUtils.HexToVector("#007009", 0.65f);
@@ -30,7 +30,7 @@ internal static class Theme
     internal static Vector4 BorderDanger = ColorUtils.HexToVector("#AB1B1B", 0.8f);
 
     internal static Vector4 TextDefault = ColorUtils.HexToVector("#FAFAFA");
-    internal static Vector4 TextPrimary = ColorUtils.DarkenVector4(Primary, -0.55f) with { W = 0.75f };
+    internal static Vector4 TextPrimary => ColorUtils.DarkenVector4(Primary, -0.55f) with { W = 0.75f };
     internal static Vector4 TextSuccess = ColorUtils.HexToVector("#00CC22");
     internal static Vector4 TextWarning = ColorUtils.HexToVector("#EBD22A");
     internal static Vector4 TextDanger = ColorUtils.HexToVector("#CC0000");
