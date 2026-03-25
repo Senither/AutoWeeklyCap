@@ -1,14 +1,15 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
 
-namespace AutoWeeklyCap.UI.ConfigWindow;
+namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
 public static class GeneralOptionsUi
 {
     public static void Draw()
     {
-        Card.DrawSubtle("General Options", GeneralOptions, false);
-        Card.DrawSubtle("UI Elements & Windows", UiElementsAndWindows, false);
-        Card.DrawSubtle("Network Options", NetworkOptions, false);
+        Card.Draw("General Options", GeneralOptions, false);
+        Card.Draw("UI Elements & Windows", UiElementsAndWindows, false);
+        Card.Draw("Network Options", NetworkOptions, false);
+        Card.DrawWarning("Reset Weekly Tomestones", ResetWeeklyTomestones);
     }
 
     private static void GeneralOptions()
@@ -72,24 +73,32 @@ public static class GeneralOptionsUi
 
         Card.Separator();
 
-        var hideElementDependencies = AWC.Config.HideUiElementDependencies;
-        if (ImGui.Checkbox("Hide dependencies tab", ref hideElementDependencies)) {
-            AWC.Config.HideUiElementDependencies = hideElementDependencies;
+        ImGui.Text("UI Theme:");
+
+        var selectedTheme = AWC.Config.SelectedColorTheme;
+        if (ImGui.BeginCombo("###theme-selector", selectedTheme.GetName())) {
+            foreach (var theme in Enum.GetValues(typeof(ColorTheme)).Cast<ColorTheme>()) {
+                if (ImGui.Selectable(theme.GetName())) {
+                    AWC.Config.SetColorTheme(theme);
+                }
+            }
+
+            ImGui.EndCombo();
         }
 
-        var hideElementChangelog = AWC.Config.HideUiElementChangelog;
-        if (ImGui.Checkbox("Hide changelog tab", ref hideElementChangelog)) {
-            AWC.Config.HideUiElementChangelog = hideElementChangelog;
+        ImGui.SameLine();
+        if (ImGui.ArrowButton("###previous-ui-theme", ImGuiDir.Left)) {
+            AWC.Config.SetColorTheme(selectedTheme.GetPreviousTheme());
         }
 
-        if (!AWC.Config.DevMode) {
-            return;
+        ImGuiEx.Tooltip("Previous theme");
+
+        ImGui.SameLine(0f, 2f);
+        if (ImGui.ArrowButton("###next-ui-theme", ImGuiDir.Right)) {
+            AWC.Config.SetColorTheme(selectedTheme.GetNextTheme());
         }
 
-        var showElementDebug = AWC.Config.ShowUiElementDebug;
-        if (ImGui.Checkbox("Show debug tab", ref showElementDebug)) {
-            AWC.Config.ShowUiElementDebug = showElementDebug;
-        }
+        ImGuiEx.Tooltip("Next theme");
     }
 
     private static void NetworkOptions()
@@ -120,5 +129,22 @@ public static class GeneralOptionsUi
             ImGui.Text("When enabled the title screen movie will be disabled, regardless");
             ImGui.Text("of if the runner is actually running or not.");
         });
+    }
+
+    private static void ResetWeeklyTomestones()
+    {
+        ImGui.TextWrapped(
+            "The tomestones will reset automatically during the weekly reset, however, " +
+            "if you want to reset the tomes manually you can use the button below."
+        );
+
+        ImGui.Spacing();
+        ImGui.Spacing();
+
+        ActionButton.Draw(
+            "Reset Weekly Tomestones",
+            "Hold down CTRL to reset your weekly tomestones",
+            () => AWC.Config.CollectedTomes.Clear()
+        );
     }
 }

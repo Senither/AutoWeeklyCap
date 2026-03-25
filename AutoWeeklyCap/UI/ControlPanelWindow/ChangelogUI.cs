@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 // ReSharper disable InconsistentNaming
 
-namespace AutoWeeklyCap.UI.MainWindow;
+namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
 internal static class ChangelogUI
 {
@@ -45,7 +45,7 @@ internal static class ChangelogUI
     private static void DrawEmptyState()
     {
         if (!string.IsNullOrWhiteSpace(LoadError)) {
-            ImGui.TextColored(ImGuiColors.DPSRed, "Failed to load changelog.");
+            ImGui.TextColored(Theme.TextDanger, "Failed to load changelog.");
             ImGui.TextWrapped(LoadError);
             return;
         }
@@ -57,7 +57,7 @@ internal static class ChangelogUI
     {
         var IsFirst = true;
         foreach (var entry in entries) {
-            Card.DrawSubtle($"{entry.Version} ({entry.CreatedAt:yyyy-MM-dd})", () =>
+            Card.Draw($"{entry.Version} ({entry.CreatedAt:yyyy-MM-dd})", () =>
             {
                 foreach (var line in ReadLines(entry.Changelog)) {
                     if (string.IsNullOrWhiteSpace(line)) {

@@ -1,0 +1,40 @@
+﻿using AutoWeeklyCap.UI.Helpers;
+
+using Dalamud.Interface.Windowing;
+
+namespace AutoWeeklyCap.UI.Windows;
+
+public class ControlPanel : Window
+{
+    private SettingsWindowOption _option = SettingsWindowOption.GeneralOptions;
+
+    public ControlPanel() : base("Auto Weekly Cap Control Panel")
+    {
+        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(575, 400), MaximumSize = new Vector2(9999, 9999) };
+    }
+
+    public override void Draw()
+    {
+        using (Theme.Push()) {
+            SidebarLayout.DrawSidebar(() =>
+            {
+                foreach (var option in Enum.GetValues(typeof(SettingsWindowOption)).Cast<SettingsWindowOption>()) {
+                    if (!option.IsDrawable()) {
+                        continue;
+                    }
+
+                    if (MenuButton.Draw(option.GetIcon(), option.GetName(), _option == option, widthBreakpoint: SidebarLayout.GetSidebarContentTextBreakpoint())) {
+                        _option = option;
+                    }
+                }
+            });
+
+            SidebarLayout.DrawContent(() => _option.Draw());
+        }
+    }
+
+    public override void OnClose()
+    {
+        AWC.Config.Save();
+    }
+}

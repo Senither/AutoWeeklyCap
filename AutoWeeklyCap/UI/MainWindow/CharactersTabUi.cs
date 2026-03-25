@@ -32,10 +32,9 @@ internal static class CharactersTabUi
                 var runsNeeded = (int)Math.Ceiling(remainingTomes / (double)TomesPerRun);
                 var averageSeconds = DefaultRunSeconds;
 
-                if (option.LastDutyDurationsSeconds.Count > 0)
+                if (option.LastDutyDurationsSeconds.Count > 0) {
                     // Adding 30 seconds to the timer to account for waiting time outside
                     // the instance, AutoRetainer, repairs, extracting, etc
-                {
                     averageSeconds = (int)option.LastDutyDurationsSeconds.Average() + 30;
                 }
 
@@ -77,10 +76,7 @@ internal static class CharactersTabUi
             "TomestoneEta",
             time.TotalSeconds > 0D
                 ? () => ImGuiEx.Text($"Estimated time to cap {etaText}")
-                : () => ImGui.TextColored(
-                    ColorUtils.HexToUInt(0xFF, 0xFF, 0xFF, 0.45f),
-                    "All your characters are tome capped"
-                )
+                : () => ImGui.TextColored(Theme.TextMuted, "All your characters are tome capped")
         );
     }
 
@@ -104,7 +100,7 @@ internal static class CharactersTabUi
 
         if (options.HasOverrideSettingsEnabled()) {
             ImGui.SameLine();
-            ImGuiEx.IconWithText(ColorUtils.HexToVector(0x9B, 0x9B, 0xE9, 0.65f), FontAwesomeIcon.Flask, "");
+            ImGuiEx.IconWithText(Theme.TextPrimary, FontAwesomeIcon.Flask, "");
         }
 
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - 64 + ImGui.GetStyle().ItemSpacing.X);

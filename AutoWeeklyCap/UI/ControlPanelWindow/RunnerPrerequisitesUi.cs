@@ -2,27 +2,70 @@ using AutoWeeklyCap.UI.Helpers;
 
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
-namespace AutoWeeklyCap.UI.ConfigWindow;
+namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
 public static class RunnerPrerequisitesUi
 {
     public static void Draw()
     {
-        ImGui.TextWrapped("Select what should happen before and between runs.");
-        ImGui.Spacing();
-
-        Card.DrawSubtle("General Options###runner-prereq-general", DrawGeneralOptions, defaultOpen: true);
+        Card.Draw("Duty Options###runner-duty-options", DrawTest, defaultOpen: true);
+        Card.Draw("Between Runs###runner-prereq-general", DrawBetweenRunsOptions, defaultOpen: true);
 
         ImGui.TextWrapped("Select how third-party plugins should be integrated into the runner.");
         ImGui.Spacing();
 
-        Card.DrawSubtle("Auto Retainer###runner-prereq-auto-retainer", DrawAutoRetainer);
-        Card.DrawSubtle("Deliveroo###runner-prereq-deliveroo", DrawDeliveroo);
-        Card.DrawSubtle("Notification Master###runner-prereq-notification-master", DrawNotificationMaster);
+        Card.Draw("Auto Retainer###runner-prereq-auto-retainer", DrawAutoRetainer);
+        Card.Draw("Deliveroo###runner-prereq-deliveroo", DrawDeliveroo);
+        Card.Draw("Notification Master###runner-prereq-notification-master", DrawNotificationMaster);
     }
 
-    private static void DrawGeneralOptions()
+    private static void DrawTest()
     {
+        ImGui.TextWrapped("Selected duty");
+
+        if (ImGui.BeginCombo(
+                $"###selected-duty",
+                TomestoneZone.IsSupportedTomestoneZone(AWC.Config.ZoneId)
+                    ? MapHelper.GetZoneNameFromId(AWC.Config.ZoneId)
+                    : "Not selected"
+            )) {
+            foreach (var zoneId in TomestoneZone.AvailableTomestoneZones) {
+                if (ImGui.Selectable(MapHelper.GetZoneNameFromId(zoneId), AWC.Config.ZoneId == zoneId)) {
+                    AWC.Config.ZoneId = zoneId;
+                }
+            }
+
+            ImGui.EndCombo();
+        }
+
+        ImGui.Spacing();
+        ImGui.Spacing();
+
+        var stopGracefully = AWC.Config.StopRunnerGracefully;
+        if (ImGui.Checkbox("Stop runs gracefully", ref stopGracefully)) {
+            AWC.Config.StopRunnerGracefully = stopGracefully;
+        }
+
+        InformationTooltip.Draw("When stopping the runner mid duty, graceful stopping will finish the run before stopping completely");
+
+        var useBossModRebornAi = AWC.Config.UseBossModRebornAI;
+        if (ImGui.Checkbox("Use BossMod Reborn AI", ref useBossModRebornAi)) {
+            AWC.Config.UseBossModRebornAI = useBossModRebornAi;
+        }
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When enabled, the ");
+            StatusText.Draw(BossModRebornIPC.IsEnabled, "BossMod Reborn AI");
+            ImGui.Text(" will be used for ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text(" over the default AI");
+        });
+    }
+
+    private static void DrawBetweenRunsOptions()
+    {
+        ImGui.TextWrapped("Select what should happen before and between runs.");
         ImGui.Spacing();
 
         // Return to home world

@@ -19,11 +19,9 @@ public class Configuration : IPluginConfiguration
     public bool ShowStatusInStatusBar { get; set; } = false;
     public bool ShowStatusAsIcons { get; set; } = false;
     public bool TrackDisabledCharacters { get; set; } = true;
-    public bool HideUiElementChangelog { get; set; } = false;
-    public bool HideUiElementDependencies { get; set; } = false;
-    public bool ShowUiElementDebug { get; set; } = false;
 
     // Character & Window storages
+    public ColorTheme SelectedColorTheme { get; set; } = ColorTheme.Indigo;
     public WindowOptions Window { get; set; } = new();
     public Dictionary<string, CharacterOptions> Characters { get; set; } = new();
     public Dictionary<string, int> CollectedTomes { get; set; } = new();
@@ -181,6 +179,12 @@ public class Configuration : IPluginConfiguration
         Save();
 
         return Characters[character];
+    }
+
+    public void SetColorTheme(ColorTheme theme)
+    {
+        SelectedColorTheme = theme;
+        Theme.Primary = theme.GetPrimaryColor();
     }
 
     private CharacterOptions ApplyCharacterPropertiesToOptions(CharacterOptions option, ulong id, string character)

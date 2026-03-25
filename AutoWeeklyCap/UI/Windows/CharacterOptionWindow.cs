@@ -49,9 +49,11 @@ public class CharacterOptionWindow : Window
             return;
         }
 
-        Card.Draw("Character visibility", () => DrawCharacterVisibility(options), false);
-        Card.Draw("Character Preferences", () => DrawCharacterPreferences(options), false);
-        Card.DrawDanger("Remove Character", DrawCharacterRemoval, false);
+        using (Theme.Push()) {
+            Card.Draw("Character visibility", () => DrawCharacterVisibility(options), false);
+            Card.Draw("Character Preferences", () => DrawCharacterPreferences(options), false);
+            Card.DrawDanger("Remove Character", DrawCharacterRemoval, false);
+        }
     }
 
     private void DrawCharacterVisibility(CharacterOptions options)

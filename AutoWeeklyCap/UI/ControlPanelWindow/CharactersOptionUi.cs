@@ -3,12 +3,22 @@ using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface;
 
-namespace AutoWeeklyCap.UI.ConfigWindow;
+namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
 public static class CharactersOptionUi
 {
     public static void Draw()
     {
+        Card.Draw("Characters", DrawCharacterList, collapsible: false);
+        DrawCharacterImporter();
+    }
+
+    private static void DrawCharacterList()
+    {
+        ImGui.TextWrapped("Here you can sort your characters as well as manage their status. This will affect the order in which they will be processed when the runner is going, as well as how they will appear in the plugin interface.");
+
+        Card.Separator();
+
         foreach (var characterAndWorld in AWC.Config.GetSortedCharacters()) {
             var option = AWC.Config.Characters[characterAndWorld];
 
@@ -23,10 +33,7 @@ public static class CharactersOptionUi
 
             ImGui.PopID();
         }
-
-        DrawCharacterImporter();
     }
-
 
     private static void DrawCharacterImporter()
     {
@@ -60,7 +67,7 @@ public static class CharactersOptionUi
         ImGui.Spacing();
         ImGui.Spacing();
 
-        Card.DrawSubtle("Import Characters via AutoRetainer", () =>
+        Card.Draw("Import Characters via AutoRetainer", () =>
         {
             ImGui.Text("The follow characters have been detected within AutoRetainer and are missing");
             ImGui.Text("from AWC, you can click on the plus icon to add the characters.");
@@ -68,13 +75,11 @@ public static class CharactersOptionUi
             ImGui.Spacing();
 
             foreach (var (id, name) in characterNames) {
-                ImGui.PushStyleColor(ImGuiCol.Button, 0xFF097000);
-
-                if (ImGuiEx.IconButton(FontAwesomeIcon.Plus, $"AddCharacterViaAutoRetainer:{name}")) {
-                    AWC.Config.GetOrRegisterCharacterOptions(id, name);
+                using (Theme.PushSuccessButton()) {
+                    if (ImGuiEx.IconButton(FontAwesomeIcon.Plus, $"AddCharacterViaAutoRetainer:{name}")) {
+                        AWC.Config.GetOrRegisterCharacterOptions(id, name);
+                    }
                 }
-
-                ImGui.PopStyleColor();
 
                 ImGuiEx.Tooltip($"Add {name} to AWC");
 

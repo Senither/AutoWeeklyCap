@@ -30,10 +30,12 @@ public class FeedbackWindow : Window
 
     public override void Draw()
     {
-        if (_sentFeedback) {
-            DrawFeedbackSentMessage();
-        } else {
-            DrawFeedbackForm();
+        using (Theme.Push()) {
+            if (_sentFeedback) {
+                DrawFeedbackSentMessage();
+            } else {
+                DrawFeedbackForm();
+            }
         }
     }
 
