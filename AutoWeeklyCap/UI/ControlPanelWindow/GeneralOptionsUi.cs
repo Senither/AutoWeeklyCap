@@ -79,7 +79,7 @@ public static class GeneralOptionsUi
         if (ImGui.BeginCombo("###theme-selector", selectedTheme.GetName())) {
             foreach (var theme in Enum.GetValues(typeof(ColorTheme)).Cast<ColorTheme>()) {
                 if (ImGui.Selectable(theme.GetName())) {
-                    AWC.Config.SelectedColorTheme = theme;
+                    AWC.Config.SetColorTheme(theme);
                 }
             }
 
@@ -88,14 +88,14 @@ public static class GeneralOptionsUi
 
         ImGui.SameLine();
         if (ImGui.ArrowButton("###previous-ui-theme", ImGuiDir.Left)) {
-            AWC.Config.SelectedColorTheme = selectedTheme.GetPreviousTheme();
+            AWC.Config.SetColorTheme(selectedTheme.GetPreviousTheme());
         }
 
         ImGuiEx.Tooltip("Previous theme");
 
         ImGui.SameLine(0f, 2f);
         if (ImGui.ArrowButton("###next-ui-theme", ImGuiDir.Right)) {
-            AWC.Config.SelectedColorTheme = selectedTheme.GetNextTheme();
+            AWC.Config.SetColorTheme(selectedTheme.GetNextTheme());
         }
 
         ImGuiEx.Tooltip("Next theme");

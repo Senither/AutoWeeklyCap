@@ -7,7 +7,7 @@ namespace AutoWeeklyCap.UI.Layouts;
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 internal static class Theme
 {
-    internal static Vector4 Primary => AWC.Config.SelectedColorTheme.GetPrimaryColor();
+    internal static Vector4 Primary = AWC.Config.SelectedColorTheme.GetPrimaryColor();
 
     internal static Vector4 InteractiveDefault = ColorUtils.HexToVector("#444444");
     internal static Vector4 InteractiveHovered => ColorUtils.DarkenVector4(Primary, 0.15f) with { W = 0.85f };

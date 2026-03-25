@@ -181,6 +181,12 @@ public class Configuration : IPluginConfiguration
         return Characters[character];
     }
 
+    public void SetColorTheme(ColorTheme theme)
+    {
+        SelectedColorTheme = theme;
+        Theme.Primary = theme.GetPrimaryColor();
+    }
+
     private CharacterOptions ApplyCharacterPropertiesToOptions(CharacterOptions option, ulong id, string character)
     {
         var wasChanged = false;
