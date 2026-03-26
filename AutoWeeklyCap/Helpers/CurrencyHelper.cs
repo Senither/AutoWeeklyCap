@@ -17,7 +17,17 @@ public static class CurrencyHelper
 
     public static bool IsPlayerLimitedTomestoneCapped()
     {
-        return GetLimitedTomestoneWeeklyLimit() == GetWeeklyAcquiredTomestoneCount();
+        return IsPlayerWeeklyLimitedTomestoneCapped() || IsPlayerTotalLimitedTomestoneCapped();
+    }
+
+    public static bool IsPlayerWeeklyLimitedTomestoneCapped()
+    {
+        return GetLimitedTomestoneWeeklyLimit() == GetWeeklyAcquiredLimitedTomestoneCount();
+    }
+
+    public static bool IsPlayerTotalLimitedTomestoneCapped()
+    {
+        return GetTotalAcquiredLimitedTomestoneCount() == 2000;
     }
 
     public static int GetLimitedTomestoneWeeklyLimit()
@@ -25,11 +35,22 @@ public static class CurrencyHelper
         return InventoryManager.GetLimitedTomestoneWeeklyLimit();
     }
 
-    public static int GetWeeklyAcquiredTomestoneCount()
+    public static int GetWeeklyAcquiredLimitedTomestoneCount()
     {
         try {
             unsafe {
                 return InventoryManager.Instance()->GetWeeklyAcquiredTomestoneCount();
+            }
+        } catch (Exception) {
+            return 0;
+        }
+    }
+
+    public static uint GetTotalAcquiredLimitedTomestoneCount()
+    {
+        try {
+            unsafe {
+                return InventoryManager.Instance()->GetTomestoneCount(49u);
             }
         } catch (Exception) {
             return 0;
@@ -48,15 +69,22 @@ public static class CurrencyHelper
             return false;
         }
 
-        var weeklyTomes = GetWeeklyAcquiredTomestoneCount();
-        var storedTomes = AWC.Config.CollectedTomes.GetValueOrDefault(characterAndWorld);
-
-        if (weeklyTomes == storedTomes) {
-            return false;
+        var limitedTomes = GetTotalAcquiredLimitedTomestoneCount();
+        var limitedTomesChanged = limitedTomes != options.TotalAcquiredLimitedTomestones;
+        if (limitedTomesChanged) {
+            options.TotalAcquiredLimitedTomestones = limitedTomes;
         }
 
-        if (storedTomes > weeklyTomes) {
+        var weeklyTomes = GetWeeklyAcquiredLimitedTomestoneCount();
+        var storedTomes = AWC.Config.CollectedTomes.GetValueOrDefault(characterAndWorld);
+
+        var weeklyTomesChanged = storedTomes > weeklyTomes;
+        if (weeklyTomesChanged) {
             AWC.Config.CollectedTomes.Clear();
+        }
+
+        if (!limitedTomesChanged && !weeklyTomesChanged) {
+            return false;
         }
 
         AWC.Config.CollectedTomes[characterAndWorld] = weeklyTomes;

@@ -1,4 +1,4 @@
-﻿namespace AutoWeeklyCap.Config;
+namespace AutoWeeklyCap.Config;
 
 [Serializable]
 public class CharacterOptions
@@ -11,6 +11,7 @@ public class CharacterOptions
     public bool Hidden { get; set; } = false;
     public PlayerJob PreferredJob { get; set; } = PlayerJob.None;
     public string? PreferredTomestoneItemName { get; set; } = null;
+    public uint TotalAcquiredLimitedTomestones { get; set; } = 0;
     public uint Position { get; set; } = 0;
     public List<int> LastDutyDurationsSeconds { get; set; } = [];
 

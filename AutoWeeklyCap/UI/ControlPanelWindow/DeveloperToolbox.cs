@@ -9,6 +9,8 @@ using ECommons.Logging;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 
+using Microsoft.VisualBasic;
+
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 // ReSharper disable InconsistentNaming
@@ -35,8 +37,14 @@ internal static class DeveloperToolbox
 
     private static void DrawPluginDetails()
     {
+        var currencies = Strings.Join([
+            $"weekly: {CurrencyHelper.GetWeeklyAcquiredLimitedTomestoneCount()}",
+            $"total: {CurrencyHelper.GetTotalAcquiredLimitedTomestoneCount()}",
+            $"uncapped: {CurrencyHelper.GetUncappedAcquiredTomestoneCount()}]"
+        ], ", ");
+
         ImGui.Text($"TaskManager [tasks: {AWC.TaskManager.NumQueuedTasks},current task: {AWC.TaskManager.CurrentTask?.Name ?? "idle"}]");
-        ImGui.Text($"Currencies [weekly: {CurrencyHelper.GetWeeklyAcquiredTomestoneCount()}, uncapped: {CurrencyHelper.GetUncappedAcquiredTomestoneCount()}]");
+        ImGui.Text($"Currencies [{currencies}]");
         ImGui.Text($"Restart [recovery: {ClientListener.IsRecoveringFromDisconnect}, restart: {ClientListener.IsRestarting}]");
         ImGui.Text($"Runner counter [runs: {AWC.Runner.GetRunsCounter()}, character: {AWC.Runner.GetRunsCharacter() ?? "<not set>"}]");
     }
