@@ -33,7 +33,7 @@ public class CharacterOptions
 
     public bool IsTotalAcquiredLimitedTomestoneCapped()
     {
-        return TotalAcquiredLimitedTomestones == 2000;
+        return TotalAcquiredLimitedTomestones == Constants.LimitedCurrencyCap;
     }
 
     public bool HasOverrideSettingsEnabled()

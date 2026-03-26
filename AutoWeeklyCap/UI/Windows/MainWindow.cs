@@ -68,7 +68,7 @@ public class MainWindow : Window
 
     public override void PreDraw()
     {
-        var name = $"{AWC.Name} {AWC.Version}";
+        var name = $"{Constants.Name} {AWC.Version}";
 
         var status = TitleManager.GetStatus();
         if (status != null) {

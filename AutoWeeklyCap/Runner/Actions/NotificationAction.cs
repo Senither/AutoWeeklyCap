@@ -24,8 +24,10 @@ public class NotificationAction : BaseAction
         }
 
         if (AWC.Config.NotificationMasterUsingToastNotification) {
-            Enqueue(() => NotificationMasterIPC.SendDisplayToastNotification(
-                    AWC.Name, type.GetMessage()), "Toast notification"
+            Enqueue(
+                () => NotificationMasterIPC.SendDisplayToastNotification(
+                    Constants.Name, type.GetMessage()
+                ), "Toast notification"
             );
         }
 

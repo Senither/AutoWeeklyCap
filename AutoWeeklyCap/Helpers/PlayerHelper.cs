@@ -54,7 +54,7 @@ public static class PlayerHelper
 
     public static bool HasMaxJobLevel(PlayerJob jobType)
     {
-        return GetJobLevel(jobType) == AWC.CurrentMaxLevel;
+        return GetJobLevel(jobType) == Constants.CurrentMaxLevel;
     }
 
     public static int GetJobLevel(PlayerJob jobType)

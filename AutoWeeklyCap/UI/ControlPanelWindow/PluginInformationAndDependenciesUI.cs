@@ -40,13 +40,13 @@ internal static class PluginInformationAndDependenciesUI
         ImGui.Spacing();
         ImGui.Separator();
 
-        ImGui.TextWrapped($"{AWC.Name} requires the following plugins to work:");
+        ImGui.TextWrapped($"{Constants.Name} requires the following plugins to work:");
         DrawPluginList(RequiredPlugins);
 
         ImGui.Separator();
         ImGui.Spacing();
 
-        ImGui.TextWrapped($"{AWC.Name} recommends the following plugins for an ideal experience:");
+        ImGui.TextWrapped($"{Constants.Name} recommends the following plugins for an ideal experience:");
         DrawPluginList(RecommendedPlugins);
 
         ImGui.Separator();
@@ -59,7 +59,7 @@ internal static class PluginInformationAndDependenciesUI
     private static void DrawPluginAboutInformation()
     {
         ImGuiHelpers.ScaledDummy(5f);
-        ImGuiEx.TextCentered($"{AWC.Name} v{AWC.Version}");
+        ImGuiEx.TextCentered($"{Constants.Name} v{AWC.Version}");
         ImGuiHelpers.ScaledDummy(1f);
 
         ImGuiEx.TextCentered("Developed and published by Senither");

@@ -79,10 +79,10 @@ public class WotsitManager : IDisposable
 
         _lastEntries = newEntries;
         foreach (var entry in newEntries) {
-            var id = faRegisterWithSearch.InvokeFunc(AWC.Name, entry.DisplayName, $"{AWC.Name} {entry.SearchString}", entry.IconId);
+            var id = faRegisterWithSearch.InvokeFunc(Constants.Name, entry.DisplayName, $"{Constants.Name} {entry.SearchString}", entry.IconId);
             _registered.Add(id, entry);
 
-            AWC.Log.Debug($"WotsitManager: Invoked FA.RegisterWithSearch(\"{AWC.Name}\", \"{entry.DisplayName}\", \"{entry.SearchString}\", {entry.IconId}) => {id}");
+            AWC.Log.Debug($"WotsitManager: Invoked FA.RegisterWithSearch(\"{Constants.Name}\", \"{entry.DisplayName}\", \"{entry.SearchString}\", {entry.IconId}) => {id}");
         }
     }
 
@@ -93,10 +93,9 @@ public class WotsitManager : IDisposable
                 return;
             }
 
-            Svc.PluginInterface.GetIpcSubscriber<string, bool>("FA.UnregisterAll")
-                .InvokeFunc(AWC.Name);
+            Svc.PluginInterface.GetIpcSubscriber<string, bool>("FA.UnregisterAll").InvokeFunc(Constants.Name);
 
-            AWC.Log.Debug($"WotsitManager: Invoked FA.UnregisterAll(\"{AWC.Name}\")");
+            AWC.Log.Debug($"WotsitManager: Invoked FA.UnregisterAll(\"{Constants.Name}\")");
         } catch (Exception e) {
             AWC.Log.Warning($"WotsitManager: Failed to clear wotsit: {e}");
         } finally {

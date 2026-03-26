@@ -27,7 +27,7 @@ public static class CurrencyHelper
 
     public static bool IsPlayerTotalLimitedTomestoneCapped()
     {
-        return GetTotalAcquiredLimitedTomestoneCount() == 2000;
+        return GetTotalAcquiredLimitedTomestoneCount() == Constants.LimitedCurrencyCap;
     }
 
     public static int GetLimitedTomestoneWeeklyLimit()

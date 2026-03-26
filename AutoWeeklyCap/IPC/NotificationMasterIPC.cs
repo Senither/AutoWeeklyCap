@@ -27,22 +27,22 @@ public static class NotificationMasterIPC
 
     internal static bool SendFlashTaskbarIcon()
     {
-        return IsEnabled && FlashTaskbarIcon(AWC.InternalName);
+        return IsEnabled && FlashTaskbarIcon(Constants.InternalName);
     }
 
     internal static bool SendDisplayToastNotification(string title, string content)
     {
-        return IsEnabled && DisplayToastNotification(AWC.InternalName, title, content);
+        return IsEnabled && DisplayToastNotification(Constants.InternalName, title, content);
     }
 
     internal static bool SendPlaySound(string path, float volume, bool repeat, bool stopOnceFocused)
     {
-        return IsEnabled && PlaySound(AWC.InternalName, path, volume, repeat, stopOnceFocused);
+        return IsEnabled && PlaySound(Constants.InternalName, path, volume, repeat, stopOnceFocused);
     }
 
     internal static bool SendStopSound()
     {
-        return IsEnabled && StopSound(AWC.InternalName);
+        return IsEnabled && StopSound(Constants.InternalName);
     }
 
     internal static void Dispose()

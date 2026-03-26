@@ -24,14 +24,7 @@ namespace AutoWeeklyCap;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class AutoWeeklyCap : IDalamudPlugin
 {
-    internal const string Name = "Auto Weekly Cap";
-    internal const string InternalName = "AutoWeeklyCap";
-
-    internal const string CommandNameShort = "/awc";
-    internal const string CommandNameLong = "/autoweeklycap";
-
     internal static AWC Instance = null!;
-    internal const int CurrentMaxLevel = 100;
 
     internal static Configuration Config => Instance.Configuration;
     internal static Runner.Runner Runner { get; private set; } = null!;
@@ -87,9 +80,8 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         _windowSystem.AddWindow(CharacterOptionWindow = new CharacterOptionWindow());
         _windowSystem.AddWindow(FeedbackWindow = new FeedbackWindow());
 
-        CommandManager.AddHandler(CommandNameLong, new CommandInfo(OnCommand) { HelpMessage = "Toggles the Auto Weekly Cap main window", ShowInHelp = true });
-
-        CommandManager.AddHandler(CommandNameShort, new CommandInfo(OnCommand) { ShowInHelp = false });
+        CommandManager.AddHandler(Constants.CommandNameLong, new CommandInfo(OnCommand) { HelpMessage = "Toggles the Auto Weekly Cap main window", ShowInHelp = true });
+        CommandManager.AddHandler(Constants.CommandNameShort, new CommandInfo(OnCommand) { ShowInHelp = false });
 
         Framework.Update += FrameworkListener.OnFrameworkUpdate;
         ClientState.Logout += ClientListener.OnLogout;
@@ -133,8 +125,8 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         ECommonsMain.Dispose();
         IPCSubscriber.Dispose();
 
-        CommandManager.RemoveHandler(CommandNameShort);
-        CommandManager.RemoveHandler(CommandNameLong);
+        CommandManager.RemoveHandler(Constants.CommandNameShort);
+        CommandManager.RemoveHandler(Constants.CommandNameLong);
     }
 
     private static void OnCommand(string command, string args)

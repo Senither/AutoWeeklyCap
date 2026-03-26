@@ -49,7 +49,7 @@ public static class CharacterElements
 
     internal static void DrawCharacterRelogIcon(string character, bool sameLine = false)
     {
-        var command = $"{AWC.CommandNameShort} relog {character}";
+        var command = $"{Constants.CommandNameShort} relog {character}";
 
         if (sameLine) {
             ImGui.SameLine(0f, 4f);

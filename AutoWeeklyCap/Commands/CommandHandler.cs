@@ -57,7 +57,7 @@ public static class CommandHandler
                 DuoLog.Information($" - {cmd.Triggers.Join(" / ")}");
             }
 
-            DuoLog.Information($"Run with: '{AWC.CommandNameShort} <option>'");
+            DuoLog.Information($"Run with: '{Constants.CommandNameShort} <option>'");
             return;
         }
 
@@ -77,6 +77,6 @@ public static class CommandHandler
 
     private static void PrintUnknownCommand(string command)
     {
-        DuoLog.Information($"Unknown command '{command}', use `{AWC.CommandNameShort} help` for a list of commands");
+        DuoLog.Information($"Unknown command '{command}', use `{Constants.CommandNameShort} help` for a list of commands");
     }
 }
