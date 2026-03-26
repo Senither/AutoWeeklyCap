@@ -57,8 +57,7 @@ public static class GeneralOptionsUi
         }
 
         InformationTooltip.Draw(
-            "When enabled, the character window will automatically adjust to fit its content.\n" +
-            "Manual resizing of the window will be disabled."
+            "When enabled, the character window will automatically adjust to fit its content"
         );
 
         var dtrBar = AWC.Config.ShowStatusInStatusBar;

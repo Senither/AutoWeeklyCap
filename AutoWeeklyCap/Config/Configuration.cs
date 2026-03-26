@@ -14,7 +14,7 @@ public class Configuration : IPluginConfiguration
     public bool StartRunnerOnBoot { get; set; } = false;
     public bool OpenWindowOnStartup { get; set; } = false;
     public bool UseSliders { get; set; } = false;
-    public bool AutoResizeCharacterWindow { get; set; } = false;
+    public bool AutoResizeCharacterWindow { get; set; } = true;
     public bool AttemptRecoveryFromDisconnects { get; set; } = true;
     public bool DisableTitleScreenMovie { get; set; } = false;
     public bool ShowStatusInStatusBar { get; set; } = false;
