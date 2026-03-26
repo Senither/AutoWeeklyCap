@@ -100,12 +100,22 @@ internal static class CharactersTabUi
 
         if (options.HasOverrideSettingsEnabled()) {
             ImGui.SameLine();
-            ImGuiEx.IconWithText(Theme.TextPrimary, FontAwesomeIcon.Flask, "");
+            ImGuiEx.IconWithTooltip(
+                Theme.TextPrimary,
+                FontAwesomeIcon.Flask,
+                "Character specific settings are enabled that override the default settings for this character"
+            );
+            ImGui.NewLine();
         }
 
         if (options.IsTotalAcquiredLimitedTomestoneCapped()) {
             ImGui.SameLine();
-            ImGuiEx.IconWithText(Theme.TextWarning, FontAwesomeIcon.Coins, "");
+            ImGuiEx.IconWithTooltip(
+                Theme.TextWarning,
+                FontAwesomeIcon.Coins,
+                "Character is tomestone capped, it will be skipped for runs until tomes have been spent"
+            );
+            ImGui.NewLine();
         }
 
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - 64 + ImGui.GetStyle().ItemSpacing.X);
