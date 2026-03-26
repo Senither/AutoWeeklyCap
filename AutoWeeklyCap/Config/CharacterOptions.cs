@@ -1,4 +1,4 @@
-namespace AutoWeeklyCap.Config;
+﻿namespace AutoWeeklyCap.Config;
 
 [Serializable]
 public class CharacterOptions
@@ -29,6 +29,11 @@ public class CharacterOptions
     public bool IsHidden()
     {
         return Hidden;
+    }
+
+    public bool IsTotalAcquiredLimitedTomestoneCapped()
+    {
+        return TotalAcquiredLimitedTomestones == 2000;
     }
 
     public bool HasOverrideSettingsEnabled()

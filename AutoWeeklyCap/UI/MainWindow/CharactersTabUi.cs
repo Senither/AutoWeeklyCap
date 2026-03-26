@@ -103,6 +103,11 @@ internal static class CharactersTabUi
             ImGuiEx.IconWithText(Theme.TextPrimary, FontAwesomeIcon.Flask, "");
         }
 
+        if (options.IsTotalAcquiredLimitedTomestoneCapped()) {
+            ImGui.SameLine();
+            ImGuiEx.IconWithText(Theme.TextWarning, FontAwesomeIcon.Coins, "");
+        }
+
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - 64 + ImGui.GetStyle().ItemSpacing.X);
 
         ImGui.TextUnformatted($"{tomes}/{weeklyLimit}");
