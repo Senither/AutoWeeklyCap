@@ -139,9 +139,13 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         ControlPanel.Toggle();
     }
 
-    public void OpenConfigUi()
+    public void OpenConfigUi(SettingsWindowOption? option = null)
     {
         ControlPanel.IsOpen = true;
+
+        if (option != null) {
+            ControlPanel.SetCurrentTab(option.Value);
+        }
     }
 
     public void ToggleMainUi()

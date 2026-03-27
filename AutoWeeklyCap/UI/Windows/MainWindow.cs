@@ -125,6 +125,10 @@ public class MainWindow : Window
             ImGui.TextColored(Theme.TextWarning, "X Unavailable");
         }
 
+        if (ImGui.IsItemClicked(ImGuiMouseButton.Left)) {
+            AWC.Instance.OpenConfigUi(SettingsWindowOption.PluginInformationAndDependencies);
+        }
+
         if (!ImGui.IsItemHovered()) {
             return;
         }

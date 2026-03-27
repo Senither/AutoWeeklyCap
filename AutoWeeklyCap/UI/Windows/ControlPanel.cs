@@ -24,13 +24,18 @@ public class ControlPanel : Window
                     }
 
                     if (MenuButton.Draw(option.GetIcon(), option.GetName(), _option == option, widthBreakpoint: SidebarLayout.GetSidebarContentTextBreakpoint())) {
-                        _option = option;
+                        SetCurrentTab(option);
                     }
                 }
             });
 
             SidebarLayout.DrawContent(() => _option.Draw());
         }
+    }
+
+    public void SetCurrentTab(SettingsWindowOption option)
+    {
+        _option = option;
     }
 
     public override void OnClose()
