@@ -118,6 +118,16 @@ internal static class CharactersTabUi
             ImGui.NewLine();
         }
 
+        if (options.ID == 0u) {
+            ImGui.SameLine();
+            ImGuiEx.IconWithTooltip(
+                ColorUtils.DarkenVector4(Theme.TextDanger, -0.95f) with { W = 0.75f },
+                FontAwesomeIcon.Tools,
+                "Character has not been migrated over to the new config system, login\nto the character to re-register it and migrate it automatically"
+            );
+            ImGui.NewLine();
+        }
+
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - 64 + ImGui.GetStyle().ItemSpacing.X);
 
         ImGui.TextUnformatted($"{tomes}/{weeklyLimit}");
