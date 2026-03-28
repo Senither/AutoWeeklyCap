@@ -148,6 +148,11 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         }
     }
 
+    public bool IsConfigUiOpen()
+    {
+        return ControlPanel.IsOpen;
+    }
+
     public void ToggleMainUi()
     {
         MainWindow.Toggle();

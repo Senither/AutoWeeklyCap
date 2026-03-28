@@ -16,6 +16,12 @@ public class DevModeBaseCommand : BaseCommand
     {
         AWC.Config.DevMode = !AWC.Config.DevMode;
 
+        AWC.Instance.OpenConfigUi(
+            AWC.Config.DevMode
+                ? SettingsWindowOption.DeveloperToolbox
+                : SettingsWindowOption.GeneralOptions
+        );
+
         DuoLog.Information($"Developer mode has been {(AWC.Config.DevMode ? "enabled" : "disabled")}");
     }
 }
