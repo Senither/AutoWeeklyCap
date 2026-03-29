@@ -91,8 +91,11 @@ public class Configuration : IPluginConfiguration
                 continue;
             }
 
+            // Checks if the player has reached the weekly tomestone cap, or if their total limited
+            // tomestones are equal to the total tomestone cap, if either of these are true we'll
+            // consider the character as tome capped so we can skip it for runs.
             var tomes = CollectedTomes.GetValueOrDefault(character, 0);
-            if (tomes == limit) {
+            if (tomes == limit || option.TotalAcquiredLimitedTomestones == Constants.LimitedCurrencyCap) {
                 continue;
             }
 
