@@ -4,11 +4,11 @@ using Dalamud.Interface.Windowing;
 
 namespace AutoWeeklyCap.UI.Windows;
 
-public class ControlPanel : Window
+public class ControlPanelWindow : Window
 {
     private SettingsWindowOption _option = SettingsWindowOption.GeneralOptions;
 
-    public ControlPanel() : base("Auto Weekly Cap Control Panel")
+    public ControlPanelWindow() : base("Auto Weekly Cap Control Panel")
     {
         SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(575, 400), MaximumSize = new Vector2(9999, 9999) };
     }
