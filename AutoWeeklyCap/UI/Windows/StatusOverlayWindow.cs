@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 
 using Dalamud.Interface.Windowing;
 
@@ -32,6 +32,7 @@ public class StatusOverlayWindow : Window
     public override void Draw()
     {
         CImGui.igBringWindowToDisplayBack(CImGui.igGetCurrentWindow());
+        Position = StatusOverlayPosition.TopLeft.GetVector2();
 
         if (!ThreadLoadImageHandler.TryGetTextureWrap(GetImageResource(), out var textureWrap)) {
             AWC.Log.Debug($"Failed to get texture wrap for image resources");
