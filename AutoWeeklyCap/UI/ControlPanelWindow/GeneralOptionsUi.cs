@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
+using AutoWeeklyCap.UI.Windows;
 
 using Dalamud.Interface;
 
@@ -117,14 +118,16 @@ public static class GeneralOptionsUi
 
     private static void StatusIcon()
     {
-        ImGui.Checkbox("Display status icon", ref AWC.Config.StatusOverlayEnabled);
+        if (ImGui.Checkbox("Display status icon", ref AWC.Config.StatusOverlayEnabled)) {
+            StatusOverlayWindow.DrawOverlayTemporarily();
+        }
 
         ImGui.Text("Icon position");
-
         foreach (var position in Enum.GetValues(typeof(StatusOverlayPosition)).Cast<StatusOverlayPosition>()) {
             using (AWC.Config.StatusOverlayPosition == position ? Theme.PushSuccessButton() : null) {
                 if (ImGuiEx.IconButton(position.GetIcon(), $"###icon-position-{position.GetName()}")) {
                     AWC.Config.StatusOverlayPosition = position;
+                    StatusOverlayWindow.DrawOverlayTemporarily();
                 }
 
                 ImGuiEx.Tooltip($"Set position to {position.GetName()}");
@@ -139,6 +142,7 @@ public static class GeneralOptionsUi
         var statusOverlayImageSize = AWC.Config.StatusOverlayImageSize;
         if (Range.Draw("###icon-size", ref statusOverlayImageSize, 50, 250)) {
             AWC.Config.StatusOverlayImageSize = statusOverlayImageSize;
+            StatusOverlayWindow.DrawOverlayTemporarily();
         }
     }
 

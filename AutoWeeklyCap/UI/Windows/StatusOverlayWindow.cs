@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Dalamud.Interface.Windowing;
 
@@ -8,6 +10,9 @@ namespace AutoWeeklyCap.UI.Windows;
 
 public class StatusOverlayWindow : Window
 {
+    private static bool DrawingTemporarily = false;
+    private static CancellationTokenSource? DrawingCancellationTokenSource;
+
     public StatusOverlayWindow() : base("awc##overlay-window")
     {
         Flags = ImGuiWindowFlags.NoFocusOnAppearing |
@@ -24,10 +29,35 @@ public class StatusOverlayWindow : Window
         RespectCloseHotkey = false;
     }
 
+    public static void DrawOverlayTemporarily()
+    {
+        if (AWC.Runner.IsRunning()) {
+            return;
+        }
+
+        DrawingTemporarily = true;
+
+        DrawingCancellationTokenSource?.Cancel();
+        DrawingCancellationTokenSource?.Dispose();
+        DrawingCancellationTokenSource = new CancellationTokenSource();
+
+        _ = HideTemporaryOverlayAfterDelay(DrawingCancellationTokenSource.Token);
+    }
+
+    private static async Task HideTemporaryOverlayAfterDelay(CancellationToken cancellationToken)
+    {
+        try {
+            await Task.Delay(2500, cancellationToken);
+        } catch (OperationCanceledException) {
+            return;
+        }
+
+        DrawingTemporarily = false;
+    }
+
     public override bool DrawConditions()
     {
-        return true;
-        return AWC.Config.StatusOverlayEnabled && (AWC.Runner.IsRunning() || AWC.TaskManager.IsBusy);
+        return AWC.Config.StatusOverlayEnabled && (AWC.Runner.IsRunning() || AWC.TaskManager.IsBusy || DrawingTemporarily);
     }
 
     public override void Draw()
