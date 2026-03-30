@@ -1,5 +1,9 @@
 ﻿using AutoWeeklyCap.UI.Helpers;
 
+using Dalamud.Interface;
+
+using Range = AutoWeeklyCap.UI.Helpers.Range;
+
 namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
 public static class GeneralOptionsUi
@@ -8,6 +12,7 @@ public static class GeneralOptionsUi
     {
         Card.Draw("General Options", GeneralOptions, false);
         Card.Draw("UI Elements & Windows", UiElementsAndWindows, false);
+        Card.Draw("Status Icon", StatusIcon, false);
         Card.Draw("Network Options", NetworkOptions, false);
         Card.DrawWarning("Reset Weekly Tomestones", ResetWeeklyTomestones);
     }
@@ -82,7 +87,7 @@ public static class GeneralOptionsUi
 
         Card.Separator();
 
-        ImGui.Text("UI Theme:");
+        ImGui.Text("UI Theme");
 
         var selectedTheme = AWC.Config.SelectedColorTheme;
         if (ImGui.BeginCombo("###theme-selector", selectedTheme.GetName())) {
@@ -108,6 +113,33 @@ public static class GeneralOptionsUi
         }
 
         ImGuiEx.Tooltip("Next theme");
+    }
+
+    private static void StatusIcon()
+    {
+        ImGui.Checkbox("Display status icon", ref AWC.Config.StatusOverlayEnabled);
+
+        ImGui.Text("Icon position");
+
+        foreach (var position in Enum.GetValues(typeof(StatusOverlayPosition)).Cast<StatusOverlayPosition>()) {
+            using (AWC.Config.StatusOverlayPosition == position ? Theme.PushSuccessButton() : null) {
+                if (ImGuiEx.IconButton(position.GetIcon(), $"###icon-position-{position.GetName()}")) {
+                    AWC.Config.StatusOverlayPosition = position;
+                }
+
+                ImGuiEx.Tooltip($"Set position to {position.GetName()}");
+
+                if (!position.IsRightMostPosition()) {
+                    ImGui.SameLine();
+                }
+            }
+        }
+
+        ImGui.Text("Icon size");
+        var statusOverlayImageSize = AWC.Config.StatusOverlayImageSize;
+        if (Range.Draw("###icon-size", ref statusOverlayImageSize, 50, 250)) {
+            AWC.Config.StatusOverlayImageSize = statusOverlayImageSize;
+        }
     }
 
     private static void NetworkOptions()

@@ -10,6 +10,17 @@ public class Configuration : IPluginConfiguration
     public int Version { get; set; } = 0;
     public bool DevMode { get; set; } = false;
 
+    // Plugin storage
+    public Dictionary<string, CharacterOptions> Characters { get; set; } = new();
+    public Dictionary<string, int> CollectedTomes { get; set; } = new();
+
+    // Window & UI settings
+    public ColorTheme SelectedColorTheme { get; set; } = ColorTheme.Indigo;
+    public WindowOptions Window { get; set; } = new();
+    public bool StatusOverlayEnabled = true;
+    public StatusOverlayPosition StatusOverlayPosition { get; set; } = StatusOverlayPosition.TopCenter;
+    public uint StatusOverlayImageSize { get; set; } = 120;
+
     // General Options
     public bool StartRunnerOnBoot { get; set; } = false;
     public bool OpenWindowOnStartup { get; set; } = false;
@@ -20,12 +31,6 @@ public class Configuration : IPluginConfiguration
     public bool ShowStatusInStatusBar { get; set; } = false;
     public bool ShowStatusAsIcons { get; set; } = false;
     public bool TrackDisabledCharacters { get; set; } = true;
-
-    // Character & Window storages
-    public ColorTheme SelectedColorTheme { get; set; } = ColorTheme.Indigo;
-    public WindowOptions Window { get; set; } = new();
-    public Dictionary<string, CharacterOptions> Characters { get; set; } = new();
-    public Dictionary<string, int> CollectedTomes { get; set; } = new();
 
     // Duty Options
     public uint ZoneId { get; set; } = TomestoneZone.AvailableTomestoneZones[0];
