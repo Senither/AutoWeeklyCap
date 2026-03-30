@@ -6,11 +6,11 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace AutoWeeklyCap.Listeners;
 
-public partial class FrameworkListener
+public static partial class FrameworkListener
 {
-    private long _enforceUpdateStateAt = 0;
+    private static long _enforceUpdateStateAt = 0;
 
-    public void OnFrameworkUpdate(IFramework _)
+    public static void OnFrameworkUpdate(IFramework _)
     {
         AWC.Instance.DtrStatusBar.Draw();
 

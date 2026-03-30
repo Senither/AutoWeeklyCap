@@ -1,6 +1,6 @@
 ﻿namespace AutoWeeklyCap.Listeners;
 
-public class ClientListener
+public static class ClientListener
 {
     public static bool IsRestarting { get; set; } = false;
     public static bool IsRecoveringFromDisconnect { get; set; } = false;

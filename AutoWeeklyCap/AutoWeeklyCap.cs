@@ -47,7 +47,6 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     private ControlPanel ControlPanel { get; }
     private CharacterOptionWindow CharacterOptionWindow { get; }
     private FeedbackWindow FeedbackWindow { get; }
-    private FrameworkListener FrameworkListener { get; } = new();
 
     private readonly WindowSystem _windowSystem = new("AutoWeeklyCap");
 
