@@ -122,9 +122,16 @@ public static class GeneralOptionsUi
             StatusOverlayWindow.DrawOverlayTemporarily();
         }
 
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When enabled, a status overlay icon will be displayed when AWC is running, or preforming");
+            ImGui.Text("any actions (repairing gear, extracting materia, spending tomestones, etc) that can");
+            ImGui.Text("be used to quickly toggle windows on and off, or outright stopping the runner");
+        });
+
         ImGui.Text("Icon size");
         var statusOverlayImageSize = AWC.Config.StatusOverlayImageSize;
-        if (Range.Draw("###icon-size", ref statusOverlayImageSize, 50, 250)) {
+        if (Range.Draw("###icon-size", ref statusOverlayImageSize, 50, 250, "%upx")) {
             AWC.Config.StatusOverlayImageSize = statusOverlayImageSize;
             StatusOverlayWindow.DrawOverlayTemporarily();
         }
