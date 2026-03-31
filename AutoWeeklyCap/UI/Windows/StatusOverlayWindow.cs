@@ -57,7 +57,11 @@ public class StatusOverlayWindow : Window
 
     public override bool DrawConditions()
     {
-        return AWC.Config.StatusOverlayEnabled && (AWC.Runner.IsRunning() || AWC.TaskManager.IsBusy || DrawingTemporarily);
+        if (DrawingTemporarily) {
+            return true;
+        }
+
+        return AWC.Config.StatusOverlayEnabled && (AWC.Runner.IsRunning() || AWC.TaskManager.IsBusy);
     }
 
     public override void Draw()
