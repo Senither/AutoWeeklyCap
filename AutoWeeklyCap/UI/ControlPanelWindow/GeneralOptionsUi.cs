@@ -122,6 +122,13 @@ public static class GeneralOptionsUi
             StatusOverlayWindow.DrawOverlayTemporarily();
         }
 
+        ImGui.Text("Icon size");
+        var statusOverlayImageSize = AWC.Config.StatusOverlayImageSize;
+        if (Range.Draw("###icon-size", ref statusOverlayImageSize, 50, 250)) {
+            AWC.Config.StatusOverlayImageSize = statusOverlayImageSize;
+            StatusOverlayWindow.DrawOverlayTemporarily();
+        }
+
         ImGui.Text("Icon position");
         foreach (var position in Enum.GetValues(typeof(StatusOverlayPosition)).Cast<StatusOverlayPosition>()) {
             using (AWC.Config.StatusOverlayPosition == position ? Theme.PushSuccessButton() : null) {
@@ -136,13 +143,6 @@ public static class GeneralOptionsUi
                     ImGui.SameLine();
                 }
             }
-        }
-
-        ImGui.Text("Icon size");
-        var statusOverlayImageSize = AWC.Config.StatusOverlayImageSize;
-        if (Range.Draw("###icon-size", ref statusOverlayImageSize, 50, 250)) {
-            AWC.Config.StatusOverlayImageSize = statusOverlayImageSize;
-            StatusOverlayWindow.DrawOverlayTemporarily();
         }
     }
 
