@@ -92,7 +92,11 @@ public class StatusOverlayWindow : Window
         }
 
         if (ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
-            AWC.Runner.Abort();
+            if (AWC.Runner.IsRunning() && AWC.Runner.IsStopping()) {
+                AWC.Runner.Resume();
+            } else {
+                AWC.Runner.Stop();
+            }
         }
 
         ImGui.SetTooltip(Strings.Join([
