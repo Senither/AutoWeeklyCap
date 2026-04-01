@@ -11,10 +11,10 @@ public static class GeneralOptionsUi
 {
     public static void Draw()
     {
-        Card.Draw("General Options", GeneralOptions, false);
-        Card.Draw("UI Elements & Windows", UiElementsAndWindows, false);
-        Card.Draw("Status Icon", StatusIcon, false);
-        Card.Draw("Network Options", NetworkOptions, false);
+        Card.Draw("General Options", GeneralOptions, defaultOpen: true);
+        Card.Draw("UI Elements & Windows", UiElementsAndWindows, defaultOpen: true);
+        Card.Draw("Status Icon", StatusIcon, defaultOpen: true);
+        Card.Draw("Network Options", NetworkOptions, defaultOpen: true);
         Card.DrawWarning("Reset Weekly Tomestones", ResetWeeklyTomestones);
     }
 
