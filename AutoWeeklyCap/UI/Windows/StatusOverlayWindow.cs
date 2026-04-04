@@ -10,7 +10,7 @@ namespace AutoWeeklyCap.UI.Windows;
 
 public class StatusOverlayWindow : Window
 {
-    private static bool DrawingTemporarily = false;
+    private static bool DrawingPreview = false;
     private static CancellationTokenSource? DrawingCancellationTokenSource;
 
     public StatusOverlayWindow() : base("awc##overlay-window")
@@ -29,35 +29,41 @@ public class StatusOverlayWindow : Window
         RespectCloseHotkey = false;
     }
 
-    public static void DrawOverlayTemporarily()
+    public static void DrawOverlayPreview()
     {
         if (AWC.Runner.IsRunning()) {
             return;
         }
 
-        DrawingTemporarily = true;
+        CancelDrawingOverlayPreview();
 
+        _ = HideOverlayPreviewAfterDelay(DrawingCancellationTokenSource!.Token);
+    }
+
+    public static void CancelDrawingOverlayPreview()
+    {
+        DrawingPreview = false;
         DrawingCancellationTokenSource?.Cancel();
         DrawingCancellationTokenSource?.Dispose();
         DrawingCancellationTokenSource = new CancellationTokenSource();
-
-        _ = HideTemporaryOverlayAfterDelay(DrawingCancellationTokenSource.Token);
     }
 
-    private static async Task HideTemporaryOverlayAfterDelay(CancellationToken cancellationToken)
+    private static async Task HideOverlayPreviewAfterDelay(CancellationToken cancellationToken)
     {
+        DrawingPreview = true;
+
         try {
             await Task.Delay(2500, cancellationToken);
         } catch (OperationCanceledException) {
             return;
         }
 
-        DrawingTemporarily = false;
+        DrawingPreview = false;
     }
 
     public override bool DrawConditions()
     {
-        if (DrawingTemporarily) {
+        if (DrawingPreview) {
             return true;
         }
 

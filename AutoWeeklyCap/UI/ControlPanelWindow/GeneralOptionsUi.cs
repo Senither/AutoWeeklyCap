@@ -117,7 +117,11 @@ public static class GeneralOptionsUi
     private static void StatusIcon()
     {
         if (ImGui.Checkbox("Display status icon", ref AWC.Config.StatusOverlayEnabled)) {
-            StatusOverlayWindow.DrawOverlayTemporarily();
+            if (AWC.Config.StatusOverlayEnabled) {
+                StatusOverlayWindow.DrawOverlayPreview();
+            } else {
+                StatusOverlayWindow.CancelDrawingOverlayPreview();
+            }
         }
 
         InformationTooltip.Draw(() =>
@@ -131,7 +135,7 @@ public static class GeneralOptionsUi
         var statusOverlayImageSize = AWC.Config.StatusOverlayImageSize;
         if (Range.Draw("###icon-size", ref statusOverlayImageSize, 50, 250, "%upx")) {
             AWC.Config.StatusOverlayImageSize = statusOverlayImageSize;
-            StatusOverlayWindow.DrawOverlayTemporarily();
+            StatusOverlayWindow.DrawOverlayPreview();
         }
 
         ImGui.Text("Icon position");
@@ -139,7 +143,7 @@ public static class GeneralOptionsUi
             using (AWC.Config.StatusOverlayPosition == position ? Theme.PushSuccessButton() : null) {
                 if (ImGuiEx.IconButton(position.GetIcon(), $"###icon-position-{position.GetName()}")) {
                     AWC.Config.StatusOverlayPosition = position;
-                    StatusOverlayWindow.DrawOverlayTemporarily();
+                    StatusOverlayWindow.DrawOverlayPreview();
                 }
 
                 ImGuiEx.Tooltip($"Set position to {position.GetName()}");
