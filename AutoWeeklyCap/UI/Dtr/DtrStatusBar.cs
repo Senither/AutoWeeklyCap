@@ -8,7 +8,9 @@ namespace AutoWeeklyCap.UI.Dtr;
 public class DtrStatusBar : IDisposable
 {
     private const string DtrBarTitle = "Auto Weekly Capper";
-    private const string DtrBarTooltip = "Click => toggle the character window\nCTRL + Click => toggle runner status";
+    private const string DtrBarTooltip = "Click => toggle the character window\n";
+    private const string DtrBarNormalAction = "CTRL + Click => toggle runner status";
+    private const string DtrBarCancelAction = "CTRL + Click => cancel current action";
 
     private Thread? _dtrEntryLoadThread;
     private IDtrBarEntry? _dtrEntry;
@@ -53,9 +55,15 @@ public class DtrStatusBar : IDisposable
             return;
         }
 
-        _dtrEntry.Tooltip = AWC.Config.ShowStatusAsIcons
+        var tooltip = AWC.Config.ShowStatusAsIcons
             ? $"Status: {TitleManager.GetStatusShort()}\n\n{DtrBarTooltip}"
             : DtrBarTooltip;
+
+        tooltip += (!AWC.Runner.IsRunning() && AWC.TaskManager.IsBusy)
+            ? DtrBarCancelAction
+            : DtrBarNormalAction;
+
+        _dtrEntry.Tooltip = tooltip;
 
         _dtrEntry?.Shown = true;
         _dtrEntry?.Text = new SeString(
@@ -66,7 +74,7 @@ public class DtrStatusBar : IDisposable
         );
     }
 
-    public void OnClick()
+    private static void OnClick()
     {
         if (!ImGui.GetIO().KeyCtrl) {
             AWC.Instance.ToggleMainUi();
@@ -74,11 +82,12 @@ public class DtrStatusBar : IDisposable
         }
 
         if (!AWC.Runner.IsRunning()) {
-            AWC.Runner.Start();
-            return;
-        }
-
-        if (AWC.Runner.IsStopping()) {
+            if (AWC.TaskManager.IsBusy) {
+                AWC.Runner.Abort();
+            } else {
+                AWC.Runner.Start();
+            }
+        } else if (AWC.Runner.IsStopping()) {
             AWC.Runner.Resume();
         } else {
             AWC.Runner.Stop();
