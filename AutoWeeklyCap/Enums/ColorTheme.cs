@@ -22,6 +22,8 @@ public enum ColorTheme
     Blue,
     Indigo,
     Violet,
+
+    // Rich & Vibrant Primaries
     Purple,
     Fuchsia,
     Pink,
