@@ -1,4 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
+// ReSharper disable StringLiteralTypo
 
 namespace AutoWeeklyCap.Helpers;
 

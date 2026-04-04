@@ -13,8 +13,6 @@ using Microsoft.VisualBasic;
 
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
-// ReSharper disable InconsistentNaming
-
 namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
 internal static class DeveloperToolbox
@@ -43,7 +41,7 @@ internal static class DeveloperToolbox
             $"uncapped: {CurrencyHelper.GetUncappedAcquiredTomestoneCount()}]"
         ], ", ");
 
-        ImGui.Text($"TaskManager [tasks: {AWC.TaskManager.NumQueuedTasks},current task: {AWC.TaskManager.CurrentTask?.Name ?? "idle"}]");
+        ImGui.Text($"TaskManager [tasks: {AWC.TaskManager.NumQueuedTasks}, current task: {AWC.TaskManager.CurrentTask?.Name ?? "idle"}]");
         ImGui.Text($"Currencies [{currencies}]");
         ImGui.Text($"Restart [recovery: {ClientListener.IsRecoveringFromDisconnect}, restart: {ClientListener.IsRestarting}]");
         ImGui.Text($"Runner counter [runs: {AWC.Runner.GetRunsCounter()}, character: {AWC.Runner.GetRunsCharacter() ?? "<not set>"}]");
