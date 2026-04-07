@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface;
-using Dalamud.Utility;
 
 using Newtonsoft.Json;
 
@@ -79,7 +78,7 @@ internal static class ChangelogUI
                 }
 
                 if (!string.IsNullOrWhiteSpace(fullChangelogUrl)) {
-                    DrawChangelogButton(
+                    ThemeButton.Draw(
                         FontAwesomeIcon.Code,
                         $"View Full Changelog###changelog-{entry.Version}",
                         fullChangelogUrl
@@ -88,7 +87,7 @@ internal static class ChangelogUI
                     ImGui.SameLine();
                 }
 
-                DrawChangelogButton(
+                ThemeButton.Draw(
                     FontAwesomeIcon.Receipt,
                     $"View Release###release-{entry.Version}",
                     $"https://github.com/Senither/AutoWeeklyCap/releases/tag/{entry.Version}"
@@ -97,22 +96,6 @@ internal static class ChangelogUI
                 IsFirst = false;
             }, defaultOpen: IsFirst, id: entry.Version);
         }
-    }
-
-    private static void DrawChangelogButton(FontAwesomeIcon icon, string text, string url)
-    {
-        ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(10, 6));
-        ImGui.PushStyleColor(ImGuiCol.Button, Theme.InteractiveUnfocused);
-        ImGui.PushStyleColor(ImGuiCol.ButtonHovered, Theme.InteractiveActive);
-        ImGui.PushStyleColor(ImGuiCol.Border, Theme.InteractiveActive);
-
-        if (ImGuiEx.IconButtonWithText(icon, text)) {
-            ImGui.SetClipboardText(url);
-            Notify.Success("Link copied to clipboard");
-        }
-
-        ImGui.PopStyleVar(1);
-        ImGui.PopStyleColor(3);
     }
 
     private static void EnsureChangelogLoaded()

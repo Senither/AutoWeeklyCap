@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.IPC.Wotsit;
+using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface;
 using Dalamud.Plugin;
@@ -70,22 +71,11 @@ internal static class PluginInformationAndDependenciesUI
 
         ImGuiEx.LineCentered(() =>
         {
-            if (ImGui.Button("Plugin List")) {
-                ImGui.SetClipboardText("https://dalamud-plugins.senither.com");
-                Notify.Success("Link copied to clipboard");
-            }
-
+            ThemeButton.Draw("Plugin List", "https://dalamud-plugins.senither.com");
             ImGui.SameLine();
-            if (ImGui.Button("Plugin Repository")) {
-                ImGui.SetClipboardText("https://dalamud-plugins.senither.com/plugin/AutoWeeklyCap.json");
-                Notify.Success("Link copied to clipboard");
-            }
-
+            ThemeButton.Draw("Plugin Repository", "https://dalamud-plugins.senither.com/plugin/AutoWeeklyCap.json");
             ImGui.SameLine();
-            if (ImGui.Button("Source Code")) {
-                ImGui.SetClipboardText("https://github.com/Senither/AutoWeeklyCap");
-                Notify.Success("Link copied to clipboard");
-            }
+            ThemeButton.Draw("Source Code", "https://github.com/Senither/AutoWeeklyCap");
         });
     }
 
