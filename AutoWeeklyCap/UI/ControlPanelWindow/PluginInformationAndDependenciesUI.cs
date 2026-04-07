@@ -80,6 +80,12 @@ internal static class PluginInformationAndDependenciesUI
                 ImGui.SetClipboardText("https://dalamud-plugins.senither.com/plugin/AutoWeeklyCap.json");
                 Notify.Success("Link copied to clipboard");
             }
+
+            ImGui.SameLine();
+            if (ImGui.Button("Source Code")) {
+                ImGui.SetClipboardText("https://github.com/Senither/AutoWeeklyCap");
+                Notify.Success("Link copied to clipboard");
+            }
         });
     }
 
