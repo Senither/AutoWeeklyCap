@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 using AutoWeeklyCap.UI.Helpers;
 
+using Dalamud.Interface;
+using Dalamud.Utility;
+
 using Newtonsoft.Json;
 
 // ReSharper disable InconsistentNaming
@@ -59,7 +62,14 @@ internal static class ChangelogUI
         foreach (var entry in entries) {
             Card.Draw($"{entry.Version} ({entry.CreatedAt:yyyy-MM-dd})", () =>
             {
+                string? fullChangelogUrl = null;
+
                 foreach (var line in ReadLines(entry.Changelog)) {
+                    if (TryGetFullChangelogUrl(line, out var url)) {
+                        fullChangelogUrl = url;
+                        continue;
+                    }
+
                     if (string.IsNullOrWhiteSpace(line)) {
                         ImGui.Spacing();
                         continue;
@@ -68,9 +78,41 @@ internal static class ChangelogUI
                     ImGui.TextWrapped(line);
                 }
 
+                if (!string.IsNullOrWhiteSpace(fullChangelogUrl)) {
+                    DrawChangelogButton(
+                        FontAwesomeIcon.Code,
+                        $"View Full Changelog###changelog-{entry.Version}",
+                        fullChangelogUrl
+                    );
+
+                    ImGui.SameLine();
+                }
+
+                DrawChangelogButton(
+                    FontAwesomeIcon.Receipt,
+                    $"View Release###release-{entry.Version}",
+                    $"https://github.com/Senither/AutoWeeklyCap/releases/tag/{entry.Version}"
+                );
+
                 IsFirst = false;
             }, defaultOpen: IsFirst, id: entry.Version);
         }
+    }
+
+    private static void DrawChangelogButton(FontAwesomeIcon icon, string text, string url)
+    {
+        ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(10, 6));
+        ImGui.PushStyleColor(ImGuiCol.Button, Theme.InteractiveUnfocused);
+        ImGui.PushStyleColor(ImGuiCol.ButtonHovered, Theme.InteractiveActive);
+        ImGui.PushStyleColor(ImGuiCol.Border, Theme.InteractiveActive);
+
+        if (ImGuiEx.IconButtonWithText(icon, text)) {
+            ImGui.SetClipboardText(url);
+            Notify.Success("Link copied to clipboard");
+        }
+
+        ImGui.PopStyleVar(1);
+        ImGui.PopStyleColor(3);
     }
 
     private static void EnsureChangelogLoaded()
@@ -106,6 +148,23 @@ internal static class ChangelogUI
         } finally {
             IsFetching = false;
         }
+    }
+
+    private static bool TryGetFullChangelogUrl(string line, out string? url)
+    {
+        const string Prefix = "**Full Changelog**:";
+        var trimmedLine = line.Trim();
+
+        if (trimmedLine.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase)) {
+            var candidate = trimmedLine[Prefix.Length..].Trim();
+            if (Uri.TryCreate(candidate, UriKind.Absolute, out _)) {
+                url = candidate;
+                return true;
+            }
+        }
+
+        url = null;
+        return false;
     }
 
     private static IEnumerable<string> ReadLines(string text)
