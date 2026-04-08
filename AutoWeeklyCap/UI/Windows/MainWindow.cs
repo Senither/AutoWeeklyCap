@@ -9,11 +9,10 @@ namespace AutoWeeklyCap.UI.Windows;
 public class MainWindow : Window
 {
     private readonly TitleBarButton _lockButton;
+    private const float MinimumWindowHeight = 135f;
 
     public MainWindow(AWC autoWeeklyCap) : base("Auto Weekly Tomestone Capper##main-window")
     {
-        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(425, 135), MaximumSize = new Vector2(9999, 9999) };
-
         TitleBarButtons.Add(new TitleBarButton
         {
             Click = (m) =>
@@ -77,22 +76,22 @@ public class MainWindow : Window
 
         WindowName = $"{name}###AWC";
 
-        if (AWC.Config.Window.Pin) {
-            ImGuiHelpers.SetNextWindowPosRelativeMainViewport(AWC.Config.Window.Position);
-            ImGui.SetNextWindowSize(AWC.Config.Window.Size);
-        }
-
-        if (AWC.Config.Window.Pin) {
-            Flags = ImGuiWindowFlags.NoResize;
+        if (!AWC.Config.Window.Pin) {
+            Flags = ImGuiWindowFlags.None;
+            SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(425, MinimumWindowHeight), MaximumSize = new Vector2(9999, 9999) };
             return;
         }
+
+        ImGuiHelpers.SetNextWindowPosRelativeMainViewport(AWC.Config.Window.Position);
 
         if (AWC.Config.AutoResizeCharacterWindow) {
             Flags = ImGuiWindowFlags.NoResize | ImGuiWindowFlags.AlwaysAutoResize;
+            SizeConstraints = new WindowSizeConstraints { MinimumSize = AWC.Config.Window.Size with { Y = MinimumWindowHeight }, MaximumSize = AWC.Config.Window.Size with { Y = 9999f } };
             return;
         }
 
-        Flags = ImGuiWindowFlags.None;
+        Flags = ImGuiWindowFlags.NoResize;
+        ImGui.SetNextWindowSize(AWC.Config.Window.Size);
     }
 
     public override void Draw()
@@ -105,13 +104,34 @@ public class MainWindow : Window
             CharactersTabUi.Draw();
             ImGui.Spacing();
 
+            AWC.Config.Window.Size = AWC.Config.AutoResizeCharacterWindow && !AWC.Config.Window.Pin
+                ? ApplyAutoResizeHeight()
+                : ImGui.GetWindowSize();
+
             if (AWC.Config.Window.Pin) {
                 return;
             }
 
             AWC.Config.Window.Position = ImGui.GetWindowPos();
-            AWC.Config.Window.Size = ImGui.GetWindowSize();
         }
+    }
+
+    private Vector2 ApplyAutoResizeHeight()
+    {
+        var windowSize = ImGui.GetWindowSize();
+        var desiredHeight = MathF.Max(
+            SizeConstraints?.MinimumSize.Y ?? MinimumWindowHeight,
+            ImGui.GetCursorPosY() + ImGui.GetStyle().WindowPadding.Y
+        );
+
+        if (Math.Abs(windowSize.Y - desiredHeight) <= 0.5f) {
+            return windowSize;
+        }
+
+        var updatedSize = windowSize with { Y = desiredHeight };
+        ImGui.SetWindowSize(updatedSize);
+
+        return updatedSize;
     }
 
     private void DrawPluginStatus()
