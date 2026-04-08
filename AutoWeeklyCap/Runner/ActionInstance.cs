@@ -17,6 +17,5 @@ public static class ActionInstance
     public static readonly EnterGrandCompanyInnAction EnterGrandCompanyInn = new();
     public static readonly LeaveGrandCompanyInnAction LeaveGrandCompanyInn = new();
     public static readonly EnterPrivateHouseAction EnterPrivateHouse = new();
-    public static readonly LeavePrivateHouseAction LeavePrivateHouse = new();
     public static readonly EnterFcHouseAction EnterFcHouseAction = new();
 }

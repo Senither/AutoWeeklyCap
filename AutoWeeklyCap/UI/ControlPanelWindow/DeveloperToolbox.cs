@@ -74,9 +74,7 @@ internal static class DeveloperToolbox
         DebugActionButton("Leave GC Inn", ActionInstance.LeaveGrandCompanyInn);
 
         DebugActionButton("Enter Private House", ActionInstance.EnterPrivateHouse, false);
-        DebugActionButton("Leave Private House", ActionInstance.LeavePrivateHouse);
-
-        DebugActionButton("Enter FC House", ActionInstance.EnterFcHouseAction, false);
+        DebugActionButton("Enter FC House", ActionInstance.EnterFcHouseAction);
     }
 
     private static void DrawNotificationDebugActions()
