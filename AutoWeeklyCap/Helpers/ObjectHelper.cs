@@ -68,4 +68,36 @@ public static class ObjectHelper
 
         return null;
     }
+
+    internal static IGameObject? FindEnteranceGameObject(float maxDistance)
+    {
+        IGameObject? gameObject = null;
+        var closestDistance = float.MaxValue;
+
+        foreach (var obj in Svc.Objects) {
+            if (obj.ObjectKind != ObjectKind.EventObj || !obj.IsTargetable) {
+                continue;
+            }
+
+            var name = obj.Name.TextValue;
+            if (!IsMatchingHousingEnterance(name)) {
+                continue;
+            }
+
+            var distance = Vector3.Distance(obj.Position, Player.Position);
+            if (distance <= 0.25f || distance > maxDistance || !(distance < closestDistance)) {
+                continue;
+            }
+
+            gameObject = obj;
+            closestDistance = distance;
+        }
+
+        return gameObject;
+    }
+
+    private static bool IsMatchingHousingEnterance(string? name)
+    {
+        return !string.IsNullOrWhiteSpace(name) && name.Contains("Entrance", StringComparison.OrdinalIgnoreCase);
+    }
 }
