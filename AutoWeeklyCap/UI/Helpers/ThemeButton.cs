@@ -1,19 +1,16 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 using Dalamud.Interface;
+using Dalamud.Utility;
 
 namespace AutoWeeklyCap.UI.Helpers;
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public static class ThemeButton
 {
-    public static void Draw(string text, string linkToCopy)
+    public static void Draw(string text, string link)
     {
-        Draw(text, () =>
-        {
-            ImGui.SetClipboardText(linkToCopy);
-            Notify.Success("Link copied to clipboard");
-        });
+        Draw(text, () => InteractWithLink(link));
     }
 
     public static void Draw(string text, Action action)
@@ -29,13 +26,9 @@ public static class ThemeButton
         }
     }
 
-    public static void Draw(FontAwesomeIcon icon, string text, string linkToCopy)
+    public static void Draw(FontAwesomeIcon icon, string text, string link)
     {
-        Draw(icon, text, () =>
-        {
-            ImGui.SetClipboardText(linkToCopy);
-            Notify.Success("Link copied to clipboard");
-        });
+        Draw(icon, text, () => InteractWithLink(link));
     }
 
     public static void Draw(FontAwesomeIcon icon, string text, Action action)
@@ -58,5 +51,16 @@ public static class ThemeButton
             colorCount: 3,
             styleCount: 1
         );
+    }
+
+    private static void InteractWithLink(string link)
+    {
+        if (ImGuiEx.Ctrl) {
+            Util.OpenLink(link);
+            Notify.Success("Link opened in your browser");
+        } else {
+            ImGui.SetClipboardText(link);
+            Notify.Success("Link copied to clipboard");
+        }
     }
 }
