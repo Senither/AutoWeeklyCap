@@ -74,6 +74,7 @@ internal static class DeveloperToolbox
         DebugActionButton("Leave GC Inn", ActionInstance.LeaveGrandCompanyInn);
 
         DebugActionButton("Enter Private House", ActionInstance.EnterPrivateHouse, false);
+        DebugActionButton("Enter Apartment", ActionInstance.EnterApartmentAction);
         DebugActionButton("Enter FC House", ActionInstance.EnterFcHouseAction);
     }
 
