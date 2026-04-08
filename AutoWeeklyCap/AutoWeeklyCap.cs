@@ -71,8 +71,6 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
             }
         }
 
-        DtrStatusBar.Start();
-
         Runner = new Runner.Runner();
 
         _windowSystem.AddWindow(ControlPanelWindow = new ControlPanelWindow());
@@ -96,17 +94,22 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
             OpenMainUi();
         }
 
-        Log.Debug($"AWC#Startup - StartRunnerOnBoot: {Config.StartRunnerOnBoot}");
-        if (Config.StartRunnerOnBoot) {
-            _ = new TickScheduler(() => Runner.AutoStartOnBoot());
-        }
-
-        WotsitIPC.Manager.InitializeWotsit("AWC initialization");
-
 #if DEBUG
         OpenMainUi();
         OpenConfigUi();
 #endif
+
+        _ = new TickScheduler(() =>
+        {
+            DtrStatusBar.Start();
+
+            Log.Debug($"AWC#Startup - StartRunnerOnBoot: {Config.StartRunnerOnBoot}");
+            if (Config.StartRunnerOnBoot) {
+                Runner.AutoStartOnBoot();
+            }
+
+            WotsitIPC.Manager.InitializeWotsit("AWC initialization");
+        });
     }
 
     public void Dispose()
