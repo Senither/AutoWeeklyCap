@@ -16,4 +16,6 @@ public static class ActionInstance
     // Safe-zone instances
     public static readonly EnterGrandCompanyInnAction EnterGrandCompanyInn = new();
     public static readonly LeaveGrandCompanyInnAction LeaveGrandCompanyInn = new();
+    public static readonly EnterPrivateHouseAction EnterPrivateHouse = new();
+    public static readonly LeavePrivateHouseAction LeavePrivateHouse = new();
 }
