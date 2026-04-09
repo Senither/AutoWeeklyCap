@@ -40,6 +40,10 @@ public static class WotsitEntryGenerator
         foreach (var entry in ReloggableCharacters()) {
             yield return entry;
         }
+
+        foreach (var entry in SafezoneTeleporterActions()) {
+            yield return entry;
+        }
     }
 
     private static IEnumerable<WotsitEntry> ThirdPartyRunnerActions()
@@ -80,6 +84,47 @@ public static class WotsitEntryGenerator
                 $"relog to character: {characterAndWorld}",
                 112,
                 () => ChatHelper.RunCommand($"awc relog {characterAndWorld}")
+            );
+        }
+    }
+
+    private static IEnumerable<WotsitEntry> SafezoneTeleporterActions()
+    {
+        if (!LifestreamIPC.IsEnabled || PlayerHelper.InDuty) {
+            yield break;
+        }
+
+        yield return new WotsitEntry(
+            "Enter preferred safe-zone",
+            "enter|goto safezone|safe zone",
+            113,
+            () => ActionInstance.Safezone.Invoke()
+        );
+
+        if (LifestreamIPC.HasPrivateHouse()) {
+            yield return new WotsitEntry(
+                "Enter personal house",
+                "enter|goto private|personal house|estate",
+                113,
+                () => ActionInstance.EnterPrivateHouse.Invoke()
+            );
+        }
+
+        if (LifestreamIPC.HasApartment()) {
+            yield return new WotsitEntry(
+                "Enter personal apartment",
+                "enter|goto private|personal apartment|estate",
+                113,
+                () => ActionInstance.EnterApartmentAction.Invoke()
+            );
+        }
+
+        if (LifestreamIPC.HasFreeCompanyHouse()) {
+            yield return new WotsitEntry(
+                "Enter free company house",
+                "enter|goto fc|free company house",
+                113,
+                () => ActionInstance.EnterApartmentAction.Invoke()
             );
         }
     }
