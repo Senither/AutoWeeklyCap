@@ -43,7 +43,8 @@ public class Configuration : IPluginConfiguration
 
     // Runner Options (General)
     public bool AlwaysStartOnHomeWorld { get; set; } = true;
-    public bool OnlyStartAutoDutyFromGCInn { get; set; } = false;
+    public bool OnlyStartAutoDutyFromSafezone { get; set; } = true;
+    public List<Safezone> PreferredSafezones { get; set; } = Enum.GetValues<Safezone>().ToList();
     public bool Repair { get; set; } = true;
     public bool RepairSelf { get; set; } = true;
     public uint RepairPercentage { get; set; } = 50;
@@ -151,6 +152,54 @@ public class Configuration : IPluginConfiguration
         }
 
         return changed;
+    }
+
+    public List<Safezone> GetSortedSafezones()
+    {
+        NormalizeSafezoneOrder();
+        return [.. PreferredSafezones];
+    }
+
+    public bool MoveSafezone(Safezone safezone, int direction)
+    {
+        NormalizeSafezoneOrder();
+
+        var currentIndex = PreferredSafezones.IndexOf(safezone);
+        if (currentIndex == -1) {
+            return false;
+        }
+
+        var targetIndex = currentIndex + direction;
+        if (targetIndex < 0 || targetIndex >= PreferredSafezones.Count) {
+            return false;
+        }
+
+        (PreferredSafezones[currentIndex], PreferredSafezones[targetIndex]) = (PreferredSafezones[targetIndex], PreferredSafezones[currentIndex]);
+        Save();
+
+        return true;
+    }
+
+    public bool NormalizeSafezoneOrder()
+    {
+        var availableSafezones = Enum.GetValues<Safezone>().ToList();
+        var normalizedSafezones = PreferredSafezones
+            .Where(availableSafezones.Contains)
+            .Distinct()
+            .ToList();
+
+        foreach (var safezone in availableSafezones) {
+            if (!normalizedSafezones.Contains(safezone)) {
+                normalizedSafezones.Add(safezone);
+            }
+        }
+
+        if (normalizedSafezones.SequenceEqual(PreferredSafezones)) {
+            return false;
+        }
+
+        PreferredSafezones = normalizedSafezones;
+        return true;
     }
 
     public CharacterOptions? GetOrRegisterCharacterOptions(string character)

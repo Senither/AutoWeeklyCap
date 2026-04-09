@@ -374,7 +374,7 @@ public class Runner
             return;
         }
 
-        if (AWC.Config.OnlyStartAutoDutyFromGCInn) {
+        if (AWC.Config.OnlyStartAutoDutyFromSafezone) {
             ActionInstance.EnterGrandCompanyInn.Invoke();
         }
 
