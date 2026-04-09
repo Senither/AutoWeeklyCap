@@ -1,4 +1,4 @@
-﻿namespace AutoWeeklyCap.Runner.Actions;
+﻿namespace AutoWeeklyCap.Runner.Actions.Safezones;
 
 public class EnterGrandCompanyInnAction : BaseAction
 {

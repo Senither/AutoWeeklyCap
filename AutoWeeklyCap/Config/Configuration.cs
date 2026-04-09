@@ -43,7 +43,8 @@ public class Configuration : IPluginConfiguration
 
     // Runner Options (General)
     public bool AlwaysStartOnHomeWorld { get; set; } = true;
-    public bool OnlyStartAutoDutyFromGCInn { get; set; } = false;
+    public bool OnlyStartAutoDutyFromSafezone { get; set; } = true;
+    public Dictionary<int, int> PreferredSafezones { get; set; } = CreateDefaultSafezonePositions();
     public bool Repair { get; set; } = true;
     public bool RepairSelf { get; set; } = true;
     public uint RepairPercentage { get; set; } = 50;
@@ -151,6 +152,88 @@ public class Configuration : IPluginConfiguration
         }
 
         return changed;
+    }
+
+    public List<Safezone> GetSortedSafezones()
+    {
+        NormalizeSafezoneOrder();
+
+        return PreferredSafezones
+            .OrderBy(entry => entry.Value)
+            .ThenBy(entry => entry.Key)
+            .Select(entry => (Safezone)entry.Key)
+            .ToList();
+    }
+
+    public bool MoveSafezone(Safezone safezone, int direction)
+    {
+        NormalizeSafezoneOrder();
+
+        var safezones = PreferredSafezones
+            .OrderBy(entry => entry.Value)
+            .ThenBy(entry => entry.Key)
+            .Select(entry => (Safezone)entry.Key)
+            .ToList();
+
+        var currentIndex = safezones.IndexOf(safezone);
+        if (currentIndex == -1) {
+            return false;
+        }
+
+        var targetIndex = currentIndex + direction;
+        if (targetIndex < 0 || targetIndex >= safezones.Count) {
+            return false;
+        }
+
+        var safezoneId = (int)safezone;
+        var targetSafezoneId = (int)safezones[targetIndex];
+
+        (PreferredSafezones[safezoneId], PreferredSafezones[targetSafezoneId]) = (PreferredSafezones[targetSafezoneId], PreferredSafezones[safezoneId]);
+
+        Save();
+
+        return true;
+    }
+
+    public bool NormalizeSafezoneOrder()
+    {
+        var orderedSafezoneIds = PreferredSafezones
+            .Where(entry => Enum.IsDefined(typeof(Safezone), entry.Key))
+            .OrderBy(entry => entry.Value)
+            .ThenBy(entry => entry.Key)
+            .Select(entry => entry.Key)
+            .Distinct()
+            .ToList();
+
+        var knownSafezoneIds = orderedSafezoneIds.ToHashSet();
+        foreach (var safezone in Enum.GetValues<Safezone>()) {
+            var safezoneId = (int)safezone;
+
+            if (knownSafezoneIds.Add(safezoneId)) {
+                orderedSafezoneIds.Add(safezoneId);
+            }
+        }
+
+        var normalizedSafezones = orderedSafezoneIds
+            .Select((safezoneId, index) => new { SafezoneId = safezoneId, Position = index })
+            .ToDictionary(entry => entry.SafezoneId, entry => entry.Position);
+
+        var wasChanged = PreferredSafezones.Count != normalizedSafezones.Count ||
+                         PreferredSafezones.Any(entry => !normalizedSafezones.TryGetValue(entry.Key, out var position) || position != entry.Value);
+
+        if (!wasChanged) {
+            return false;
+        }
+
+        PreferredSafezones = normalizedSafezones;
+        return true;
+    }
+
+    private static Dictionary<int, int> CreateDefaultSafezonePositions()
+    {
+        return Enum.GetValues<Safezone>()
+            .Select((safezone, index) => new { SafezoneId = (int)safezone, Position = index })
+            .ToDictionary(entry => entry.SafezoneId, entry => entry.Position);
     }
 
     public CharacterOptions? GetOrRegisterCharacterOptions(string character)

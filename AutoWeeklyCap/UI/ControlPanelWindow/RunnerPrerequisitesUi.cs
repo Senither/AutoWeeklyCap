@@ -1,5 +1,7 @@
 using AutoWeeklyCap.UI.Helpers;
 
+using Dalamud.Interface;
+
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 namespace AutoWeeklyCap.UI.ControlPanelWindow;
@@ -8,8 +10,9 @@ public static class RunnerPrerequisitesUi
 {
     public static void Draw()
     {
-        Card.Draw("Duty Options###runner-duty-options", DrawTest, defaultOpen: true);
-        Card.Draw("Between Runs###runner-prereq-general", DrawBetweenRunsOptions, defaultOpen: true);
+        Card.Draw("Duty Options###runner-duty-options", DrawDutyOptions, defaultOpen: true);
+        Card.Draw("Before Runs###runner-before-general", DrawBeforeRunOptions, defaultOpen: true);
+        Card.Draw("Between Runs###runner-between-general", DrawBetweenRunsOptions, defaultOpen: true);
 
         ImGui.TextWrapped("Select how third-party plugins should be integrated into the runner.");
         ImGui.Spacing();
@@ -19,7 +22,7 @@ public static class RunnerPrerequisitesUi
         Card.Draw("Notification Master###runner-prereq-notification-master", DrawNotificationMaster);
     }
 
-    private static void DrawTest()
+    private static void DrawDutyOptions()
     {
         ImGui.TextWrapped("Selected duty");
 
@@ -63,11 +66,8 @@ public static class RunnerPrerequisitesUi
         });
     }
 
-    private static void DrawBetweenRunsOptions()
+    private static void DrawBeforeRunOptions()
     {
-        ImGui.TextWrapped("Select what should happen before and between runs.");
-        ImGui.Spacing();
-
         // Return to home world
         var returnToHomeWorld = AWC.Config.AlwaysStartOnHomeWorld;
         if (ImGui.Checkbox("Always return to home world", ref returnToHomeWorld)) {
@@ -89,15 +89,15 @@ public static class RunnerPrerequisitesUi
             ImGui.Text(", etc");
         });
 
-        // Only start from GC inn
-        var onlyStartAutoDutyFromGcInn = AWC.Config.OnlyStartAutoDutyFromGCInn;
-        if (ImGui.Checkbox("Only start AutoDuty from GC inn", ref onlyStartAutoDutyFromGcInn)) {
-            AWC.Config.OnlyStartAutoDutyFromGCInn = onlyStartAutoDutyFromGcInn;
+        // Only start from safezone
+        var onlyStartAutoDutyFromSafezone = AWC.Config.OnlyStartAutoDutyFromSafezone;
+        if (ImGui.Checkbox("Only start AutoDuty from safezone", ref onlyStartAutoDutyFromSafezone)) {
+            AWC.Config.OnlyStartAutoDutyFromSafezone = onlyStartAutoDutyFromSafezone;
         }
 
         InformationTooltip.Draw(() =>
         {
-            ImGui.Text("Moves to your grand company inn before starting ");
+            ImGui.Text("Moves to your preferred safezone before starting ");
             StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
             ImGui.Text("");
 
@@ -108,8 +108,43 @@ public static class RunnerPrerequisitesUi
             ImGui.Text(" to be enabled");
         });
 
-        Card.Separator();
+        Disabled.Draw(!onlyStartAutoDutyFromSafezone, () =>
+        {
+            ImGui.Spacing();
+            ImGui.Text("Safezone priority");
+            InformationTooltip.Draw("The runner will try these safezones from top to bottom until one can be entered");
 
+            var safezones = AWC.Config.GetSortedSafezones();
+            for (var index = 0; index < safezones.Count; index++) {
+                var safezone = safezones[index];
+
+                ImGui.PushID($"safezone-priority-{safezone}");
+
+                Disabled.Draw(index == 0, () =>
+                {
+                    if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowUp)) {
+                        AWC.Config.MoveSafezone(safezone, -1);
+                    }
+                });
+
+                ImGui.SameLine(0f, 4f);
+                Disabled.Draw(index == safezones.Count - 1, () =>
+                {
+                    if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowDown)) {
+                        AWC.Config.MoveSafezone(safezone, 1);
+                    }
+                });
+
+                ImGui.SameLine();
+                ImGui.Text(safezone.GetName());
+
+                ImGui.PopID();
+            }
+        });
+    }
+
+    private static void DrawBetweenRunsOptions()
+    {
         // Repair (Self & NPC)
         var repairStatus = AWC.Config.Repair;
         if (ImGui.Checkbox("Repair Gear", ref repairStatus)) {
