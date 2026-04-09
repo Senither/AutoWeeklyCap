@@ -21,6 +21,10 @@ public static class WotsitEntryGenerator
 
     public static IEnumerable<WotsitEntry> Generate()
     {
+        if (!Player.Available) {
+            yield break;
+        }
+
         foreach (var entry in RunnerEntries) {
             yield return entry;
         }
