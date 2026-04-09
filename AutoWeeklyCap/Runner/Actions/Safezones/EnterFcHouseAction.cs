@@ -1,7 +1,4 @@
-﻿using Dalamud.Game.ClientState.Objects.Enums;
-using Dalamud.Game.ClientState.Objects.Types;
-
-using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Runner.Actions.Safezones;
 
@@ -63,8 +60,7 @@ public class EnterFcHouseAction : BaseAction
                 return false;
             }
 
-            var distance = Vector3.Distance(Player.Position, gameObject.Position);
-            return distance <= 4.5f || MovementHelper.MoveTo(gameObject.Position, 4.5f);
+            return MovementHelper.MoveTo(gameObject.Position, 4.5f);
         }, "move to FC house entrance");
 
         Enqueue(() => PlayerHelper.IsReady, "waiting for player");

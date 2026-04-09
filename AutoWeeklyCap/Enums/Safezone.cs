@@ -1,6 +1,4 @@
-﻿using AutoWeeklyCap.Runner.Actions;
-
-namespace AutoWeeklyCap.Enums;
+﻿namespace AutoWeeklyCap.Enums;
 
 public enum Safezone
 {

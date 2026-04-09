@@ -218,8 +218,8 @@ public class Configuration : IPluginConfiguration
             .Select((safezoneId, index) => new { SafezoneId = safezoneId, Position = index })
             .ToDictionary(entry => entry.SafezoneId, entry => entry.Position);
 
-        var wasChanged = PreferredSafezones.Count != normalizedSafezones.Count
-                         || PreferredSafezones.Any(entry => !normalizedSafezones.TryGetValue(entry.Key, out var position) || position != entry.Value);
+        var wasChanged = PreferredSafezones.Count != normalizedSafezones.Count ||
+                         PreferredSafezones.Any(entry => !normalizedSafezones.TryGetValue(entry.Key, out var position) || position != entry.Value);
 
         if (!wasChanged) {
             return false;
