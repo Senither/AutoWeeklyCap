@@ -70,7 +70,8 @@ internal static class DeveloperToolbox
 
         Card.Separator();
 
-        DebugActionButton("Enter GC Inn", ActionInstance.EnterGrandCompanyInn, false);
+        DebugActionButton("Enter preferred safezone", ActionInstance.Safezone, false);
+        DebugActionButton("Enter GC Inn", ActionInstance.EnterGrandCompanyInn);
         DebugActionButton("Leave GC Inn", ActionInstance.LeaveGrandCompanyInn);
 
         DebugActionButton("Enter Private House", ActionInstance.EnterPrivateHouse, false);

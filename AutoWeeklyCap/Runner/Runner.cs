@@ -375,7 +375,7 @@ public class Runner
         }
 
         if (AWC.Config.OnlyStartAutoDutyFromSafezone) {
-            ActionInstance.EnterGrandCompanyInn.Invoke();
+            ActionInstance.Safezone.Invoke();
         }
 
         var icon = AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.GetIcon() ?? BitmapFontIcon.AnyClass;

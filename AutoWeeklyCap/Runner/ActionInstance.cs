@@ -14,6 +14,8 @@ public static class ActionInstance
     public static readonly NotificationAction Notification = new();
 
     // Safe-zone instances
+    public static readonly SafezoneAction Safezone = new();
+
     public static readonly EnterGrandCompanyInnAction EnterGrandCompanyInn = new();
     public static readonly LeaveGrandCompanyInnAction LeaveGrandCompanyInn = new();
     public static readonly EnterApartmentAction EnterApartmentAction = new();

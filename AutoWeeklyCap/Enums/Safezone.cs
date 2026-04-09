@@ -37,5 +37,17 @@ public static class SafezoneExtensions
                 _ => throw new ArgumentOutOfRangeException(nameof(safezone), safezone, null)
             };
         }
+
+        public bool IsOnLocation()
+        {
+            return safezone switch
+            {
+                Safezone.PrivateHouse => HousingHelper.IsInsideHouse(),
+                Safezone.FreeCompany => HousingHelper.IsInsideFC(),
+                Safezone.Apartment => HousingHelper.IsInsideApartment(),
+                Safezone.GrandCompanyInn => Player.Available && Player.Territory.RowId == GrandCompanyHelper.InnTerritoryId,
+                _ => throw new ArgumentOutOfRangeException(nameof(safezone), safezone, null)
+            };
+        }
     }
 }

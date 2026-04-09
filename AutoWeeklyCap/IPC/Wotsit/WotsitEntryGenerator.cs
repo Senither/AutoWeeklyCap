@@ -90,6 +90,13 @@ public static class WotsitEntryGenerator
             yield break;
         }
 
+        yield return new WotsitEntry(
+            "Enter preferred safe-zone",
+            "enter|goto safezone|safe zone",
+            113,
+            () => ActionInstance.Safezone.Invoke()
+        );
+
         if (LifestreamIPC.HasPrivateHouse()) {
             yield return new WotsitEntry(
                 "Enter personal house",
