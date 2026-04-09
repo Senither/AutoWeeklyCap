@@ -44,7 +44,7 @@ public class Configuration : IPluginConfiguration
     // Runner Options (General)
     public bool AlwaysStartOnHomeWorld { get; set; } = true;
     public bool OnlyStartAutoDutyFromSafezone { get; set; } = true;
-    public List<Safezone> PreferredSafezones { get; set; } = Enum.GetValues<Safezone>().ToList();
+    public Dictionary<int, int> PreferredSafezones { get; set; } = CreateDefaultSafezonePositions();
     public bool Repair { get; set; } = true;
     public bool RepairSelf { get; set; } = true;
     public uint RepairPercentage { get; set; } = 50;
@@ -157,24 +157,39 @@ public class Configuration : IPluginConfiguration
     public List<Safezone> GetSortedSafezones()
     {
         NormalizeSafezoneOrder();
-        return [.. PreferredSafezones];
+
+        return PreferredSafezones
+            .OrderBy(entry => entry.Value)
+            .ThenBy(entry => entry.Key)
+            .Select(entry => (Safezone)entry.Key)
+            .ToList();
     }
 
     public bool MoveSafezone(Safezone safezone, int direction)
     {
         NormalizeSafezoneOrder();
 
-        var currentIndex = PreferredSafezones.IndexOf(safezone);
+        var safezones = PreferredSafezones
+            .OrderBy(entry => entry.Value)
+            .ThenBy(entry => entry.Key)
+            .Select(entry => (Safezone)entry.Key)
+            .ToList();
+
+        var currentIndex = safezones.IndexOf(safezone);
         if (currentIndex == -1) {
             return false;
         }
 
         var targetIndex = currentIndex + direction;
-        if (targetIndex < 0 || targetIndex >= PreferredSafezones.Count) {
+        if (targetIndex < 0 || targetIndex >= safezones.Count) {
             return false;
         }
 
-        (PreferredSafezones[currentIndex], PreferredSafezones[targetIndex]) = (PreferredSafezones[targetIndex], PreferredSafezones[currentIndex]);
+        var safezoneId = (int)safezone;
+        var targetSafezoneId = (int)safezones[targetIndex];
+
+        (PreferredSafezones[safezoneId], PreferredSafezones[targetSafezoneId]) = (PreferredSafezones[targetSafezoneId], PreferredSafezones[safezoneId]);
+
         Save();
 
         return true;
@@ -182,24 +197,43 @@ public class Configuration : IPluginConfiguration
 
     public bool NormalizeSafezoneOrder()
     {
-        var availableSafezones = Enum.GetValues<Safezone>().ToList();
-        var normalizedSafezones = PreferredSafezones
-            .Where(availableSafezones.Contains)
+        var orderedSafezoneIds = PreferredSafezones
+            .Where(entry => Enum.IsDefined(typeof(Safezone), entry.Key))
+            .OrderBy(entry => entry.Value)
+            .ThenBy(entry => entry.Key)
+            .Select(entry => entry.Key)
             .Distinct()
             .ToList();
 
-        foreach (var safezone in availableSafezones) {
-            if (!normalizedSafezones.Contains(safezone)) {
-                normalizedSafezones.Add(safezone);
+        var knownSafezoneIds = orderedSafezoneIds.ToHashSet();
+        foreach (var safezone in Enum.GetValues<Safezone>()) {
+            var safezoneId = (int)safezone;
+
+            if (knownSafezoneIds.Add(safezoneId)) {
+                orderedSafezoneIds.Add(safezoneId);
             }
         }
 
-        if (normalizedSafezones.SequenceEqual(PreferredSafezones)) {
+        var normalizedSafezones = orderedSafezoneIds
+            .Select((safezoneId, index) => new { SafezoneId = safezoneId, Position = index })
+            .ToDictionary(entry => entry.SafezoneId, entry => entry.Position);
+
+        var wasChanged = PreferredSafezones.Count != normalizedSafezones.Count
+                         || PreferredSafezones.Any(entry => !normalizedSafezones.TryGetValue(entry.Key, out var position) || position != entry.Value);
+
+        if (!wasChanged) {
             return false;
         }
 
         PreferredSafezones = normalizedSafezones;
         return true;
+    }
+
+    private static Dictionary<int, int> CreateDefaultSafezonePositions()
+    {
+        return Enum.GetValues<Safezone>()
+            .Select((safezone, index) => new { SafezoneId = (int)safezone, Position = index })
+            .ToDictionary(entry => entry.SafezoneId, entry => entry.Position);
     }
 
     public CharacterOptions? GetOrRegisterCharacterOptions(string character)
