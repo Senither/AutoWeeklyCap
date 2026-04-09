@@ -7,6 +7,8 @@ namespace AutoWeeklyCap.Helpers;
 
 public static class MovementHelper
 {
+    private static DateTime? _startedAt = null;
+
     public static bool MoveTo(Vector3? position)
     {
         return MoveTo(position, 1.25f, 300_000);
@@ -42,6 +44,11 @@ public static class MovementHelper
                 new TaskManagerConfiguration(timeLimitMs)
             ),
             new TaskManagerTask(
+                () => CheckForMovement((Vector3)position),
+                "MovementHelper: check for movement",
+                new TaskManagerConfiguration(timeLimitMs)
+            ),
+            new TaskManagerTask(
                 () => WaitForPosition((Vector3)position, breakpoint),
                 "MovementHelper: waiting for player movement to location",
                 new TaskManagerConfiguration(timeLimitMs)
@@ -63,7 +70,28 @@ public static class MovementHelper
         VNavMeshIPC.SetAlignCamera(true);
         VNavMeshIPC.PathfindAndMoveTo(position, false);
 
+        _startedAt = DateTime.UtcNow;
+
         return true;
+    }
+
+    private static bool CheckForMovement(Vector3 position)
+    {
+        if (VNavMeshIPC.IsRunning() && PlayerHelper.IsMoving) {
+            return true;
+        }
+
+        if (VNavMeshIPC.PathfindInProgress()) {
+            return false;
+        }
+
+        if (_startedAt == null || DateTime.UtcNow - _startedAt.Value <= TimeSpan.FromSeconds(5)) {
+            return false;
+        }
+
+        VNavMeshIPC.Rebuild();
+
+        return MoveToPosition(position);
     }
 
     private static unsafe bool WaitForPosition(Vector3 position, float breakpoint)
@@ -85,6 +113,7 @@ public static class MovementHelper
         }
 
         VNavMeshIPC.Stop();
+        _startedAt = null;
 
         return true;
     }

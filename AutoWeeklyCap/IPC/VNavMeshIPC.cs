@@ -25,6 +25,8 @@ public class VNavMeshIPC
     );
 
     [EzIPC("Nav.IsReady")] internal static Func<bool> IsReady;
+    [EzIPC("Nav.Rebuild")] internal static Func<bool> Rebuild;
+    [EzIPC("Nav.PathfindInProgress")] internal static Func<bool> PathfindInProgress;
 
     /// <summary>
     /// Vector3 position, bool canFly
