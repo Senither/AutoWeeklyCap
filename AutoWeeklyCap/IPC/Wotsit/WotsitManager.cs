@@ -1,6 +1,10 @@
-﻿using Dalamud.Plugin.Ipc;
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+using Dalamud.Plugin.Ipc;
 
 using ECommons.Events;
+using ECommons.Schedulers;
 
 namespace AutoWeeklyCap.IPC.Wotsit;
 
@@ -8,6 +12,7 @@ public class WotsitManager : IDisposable
 {
     private readonly Dictionary<string, WotsitEntry> _registered = [];
     private HashSet<WotsitEntry> _lastEntries = [];
+    private int _initializeWotsitRequestId;
 
     private readonly ICallGateSubscriber<bool>? _faAvailable;
     private readonly ICallGateSubscriber<string, bool>? _faInvoke;
@@ -40,22 +45,50 @@ public class WotsitManager : IDisposable
 
     private void OnAvailable()
     {
-        InitializeWotsit("FA.Available");
+        InitializeWotsitWithDelay("FA.Available");
     }
 
     private void OnLogin()
     {
-        InitializeWotsit("ProperOnLogin.Available");
+        InitializeWotsitWithDelay("ProperOnLogin.Available");
     }
 
     private void OnTerritoryChanged(ushort territory)
     {
-        InitializeWotsit("OnTerritoryChanged");
+        InitializeWotsitWithDelay("OnTerritoryChanged");
     }
 
     private void OnLogout(int type, int code)
     {
         ClearWotsit();
+    }
+
+    private void InitializeWotsitWithDelay(string trigger)
+    {
+        var requestId = Interlocked.Increment(ref _initializeWotsitRequestId);
+        var timeoutAt = DateTime.UtcNow.AddSeconds(25);
+
+        TryInitialize();
+        return;
+
+        void TryInitialize()
+        {
+            if (requestId != _initializeWotsitRequestId) {
+                return;
+            }
+
+            if (PlayerHelper.IsValid) {
+                InitializeWotsit(trigger);
+                return;
+            }
+
+            if (DateTime.UtcNow >= timeoutAt) {
+                AWC.Log.Debug($"WotsitManager: Initialization timed out while waiting for a valid player state, trigger: {trigger}");
+                return;
+            }
+
+            _ = new TickScheduler(TryInitialize, 250);
+        }
     }
 
     public void InitializeWotsit(string trigger)
@@ -66,6 +99,11 @@ public class WotsitManager : IDisposable
         }
 
         AWC.Log.Debug($"WotsitManager: Initializing triggered by: {trigger}, status: {WotsitIPC.IsEnabled}");
+
+        if (!PlayerHelper.IsLoggedIn) {
+            AWC.Log.Debug($"WotsitManager: Initializing stopped, player is not logged in");
+            return;
+        }
 
         var newEntries = WotsitEntryGenerator.Generate().ToHashSet();
         if (_lastEntries.Count != 0 && newEntries.SetEquals(_lastEntries)) {
@@ -88,6 +126,8 @@ public class WotsitManager : IDisposable
 
     private void ClearWotsit()
     {
+        Interlocked.Increment(ref _initializeWotsitRequestId);
+
         try {
             if (!WotsitIPC.IsEnabled) {
                 return;
