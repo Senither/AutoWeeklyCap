@@ -54,6 +54,10 @@ public class EnterFcHouseAction : BaseAction
                 return false;
             }
 
+            if (HousingHelper.IsInsideFC()) {
+                return true;
+            }
+
             var gameObject = ObjectHelper.FindEnteranceGameObject(MaxDistance);
             if (gameObject == null) {
                 LogDebug("Unable to find a valid FC house entrance.");
@@ -103,6 +107,6 @@ public class EnterFcHouseAction : BaseAction
     {
         var houseId = HousingManager.GetOwnedHouseId(EstateType.FreeCompanyEstate);
 
-        return houseId.Id != 0 && Player.Territory.RowId == houseId.TerritoryTypeId;
+        return (houseId.Id != 0 && Player.Territory.RowId == houseId.TerritoryTypeId) || HousingHelper.IsInsideFC();
     }
 }

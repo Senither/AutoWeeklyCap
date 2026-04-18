@@ -56,6 +56,10 @@ public class EnterPrivateHouseAction : BaseAction
                 return false;
             }
 
+            if (HousingHelper.IsInsideHouse()) {
+                return true;
+            }
+
             var gameObject = ObjectHelper.FindEnteranceGameObject(MaxDistance);
             if (gameObject == null) {
                 LogDebug("Unable to find a valid private house entrance.");
@@ -103,6 +107,10 @@ public class EnterPrivateHouseAction : BaseAction
 
     private static bool IsInPrivateHouseTerritory()
     {
+        if (HousingHelper.IsInsideHouse()) {
+            return true;
+        }
+
         foreach (var houseId in GetPrivateHouseIds()) {
             if (houseId.Id != 0 && Player.Territory.RowId == houseId.TerritoryTypeId) {
                 return true;
