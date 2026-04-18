@@ -14,7 +14,8 @@ internal static class PluginInformationAndDependenciesUI
     private static readonly List<PluginInstallerHelper.PluginContext> RequiredPlugins =
     [
         AutoDutyIPC.Context,
-        LifestreamIPC.Context
+        LifestreamIPC.Context,
+        VNavMeshIPC.Context,
     ];
 
     private static readonly List<PluginInstallerHelper.PluginContext> RecommendedPlugins =
@@ -29,7 +30,6 @@ internal static class PluginInformationAndDependenciesUI
         DeliverooIPC.Context,
         NotificationMasterIPC.Context,
         NoKillPluginIPC.Context,
-        VNavMeshIPC.Context,
         WotsitIPC.Context
     ];
 

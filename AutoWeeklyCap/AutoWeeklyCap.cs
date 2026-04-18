@@ -180,6 +180,6 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
     public static bool IsRequiredPluginsEnabled()
     {
-        return LifestreamIPC.IsEnabled && AutoDutyIPC.IsEnabled;
+        return LifestreamIPC.IsEnabled && AutoDutyIPC.IsEnabled && VNavMeshIPC.IsEnabled;
     }
 }

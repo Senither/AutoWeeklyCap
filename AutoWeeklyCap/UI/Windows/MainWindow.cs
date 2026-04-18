@@ -159,6 +159,7 @@ public class MainWindow : Window
 
         DrawPluginStatusTooltipWithContent(AutoDutyIPC.IsEnabled, "AutoDuty");
         DrawPluginStatusTooltipWithContent(LifestreamIPC.IsEnabled, "Lifestream");
+        DrawPluginStatusTooltipWithContent(VNavMeshIPC.IsEnabled, "VNavMesh");
 
         ImGui.EndTooltip();
     }
