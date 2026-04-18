@@ -4,12 +4,12 @@ namespace AutoWeeklyCap.Runner.Actions.Safezones;
 
 public class EnterFcHouseAction : BaseAction
 {
+    protected override string Name => nameof(EnterFcHouseAction);
+    protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectString", "HousingMenu"];
+
     private const int LongTaskTimeout = 120_000;
     private const float MaxDistance = 50f;
     private const string LifestreamFcCommand = "FC";
-
-    protected override string Name => nameof(EnterFcHouseAction);
-    protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectString", "HousingMenu"];
 
     protected override bool Run(params object[] args)
     {

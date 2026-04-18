@@ -14,78 +14,81 @@ public enum StopAction
 
 public static class StopActionExtensions
 {
-    public static string GetName(this StopAction action)
+    extension(StopAction action)
     {
-        return action switch
+        public string GetName()
         {
-            StopAction.None => "Nothing",
-            StopAction.SwitchCharacter => "Switch to Character",
-            StopAction.LogoutToMenu => "Logout to Menu",
-            StopAction.ShutdownGame => "Shutdown Game",
-            StopAction.AutoRetainerMultimode => "Start AutoRetainer multimode",
-            StopAction.StartUnlimitedRuns => "Start Unlimited Runs",
-            _ => action.ToString()
-        };
-    }
-
-    public static Action? GetTooltip(this StopAction action)
-    {
-        return action switch
-        {
-            StopAction.SwitchCharacter => () => ImGui.Text("If the runner finished on your preferred character, nothing will happen"),
-            StopAction.AutoRetainerMultimode => () =>
+            return action switch
             {
-                ImGui.Text("This requires ");
-                StatusText.Draw(AutoRetainerIPC.IsEnabled, "AutoRetainer");
-                ImGui.Text(" to be enabled, if it's not enabled it will do nothing");
-            },
-            StopAction.StartUnlimitedRuns => () => ImGui.Text(
-                "When the runner finishes capping all your characters it will switch to your\n" +
-                "preferred character and then start doing runs until manually stopped"
-            ),
-            _ => null
-        };
-    }
+                StopAction.None => "Nothing",
+                StopAction.SwitchCharacter => "Switch to Character",
+                StopAction.LogoutToMenu => "Logout to Menu",
+                StopAction.ShutdownGame => "Shutdown Game",
+                StopAction.AutoRetainerMultimode => "Start AutoRetainer multimode",
+                StopAction.StartUnlimitedRuns => "Start Unlimited Runs",
+                _ => action.ToString()
+            };
+        }
 
-    public static void Execute(this StopAction action)
-    {
-        AWC.Log.Debug($"StopAction: Executing action: {action.GetName()}");
+        public Action? GetTooltip()
+        {
+            return action switch
+            {
+                StopAction.SwitchCharacter => () => ImGui.Text("If the runner finished on your preferred character, nothing will happen"),
+                StopAction.AutoRetainerMultimode => () =>
+                {
+                    ImGui.Text("This requires ");
+                    StatusText.Draw(AutoRetainerIPC.IsEnabled, "AutoRetainer");
+                    ImGui.Text(" to be enabled, if it's not enabled it will do nothing");
+                },
+                StopAction.StartUnlimitedRuns => () => ImGui.Text(
+                    "When the runner finishes capping all your characters it will switch to your\n" +
+                    "preferred character and then start doing runs until manually stopped"
+                ),
+                _ => null
+            };
+        }
 
-        switch (action) {
-            case StopAction.None:
-                break;
+        public void Execute()
+        {
+            AWC.Log.Debug($"StopAction: Executing action: {action.GetName()}");
 
-            case StopAction.SwitchCharacter:
-                var characterToSwapTo = AWC.Config.CharacterForSwap;
-                if (characterToSwapTo.Length == 0 || characterToSwapTo == PlayerHelper.GetFullCharacterName()) {
+            switch (action) {
+                case StopAction.None:
                     break;
-                }
 
-                var parts = characterToSwapTo.Split("@");
-                if (parts.Length == 2) {
-                    LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
-                }
+                case StopAction.SwitchCharacter:
+                    var characterToSwapTo = AWC.Config.CharacterForSwap;
+                    if (characterToSwapTo.Length == 0 || characterToSwapTo == PlayerHelper.GetFullCharacterName()) {
+                        break;
+                    }
 
-                break;
+                    var parts = characterToSwapTo.Split("@");
+                    if (parts.Length == 2) {
+                        LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
+                    }
 
-            case StopAction.LogoutToMenu:
-                var status = LifestreamIPC.Logout();
-                AWC.Log.Debug($"StopAction: Logging out via Lifestream with status: {status}");
-                break;
+                    break;
 
-            case StopAction.ShutdownGame:
-                ChatHelper.RunCommand("xlkill");
-                break;
+                case StopAction.LogoutToMenu:
+                    var status = LifestreamIPC.Logout();
+                    AWC.Log.Debug($"StopAction: Logging out via Lifestream with status: {status}");
+                    break;
 
-            case StopAction.AutoRetainerMultimode:
-                AutoRetainerIPC.EnableMultiMode();
-                break;
+                case StopAction.ShutdownGame:
+                    ChatHelper.RunCommand("xlkill");
+                    break;
 
-            case StopAction.StartUnlimitedRuns:
-                break;
+                case StopAction.AutoRetainerMultimode:
+                    AutoRetainerIPC.EnableMultiMode();
+                    break;
 
-            default:
-                throw new ArgumentOutOfRangeException(nameof(action), action, null);
+                case StopAction.StartUnlimitedRuns:
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(action), action, null);
+            }
         }
     }
 }

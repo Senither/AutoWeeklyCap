@@ -2,9 +2,10 @@
 
 public class EnterApartmentAction : BaseAction
 {
-    private const int LongTaskTimeout = 120_000;
     protected override string Name => nameof(EnterApartmentAction);
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectString", "HousingMenu"];
+
+    private const int LongTaskTimeout = 120_000;
 
     protected override bool Run(params object[] args)
     {

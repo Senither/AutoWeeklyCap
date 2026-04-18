@@ -4,13 +4,12 @@ namespace AutoWeeklyCap.Runner.Actions.Safezones;
 
 public class EnterPrivateHouseAction : BaseAction
 {
+    protected override string Name => nameof(EnterPrivateHouseAction);
+    protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectString", "HousingMenu"];
+
     private const int LongTaskTimeout = 120_000;
     private const float MaxDistance = 20f;
     private const string LifestreamHomeCommand = "Home";
-
-    protected override string Name => nameof(EnterPrivateHouseAction);
-
-    protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectString", "HousingMenu"];
 
     protected override bool Run(params object[] args)
     {
