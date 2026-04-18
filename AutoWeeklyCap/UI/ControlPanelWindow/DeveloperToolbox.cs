@@ -45,6 +45,7 @@ internal static class DeveloperToolbox
         ImGui.Text($"Currencies [{currencies}]");
         ImGui.Text($"Restart [recovery: {ClientListener.IsRecoveringFromDisconnect}, restart: {ClientListener.IsRestarting}]");
         ImGui.Text($"Runner counter [runs: {AWC.Runner.GetRunsCounter()}, character: {AWC.Runner.GetRunsCharacter() ?? "<not set>"}]");
+        ImGui.Text($"Last known location [{LocationManager.GetLastKnownLocation()?.ToString() ?? "<not set>"}]");
     }
 
     private static void DrawRunnerDebugSteps()

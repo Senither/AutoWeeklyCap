@@ -8,6 +8,8 @@ public static class ClientListener
 
     public static void OnLogout(int type, int code)
     {
+        LocationManager.Reset();
+
         if (!AWC.Config.AttemptRecoveryFromDisconnects) {
             return;
         }

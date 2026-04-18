@@ -22,6 +22,8 @@ public class ReturnToHomeworldAction : BaseAction
             return false;
         }
 
+        LocationManager.Reset();
+
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.CrossWorld, "Returning to homeworld");
 
         Enqueue(() =>

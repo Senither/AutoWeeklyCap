@@ -127,6 +127,7 @@ public class Runner
         LifestreamIPC.Abort();
         AutoDutyIPC.Stop();
         TitleManager.Reset();
+        LocationManager.Reset();
         AWC.TaskManager.Abort();
 
         AWC.Log.Info("Stopped weekly cap runner");
@@ -394,6 +395,7 @@ public class Runner
             }
         }, "enable BossMod Reborn AI if option is enabled");
 
+        AWC.TaskManager.Enqueue(LocationManager.RegisterLocation, "register last known location");
         AWC.TaskManager.Enqueue(() => _timestamp = DateTime.UtcNow, "set timestamp to track timeouts");
 
         AWC.TaskManager.Enqueue(() =>

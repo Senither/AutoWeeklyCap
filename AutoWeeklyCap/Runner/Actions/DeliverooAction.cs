@@ -18,6 +18,7 @@ public class DeliverooAction : BaseAction
         }
 
         ActionInstance.LeaveGrandCompanyInn.Invoke();
+        LocationManager.Reset();
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.PriorityWorld, "GC delivery");
 

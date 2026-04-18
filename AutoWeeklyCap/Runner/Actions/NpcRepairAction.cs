@@ -26,6 +26,8 @@ public class NpcRepairAction : BaseAction
             return false;
         }
 
+        LocationManager.Reset();
+
         ResetRepairState();
 
         ActionInstance.LeaveGrandCompanyInn.Invoke();

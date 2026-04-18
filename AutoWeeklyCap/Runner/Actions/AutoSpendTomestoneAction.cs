@@ -54,6 +54,8 @@ public class AutoSpendTomestoneAction : BaseAction
             return false;
         }
 
+        LocationManager.Reset();
+
         unsafe {
             if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1) {
                 return false;

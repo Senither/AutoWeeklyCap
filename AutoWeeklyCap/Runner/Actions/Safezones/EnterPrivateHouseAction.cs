@@ -29,26 +29,9 @@ public class EnterPrivateHouseAction : BaseAction
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.WatchingCutscene, "Entering private house");
 
-        Enqueue(() =>
-        {
-            if (EzThrottler.Throttle("NavigatingToPrivateHousePlot", 500)) {
-                return false;
-            }
-
-
-            if (LifestreamIPC.IsBusy()) {
-                return false;
-            }
-
-            LifestreamIPC.ExecuteCommand(LifestreamHomeCommand);
-            return true;
-        }, "teleport to house plot");
-
-        Enqueue(
-            () => IsInPrivateHouseTerritory() && PlayerHelper.IsReady && !LifestreamIPC.IsBusy(),
-            "wait for house plot teleport",
-            LongTaskTimeout
-        );
+        if (LocationManager.GetLastKnownLocation() != Safezone.PrivateHouse) {
+            TeleportToPrivateHouse();
+        }
 
         Enqueue(() =>
         {
@@ -103,6 +86,30 @@ public class EnterPrivateHouseAction : BaseAction
         EnqueueDelay(1500);
 
         return true;
+    }
+
+    private void TeleportToPrivateHouse()
+    {
+        Enqueue(() =>
+        {
+            if (EzThrottler.Throttle("NavigatingToPrivateHousePlot", 500)) {
+                return false;
+            }
+
+
+            if (LifestreamIPC.IsBusy()) {
+                return false;
+            }
+
+            LifestreamIPC.ExecuteCommand(LifestreamHomeCommand);
+            return true;
+        }, "teleport to house plot");
+
+        Enqueue(
+            () => IsInPrivateHouseTerritory() && PlayerHelper.IsReady && !LifestreamIPC.IsBusy(),
+            "wait for house plot teleport",
+            LongTaskTimeout
+        );
     }
 
     private static bool IsInPrivateHouseTerritory()

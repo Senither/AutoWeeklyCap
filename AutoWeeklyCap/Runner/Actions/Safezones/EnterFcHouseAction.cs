@@ -28,25 +28,9 @@ public class EnterFcHouseAction : BaseAction
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.WatchingCutscene, "Entering FC house");
 
-        Enqueue(() =>
-        {
-            if (EzThrottler.Throttle("NavigatingToFCHousePlot", 500)) {
-                return false;
-            }
-
-            if (LifestreamIPC.IsBusy()) {
-                return false;
-            }
-
-            LifestreamIPC.ExecuteCommand(LifestreamFcCommand);
-            return true;
-        }, "teleport to FC plot");
-
-        Enqueue(
-            () => IsInFcHouseTerritory() && PlayerHelper.IsReady && !LifestreamIPC.IsBusy(),
-            "wait for FC plot teleport",
-            LongTaskTimeout
-        );
+        if (LocationManager.GetLastKnownLocation() != Safezone.FreeCompany) {
+            TeleportToFreeCompany();
+        }
 
         Enqueue(() =>
         {
@@ -101,6 +85,29 @@ public class EnterFcHouseAction : BaseAction
         EnqueueDelay(1500);
 
         return true;
+    }
+
+    private void TeleportToFreeCompany()
+    {
+        Enqueue(() =>
+        {
+            if (EzThrottler.Throttle("NavigatingToFCHousePlot", 500)) {
+                return false;
+            }
+
+            if (LifestreamIPC.IsBusy()) {
+                return false;
+            }
+
+            LifestreamIPC.ExecuteCommand(LifestreamFcCommand);
+            return true;
+        }, "teleport to FC plot");
+
+        Enqueue(
+            () => IsInFcHouseTerritory() && PlayerHelper.IsReady && !LifestreamIPC.IsBusy(),
+            "wait for FC plot teleport",
+            LongTaskTimeout
+        );
     }
 
     private static bool IsInFcHouseTerritory()
