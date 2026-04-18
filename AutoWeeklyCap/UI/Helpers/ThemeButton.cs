@@ -37,6 +37,10 @@ public static class ThemeButton
             if (ImGuiEx.IconButtonWithText(icon, text)) {
                 action();
             }
+
+            if (ImGui.IsItemHovered()) {
+                ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+            }
         }
     }
 
