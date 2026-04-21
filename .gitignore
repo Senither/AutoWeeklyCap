@@ -4,3 +4,4 @@ obj/
 bin/
 *.user
 TODO
+AutoWeeklyCap/Secrets.cs

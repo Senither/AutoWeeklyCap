@@ -3,13 +3,12 @@ using System.Text;
 using System.Text.Json;
 
 using Dalamud.Interface.Windowing;
+using Dalamud.Utility;
 
 namespace AutoWeeklyCap.UI.Windows;
 
 public class FeedbackWindow : Window
 {
-    private const string WebhookUrl = "https://discord.com/api/webhooks/1474382411331534868/LBXYJt_hB7xc7OZuXJ3wci5O1EbBSJzS3A-qKzj6UkPCySlNk5Fp7e4BKq8ZCosTQDhM";
-
     private static readonly List<string> FeedbackTypes =
     [
         "General Feedback",
@@ -96,6 +95,11 @@ public class FeedbackWindow : Window
 
     private void SendFeedback()
     {
+        if (Secrets.DiscordWebhookUrl.IsNullOrWhitespace()) {
+            Notify.Warning("Feedback URL is missing, unable to send feedback at this time.");
+            return;
+        }
+
         AWC.TaskManager.Enqueue(async void () =>
         {
             var character = PlayerHelper.GetFullCharacterName() ?? "<unknown>";
@@ -106,7 +110,7 @@ public class FeedbackWindow : Window
             var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            await client.PostAsync(WebhookUrl, content);
+            await client.PostAsync(Secrets.DiscordWebhookUrl, content);
         });
 
         _sentFeedback = true;

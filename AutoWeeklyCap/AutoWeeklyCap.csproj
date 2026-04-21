@@ -19,4 +19,21 @@
       <TargetPath>resources\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
     </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Secrets.example.cs"/>
+  </ItemGroup>
+
+  <Target Name="GenerateSecretsIfMissing" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <_SecretsExisted Condition="Exists('$(MSBuildThisFileDirectory)Secrets.cs')">true</_SecretsExisted>
+      <_SecretsExisted Condition="!Exists('$(MSBuildThisFileDirectory)Secrets.cs')">false</_SecretsExisted>
+    </PropertyGroup>
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)Secrets.example.cs"
+          DestinationFiles="$(MSBuildThisFileDirectory)Secrets.cs"
+          Condition="!$(_SecretsExisted)"/>
+    <ItemGroup>
+      <Compile Include="$(MSBuildThisFileDirectory)Secrets.cs" Condition="!$(_SecretsExisted)"/>
+    </ItemGroup>
+  </Target>
 </Project>
