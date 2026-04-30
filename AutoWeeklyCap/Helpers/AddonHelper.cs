@@ -3,7 +3,7 @@
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 using Callback = ECommons.Automation.Callback;
-using ValueType = FFXIVClientStructs.FFXIV.Component.GUI.ValueType;
+using ValueType = FFXIVClientStructs.FFXIV.Component.GUI.AtkValueType;
 
 namespace AutoWeeklyCap.Helpers;
 

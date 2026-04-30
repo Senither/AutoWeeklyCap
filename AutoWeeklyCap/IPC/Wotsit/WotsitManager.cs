@@ -52,7 +52,7 @@ public class WotsitManager : IDisposable
         InitializeWotsitWithDelay("ProperOnLogin.Available");
     }
 
-    private void OnTerritoryChanged(ushort territory)
+    private void OnTerritoryChanged(uint territory)
     {
         InitializeWotsitWithDelay("OnTerritoryChanged");
     }
