@@ -5,6 +5,7 @@ namespace AutoWeeklyCap.Helpers;
 
 public static class TomestoneItemHelper
 {
+    private const int offset = 11;
     private static readonly LinkedList<TomestoneItem> Items = [];
 
     public static void RegisterTomestoneItems()
@@ -12,26 +13,26 @@ public static class TomestoneItemHelper
         Items.Clear();
 
         // Current items (Costs 20)
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 0, 20, "Turali Pigment"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 1, 20, "Mastodon Pelt"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 2, 20, "Everkeep Resin"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 3, 20, "Insulating Varnish"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 4, 20, "Double Duracoat"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 5, 20, "Yollal Extract"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 0, 20, "Turali Pigment"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 1, 20, "Mastodon Pelt"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 2, 20, "Everkeep Resin"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 3, 20, "Insulating Varnish"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 4, 20, "Double Duracoat"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 5, 20, "Yollal Extract"));
 
         // Previous patch items (Costs 10)
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 6, 10, "Neo Abrasive"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 7, 10, "Diatryma Pelt"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 8, 10, "Cronopio Skin"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 9, 10, "Hydrophobic Preservative"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 10, 10, "Dichromatic Compound"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 11, 10, "Shaaloani Coke"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 12, 10, "Potsworn's Abrasive"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 13, 10, "Pelupelu Yarn"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 14, 10, "Purussaurus Skin"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 15, 10, "Xbr'aal Varnish"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 16, 10, "Airbright Coolant"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, 17, 10, "Glossy Dried Ether"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 6, 10, "Neo Abrasive"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 7, 10, "Diatryma Pelt"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 8, 10, "Cronopio Skin"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 9, 10, "Hydrophobic Preservative"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 10, 10, "Dichromatic Compound"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 11, 10, "Shaaloani Coke"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 12, 10, "Potsworn's Abrasive"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 13, 10, "Pelupelu Yarn"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 14, 10, "Purussaurus Skin"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 15, 10, "Xbr'aal Varnish"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 16, 10, "Airbright Coolant"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 17, 10, "Glossy Dried Ether"));
 
         // Relic items (Cost 500)
         Items.Add(new TomestoneItem(TomestoneNPC.Relic, 0, 500, "Arcanite (Relic)"));
