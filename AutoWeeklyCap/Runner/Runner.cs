@@ -24,7 +24,7 @@ public class Runner
             return false;
         }
 
-        var zoneName = MapHelper.GetZoneNameFromId(AWC.Config.ZoneId);
+        var zoneName = MapHelper.GetZoneNameFromId(TomestoneZone.ZoneId);
         if (zoneName == null) {
             return false;
         }
@@ -55,7 +55,7 @@ public class Runner
             return false;
         }
 
-        var zoneName = MapHelper.GetZoneNameFromId(AWC.Config.ZoneId);
+        var zoneName = MapHelper.GetZoneNameFromId(TomestoneZone.ZoneId);
         if (zoneName == null) {
             return false;
         }
@@ -406,14 +406,14 @@ public class Runner
 
                 TitleManager.Reset();
 
-                if (AWC.ClientState.TerritoryType == AWC.Config.ZoneId) {
+                if (AWC.ClientState.TerritoryType == TomestoneZone.ZoneId) {
                     AWC.Log.Debug("Runner: Player detected in the duty zone, switching to RunningAutoDuty stage");
                     _state = State.RunningAutoDuty;
 
                     CurrentDutyStartUtc ??= DateTime.UtcNow;
 
                     if (AutoDutyIPC.IsStopped()) {
-                        AutoDutyIPC.Run(AWC.Config.ZoneId, 1, false);
+                        AutoDutyIPC.Run(TomestoneZone.ZoneId, 1, false);
                     }
 
                     return true;
@@ -469,9 +469,9 @@ public class Runner
                 }
 
                 if (EzThrottler.Throttle("RunnerStartingDutyStartAttempt", 1500)) {
-                    AWC.Log.Debug("Runner: Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - _timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", AWC.Config.ZoneId } });
+                    AWC.Log.Debug("Runner: Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - _timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", TomestoneZone.ZoneId } });
 
-                    AutoDutyIPC.Run(AWC.Config.ZoneId, 1, false);
+                    AutoDutyIPC.Run(TomestoneZone.ZoneId, 1, false);
                 }
 
                 return false;
@@ -487,7 +487,7 @@ public class Runner
             return;
         }
 
-        if (AWC.ClientState.TerritoryType == AWC.Config.ZoneId) {
+        if (AWC.ClientState.TerritoryType == TomestoneZone.ZoneId) {
             return;
         }
 
