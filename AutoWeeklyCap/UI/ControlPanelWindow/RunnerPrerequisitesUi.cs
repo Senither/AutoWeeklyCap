@@ -43,7 +43,7 @@ public static class RunnerPrerequisitesUi
 
         InformationTooltip.Draw(() =>
         {
-            ImGui.Text("Your selected is what will be started through ");
+            ImGui.Text("Your selected duty is what will be started through ");
             StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
             ImGui.Text(", if your selected duty");
 
