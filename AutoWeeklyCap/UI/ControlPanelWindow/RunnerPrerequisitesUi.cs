@@ -41,6 +41,16 @@ public static class RunnerPrerequisitesUi
             ImGui.EndCombo();
         }
 
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Your selected is what will be started through ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text(", if your selected duty");
+
+            ImGui.Text("is not unlocked on one of your characters, the runner will automatically");
+            ImGui.Text("fallback to the latest duty they have unlocked and run that instead.");
+        });
+
         ImGui.Spacing();
         ImGui.Spacing();
 
