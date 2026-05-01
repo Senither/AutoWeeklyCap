@@ -4,6 +4,7 @@ public static class TomestoneZone
 {
     public static readonly uint[] AvailableTomestoneZones =
     {
+        1345, // The Clyteum
         1314, // Mistwake
         1292, // The Meso Terminal
         1266, // The Underkeep
