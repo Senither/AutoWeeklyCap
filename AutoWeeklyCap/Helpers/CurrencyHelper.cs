@@ -1,4 +1,4 @@
-using ECommons.Configuration;
+﻿using ECommons.Configuration;
 
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -80,12 +80,12 @@ public static class CurrencyHelper
         var weeklyTomes = GetWeeklyAcquiredLimitedTomestoneCount();
         var storedTomes = AWC.Config.CollectedTomes.GetValueOrDefault(characterAndWorld);
 
-        var weeklyTomesChanged = storedTomes > weeklyTomes;
-        if (weeklyTomesChanged) {
+        var weeklyTomesReset = storedTomes > weeklyTomes;
+        if (weeklyTomesReset) {
             AWC.Config.CollectedTomes.Clear();
         }
 
-        if (!limitedTomesChanged && !weeklyTomesChanged) {
+        if (!limitedTomesChanged && !weeklyTomesReset && weeklyTomes == storedTomes) {
             return false;
         }
 
