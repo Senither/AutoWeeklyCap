@@ -2,6 +2,8 @@
 
 using Dalamud.Interface.Windowing;
 
+using ECommons.Configuration;
+
 namespace AutoWeeklyCap.UI.Windows;
 
 public class ControlPanelWindow : Window
@@ -40,6 +42,6 @@ public class ControlPanelWindow : Window
 
     public override void OnClose()
     {
-        AWC.Config.Save();
+        EzConfig.Save();
     }
 }

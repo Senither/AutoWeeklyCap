@@ -13,6 +13,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 
 using ECommons.Automation.NeoTaskManager;
+using ECommons.Configuration;
 using ECommons.Schedulers;
 
 using Newtonsoft.Json;
@@ -60,17 +61,10 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         TaskManager = new TaskManager(new TaskManagerConfiguration(abortOnTimeout: true, timeLimitMS: 20000, showDebug: true));
         TomestoneItemHelper.RegisterTomestoneItems();
 
-        try {
-            Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            Configuration.NormalizeCharacterPositions();
-            Configuration.NormalizeSafezoneOrder();
-        } catch (Exception e) {
-            if (e is JsonSerializationException or AggregateException) {
-                Configuration = new Configuration();
-            } else {
-                throw;
-            }
-        }
+        EzConfig.Migrate<Configuration>();
+        Configuration = EzConfig.Init<Configuration>();
+        Configuration.NormalizeCharacterPositions();
+        Configuration.NormalizeSafezoneOrder();
 
         Runner = new Runner.Runner();
 

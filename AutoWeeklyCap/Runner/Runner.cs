@@ -1,6 +1,7 @@
 using Dalamud.Interface.ImGuiNotification;
 
 using ECommons.Automation.NeoTaskManager;
+using ECommons.Configuration;
 
 namespace AutoWeeklyCap.Runner;
 
@@ -458,7 +459,7 @@ public class Runner
                     AWC.Log.Debug($"Runner: Disabling AWC for {_currentCharacter} and switching character");
 
                     AWC.Config.Characters[_currentCharacter].Enabled = false;
-                    AWC.Config.Save();
+                    EzConfig.Save();
 
                     AWC.TaskManager.Enqueue(
                         () => _state = State.StartingCharacterSwap,
@@ -503,7 +504,7 @@ public class Runner
             AWC.Log.Debug($"Runner: Finished the run in {durationSeconds} seconds");
 
             AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.AddDutyDurationSeconds(durationSeconds);
-            AWC.Config.Save();
+            EzConfig.Save();
         }
 
         if (_stopGracefully && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnRunnerStopped) {

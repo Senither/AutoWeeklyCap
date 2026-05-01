@@ -4,6 +4,8 @@ using AutoWeeklyCap.UI.MainWindow;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 
+using ECommons.Configuration;
+
 namespace AutoWeeklyCap.UI.Windows;
 
 public class MainWindow : Window
@@ -62,7 +64,7 @@ public class MainWindow : Window
 
     public override void OnClose()
     {
-        AWC.Config.Save();
+        EzConfig.Save();
     }
 
     public override void PreDraw()

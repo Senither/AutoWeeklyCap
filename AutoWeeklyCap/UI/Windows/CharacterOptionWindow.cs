@@ -3,6 +3,8 @@ using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface.Windowing;
 
+using ECommons.Configuration;
+
 namespace AutoWeeklyCap.UI.Windows;
 
 public class CharacterOptionWindow : Window
@@ -30,7 +32,7 @@ public class CharacterOptionWindow : Window
         _character = null;
         IsOpen = false;
 
-        AWC.Config.Save();
+        EzConfig.Save();
     }
 
     public override void PreDraw()

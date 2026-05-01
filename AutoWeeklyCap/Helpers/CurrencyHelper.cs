@@ -1,4 +1,6 @@
-﻿using FFXIVClientStructs.FFXIV.Client.Game;
+using ECommons.Configuration;
+
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Helpers;
 
@@ -88,7 +90,7 @@ public static class CurrencyHelper
         }
 
         AWC.Config.CollectedTomes[characterAndWorld] = weeklyTomes;
-        AWC.Config.Save();
+        EzConfig.Save();
 
         return true;
     }
