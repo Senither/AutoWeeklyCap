@@ -5,6 +5,7 @@ using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.Runner.Actions;
 using AutoWeeklyCap.UI.Helpers;
 
+using ECommons.Configuration;
 using ECommons.Logging;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
@@ -30,7 +31,7 @@ internal static class DeveloperToolbox
         Card.Draw("Notification Debug Actions", DrawNotificationDebugActions, false);
         Card.Draw("Game Data State", DrawGameDataState, false);
         Card.Draw("Plugin Logs", DrawPluginLogs);
-        Card.DrawDanger("Danger Zone", DrawDangerZone);
+        Card.DrawDanger("Plugin Configuration", DrawPluginConfiguration);
     }
 
     private static void DrawPluginDetails()
@@ -239,13 +240,34 @@ internal static class DeveloperToolbox
         ImGui.EndChild();
     }
 
-    private static void DrawDangerZone()
+    private static void DrawPluginConfiguration()
     {
-        ImGui.TextWrapped("Clicking the button below will reset the main plugin config file to use the default values, it's recommended that you backup the file if you want to save your current settings.");
+        ImGui.TextWrapped("This section can be used to export partial, or the full plugin config, or alternatively completely reset the config back to the default values.");
         ImGui.Spacing();
+
+        if (ImGui.Button("Export Full Config")) {
+            ImGui.SetClipboardText(EzConfig.DefaultSerializationFactory.Serialize(AWC.Config.JSONClone(), false));
+            Notify.Info("Config copied to clipboard");
+        }
+
+        ImGui.SameLine();
+
+        if (ImGui.Button("Export Partal Config")) {
+            var config = AWC.Config.JSONClone();
+
+            config.Characters = null!;
+            config.CollectedTomes = null!;
+            config.CharacterForSwap = null!;
+
+            ImGui.SetClipboardText(EzConfig.DefaultSerializationFactory.Serialize(config, false));
+            Notify.Info("Config copied to clipboard");
+        }
+
+        ImGui.SameLine();
 
         if (ImGui.Button("Reset Plugin Config") && ImGuiEx.Ctrl) {
             AWC.Instance.Configuration = new Configuration();
+            Notify.Info("Config reset to default");
         }
 
         ImGuiEx.Tooltip("Hold down CTRL + Click to reset the plugin configuration to all the default values");
