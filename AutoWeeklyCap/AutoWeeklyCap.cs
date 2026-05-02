@@ -16,8 +16,6 @@ using ECommons.Automation.NeoTaskManager;
 using ECommons.Configuration;
 using ECommons.Schedulers;
 
-using Newtonsoft.Json;
-
 using Module = ECommons.Module;
 
 namespace AutoWeeklyCap;

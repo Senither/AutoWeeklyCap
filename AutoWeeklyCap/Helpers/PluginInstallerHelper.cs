@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-using Dalamud.Interface;
+﻿using Dalamud.Interface;
 using Dalamud.Plugin;
 
 using ECommons.Reflection;
