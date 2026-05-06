@@ -1,7 +1,6 @@
 ﻿using AutoWeeklyCap.IPC.Wotsit;
 
 using ECommons.EzIpcManager;
-using ECommons.Reflection;
 
 namespace AutoWeeklyCap.IPC;
 
@@ -9,7 +8,7 @@ public static class IPCSubscriber
 {
     internal static bool IsReady(string pluginName)
     {
-        return DalamudReflector.TryGetDalamudPlugin(pluginName, out _, true, true);
+        return AWC.PluginInterface.InstalledPlugins.FirstOrDefault(plugin => plugin.InternalName == pluginName && plugin.IsLoaded) != null;
     }
 
     internal static void Dispose()
