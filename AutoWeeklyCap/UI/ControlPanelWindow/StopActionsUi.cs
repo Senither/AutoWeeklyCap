@@ -25,36 +25,54 @@ public static class StopActionsUi
                     InformationTooltip.Draw(tooltip);
                 }
             }
-
-            ImGui.Spacing();
-            ImGui.Spacing();
-
-            Disabled.Draw(!IsDrawCharacterSwitchEnabled(AWC.Config.StopAction), DrawCharacterSwitch);
         }, collapsible: false);
+
+        List<Action> elements = GetOptionsDrawElements();
+        if (elements.Count > 0) {
+            Card.Draw("Stop Options", () =>
+            {
+                foreach (var element in elements) {
+                    element.Invoke();
+                }
+            }, collapsible: false);
+        } else {
+            ImGui.Spacing();
+            ImGui.Spacing();
+
+            Disabled.Draw(() => ImGui.TextWrapped(
+                "Selecting certain options will show additional options here, allowing you to further customize the behaviour of the actions."
+            ));
+        }
     }
 
-    private static bool IsDrawCharacterSwitchEnabled(StopAction action)
+    private static List<Action> GetOptionsDrawElements()
     {
-        return action is StopAction.SwitchCharacter or StopAction.StartUnlimitedRuns;
+        return AWC.Config.StopAction switch
+        {
+            StopAction.SwitchCharacter => [DrawCharacterSwitch],
+            StopAction.StartUnlimitedRuns => [DrawCharacterSwitch],
+            _ => []
+        };
     }
 
     private static void DrawCharacterSwitch()
     {
         ImGui.TextWrapped("Preferred Character");
 
-        if (ImGui.BeginCombo(
-                $"###character-selector",
-                AWC.Config.Characters.ContainsKey(AWC.Config.CharacterForSwap)
-                    ? AWC.Config.CharacterForSwap
-                    : "Not selected"
-            )) {
-            foreach (var character in AWC.Config.GetSortedCharacters()) {
-                if (ImGui.Selectable(character, AWC.Config.CharacterForSwap == character)) {
-                    AWC.Config.CharacterForSwap = character;
-                }
-            }
+        var preview = AWC.Config.Characters.ContainsKey(AWC.Config.CharacterForSwap)
+            ? AWC.Config.CharacterForSwap
+            : "Not selected";
 
-            ImGui.EndCombo();
+        if (!ImGui.BeginCombo($"###character-selector", preview)) {
+            return;
         }
+
+        foreach (var character in AWC.Config.GetSortedCharacters()) {
+            if (ImGui.Selectable(character, AWC.Config.CharacterForSwap == character)) {
+                AWC.Config.CharacterForSwap = character;
+            }
+        }
+
+        ImGui.EndCombo();
     }
 }
