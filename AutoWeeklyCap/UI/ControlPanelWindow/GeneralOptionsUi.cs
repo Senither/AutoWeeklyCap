@@ -66,13 +66,13 @@ public static class GeneralOptionsUi
         );
 
         var dtrBar = AWC.Config.ShowStatusInStatusBar;
-        if (ImGui.Checkbox("Show status in DTR bar", ref dtrBar)) {
+        if (ImGui.Checkbox("Show status server Info bar", ref dtrBar)) {
             AWC.Config.ShowStatusInStatusBar = dtrBar;
         }
 
         InformationTooltip.Draw(() =>
         {
-            ImGui.Text("Adds a status indicator to the DTR bar, allowing for quickly seeing");
+            ImGui.Text("Adds a status indicator to the server status bar, allowing for quickly seeing");
             ImGui.Text("the runner status, and toggling the windows and runner statues");
         });
 
