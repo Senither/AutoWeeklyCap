@@ -14,6 +14,7 @@ public class CharacterOptions
     public uint TotalAcquiredLimitedTomestones { get; set; } = 0;
     public uint Position { get; set; } = 0;
     public List<int> LastDutyDurationsSeconds { get; set; } = [];
+    public Dictionary<PlayerJob, int> JobLevels { get; set; } = new();
 
     private const int MaxDutySamples = 5;
 
