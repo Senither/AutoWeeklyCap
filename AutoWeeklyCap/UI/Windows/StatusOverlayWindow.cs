@@ -98,7 +98,9 @@ public class StatusOverlayWindow : Window
         }
 
         if (ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
-            if (AWC.Runner.IsRunning() && AWC.Runner.IsStopping()) {
+            if (ImGuiEx.Ctrl) {
+                AWC.Runner.Abort();
+            } else if (AWC.Runner.IsRunning() && AWC.Runner.IsStopping()) {
                 AWC.Runner.Resume();
             } else {
                 AWC.Runner.Stop();
@@ -110,7 +112,8 @@ public class StatusOverlayWindow : Window
             "",
             "Left Click - Toggles main window",
             "CTRL + Left Click - Toggles settings window",
-            "Right Click - Stops the runner and any action"
+            "Right Click - Stops the runner and any action",
+            "CTRL + Right Click - Forcefully stops the runner and any action"
         ], "\n"));
     }
 

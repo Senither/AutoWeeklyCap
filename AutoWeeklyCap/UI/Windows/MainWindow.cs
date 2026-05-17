@@ -188,6 +188,10 @@ public class MainWindow : Window
                 if (RightAlignedButton.Draw(" Resume Runner ")) {
                     AWC.Runner.Resume();
                 }
+            } else if (ImGuiEx.Ctrl) {
+                if (RightAlignedButton.Draw(" Force Stop Runner ")) {
+                    AWC.Runner.Abort();
+                }
             } else {
                 if (RightAlignedButton.Draw(" Stop Runner ")) {
                     AWC.Runner.Stop();
