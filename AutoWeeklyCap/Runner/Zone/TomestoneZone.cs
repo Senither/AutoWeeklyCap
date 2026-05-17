@@ -2,7 +2,7 @@
 
 using Lumina.Excel.Sheets;
 
-namespace AutoWeeklyCap.Runner;
+namespace AutoWeeklyCap.Runner.Zone;
 
 public static class TomestoneZone
 {
@@ -18,29 +18,28 @@ public static class TomestoneZone
 
     private static readonly Dictionary<uint, uint> Contents = new();
 
-    public static uint ZoneId {
-        get {
-            if (!Player.Available) {
-                return AWC.Config.ZoneId;
-            }
-
-            var selectedZone = GetTomestoneContentZones().FirstOrNull(content => content.Key == AWC.Config.ZoneId);
-            if (selectedZone == null) {
-                return AWC.Config.ZoneId;
-            }
-
-            if (UIState.IsInstanceContentUnlocked(selectedZone.Value.Value)) {
-                return selectedZone.Value.Key;
-            }
-
-            foreach (var zone in GetTomestoneContentZones()) {
-                if (UIState.IsInstanceContentUnlocked(zone.Value)) {
-                    return zone.Key;
-                }
-            }
-
-            return 0;
+    public static uint GetZoneId()
+    {
+        if (!Player.Available) {
+            return AWC.Config.ZoneId;
         }
+
+        var selectedZone = GetTomestoneContentZones().FirstOrNull(content => content.Key == AWC.Config.ZoneId);
+        if (selectedZone == null) {
+            return AWC.Config.ZoneId;
+        }
+
+        if (UIState.IsInstanceContentUnlocked(selectedZone.Value.Value)) {
+            return selectedZone.Value.Key;
+        }
+
+        foreach (var zone in GetTomestoneContentZones()) {
+            if (UIState.IsInstanceContentUnlocked(zone.Value)) {
+                return zone.Key;
+            }
+        }
+
+        return 0;
     }
 
     public static bool IsSupportedTomestoneZone(uint zoneId)

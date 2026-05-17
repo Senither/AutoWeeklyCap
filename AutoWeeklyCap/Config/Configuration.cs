@@ -1,4 +1,6 @@
-﻿using Dalamud.Configuration;
+﻿using AutoWeeklyCap.Runner.Zone;
+
+using Dalamud.Configuration;
 
 // ReSharper disable InconsistentNaming
 

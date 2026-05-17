@@ -1,3 +1,5 @@
+using AutoWeeklyCap.Runner.Zone;
+
 using Dalamud.Interface.ImGuiNotification;
 
 using ECommons.Automation.NeoTaskManager;
@@ -26,7 +28,7 @@ public class Runner
             return false;
         }
 
-        var zoneName = MapHelper.GetZoneNameFromId(TomestoneZone.ZoneId);
+        var zoneName = MapHelper.GetZoneNameFromId(DutyZone.GetZoneId(_leveling));
         if (zoneName == null) {
             return false;
         }
@@ -57,7 +59,7 @@ public class Runner
             return false;
         }
 
-        var zoneName = MapHelper.GetZoneNameFromId(TomestoneZone.ZoneId);
+        var zoneName = MapHelper.GetZoneNameFromId(DutyZone.GetZoneId(_leveling));
         if (zoneName == null) {
             return false;
         }
@@ -416,18 +418,14 @@ public class Runner
 
                 TitleManager.Reset();
 
-                // TODO: Create a new DutyZone class that wraps TomestoneZone and LevelingZone, when getting
-                // the zone from it the leveling status should be passed so it's able to correctly
-                // return the zone that the player should be switched to.
-
-                if (AWC.ClientState.TerritoryType == TomestoneZone.ZoneId) {
+                if (AWC.ClientState.TerritoryType == DutyZone.GetZoneId(_leveling)) {
                     AWC.Log.Debug("Runner: Player detected in the duty zone, switching to RunningAutoDuty stage");
                     _state = State.RunningAutoDuty;
 
                     CurrentDutyStartUtc ??= DateTime.UtcNow;
 
                     if (AutoDutyIPC.IsStopped()) {
-                        AutoDutyIPC.Run(TomestoneZone.ZoneId, 1, false);
+                        AutoDutyIPC.Run(DutyZone.GetZoneId(_leveling), 1, false);
                     }
 
                     return true;
@@ -483,9 +481,9 @@ public class Runner
                 }
 
                 if (EzThrottler.Throttle("RunnerStartingDutyStartAttempt", 1500)) {
-                    AWC.Log.Debug("Runner: Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - _timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", TomestoneZone.ZoneId } });
+                    AWC.Log.Debug("Runner: Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - _timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", DutyZone.GetZoneId(_leveling) } });
 
-                    AutoDutyIPC.Run(TomestoneZone.ZoneId, 1, false);
+                    AutoDutyIPC.Run(DutyZone.GetZoneId(_leveling), 1, false);
                 }
 
                 return false;
@@ -501,7 +499,7 @@ public class Runner
             return;
         }
 
-        if (AWC.ClientState.TerritoryType == TomestoneZone.ZoneId) {
+        if (AWC.ClientState.TerritoryType == DutyZone.GetZoneId(_leveling)) {
             return;
         }
 
