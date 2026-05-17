@@ -9,6 +9,7 @@ public class Runner
 {
     private bool _stopGracefully = false;
     private bool _unlimited = false;
+    private bool _leveling = false;
 
     private State _state = State.Waiting;
     private string? _currentCharacter = null;
@@ -121,6 +122,7 @@ public class Runner
         _timestamp = DateTime.UtcNow;
         _stopGracefully = false;
         _unlimited = false;
+        _leveling = false;
         _runsCounter = 0;
         _runsCharacter = null;
         CurrentDutyStartUtc = null;
@@ -360,7 +362,7 @@ public class Runner
 
         _timestamp = DateTime.UtcNow;
 
-        if (_unlimited) {
+        if (_unlimited || _leveling) {
             _state = State.StartingAutoDuty;
             return;
         }
@@ -382,10 +384,17 @@ public class Runner
 
         var icon = AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.GetIcon() ?? BitmapFontIcon.AnyClass;
         using (TitleManager.RegisterTitle(icon, "Switching Job")) {
-            AWC.TaskManager.Enqueue(
-                () => AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.SwitchToJob(),
-                "switch to preferred job"
-            );
+            if (_leveling) {
+                // TODO: 1. Get a PlayerJob object for the job that should be leveled
+                // TODO: 2. Check if the PlayerJob object has a valid value
+                // TODO:   2.a If null, change stage to switching the character
+                // TODO:   2.b If valid, switch to the job
+            } else {
+                AWC.TaskManager.Enqueue(
+                    () => AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.SwitchToJob(),
+                    "switch to preferred job"
+                );
+            }
         }
 
         AWC.TaskManager.Enqueue(() =>
@@ -406,6 +415,10 @@ public class Runner
                 }
 
                 TitleManager.Reset();
+
+                // TODO: Create a new DutyZone class that wraps TomestoneZone and LevelingZone, when getting
+                // the zone from it the leveling status should be passed so it's able to correctly
+                // return the zone that the player should be switched to.
 
                 if (AWC.ClientState.TerritoryType == TomestoneZone.ZoneId) {
                     AWC.Log.Debug("Runner: Player detected in the duty zone, switching to RunningAutoDuty stage");
@@ -569,6 +582,16 @@ public class Runner
             _state = State.SwitchingCharacter;
             _timestamp = DateTime.UtcNow;
             LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
+
+            return;
+        }
+
+        if (AWC.Config.StopAction == StopAction.LevelJobs) {
+            _leveling = true;
+
+            // TODO: 1. Check player is on the character that should have job leveled
+            // TODO:   1.a If not on character, switch to the character
+            // TODO:   1.b If on character, change stage to preparing runner
 
             return;
         }
