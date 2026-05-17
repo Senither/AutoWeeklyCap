@@ -15,7 +15,7 @@ public static class StopActionsUi
             ImGui.Spacing();
             ImGui.Spacing();
 
-            foreach (StopAction action in Enum.GetValues(typeof(StopAction))) {
+            foreach (StopAction action in StopActionExtensions.GetOrderedStopActions()) {
                 if (ImGui.RadioButton(action.GetName(), AWC.Config.StopAction == action)) {
                     AWC.Config.StopAction = action;
                 }

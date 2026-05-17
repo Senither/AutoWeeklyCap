@@ -15,6 +15,20 @@ public enum StopAction
 
 public static class StopActionExtensions
 {
+    public static List<StopAction> GetOrderedStopActions()
+    {
+        return
+        [
+            StopAction.None,
+            StopAction.LogoutToMenu,
+            StopAction.ShutdownGame,
+            StopAction.SwitchCharacter,
+            StopAction.AutoRetainerMultimode,
+            StopAction.LevelJobs,
+            StopAction.StartUnlimitedRuns,
+        ];
+    }
+
     extension(StopAction action)
     {
         public string GetName()
