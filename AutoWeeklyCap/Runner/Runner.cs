@@ -223,8 +223,11 @@ public class Runner
         }
 
         if (_currentCharacter == null) {
-            AWC.Log.Debug("Runner: Stopping runner due to character being NULL");
-            Stop();
+            AWC.Log.Debug($"No character set for runner, switching stage");
+            AWC.TaskManager.Enqueue(
+                () => _state = State.StartingCharacterSwap,
+                "next stage: starting character swap"
+            );
             return;
         }
 
@@ -364,8 +367,21 @@ public class Runner
 
         _timestamp = DateTime.UtcNow;
 
-        if (_unlimited || _leveling) {
+        if (_unlimited) {
             _state = State.StartingAutoDuty;
+            return;
+        }
+
+        if (_leveling) {
+            var levelableCharacter = LevelingHelper.GetCharacterToLevel();
+            if (levelableCharacter == null) {
+                Stop();
+            } else if (levelableCharacter == _currentCharacter) {
+                _state = State.StartingAutoDuty;
+            } else {
+                _state = State.SwitchingCharacter;
+            }
+
             return;
         }
 
@@ -387,10 +403,10 @@ public class Runner
         var icon = AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.GetIcon() ?? BitmapFontIcon.AnyClass;
         using (TitleManager.RegisterTitle(icon, "Switching Job")) {
             if (_leveling) {
-                // TODO: 1. Get a PlayerJob object for the job that should be leveled
-                // TODO: 2. Check if the PlayerJob object has a valid value
-                // TODO:   2.a If null, change stage to switching the character
-                // TODO:   2.b If valid, switch to the job
+                AWC.TaskManager.Enqueue(
+                    () => LevelingHelper.GetJobToLevel(_currentCharacter)?.SwitchToJob(),
+                    "switch to leveling job"
+                );
             } else {
                 AWC.TaskManager.Enqueue(
                     () => AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.SwitchToJob(),
@@ -564,6 +580,7 @@ public class Runner
             var preferredCharacter = AWC.Config.CharacterForSwap;
             if (PlayerHelper.GetFullCharacterName() == preferredCharacter) {
                 AWC.Log.Debug("Runner: Player is already on preferred character, starting runner");
+                _currentCharacter = preferredCharacter;
                 _state = State.PreparingRunner;
                 return;
             }
@@ -587,9 +604,32 @@ public class Runner
         if (AWC.Config.StopAction == StopAction.LevelJobs) {
             _leveling = true;
 
-            // TODO: 1. Check player is on the character that should have job leveled
-            // TODO:   1.a If not on character, switch to the character
-            // TODO:   1.b If on character, change stage to preparing runner
+            var levelableCharacter = LevelingHelper.GetCharacterToLevel();
+            if (levelableCharacter == null) {
+                AWC.Log.Debug($"Found no characters to level, stopping runner");
+                Stop();
+                return;
+            }
+
+            if (PlayerHelper.GetFullCharacterName() == levelableCharacter) {
+                AWC.Log.Debug("Runner: Player is already on character to level, starting runner");
+                _currentCharacter = levelableCharacter;
+                _state = State.PreparingRunner;
+                return;
+            }
+
+            var parts = levelableCharacter.Split("@");
+            if (parts.Length != 2) {
+                AWC.Log.Error($"Character {levelableCharacter} is not a valid character name, stopping runner");
+                Stop();
+                return;
+            }
+
+            AWC.Log.Info($"Switching character to {parts[0]} on {parts[1]}");
+            _currentCharacter = levelableCharacter;
+            _state = State.SwitchingCharacter;
+            _timestamp = DateTime.UtcNow;
+            LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
 
             return;
         }

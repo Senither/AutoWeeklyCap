@@ -141,7 +141,7 @@ public static class StopActionsUi
             }
 
             var eligibleJobLevels = options.JobLevels
-                .Where(entry => entry.Key != PlayerJob.None && entry.Value is >= 15 and < Constants.CurrentMaxLevel)
+                .Where(entry => entry.Key != PlayerJob.None && LevelingHelper.IsWithingLevelingThreshold(entry.Value))
                 .ToDictionary(entry => entry.Key, entry => entry.Value);
 
             var entries = GetOrCreateCharacterJobEntries(character, eligibleJobLevels);
