@@ -66,9 +66,11 @@ public static class LevelZone
     private static List<(LevelZoneRecord zone, uint contentId)> GetEligibleZonesForLevel(int level)
     {
         var contentZones = GetLevelingContentZones();
+        var currentItemLevel = InventoryHelper.GetCurrentItemLevel();
 
         return AvailableLevelingZones
             .Where(zone => zone.Level <= level)
+            .Where(zone => DutyZone.GetRequiredItemLevel(zone.ZoneId) <= currentItemLevel)
             .OrderByDescending(zone => zone.Level)
             .Select(zone =>
             {
