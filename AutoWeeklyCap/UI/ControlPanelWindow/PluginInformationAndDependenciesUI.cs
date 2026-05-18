@@ -30,7 +30,8 @@ internal static class PluginInformationAndDependenciesUI
         DeliverooIPC.Context,
         NotificationMasterIPC.Context,
         NoKillPluginIPC.Context,
-        WotsitIPC.Context
+        WotsitIPC.Context,
+        SkipCutsceneIPC.Context,
     ];
 
     public static void Draw()

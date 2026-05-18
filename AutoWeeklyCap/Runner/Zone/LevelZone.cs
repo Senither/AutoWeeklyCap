@@ -4,7 +4,7 @@ using Lumina.Excel.Sheets;
 
 namespace AutoWeeklyCap.Runner.Zone;
 
-public record LevelZoneRecord(int Level, uint ZoneId);
+public record LevelZoneRecord(int Level, uint ZoneId, Func<bool>? Condition = null);
 
 public static class LevelZone
 {
@@ -18,8 +18,9 @@ public static class LevelZone
         new(41, 1042), // Stone Vigil
         new(44, 1330), // Dzemael Darkhold
         new(47, 1331), // Aurum Vale
-        new(51, 1366), // The Dusk Vigil
-        new(53, 1064), // Sohm Al
+        new(50, 1044, () => SkipCutsceneIPC.IsEnabled), // The Praetorium
+        new(51, 1366, () => !SkipCutsceneIPC.IsEnabled), // The Dusk Vigil
+        new(53, 1064, () => !SkipCutsceneIPC.IsEnabled), // Sohm Al
         new(55, 1065), // The Aery
         new(57, 1066), // The Vault
         new(59, 1109), // The Great Gubal Library
@@ -70,6 +71,7 @@ public static class LevelZone
 
         return AvailableLevelingZones
             .Where(zone => zone.Level <= level)
+            .Where(zone => zone.Condition?.Invoke() ?? true)
             .Where(zone => DutyZone.GetRequiredItemLevel(zone.ZoneId) <= currentItemLevel)
             .OrderByDescending(zone => zone.Level)
             .Select(zone =>
