@@ -120,7 +120,7 @@ public static class WotsitEntryGenerator
                 "Enter free company house",
                 "enter|goto fc|free company house",
                 113,
-                () => ActionInstance.EnterApartmentAction.Invoke()
+                () => ActionInstance.EnterFcHouseAction.Invoke()
             );
         }
     }
