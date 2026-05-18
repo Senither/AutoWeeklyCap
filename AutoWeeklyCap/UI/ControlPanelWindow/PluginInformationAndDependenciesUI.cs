@@ -31,6 +31,7 @@ internal static class PluginInformationAndDependenciesUI
         NotificationMasterIPC.Context,
         NoKillPluginIPC.Context,
         WotsitIPC.Context,
+        StylistIPC.Context,
         SkipCutsceneIPC.Context,
     ];
 

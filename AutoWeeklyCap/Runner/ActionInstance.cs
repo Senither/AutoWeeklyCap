@@ -12,6 +12,7 @@ public static class ActionInstance
     public static readonly ReturnToHomeworldAction Homeworld = new();
     public static readonly DeliverooAction Deliveroo = new();
     public static readonly NotificationAction Notification = new();
+    public static readonly EquipGearUpgradeAction EquipGearUpgrade = new();
 
     // Safe-zone instances
     public static readonly SafezoneAction Safezone = new();

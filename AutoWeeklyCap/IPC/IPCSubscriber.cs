@@ -20,6 +20,7 @@ public static class IPCSubscriber
         GenericHelpers.Safe(NotificationMasterIPC.Dispose);
         GenericHelpers.Safe(VNavMeshIPC.Dispose);
         GenericHelpers.Safe(WotsitIPC.Dispose);
+        GenericHelpers.Safe(StylistIPC.Dispose);
     }
 
     internal static void DisposeAll(EzIPCDisposalToken[] disposalTokens)

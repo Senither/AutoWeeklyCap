@@ -415,6 +415,10 @@ public class Runner
             }
         }
 
+        if (_leveling && StylistIPC.IsEnabled) {
+            ActionInstance.EquipGearUpgrade.Invoke();
+        }
+
         AWC.TaskManager.Enqueue(() =>
         {
             if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled) {
@@ -524,6 +528,10 @@ public class Runner
         if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled) {
             AWC.Log.Debug("Runner: disabling BossMod Reborn AI");
             ChatHelper.RunCommand("bmrai off");
+        }
+
+        if (_leveling && StylistIPC.IsEnabled) {
+            ActionInstance.EquipGearUpgrade.Invoke();
         }
 
         if (CurrentDutyStartUtc.HasValue && _currentCharacter != null) {
