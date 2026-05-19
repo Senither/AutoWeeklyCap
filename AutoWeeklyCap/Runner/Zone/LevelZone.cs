@@ -49,7 +49,7 @@ public static class LevelZone
     public static uint GetZoneId()
     {
         if (!Player.Available) {
-            return AWC.Config.ZoneId;
+            return 0;
         }
 
         var currentJob = (PlayerJob)AWC.PlayerState.ClassJob.RowId;

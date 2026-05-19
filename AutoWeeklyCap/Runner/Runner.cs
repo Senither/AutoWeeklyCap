@@ -223,7 +223,7 @@ public class Runner
         }
 
         if (_currentCharacter == null) {
-            AWC.Log.Debug($"No character set for runner, switching stage");
+            AWC.Log.Debug($"Runner: Found no character set for, switching stage");
             AWC.TaskManager.Enqueue(
                 () => _state = State.StartingCharacterSwap,
                 "next stage: starting character swap"
@@ -614,7 +614,7 @@ public class Runner
 
             var levelableCharacter = LevelingHelper.GetCharacterToLevel();
             if (levelableCharacter == null) {
-                AWC.Log.Debug($"Found no characters to level, stopping runner");
+                AWC.Log.Debug($"Runner: Found no characters to level, stopping runner");
                 Stop();
                 return;
             }

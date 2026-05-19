@@ -1,5 +1,7 @@
 ﻿using ECommons.EzIpcManager;
 
+// ReSharper disable InvalidXmlDocComment
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value null
 
@@ -28,6 +30,13 @@ public class StylistIPC
     /// <param name="moveItemsFromInventory">null - respect configuration choice</param>
     /// <param name="shouldEquip">Whether to equip specified gearset. Setting it to true will always equip it, no matter if it was updated or not. Setting it to false will never equip it. Setting it to null will use player's preferences.</param>
     [EzIPC] internal static Action<bool?, bool?> UpdateCurrentGearsetEx;
+
+    internal static bool UpdateCurrentGearsetAndEquip()
+    {
+        UpdateCurrentGearsetEx(true, true);
+
+        return true;
+    }
 
     internal static void Dispose()
     {

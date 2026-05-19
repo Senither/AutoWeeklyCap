@@ -13,14 +13,7 @@ public class EquipGearUpgradeAction : BaseAction
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.ArrowUp, "Equipping gear");
 
         Enqueue(() => PlayerHelper.IsReady, "wait for player");
-        Enqueue(() =>
-        {
-            StylistIPC.UpdateCurrentGearsetEx(true, true);
-
-            return true;
-        }, "equipping gear upgrades");
-
-        EnqueueDelay(500);
+        Enqueue(StylistIPC.UpdateCurrentGearsetAndEquip, "equipping gear upgrades");
         Enqueue(() => !StylistIPC.IsBusy(), "wait for stylist to equip gear");
         EnqueueDelay(500);
 
