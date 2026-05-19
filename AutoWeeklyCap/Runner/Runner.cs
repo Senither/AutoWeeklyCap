@@ -415,7 +415,7 @@ public class Runner
             }
         }
 
-        if (_leveling && StylistIPC.IsEnabled) {
+        if (_leveling && AWC.Config.LevelJobs.UseStylistForGearUpgrades) {
             ActionInstance.EquipGearUpgrade.Invoke();
         }
 
@@ -530,7 +530,7 @@ public class Runner
             ChatHelper.RunCommand("bmrai off");
         }
 
-        if (_leveling && StylistIPC.IsEnabled) {
+        if (_leveling && AWC.Config.LevelJobs.UseStylistForGearUpgrades) {
             ActionInstance.EquipGearUpgrade.Invoke();
         }
 

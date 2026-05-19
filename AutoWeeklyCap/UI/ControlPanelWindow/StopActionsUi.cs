@@ -84,8 +84,27 @@ public static class StopActionsUi
 
     private static void DrawLevelJobElements()
     {
-        ImGui.TextWrapped("Configure which jobs should be leveled when all characters are tome capped.");
-        ImGui.TextWrapped($"Only jobs that are between level 15 and {Constants.CurrentMaxLevel - 1} will be displayed.");
+        ImGui.TextWrapped(
+            "Configure which jobs should be leveled when all characters are tome capped, only " +
+            $"jobs that are between level 15 and {Constants.CurrentMaxLevel - 1} will be displayed."
+        );
+
+        Card.Separator();
+
+        var useStylistForGearUpgrades = AWC.Config.LevelJobs.UseStylistForGearUpgrades;
+        if (ImGui.Checkbox("Use Stylist for gear upgrades", ref useStylistForGearUpgrades)) {
+            AWC.Config.LevelJobs.UseStylistForGearUpgrades = useStylistForGearUpgrades;
+            EzConfig.Save();
+        }
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When both the option and ");
+            StatusText.Draw(StylistIPC.IsEnabled, "Stylist");
+            ImGui.Text(" is enabled, it will be used");
+            ImGui.Text("to automatically equip gear upgrades found in the armory");
+            ImGui.Text("and inventory, both before and after a dungeon run.");
+        });
 
         ImGui.Spacing();
         var useCharacterOrder = AWC.Config.LevelJobs.UseCharacterOrder;
@@ -127,8 +146,7 @@ public static class StopActionsUi
             ? sortedCharacters
             : [AWC.Config.LevelJobs.SelectedCharacter];
 
-        ImGui.Spacing();
-        ImGui.Spacing();
+        Card.Separator();
 
         foreach (var character in charactersToRender) {
             if (!AWC.Config.Characters.ContainsKey(character)) {
