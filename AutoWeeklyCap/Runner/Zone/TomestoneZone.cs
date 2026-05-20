@@ -24,17 +24,16 @@ public static class TomestoneZone
             return AWC.Config.ZoneId;
         }
 
-        var selectedZone = GetTomestoneContentZones().FirstOrNull(content => content.Key == AWC.Config.ZoneId);
-        if (selectedZone == null) {
+        var contentZones = GetTomestoneContentZones();
+        var currentItemLevel = InventoryHelper.GetCurrentItemLevel();
+
+        var selectedZone = contentZones.FirstOrNull(content => content.Key == AWC.Config.ZoneId);
+        if (selectedZone != null && CanEnterTomestoneZone((KeyValuePair<uint, uint>)selectedZone, currentItemLevel)) {
             return AWC.Config.ZoneId;
         }
 
-        if (UIState.IsInstanceContentUnlocked(selectedZone.Value.Value)) {
-            return selectedZone.Value.Key;
-        }
-
         foreach (var zone in GetTomestoneContentZones()) {
-            if (UIState.IsInstanceContentUnlocked(zone.Value)) {
+            if (CanEnterTomestoneZone(zone, currentItemLevel)) {
                 return zone.Key;
             }
         }
@@ -45,6 +44,12 @@ public static class TomestoneZone
     public static bool IsSupportedTomestoneZone(uint zoneId)
     {
         return AvailableTomestoneZones.Contains(zoneId);
+    }
+
+    private static bool CanEnterTomestoneZone(KeyValuePair<uint, uint> zone, int itemLevel)
+    {
+        return UIState.IsInstanceContentUnlocked(zone.Value)
+               && DutyZone.GetRequiredItemLevel(zone.Key) <= itemLevel;
     }
 
     private static Dictionary<uint, uint> GetTomestoneContentZones()
