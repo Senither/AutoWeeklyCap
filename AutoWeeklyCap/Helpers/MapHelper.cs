@@ -6,12 +6,12 @@ public static class MapHelper
 {
     public static string? GetZoneNameFromId(uint zoneId)
     {
-        if (AWC.DataManager.GetExcelSheet<TerritoryType>().TryGetRow(zoneId, out var territoryRow)) {
-            var name = territoryRow.PlaceName.Value.Name.ExtractText();
-
-            return name.Length == 0 ? null : name;
+        if (!AWC.DataManager.GetExcelSheet<TerritoryType>().TryGetRow(zoneId, out var territoryRow)) {
+            return null;
         }
 
-        return null;
+        var name = territoryRow.PlaceName.Value.Name.ExtractText();
+
+        return name.Length == 0 ? null : name;
     }
 }

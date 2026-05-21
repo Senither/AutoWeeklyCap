@@ -28,8 +28,7 @@ public class Runner
             return false;
         }
 
-        var zoneName = MapHelper.GetZoneNameFromId(DutyZone.GetZoneId(_leveling));
-        if (zoneName == null) {
+        if (!AWC.Config.IsRequiredSettingsSetup()) {
             return false;
         }
 
@@ -59,8 +58,7 @@ public class Runner
             return false;
         }
 
-        var zoneName = MapHelper.GetZoneNameFromId(DutyZone.GetZoneId(_leveling));
-        if (zoneName == null) {
+        if (!AWC.Config.IsRequiredSettingsSetup()) {
             return false;
         }
 
@@ -501,9 +499,20 @@ public class Runner
                 }
 
                 if (EzThrottler.Throttle("RunnerStartingDutyStartAttempt", 1500)) {
-                    AWC.Log.Debug("Runner: Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - _timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", DutyZone.GetZoneId(_leveling) } });
+                    var zoneId = DutyZone.GetZoneId(_leveling);
 
-                    AutoDutyIPC.Run(DutyZone.GetZoneId(_leveling), 1, false);
+                    AWC.Log.Debug(
+                        "Runner: Attempting to start AutoDuty: {@Stats}",
+                        new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - _timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", zoneId } }
+                    );
+
+                    if (zoneId == 0) {
+                        AWC.Log.Debug("Runner: Territory Type ID was detected as zero (0), stopping runner");
+                        Stop();
+                        return true;
+                    }
+
+                    AutoDutyIPC.Run(zoneId, 1, false);
                 }
 
                 return false;
