@@ -1,6 +1,8 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Utility;
 
+using ECommons.Configuration;
+
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
@@ -98,5 +100,38 @@ public static class PlayerHelper
         }
 
         return CharacterSwapStatus.FailedToSwitchJob;
+    }
+
+    public static void UpdateJobLevelsForCurrentCharacter()
+    {
+        var character = GetFullCharacterName();
+        if (character == null) {
+            return;
+        }
+
+        var options = AWC.Config.GetOrRegisterCharacterOptions(character);
+        if (options == null) {
+            return;
+        }
+
+        var changed = false;
+
+        foreach (var job in PlayerJobExtensions.GetSelectableCombatJobs()) {
+            if (job == PlayerJob.None) {
+                continue;
+            }
+
+            var level = GetJobLevel(job);
+            if (options.JobLevels.TryGetValue(job, out var existing) && existing == level) {
+                continue;
+            }
+
+            options.JobLevels[job] = level;
+            changed = true;
+        }
+
+        if (changed) {
+            EzConfig.Save();
+        }
     }
 }

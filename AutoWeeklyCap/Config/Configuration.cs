@@ -1,4 +1,6 @@
-﻿using Dalamud.Configuration;
+﻿using AutoWeeklyCap.Runner.Zone;
+
+using Dalamud.Configuration;
 
 // ReSharper disable InconsistentNaming
 
@@ -40,6 +42,7 @@ public class Configuration : IPluginConfiguration
     // Stop Actions
     public StopAction StopAction { get; set; } = StopAction.None;
     public string CharacterForSwap { get; set; } = "";
+    public LevelJobsOptions LevelJobs { get; set; } = new();
 
     // Runner Options (General)
     public bool AlwaysStartOnHomeWorld { get; set; } = true;

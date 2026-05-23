@@ -9,11 +9,26 @@ public enum StopAction
     LogoutToMenu = 2,
     ShutdownGame = 3,
     AutoRetainerMultimode = 4,
-    StartUnlimitedRuns = 5
+    StartUnlimitedRuns = 5,
+    LevelJobs = 6
 }
 
 public static class StopActionExtensions
 {
+    public static List<StopAction> GetOrderedStopActions()
+    {
+        return
+        [
+            StopAction.None,
+            StopAction.LogoutToMenu,
+            StopAction.ShutdownGame,
+            StopAction.SwitchCharacter,
+            StopAction.AutoRetainerMultimode,
+            StopAction.LevelJobs,
+            StopAction.StartUnlimitedRuns,
+        ];
+    }
+
     extension(StopAction action)
     {
         public string GetName()
@@ -26,6 +41,7 @@ public static class StopActionExtensions
                 StopAction.ShutdownGame => "Shutdown Game",
                 StopAction.AutoRetainerMultimode => "Start AutoRetainer multimode",
                 StopAction.StartUnlimitedRuns => "Start Unlimited Runs",
+                StopAction.LevelJobs => "Level Jobs & Alts",
                 _ => action.ToString()
             };
         }
@@ -44,6 +60,10 @@ public static class StopActionExtensions
                 StopAction.StartUnlimitedRuns => () => ImGui.Text(
                     "When the runner finishes capping all your characters it will switch to your\n" +
                     "preferred character and then start doing runs until manually stopped"
+                ),
+                StopAction.LevelJobs => () => ImGui.Text(
+                    "When the runner finishes capping all your characters, it will switch to your\n" +
+                    "selected job to level instead, and continue doing runs on that"
                 ),
                 _ => null
             };
@@ -84,6 +104,7 @@ public static class StopActionExtensions
                     break;
 
                 case StopAction.StartUnlimitedRuns:
+                case StopAction.LevelJobs:
                     break;
 
                 default:

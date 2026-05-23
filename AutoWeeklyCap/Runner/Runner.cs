@@ -1,3 +1,5 @@
+using AutoWeeklyCap.Runner.Zone;
+
 using Dalamud.Interface.ImGuiNotification;
 
 using ECommons.Automation.NeoTaskManager;
@@ -9,6 +11,7 @@ public class Runner
 {
     private bool _stopGracefully = false;
     private bool _unlimited = false;
+    private bool _leveling = false;
 
     private State _state = State.Waiting;
     private string? _currentCharacter = null;
@@ -25,8 +28,7 @@ public class Runner
             return false;
         }
 
-        var zoneName = MapHelper.GetZoneNameFromId(TomestoneZone.ZoneId);
-        if (zoneName == null) {
+        if (!AWC.Config.IsRequiredSettingsSetup()) {
             return false;
         }
 
@@ -56,8 +58,7 @@ public class Runner
             return false;
         }
 
-        var zoneName = MapHelper.GetZoneNameFromId(TomestoneZone.ZoneId);
-        if (zoneName == null) {
+        if (!AWC.Config.IsRequiredSettingsSetup()) {
             return false;
         }
 
@@ -121,6 +122,7 @@ public class Runner
         _timestamp = DateTime.UtcNow;
         _stopGracefully = false;
         _unlimited = false;
+        _leveling = false;
         _runsCounter = 0;
         _runsCharacter = null;
         CurrentDutyStartUtc = null;
@@ -219,8 +221,11 @@ public class Runner
         }
 
         if (_currentCharacter == null) {
-            AWC.Log.Debug("Runner: Stopping runner due to character being NULL");
-            Stop();
+            AWC.Log.Debug($"Runner: Found no character set for, switching stage");
+            AWC.TaskManager.Enqueue(
+                () => _state = State.StartingCharacterSwap,
+                "next stage: starting character swap"
+            );
             return;
         }
 
@@ -365,6 +370,19 @@ public class Runner
             return;
         }
 
+        if (_leveling) {
+            var levelableCharacter = LevelingHelper.GetCharacterToLevel();
+            if (levelableCharacter == null) {
+                Stop();
+            } else if (levelableCharacter == _currentCharacter) {
+                _state = State.StartingAutoDuty;
+            } else {
+                _state = State.SwitchingCharacter;
+            }
+
+            return;
+        }
+
         _state = isCapped ? State.StartingCharacterSwap : State.StartingAutoDuty;
     }
 
@@ -382,10 +400,21 @@ public class Runner
 
         var icon = AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.GetIcon() ?? BitmapFontIcon.AnyClass;
         using (TitleManager.RegisterTitle(icon, "Switching Job")) {
-            AWC.TaskManager.Enqueue(
-                () => AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.SwitchToJob(),
-                "switch to preferred job"
-            );
+            if (_leveling) {
+                AWC.TaskManager.Enqueue(
+                    () => LevelingHelper.GetJobToLevel(_currentCharacter)?.SwitchToJob(),
+                    "switch to leveling job"
+                );
+            } else {
+                AWC.TaskManager.Enqueue(
+                    () => AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.SwitchToJob(),
+                    "switch to preferred job"
+                );
+            }
+        }
+
+        if (_leveling && AWC.Config.LevelJobs.UseStylistForGearUpgrades) {
+            ActionInstance.EquipGearUpgrade.Invoke();
         }
 
         AWC.TaskManager.Enqueue(() =>
@@ -407,14 +436,14 @@ public class Runner
 
                 TitleManager.Reset();
 
-                if (AWC.ClientState.TerritoryType == TomestoneZone.ZoneId) {
+                if (AWC.ClientState.TerritoryType == DutyZone.GetZoneId(_leveling)) {
                     AWC.Log.Debug("Runner: Player detected in the duty zone, switching to RunningAutoDuty stage");
                     _state = State.RunningAutoDuty;
 
                     CurrentDutyStartUtc ??= DateTime.UtcNow;
 
                     if (AutoDutyIPC.IsStopped()) {
-                        AutoDutyIPC.Run(TomestoneZone.ZoneId, 1, false);
+                        AutoDutyIPC.Run(DutyZone.GetZoneId(_leveling), 1, false);
                     }
 
                     return true;
@@ -470,9 +499,20 @@ public class Runner
                 }
 
                 if (EzThrottler.Throttle("RunnerStartingDutyStartAttempt", 1500)) {
-                    AWC.Log.Debug("Runner: Attempting to start AutoDuty: {@Stats}", new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - _timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", TomestoneZone.ZoneId } });
+                    var zoneId = DutyZone.GetZoneId(_leveling);
 
-                    AutoDutyIPC.Run(TomestoneZone.ZoneId, 1, false);
+                    AWC.Log.Debug(
+                        "Runner: Attempting to start AutoDuty: {@Stats}",
+                        new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - _timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", zoneId } }
+                    );
+
+                    if (zoneId == 0) {
+                        AWC.Log.Debug("Runner: Territory Type ID was detected as zero (0), stopping runner");
+                        Stop();
+                        return true;
+                    }
+
+                    AutoDutyIPC.Run(zoneId, 1, false);
                 }
 
                 return false;
@@ -488,7 +528,7 @@ public class Runner
             return;
         }
 
-        if (AWC.ClientState.TerritoryType == TomestoneZone.ZoneId) {
+        if (AWC.ClientState.TerritoryType == DutyZone.GetZoneId(_leveling)) {
             return;
         }
 
@@ -497,6 +537,10 @@ public class Runner
         if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled) {
             AWC.Log.Debug("Runner: disabling BossMod Reborn AI");
             ChatHelper.RunCommand("bmrai off");
+        }
+
+        if (_leveling && AWC.Config.LevelJobs.UseStylistForGearUpgrades) {
+            ActionInstance.EquipGearUpgrade.Invoke();
         }
 
         if (CurrentDutyStartUtc.HasValue && _currentCharacter != null) {
@@ -553,6 +597,7 @@ public class Runner
             var preferredCharacter = AWC.Config.CharacterForSwap;
             if (PlayerHelper.GetFullCharacterName() == preferredCharacter) {
                 AWC.Log.Debug("Runner: Player is already on preferred character, starting runner");
+                _currentCharacter = preferredCharacter;
                 _state = State.PreparingRunner;
                 return;
             }
@@ -566,6 +611,39 @@ public class Runner
 
             AWC.Log.Info($"Switching character to {parts[0]} on {parts[1]}");
             _currentCharacter = preferredCharacter;
+            _state = State.SwitchingCharacter;
+            _timestamp = DateTime.UtcNow;
+            LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
+
+            return;
+        }
+
+        if (AWC.Config.StopAction == StopAction.LevelJobs) {
+            _leveling = true;
+
+            var levelableCharacter = LevelingHelper.GetCharacterToLevel();
+            if (levelableCharacter == null) {
+                AWC.Log.Debug($"Runner: Found no characters to level, stopping runner");
+                Stop();
+                return;
+            }
+
+            if (PlayerHelper.GetFullCharacterName() == levelableCharacter) {
+                AWC.Log.Debug("Runner: Player is already on character to level, starting runner");
+                _currentCharacter = levelableCharacter;
+                _state = State.PreparingRunner;
+                return;
+            }
+
+            var parts = levelableCharacter.Split("@");
+            if (parts.Length != 2) {
+                AWC.Log.Error($"Character {levelableCharacter} is not a valid character name, stopping runner");
+                Stop();
+                return;
+            }
+
+            AWC.Log.Info($"Switching character to {parts[0]} on {parts[1]}");
+            _currentCharacter = levelableCharacter;
             _state = State.SwitchingCharacter;
             _timestamp = DateTime.UtcNow;
             LifestreamIPC.ChangeCharacter(parts[0], parts[1]);

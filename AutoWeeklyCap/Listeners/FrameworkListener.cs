@@ -99,6 +99,8 @@ public static partial class FrameworkListener
     private static void UpdateRunnerLoop()
     {
         CurrencyHelper.UpdateWeeklyAcquiredTomestonesForCurrentCharacter();
+        PlayerHelper.UpdateJobLevelsForCurrentCharacter();
+
         AWC.Runner.Tick();
     }
 
