@@ -34,7 +34,7 @@ public static class StopActionsUi
 
         List<Action> elements = GetOptionsDrawElements();
         if (elements.Count > 0) {
-            Card.Draw("Stop Options", () =>
+            Card.Draw(AWC.Config.StopAction.GetName() + " Options", () =>
             {
                 foreach (var element in elements) {
                     element.Invoke();
