@@ -89,6 +89,20 @@ public static class StopActionsUi
             $"jobs that are between level 15 and {Constants.CurrentMaxLevel - 1} will be displayed."
         );
 
+        ImGui.Spacing();
+
+        ImGui.TextWrapped("How it works");
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text($"The runner will switch to your character and job that have priority to be leveled, it will");
+            ImGui.Text($"then queue for the highest level duty that's available with that jobs current item level.");
+            ImGui.Text($"It will continue to do this until manually stopped, or the job reaches level {Constants.CurrentMaxLevel} and");
+            ImGui.Text($"it switches to another character or job. If ");
+            StatusText.Draw(SkipCutsceneIPC.IsEnabled, "SkipCutscene");
+            ImGui.Text(" is enabled, the MSQ duties will");
+            ImGui.Text("be run between level 50 - 55 to help speed up leveling.");
+        });
+
         Card.Separator();
 
         var useStylistForGearUpgrades = AWC.Config.LevelJobs.UseStylistForGearUpgrades;
@@ -104,6 +118,11 @@ public static class StopActionsUi
             ImGui.Text(" is enabled, it will be used");
             ImGui.Text("to automatically equip gear upgrades found in the armory");
             ImGui.Text("and inventory, both before and after a dungeon run.");
+            ImGui.Text("");
+            ImGui.Text("If this options is not used, it's recommended to enable");
+            ImGui.Text("the gear upgrade option within ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text(" instead.");
         });
 
         ImGui.Spacing();
@@ -238,7 +257,9 @@ public static class StopActionsUi
             });
 
             ImGui.SameLine(0f, 6f);
+
             var cursorPos = ImGui.GetCursorPos();
+
             ImGui.Text($"{entry.Job.GetName()}");
             ImGui.SetCursorPos(cursorPos with { X = cursorPos.X + 32, Y = cursorPos.Y + 3 });
             ImGui.Text($"(Lvl {level})");
