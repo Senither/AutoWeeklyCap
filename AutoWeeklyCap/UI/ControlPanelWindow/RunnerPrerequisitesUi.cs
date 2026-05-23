@@ -392,6 +392,19 @@ public static class RunnerPrerequisitesUi
                 AWC.Config.DeliverooOnInterval = false;
             }
 
+            ImGui.Spacing();
+
+            ImGui.Text("How should Deliveroo handle items with materia?");
+
+            var selectedAction = AWC.Config.DeliverooStuckAction;
+            foreach (var action in Enum.GetValues<DeliverooStuckAction>()) {
+                if (ImGui.RadioButton(action.GetName(), selectedAction == action)) {
+                    AWC.Config.DeliverooStuckAction = action;
+                }
+
+                InformationTooltip.Draw(action.GetTooltip());
+            }
+
             Card.Separator();
             ImGui.Spacing();
 

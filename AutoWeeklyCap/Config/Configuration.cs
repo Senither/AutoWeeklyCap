@@ -67,6 +67,7 @@ public class Configuration : IPluginConfiguration
     public bool DeliverooRunOnFirstLoop { get; set; } = false;
     public bool DeliverooOnInterval { get; set; } = true;
     public uint DeliverooRunInterval { get; set; } = 2;
+    public DeliverooStuckAction DeliverooStuckAction = DeliverooStuckAction.StopDeliveroo;
 
     // Runner Options (Notification Master)
     public bool NotificationMasterEnabled { get; set; } = false;

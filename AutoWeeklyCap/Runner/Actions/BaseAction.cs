@@ -2,8 +2,6 @@
 
 using ECommons.Automation.NeoTaskManager;
 
-using FFXIVClientStructs.FFXIV.Component.GUI;
-
 namespace AutoWeeklyCap.Runner.Actions;
 
 public abstract class BaseAction
@@ -66,7 +64,7 @@ public abstract class BaseAction
         return AWC.PlayerState.IsLoaded && Player.Available;
     }
 
-    private bool CloseAddons()
+    protected bool CloseAddons()
     {
         if (!EzThrottler.Throttle("CloseAddons", 300)) {
             return false;
