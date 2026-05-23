@@ -94,7 +94,14 @@ public static class WotsitEntryGenerator
             "Enter preferred safe-zone",
             "enter|goto safezone|safe zone",
             113,
-            () => ActionInstance.Safezone.Invoke()
+            () =>
+            {
+                var characterName = PlayerHelper.GetFullCharacterName();
+
+                _ = characterName == null
+                    ? ActionInstance.Safezone.Invoke()
+                    : ActionInstance.Safezone.Invoke(characterName);
+            }
         );
 
         if (LifestreamIPC.HasPrivateHouse()) {

@@ -6,16 +6,25 @@ public class SafezoneAction : BaseAction
 
     protected override bool Run(params object[] args)
     {
-        foreach (var safezone in AWC.Config.GetSortedSafezones()) {
-            if (safezone.IsOnLocation()) {
-                return true;
-            }
-
-            if (safezone.Invoke()) {
-                return true;
-            }
+        if (args.Length <= 0 || args[0] is not string character) {
+            return AWC.Config.GetSortedSafezones().Any(IsWithinOrGoingToSafezone);
         }
 
-        return false;
+        var options = AWC.Config.GetOrRegisterCharacterOptions(character);
+        if (options != null && IsWithinOrGoingToSafezone(options.PreferredSafezone)) {
+            return true;
+        }
+
+        return AWC.Config.GetSortedSafezones().Any(IsWithinOrGoingToSafezone);
+    }
+
+    private static bool IsWithinOrGoingToSafezone(Safezone? safezone)
+    {
+        return safezone.HasValue && IsWithinOrGoingToSafezone(safezone.Value);
+    }
+
+    private static bool IsWithinOrGoingToSafezone(Safezone safezone)
+    {
+        return safezone.IsOnLocation() || safezone.Invoke();
     }
 }

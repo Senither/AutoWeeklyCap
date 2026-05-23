@@ -124,6 +124,33 @@ public class CharacterOptionWindow : Window
             ImGui.Text("of the item selected for all characters in the plugin settings");
             ImGui.Text("Overrides the \"Runner Options\" > \"Item to buy\" option");
         });
+
+        ImGui.Text("Preferred safezone");
+
+        if (ImGui.BeginCombo($"###selected-safezone", options.PreferredSafezone?.GetName() ?? "Use default")) {
+            if (ImGui.Selectable("Use default", options.PreferredSafezone == null)) {
+                options.PreferredSafezone = null;
+            }
+
+            if (ImGui.Selectable("--------------------------------")) {
+                options.PreferredSafezone = null;
+            }
+
+            foreach (var item in Enum.GetValues<Safezone>()) {
+                if (ImGui.Selectable(item.GetName(), options.PreferredSafezone == item)) {
+                    options.PreferredSafezone = item;
+                }
+            }
+
+            ImGui.EndCombo();
+        }
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Overrides the safezone used for this character, when the runner attempts");
+            ImGui.Text("to go to the safezone your selected safezone will be checked first,");
+            ImGui.Text("if it fails it will fallback to the normal safezone order.");
+        });
     }
 
     private void DrawCharacterRemoval()
