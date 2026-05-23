@@ -34,7 +34,7 @@ public class EnterFcHouseAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("MoveToFCHouseEntrance", 250)) {
+            if (!EzThrottler.Throttle("MoveToFCHouseEntrance", 250)) {
                 return false;
             }
 
@@ -55,7 +55,7 @@ public class EnterFcHouseAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("EnteringFCHouse", 250)) {
+            if (!EzThrottler.Throttle("EnteringFCHouse", 250)) {
                 return false;
             }
 
@@ -91,7 +91,7 @@ public class EnterFcHouseAction : BaseAction
     {
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToFCHousePlot", 500)) {
+            if (!EzThrottler.Throttle("NavigatingToFCHousePlot", 500)) {
                 return false;
             }
 

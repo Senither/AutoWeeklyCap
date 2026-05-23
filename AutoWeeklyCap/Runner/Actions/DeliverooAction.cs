@@ -24,7 +24,7 @@ public class DeliverooAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
+            if (!EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
                 return false;
             }
 
@@ -43,7 +43,7 @@ public class DeliverooAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
+            if (!EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
                 return false;
             }
 

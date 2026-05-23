@@ -19,7 +19,7 @@ public class LeaveGrandCompanyInnAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("MoveToGCDoorPosition", 250)) {
+            if (!EzThrottler.Throttle("MoveToGCDoorPosition", 250)) {
                 return false;
             }
 
@@ -30,7 +30,7 @@ public class LeaveGrandCompanyInnAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("LeavingGCInstance", 250)) {
+            if (!EzThrottler.Throttle("LeavingGCInstance", 250)) {
                 return false;
             }
 

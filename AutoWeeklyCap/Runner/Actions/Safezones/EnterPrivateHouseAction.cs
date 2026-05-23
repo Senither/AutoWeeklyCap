@@ -34,7 +34,7 @@ public class EnterPrivateHouseAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("MoveToPrivateHouseEntrance", 250)) {
+            if (!EzThrottler.Throttle("MoveToPrivateHouseEntrance", 250)) {
                 return false;
             }
 
@@ -55,7 +55,7 @@ public class EnterPrivateHouseAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("EnteringPrivateHouse", 250)) {
+            if (!EzThrottler.Throttle("EnteringPrivateHouse", 250)) {
                 return false;
             }
 
@@ -91,10 +91,9 @@ public class EnterPrivateHouseAction : BaseAction
     {
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToPrivateHousePlot", 500)) {
+            if (!EzThrottler.Throttle("NavigatingToPrivateHousePlot", 500)) {
                 return false;
             }
-
 
             if (LifestreamIPC.IsBusy()) {
                 return false;

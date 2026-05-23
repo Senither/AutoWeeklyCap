@@ -21,7 +21,7 @@ public class EnterGrandCompanyInnAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
+            if (!EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
                 return false;
             }
 
@@ -40,7 +40,7 @@ public class EnterGrandCompanyInnAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
+            if (!EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
                 return false;
             }
 
@@ -55,7 +55,7 @@ public class EnterGrandCompanyInnAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("EnteringGCInstance", 250)) {
+            if (!EzThrottler.Throttle("EnteringGCInstance", 250)) {
                 return false;
             }
 

@@ -75,7 +75,7 @@ public class AutoSpendTomestoneAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500)) {
+            if (!EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500)) {
                 return false;
             }
 
@@ -94,7 +94,7 @@ public class AutoSpendTomestoneAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500)) {
+            if (!EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500)) {
                 return false;
             }
 
@@ -109,7 +109,7 @@ public class AutoSpendTomestoneAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("OpeningTomestoneVendorWindow", 250)) {
+            if (!EzThrottler.Throttle("OpeningTomestoneVendorWindow", 250)) {
                 return false;
             }
 
@@ -133,7 +133,7 @@ public class AutoSpendTomestoneAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("BuyingTomestoneItem", 500)) {
+            if (!EzThrottler.Throttle("BuyingTomestoneItem", 500)) {
                 return false;
             }
 
@@ -154,7 +154,7 @@ public class AutoSpendTomestoneAction : BaseAction
         EnqueueDelay(500);
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("BuyingTomestoneItemClose", 500)) {
+            if (!EzThrottler.Throttle("BuyingTomestoneItemClose", 500)) {
                 return false;
             }
 

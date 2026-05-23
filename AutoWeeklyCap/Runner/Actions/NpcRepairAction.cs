@@ -36,7 +36,7 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
+            if (!EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
                 return false;
             }
 
@@ -55,7 +55,7 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
+            if (!EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
                 return false;
             }
 
@@ -70,7 +70,7 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("RepairingGearViaNPC", 250)) {
+            if (!EzThrottler.Throttle("RepairingGearViaNPC", 250)) {
                 return false;
             }
 

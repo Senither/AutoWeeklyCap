@@ -26,7 +26,7 @@ public class EnterApartmentAction : BaseAction
 
         Enqueue(() =>
         {
-            if (EzThrottler.Throttle("NavigatingToApartmentPlot", 500)) {
+            if (!EzThrottler.Throttle("NavigatingToApartmentPlot", 500)) {
                 return false;
             }
 
