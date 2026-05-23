@@ -68,13 +68,19 @@ public abstract class BaseAction
 
     private bool CloseAddons()
     {
+        if (!EzThrottler.Throttle("CloseAddons", 300)) {
+            return false;
+        }
+
         foreach (var name in AddonsToClose) {
             try {
                 unsafe {
-                    if (GenericHelpers.TryGetAddonByName(name, out AtkUnitBase* atkUnitBase) && atkUnitBase->IsReady()) {
-                        atkUnitBase->FireCallbackInt(-1);
-                        return false;
+                    if (!AddonHelper.TryGetReadyAddon(name, out var addon)) {
+                        continue;
                     }
+
+                    addon->FireCallbackInt(-1);
+                    return false;
                 }
             } catch (Exception) {
                 // ignored
