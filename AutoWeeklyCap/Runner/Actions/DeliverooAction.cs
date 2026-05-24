@@ -6,7 +6,7 @@ namespace AutoWeeklyCap.Runner.Actions;
 public class DeliverooAction : BaseAction
 {
     protected override string Name => nameof(DeliverooAction);
-    protected override string[] AddonsToClose { get; } = ["SelectYesno", "GrandCompanySupplyList", "GrandCompanyExchange", "SelectString"];
+    protected override string[] AddonsToClose { get; } = ["SelectYesno", "GrandCompanySupplyList", "GrandCompanyExchange", "GrandCompanySupplyReward", "SelectString"];
 
     private const int LongTaskTimeout = 450_000; // 7½ minute
     private DateTime? _lastStuckAt = null;
