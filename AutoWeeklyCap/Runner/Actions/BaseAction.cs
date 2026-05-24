@@ -9,6 +9,9 @@ public abstract class BaseAction
     protected abstract string Name { get; }
     protected virtual string[] AddonsToClose { get; } = [];
 
+    private int _closingAddonIteration = 0;
+    private bool _isInitialAddonIteration = true;
+
     public string GetName()
     {
         return Name;
@@ -66,7 +69,7 @@ public abstract class BaseAction
 
     protected bool CloseAddons()
     {
-        if (!EzThrottler.Throttle("CloseAddons", 300)) {
+        if (!EzThrottler.Throttle("CloseAddons", 150)) {
             return false;
         }
 
@@ -77,13 +80,24 @@ public abstract class BaseAction
                         continue;
                     }
 
+                    _closingAddonIteration = 0;
+                    _isInitialAddonIteration = false;
+
                     addon->FireCallbackInt(-1);
+
                     return false;
                 }
             } catch (Exception) {
                 // ignored
             }
         }
+
+        if (!_isInitialAddonIteration && _closingAddonIteration++ < 3) {
+            return false;
+        }
+
+        _closingAddonIteration = 0;
+        _isInitialAddonIteration = true;
 
         return true;
     }
