@@ -184,13 +184,13 @@ public class MainWindow : Window
         }
 
         if (AWC.Runner.IsRunning()) {
-            if (AWC.Runner.IsStopping()) {
-                if (RightAlignedButton.Draw(" Resume Runner ")) {
-                    AWC.Runner.Resume();
-                }
-            } else if (ImGuiEx.Ctrl) {
+            if (ImGuiEx.Ctrl) {
                 if (RightAlignedButton.Draw(" Force Stop Runner ")) {
                     AWC.Runner.Abort();
+                }
+            } else if (AWC.Runner.IsStopping()) {
+                if (RightAlignedButton.Draw(" Resume Runner ")) {
+                    AWC.Runner.Resume();
                 }
             } else {
                 if (RightAlignedButton.Draw(" Stop Runner ")) {
