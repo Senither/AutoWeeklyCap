@@ -243,6 +243,14 @@ public class Runner
             return;
         }
 
+        var playerJob = _leveling
+            ? LevelingHelper.GetJobToLevel(_currentCharacter)
+            : AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob;
+
+        using (TitleManager.RegisterTitle(playerJob?.GetIcon() ?? BitmapFontIcon.AnyClass, "Switching Job")) {
+            AWC.TaskManager.Enqueue(() => playerJob?.SwitchToJob() ?? true, "switching job");
+        }
+
         AWC.TaskManager.Enqueue(() =>
         {
             if (AutoRetainerIPC.IsEnabled && AutoRetainerIPC.GetMultiModeStatus()) {
@@ -396,21 +404,6 @@ public class Runner
 
         if (AWC.Config.OnlyStartAutoDutyFromSafezone) {
             ActionInstance.Safezone.Invoke(_currentCharacter);
-        }
-
-        var icon = AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.GetIcon() ?? BitmapFontIcon.AnyClass;
-        using (TitleManager.RegisterTitle(icon, "Switching Job")) {
-            if (_leveling) {
-                AWC.TaskManager.Enqueue(
-                    () => LevelingHelper.GetJobToLevel(_currentCharacter)?.SwitchToJob(),
-                    "switch to leveling job"
-                );
-            } else {
-                AWC.TaskManager.Enqueue(
-                    () => AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob.SwitchToJob(),
-                    "switch to preferred job"
-                );
-            }
         }
 
         if (_leveling && AWC.Config.LevelJobs.UseStylistForGearUpgrades) {
