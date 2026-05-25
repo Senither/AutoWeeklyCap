@@ -65,7 +65,9 @@ internal static class DeveloperToolbox
         DebugActionButton("Self Repair", ActionInstance.SelfRepair);
         DebugActionButton("NPC Repair", ActionInstance.NpcRepair);
         DebugActionButton("Spend Tomestones", ActionInstance.SpendTomestone);
-        DebugActionButton("Equip Gear Upgrades", ActionInstance.EquipGearUpgrade);
+
+        DebugActionButton("Equip Gear Upgrades", ActionInstance.EquipGearUpgrade, false);
+        DebugActionButton("Buy Leveling Gear Upgrades", ActionInstance.BuyLevelingUpgrade);
 
         DebugActionButton("Return to Homeworld", ActionInstance.Homeworld, false);
         DebugActionButton("Deliveroo", ActionInstance.Deliveroo);
