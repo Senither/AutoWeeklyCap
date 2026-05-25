@@ -265,14 +265,14 @@ public class Runner
         }, "disable AutoRetainer multi mode when it's not busy");
 
         if (AWC.Config.Extract) {
-            ActionInstance.Extract.Invoke();
+            ActionInstance.EnqueueAction(ActionInstance.Extract);
         }
 
         if (AWC.Config.Repair && InventoryHelper.CanRepair(AWC.Config.RepairPercentage)) {
             if (AWC.Config.RepairSelf) {
-                ActionInstance.SelfRepair.Invoke();
+                ActionInstance.EnqueueAction(ActionInstance.SelfRepair);
             } else {
-                ActionInstance.NpcRepair.Invoke();
+                ActionInstance.EnqueueAction(ActionInstance.NpcRepair);
             }
         }
 
@@ -286,13 +286,13 @@ public class Runner
 
             AWC.Log.Debug($"Runner: Deliveroo check [first: {shouldRunFirst}, forCounter: {shouldRunForCounter}]");
             if (shouldRunFirst || shouldRunForCounter) {
-                ActionInstance.Deliveroo.Invoke();
+                ActionInstance.EnqueueAction(ActionInstance.Deliveroo);
             }
         }
 
         if (AWC.Config.SpendUncappedTomestones) {
             if (CurrencyHelper.GetUncappedAcquiredTomestoneCount() >= AWC.Config.SpendUncappedTomestoneThreshold) {
-                ActionInstance.SpendTomestone.Invoke();
+                ActionInstance.EnqueueAction(ActionInstance.SpendTomestone);
             }
         }
 

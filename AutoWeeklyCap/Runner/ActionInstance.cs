@@ -22,4 +22,19 @@ public static class ActionInstance
     public static readonly EnterApartmentAction EnterApartmentAction = new();
     public static readonly EnterPrivateHouseAction EnterPrivateHouse = new();
     public static readonly EnterFcHouseAction EnterFcHouseAction = new();
+
+    /**
+     * Enqueues the given action for later execution, this is helpful if the conditions
+     * being checked within the action to determine if it should actually run or not
+     * can be changed by actions that were run before it.
+     */
+    public static void EnqueueAction(BaseAction action, params object[] args)
+    {
+        AWC.TaskManager.Enqueue(() =>
+            {
+                action.Invoke(args);
+
+                return true;
+            }, $"ActionInstance: enqueued action {action.GetType().Name}");
+    }
 }
