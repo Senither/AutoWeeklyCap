@@ -24,9 +24,9 @@ public static class ItemTypeExtensions
             PlayerJob.WHM or PlayerJob.SCH or PlayerJob.AST or PlayerJob.SGE => ItemType.Healing,
             PlayerJob.BLM or PlayerJob.SMN or PlayerJob.RDM or PlayerJob.PCT => ItemType.Casting,
             PlayerJob.BRD or PlayerJob.MCH or PlayerJob.DNC => ItemType.Aiming,
-            PlayerJob.MNK or PlayerJob.SAM => slot.IsLeftSideItem() ? ItemType.Striking : ItemType.Slaying,
-            PlayerJob.DRG or PlayerJob.RPR => slot.IsLeftSideItem() ? ItemType.Maiming : ItemType.Slaying,
-            PlayerJob.NIN or PlayerJob.VPR => slot.IsLeftSideItem() ? ItemType.Scouting : ItemType.Aiming,
+            PlayerJob.MNK or PlayerJob.SAM => slot.IsGear() ? ItemType.Striking : ItemType.Slaying,
+            PlayerJob.DRG or PlayerJob.RPR => slot.IsGear() ? ItemType.Maiming : ItemType.Slaying,
+            PlayerJob.NIN or PlayerJob.VPR => slot.IsGear() ? ItemType.Scouting : ItemType.Aiming,
 
             _ => ItemType.Unknown
         };

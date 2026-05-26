@@ -3,6 +3,7 @@
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.Runner.Actions;
+using AutoWeeklyCap.Runner.Actions.LevelingGear;
 using AutoWeeklyCap.UI.Helpers;
 
 using ECommons.Configuration;
@@ -25,6 +26,20 @@ internal static class DeveloperToolbox
 
     internal static void Draw()
     {
+        if (ImGui.Button("TEST")) {
+            var heavensward = new Heavensward();
+
+            var job = PlayerHelper.GetCurrentJob();
+            var (item, slot) = InventoryHelper.GetLowestEquippedItemLevelItem();
+            var type = ItemTypeExtensions.GetItemTypeFromJobAndSlot(job, slot);
+
+            heavensward.MoveToTerritory();
+            heavensward.MoveToVendor(slot);
+            heavensward.OpenVendorWindow(slot, type);
+
+            return;
+        }
+
         Card.Draw("Plugin Details", DrawPluginDetails, false);
         Card.Draw("Runner Debug Steps", DrawRunnerDebugSteps, false);
         Card.Draw("Runner Debug Actions", DrawRunnerDebugActions, false);

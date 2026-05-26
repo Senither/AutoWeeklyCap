@@ -233,6 +233,20 @@ public class Runner
             return;
         }
 
+        var playerJob = _leveling
+            ? LevelingHelper.GetJobToLevel(_currentCharacter)
+            : AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob;
+
+        // TODO: Change the job switching from being queued to being called directly, so we're able to invoke the "BuyLevelingUpgrade" action and pause the preparation step if the action is attempting to buy gear upgrades
+        using (TitleManager.RegisterTitle(playerJob?.GetIcon() ?? BitmapFontIcon.AnyClass, "Switching Job")) {
+            AWC.TaskManager.Enqueue(() => playerJob?.SwitchToJob() ?? true, "switching job");
+        }
+
+        // TODO: Add config option to ensure buying leveling upgrades are only done when the user allows it
+        if (_leveling && ActionInstance.BuyLevelingUpgrade.Invoke()) {
+            return;
+        }
+
         if (AWC.Config.AutoRetainerEnabled && AWC.Config.AutoRetainerTrigger.IsWithinThreshold()) {
             _timestamp = DateTime.UtcNow;
 
@@ -241,14 +255,6 @@ public class Runner
                 "next stage: waiting for auto retainer"
             );
             return;
-        }
-
-        var playerJob = _leveling
-            ? LevelingHelper.GetJobToLevel(_currentCharacter)
-            : AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob;
-
-        using (TitleManager.RegisterTitle(playerJob?.GetIcon() ?? BitmapFontIcon.AnyClass, "Switching Job")) {
-            AWC.TaskManager.Enqueue(() => playerJob?.SwitchToJob() ?? true, "switching job");
         }
 
         AWC.TaskManager.Enqueue(() =>

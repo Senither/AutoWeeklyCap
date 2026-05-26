@@ -45,20 +45,40 @@ public static class ItemSlotExtensions
             };
         }
 
-        public bool IsLeftSideItem()
+        public bool IsWeapon()
         {
             return slot switch
             {
-                ItemSlot.MainHand or ItemSlot.Head or ItemSlot.Body or ItemSlot.Hands or ItemSlot.Legs or ItemSlot.Feet => true,
-                ItemSlot.OffHand or ItemSlot.Earring or ItemSlot.Neckless or ItemSlot.Wrists or ItemSlot.RightRing or ItemSlot.LeftRing => false,
+                ItemSlot.MainHand or ItemSlot.OffHand => true,
+                ItemSlot.Head or ItemSlot.Body or ItemSlot.Hands or ItemSlot.Legs or ItemSlot.Feet => false,
+                ItemSlot.Earring or ItemSlot.Neckless or ItemSlot.Wrists or ItemSlot.RightRing or ItemSlot.LeftRing => false,
 
                 _ => throw new ArgumentOutOfRangeException(nameof(slot), slot, null)
             };
         }
 
-        public bool IsRightSideItem()
+        public bool IsGear()
         {
-            return !slot.IsLeftSideItem();
+            return slot switch
+            {
+                ItemSlot.MainHand or ItemSlot.OffHand => false,
+                ItemSlot.Head or ItemSlot.Body or ItemSlot.Hands or ItemSlot.Legs or ItemSlot.Feet => true,
+                ItemSlot.Earring or ItemSlot.Neckless or ItemSlot.Wrists or ItemSlot.RightRing or ItemSlot.LeftRing => false,
+
+                _ => throw new ArgumentOutOfRangeException(nameof(slot), slot, null)
+            };
+        }
+
+        public bool IsAccessory()
+        {
+            return slot switch
+            {
+                ItemSlot.MainHand or ItemSlot.OffHand => false,
+                ItemSlot.Head or ItemSlot.Body or ItemSlot.Hands or ItemSlot.Legs or ItemSlot.Feet => false,
+                ItemSlot.Earring or ItemSlot.Neckless or ItemSlot.Wrists or ItemSlot.RightRing or ItemSlot.LeftRing => true,
+
+                _ => throw new ArgumentOutOfRangeException(nameof(slot), slot, null)
+            };
         }
     }
 }

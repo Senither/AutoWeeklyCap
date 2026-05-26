@@ -4,9 +4,8 @@ using ECommons.Automation.NeoTaskManager;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public abstract class BaseAction
+public abstract class BaseAction : QueueableAction
 {
-    protected abstract string Name { get; }
     protected virtual string[] AddonsToClose { get; } = [];
 
     private int _closingAddonIteration = 0;
@@ -100,27 +99,6 @@ public abstract class BaseAction
         _isInitialAddonIteration = true;
 
         return true;
-    }
-
-    // TaskManager proxy methods
-
-    protected void Enqueue(Func<bool> action, string description)
-    {
-        AWC.TaskManager.Enqueue(action, $"{Name}: {description}");
-    }
-
-    protected void Enqueue(Func<bool> action, string description, int timelimitMs)
-    {
-        AWC.TaskManager.Enqueue(
-            action,
-            $"{Name}: {description}",
-            new TaskManagerConfiguration(timelimitMs)
-        );
-    }
-
-    protected void EnqueueDelay(int ms)
-    {
-        AWC.TaskManager.EnqueueDelay(ms);
     }
 
     protected void LogDebug(string message)
