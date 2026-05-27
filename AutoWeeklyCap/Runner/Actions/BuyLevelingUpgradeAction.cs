@@ -49,11 +49,12 @@ public class BuyLevelingUpgradeAction : BaseAction
         var type = ItemTypeExtensions.GetItemTypeFromJobAndSlot(job, slot);
         gearExpansion.OpenVendorWindow(slot, type);
 
-
         // 4.b The call to buy the item should then be made, based off the slot and item type
+        gearExpansion.BuyShopUpgradeMatchingJob(slot, type, job);
+
+
         // 4.c After the item is bought, close all the addons, call Stylist to equip the gear upgrade
         // 4.d Wait for Stylist, when it's done, loop back to step 2
-
 
         AWC.Log.Debug($"Job: {job} | Item: {item?.Name ?? "<empty>"} | Item Level: {item?.LevelItem.RowId ?? 0} | Slot: {slot} | Type: {type}");
 

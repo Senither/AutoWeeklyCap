@@ -96,6 +96,48 @@ public static class ObjectHelper
         return gameObject;
     }
 
+    internal static unsafe bool OpenShopUsingSelectIconStringWindow(uint id, Vector3 location, int iconStringIndex)
+    {
+        var vendor = FindGameObject(id, location);
+        if (vendor == null) {
+            return false;
+        }
+
+        if (AddonHelper.TryGetReadyAddon("Shop", out _)) {
+            return true;
+        }
+
+        if (AddonHelper.TryGetReadyAddon("SelectIconString", out _)) {
+            AddonHelper.ClickSelectIconString(iconStringIndex);
+        } else {
+            InteractWithObject(vendor);
+        }
+
+        return false;
+    }
+
+    internal static unsafe bool OpenShopUsingSelectIconStringWithSelectStringWindow(uint id, Vector3 location, int iconStringIndex, int selectStringIndex)
+    {
+        var vendor = FindGameObject(id, location);
+        if (vendor == null) {
+            return false;
+        }
+
+        if (AddonHelper.TryGetReadyAddon("Shop", out _)) {
+            return true;
+        }
+
+        if (AddonHelper.TryGetReadyAddon("SelectString", out _)) {
+            AddonHelper.ClickSelectString(selectStringIndex);
+        } else if (AddonHelper.TryGetReadyAddon("SelectIconString", out _)) {
+            AddonHelper.ClickSelectIconString(iconStringIndex);
+        } else {
+            InteractWithObject(vendor);
+        }
+
+        return false;
+    }
+
     private static bool IsMatchingHousingEnterance(string? name)
     {
         return !string.IsNullOrWhiteSpace(name) && name.Contains("Entrance", StringComparison.OrdinalIgnoreCase);

@@ -1,4 +1,6 @@
-﻿namespace AutoWeeklyCap.Enums;
+﻿using Lumina.Excel.Sheets;
+
+namespace AutoWeeklyCap.Enums;
 
 public enum ItemType
 {
@@ -16,6 +18,48 @@ public enum ItemType
 
 public static class ItemTypeExtensions
 {
+    public static ItemType FromItem(Item item)
+    {
+        var itemName = item.Name.ToString();
+        if (string.IsNullOrWhiteSpace(itemName)) {
+            return ItemType.Unknown;
+        }
+
+        if (itemName.Contains(" of Fending", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Fending;
+        }
+
+        if (itemName.Contains(" of Healing", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Healing;
+        }
+
+        if (itemName.Contains(" of Striking", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Striking;
+        }
+
+        if (itemName.Contains(" of Maiming", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Maiming;
+        }
+
+        if (itemName.Contains(" of Slaying", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Slaying;
+        }
+
+        if (itemName.Contains(" of Scouting", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Scouting;
+        }
+
+        if (itemName.Contains(" of Aiming", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Aiming;
+        }
+
+        if (itemName.Contains(" of Casting", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Casting;
+        }
+
+        return ItemType.Unknown;
+    }
+
     public static ItemType GetItemTypeFromJobAndSlot(PlayerJob playerJob, ItemSlot slot)
     {
         return playerJob switch

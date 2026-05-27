@@ -1,4 +1,6 @@
-﻿namespace AutoWeeklyCap.Runner.Actions.LevelingGear;
+﻿using FFXIVClientStructs.FFXIV.Client.UI;
+
+namespace AutoWeeklyCap.Runner.Actions.LevelingGear;
 
 public abstract class ExpansionGear : QueueableAction
 {
@@ -7,6 +9,10 @@ public abstract class ExpansionGear : QueueableAction
 
     protected abstract string TerritoryAetheriteName { get; }
     protected abstract uint TerritoryDataId { get; }
+
+    public abstract void OpenVendorWindow(ItemSlot slot, ItemType type);
+
+    protected abstract (Vector3, uint) GetVendorData(ItemSlot slot);
 
     public void MoveToTerritory()
     {
@@ -39,49 +45,36 @@ public abstract class ExpansionGear : QueueableAction
         }, "waiting for player to be in territory");
     }
 
-    public abstract void MoveToVendor(ItemSlot slot);
-
-    public abstract void OpenVendorWindow(ItemSlot slot, ItemType type);
-
-    protected static unsafe bool OpenSelectIconStringWindow(Vector3 location, uint dataId, int iconStringIndex)
+    public void MoveToVendor(ItemSlot slot)
     {
-        var vendor = ObjectHelper.FindGameObject(dataId, location);
-        if (vendor == null) {
-            return false;
-        }
+        Enqueue(() =>
+        {
+            var (location, _) = GetVendorData(slot);
 
-        if (AddonHelper.TryGetReadyAddon("Shop", out _)) {
-            return true;
-        }
-
-        if (AddonHelper.TryGetReadyAddon("SelectIconString", out _)) {
-            AddonHelper.ClickSelectIconString(iconStringIndex);
-        } else {
-            ObjectHelper.InteractWithObject(vendor);
-        }
-
-        return false;
+            return MovementHelper.MoveTo(location);
+        }, "start moving to npc location");
     }
 
-    protected static unsafe bool OpenSelectIconStringWithSelectStringWindow(Vector3 location, uint dataId, int iconStringIndex, int selectStringIndex)
+    public void BuyShopUpgradeMatchingJob(ItemSlot slot, ItemType type, PlayerJob job)
     {
-        var vendor = ObjectHelper.FindGameObject(dataId, location);
-        if (vendor == null) {
-            return false;
-        }
+        Enqueue(() =>
+        {
+            unsafe {
+                if (!AddonHelper.TryGetReadyAddon("Shop", out var addon)) {
+                    return false;
+                }
 
-        if (AddonHelper.TryGetReadyAddon("Shop", out _)) {
-            return true;
-        }
+                var matchingShopItem = ShopHelper.GetMatchingShopItem((AddonShop*)addon, slot, type, job, MinimumLevel);
+                if (matchingShopItem == null) {
+                    AWC.Log.Debug($"{nameof(ExpansionGear)}: No match found for slot: {slot} | Type: {type} | Job: {job} | Required Level: {MinimumLevel}");
+                    return false;
+                }
 
-        if (AddonHelper.TryGetReadyAddon("SelectString", out _)) {
-            AddonHelper.ClickSelectString(selectStringIndex);
-        } else if (AddonHelper.TryGetReadyAddon("SelectIconString", out _)) {
-            AddonHelper.ClickSelectIconString(iconStringIndex);
-        } else {
-            ObjectHelper.InteractWithObject(vendor);
-        }
+                // TODO: Buy the found item
+                AWC.Log.Debug($"{nameof(ExpansionGear)}: Found matching item: Name: {matchingShopItem.Name} | Index: {matchingShopItem.Index} | Type: {matchingShopItem.Type} | ItemId: {matchingShopItem.ItemId}");
 
-        return false;
+                return true;
+            }
+        }, "buy shop item");
     }
 }

@@ -18,16 +18,6 @@ public class Heavensward : ExpansionGear
     private readonly uint _armorerVendorDataId = 1011204u;
     private readonly uint _jewelerVendorDataId = 1011200u;
 
-    public override void MoveToVendor(ItemSlot slot)
-    {
-        Enqueue(() =>
-        {
-            var (location, _) = GetVendorData(slot);
-
-            return MovementHelper.MoveTo(location);
-        }, "start moving to npc location");
-    }
-
     public override void OpenVendorWindow(ItemSlot slot, ItemType type)
     {
         Enqueue(() =>
@@ -40,8 +30,8 @@ public class Heavensward : ExpansionGear
 
             try {
                 return slot.IsAccessory()
-                    ? OpenSelectIconStringWindow(location, id, 0)
-                    : OpenSelectIconStringWithSelectStringWindow(location, id, type.IsWarGear() ? 0 : 1, 2);
+                    ? ObjectHelper.OpenShopUsingSelectIconStringWindow(id, location, 0)
+                    : ObjectHelper.OpenShopUsingSelectIconStringWithSelectStringWindow(id, location, type.IsWarGear() ? 0 : 1, 2);
             } catch (Exception) {
                 // ignored
             }
@@ -50,7 +40,7 @@ public class Heavensward : ExpansionGear
         }, "opening leveling gear shop");
     }
 
-    private (Vector3, uint) GetVendorData(ItemSlot slot)
+    protected override (Vector3, uint) GetVendorData(ItemSlot slot)
     {
         if (slot.IsWeapon()) {
             return (_weaponVendorLocation, _weaponVendorDataId);
