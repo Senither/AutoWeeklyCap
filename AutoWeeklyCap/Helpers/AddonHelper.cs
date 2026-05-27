@@ -9,6 +9,9 @@ namespace AutoWeeklyCap.Helpers;
 
 public static unsafe class AddonHelper
 {
+    private static int _closingAddonIteration = 0;
+    private static bool _isInitialAddonIteration = true;
+
     internal static bool IsTitleScreenReady()
     {
         try {
@@ -35,6 +38,39 @@ public static unsafe class AddonHelper
         } catch (Exception ex) {
             AWC.Log.Error($"{ex}");
         }
+    }
+
+    internal static bool CloseAddons(string[] addons)
+    {
+        if (!EzThrottler.Throttle("CloseAddons", 150)) {
+            return false;
+        }
+
+        foreach (var name in addons) {
+            try {
+                if (!TryGetReadyAddon(name, out var addon)) {
+                    continue;
+                }
+
+                _closingAddonIteration = 0;
+                _isInitialAddonIteration = false;
+
+                addon->FireCallbackInt(-1);
+
+                return false;
+            } catch (Exception) {
+                // ignored
+            }
+        }
+
+        if (!_isInitialAddonIteration && _closingAddonIteration++ < 3) {
+            return false;
+        }
+
+        _closingAddonIteration = 0;
+        _isInitialAddonIteration = true;
+
+        return true;
     }
 
     internal static bool ClickSelectYesno(bool yes = true)

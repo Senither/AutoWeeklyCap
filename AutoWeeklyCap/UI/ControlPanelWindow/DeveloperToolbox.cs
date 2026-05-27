@@ -37,6 +37,7 @@ internal static class DeveloperToolbox
             heavensward.MoveToVendor(slot);
             heavensward.OpenVendorWindow(slot, type);
             heavensward.BuyShopUpgradeMatchingJob(slot, type, job);
+            heavensward.CloseShopWindows();
 
             return;
         }

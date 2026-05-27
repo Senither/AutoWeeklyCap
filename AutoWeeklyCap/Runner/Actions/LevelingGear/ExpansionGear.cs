@@ -4,6 +4,8 @@ namespace AutoWeeklyCap.Runner.Actions.LevelingGear;
 
 public abstract class ExpansionGear : QueueableAction
 {
+    private static readonly string[] RelatedAddonsToClose = ["SelectIconString", "SelectString", "Shop", "SelectYesno"];
+
     public abstract int MinimumLevel { get; }
     public abstract int ItemLevelThreshold { get; }
 
@@ -76,5 +78,10 @@ public abstract class ExpansionGear : QueueableAction
                 return true;
             }
         }, "buy shop item");
+    }
+
+    public void CloseShopWindows()
+    {
+        Enqueue(() => AddonHelper.CloseAddons(RelatedAddonsToClose), "close shop window");
     }
 }

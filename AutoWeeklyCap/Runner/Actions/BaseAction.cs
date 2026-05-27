@@ -8,9 +8,6 @@ public abstract class BaseAction : QueueableAction
 {
     protected virtual string[] AddonsToClose { get; } = [];
 
-    private int _closingAddonIteration = 0;
-    private bool _isInitialAddonIteration = true;
-
     public string GetName()
     {
         return Name;
@@ -34,7 +31,7 @@ public abstract class BaseAction : QueueableAction
         }
 
         if (AddonsToClose.Length > 0) {
-            AWC.TaskManager.Insert(CloseAddons, $"{Name}: closing addons");
+            AWC.TaskManager.Insert(() => AddonHelper.CloseAddons(AddonsToClose), $"{Name}: closing addons");
         }
 
         return true;
@@ -64,41 +61,6 @@ public abstract class BaseAction : QueueableAction
         }
 
         return AWC.PlayerState.IsLoaded && Player.Available;
-    }
-
-    protected bool CloseAddons()
-    {
-        if (!EzThrottler.Throttle("CloseAddons", 150)) {
-            return false;
-        }
-
-        foreach (var name in AddonsToClose) {
-            try {
-                unsafe {
-                    if (!AddonHelper.TryGetReadyAddon(name, out var addon)) {
-                        continue;
-                    }
-
-                    _closingAddonIteration = 0;
-                    _isInitialAddonIteration = false;
-
-                    addon->FireCallbackInt(-1);
-
-                    return false;
-                }
-            } catch (Exception) {
-                // ignored
-            }
-        }
-
-        if (!_isInitialAddonIteration && _closingAddonIteration++ < 3) {
-            return false;
-        }
-
-        _closingAddonIteration = 0;
-        _isInitialAddonIteration = true;
-
-        return true;
     }
 
     protected void LogDebug(string message)
