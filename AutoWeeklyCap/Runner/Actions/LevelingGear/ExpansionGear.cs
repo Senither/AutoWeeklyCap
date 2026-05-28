@@ -57,7 +57,7 @@ public abstract class ExpansionGear : QueueableAction
                 return false;
             }
 
-            return Player.Territory.RowId == TerritoryDataId && PlayerHelper.IsReady;
+            return Player.Territory.RowId == TerritoryDataId && PlayerHelper.IsReady && !LifestreamIPC.IsBusy();
         }, "waiting for player to be in territory");
     }
 
