@@ -167,6 +167,28 @@ public static unsafe class AddonHelper
         return true;
     }
 
+    internal static bool ClickShopItem(int index, int quantity = 1)
+    {
+        if (!EzThrottler.Throttle(nameof(ClickShopItem), 500)) {
+            return false;
+        }
+
+        if (!TryGetReadyAddon("Shop", out var addon)) {
+            return false;
+        }
+
+        var values = stackalloc AtkValue[3];
+        values[0].Type = ValueType.Int;
+        values[0].Int = 0;
+        values[1].Type = ValueType.Int;
+        values[1].Int = index;
+        values[2].Type = ValueType.Int;
+        values[2].Int = quantity;
+
+        addon->FireCallback(3, values);
+        return true;
+    }
+
     internal static bool ClickDialogueOk()
     {
         if (!EzThrottler.Throttle(nameof(ClickDialogueOk), 500)) {

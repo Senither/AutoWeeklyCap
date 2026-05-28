@@ -75,7 +75,16 @@ public abstract class ExpansionGear : QueueableAction
     {
         Enqueue(() =>
         {
+            if (!EzThrottler.Throttle("BuyShopUpgradeMatchingJob", 500)) {
+                return false;
+            }
+
             unsafe {
+                if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
+                    AddonHelper.ClickSelectYesno();
+                    return true;
+                }
+
                 if (!AddonHelper.TryGetReadyAddon("Shop", out var addon)) {
                     return false;
                 }
@@ -86,12 +95,14 @@ public abstract class ExpansionGear : QueueableAction
                     return false;
                 }
 
-                // TODO: Buy the found item
                 AWC.Log.Debug($"{nameof(ExpansionGear)}: Found matching item: Name: {matchingShopItem.Name} | Index: {matchingShopItem.Index} | Type: {matchingShopItem.Type} | ItemId: {matchingShopItem.ItemId}");
+                AddonHelper.ClickShopItem(matchingShopItem.Index);
 
-                return true;
+                return false;
             }
         }, "buy shop item");
+
+        EnqueueDelay(500);
     }
 
     private void CloseShopWindows()
