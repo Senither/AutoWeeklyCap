@@ -44,15 +44,20 @@ public static class ShopHelper
 
             foreach (var item in candidates) {
                 var slot = ItemSlotExtensions.FromItem(item);
+
+                var canEquipCurrentJob = item.ClassJobCategory.Value.IsJobInCategory((Job)job);
+                var itemRequiredLevel = item.LevelEquip;
+
+                if (slot == null && expectedSlot.IsWeapon() && canEquipCurrentJob && itemRequiredLevel == requiredLevel) {
+                    slot = InferWeaponSlotFromItem(item, expectedSlot);
+                }
+
                 if (slot == null) {
-                    AWC.Log.Debug($"{nameof(ShopHelper)}: Shop item scan [{i}]: {item.Name} (#{item.RowId}) has no recognized equip slot");
+                    AWC.Log.Debug($"{nameof(ShopHelper)}: Shop item scan [{i}]: {item.Name} (#{item.RowId}) has no recognized equip slot | EquipSlotCategory: {item.EquipSlotCategory.RowId} | ItemUICategory: {item.ItemUICategory.RowId}");
                     continue;
                 }
 
                 var type = ItemTypeExtensions.FromItem(item);
-
-                var canEquipCurrentJob = item.ClassJobCategory.Value.IsJobInCategory((Job)job);
-                var itemRequiredLevel = item.LevelEquip;
 
                 var slotMatch = expectedSlot.IsMatch(slot.Value);
                 var typeMatch = expectedSlot.IsWeapon() || expectedType == type;
@@ -69,6 +74,30 @@ public static class ShopHelper
         }
 
         return null;
+    }
+
+    private static ItemSlot? InferWeaponSlotFromItem(Item item, ItemSlot expectedSlot)
+    {
+        if (item.EquipSlotCategory.RowId is 1 or 2) {
+            return item.EquipSlotCategory.RowId == 1 ? ItemSlot.MainHand : ItemSlot.OffHand;
+        }
+
+        var itemUiCategoryName = item.ItemUICategory.Value.Name.ToString();
+        if (!string.IsNullOrWhiteSpace(itemUiCategoryName)) {
+            // See: https://ffxiv.consolegameswiki.com/wiki/Shield
+            var isShield = itemUiCategoryName.Contains("shield", StringComparison.OrdinalIgnoreCase) ||
+                           itemUiCategoryName.Contains("off-hand", StringComparison.OrdinalIgnoreCase) ||
+                           itemUiCategoryName.Contains("offhand", StringComparison.OrdinalIgnoreCase) ||
+                           itemUiCategoryName.Contains("hoplon", StringComparison.OrdinalIgnoreCase) ||
+                           itemUiCategoryName.Contains("buckler", StringComparison.OrdinalIgnoreCase) ||
+                           itemUiCategoryName.Contains("scutum", StringComparison.OrdinalIgnoreCase);
+
+            if (isShield) {
+                return ItemSlot.OffHand;
+            }
+        }
+
+        return expectedSlot == ItemSlot.OffHand ? null : ItemSlot.MainHand;
     }
 
     private static bool TryGetItemCandidatesFromShopLabel(string shopLabel, out List<Item> items, out bool usedPartialMatch)
