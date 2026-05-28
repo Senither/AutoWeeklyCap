@@ -1,4 +1,4 @@
-﻿using AutoWeeklyCap.Runner.Actions.LevelingGear;
+using AutoWeeklyCap.Runner.Actions.LevelingGear;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
@@ -9,6 +9,7 @@ public class BuyLevelingUpgradeAction : BaseAction
 
     private readonly List<ExpansionGear> _expansionGears =
     [
+        new Stormblood(),
         new Heavensward(),
     ];
 
