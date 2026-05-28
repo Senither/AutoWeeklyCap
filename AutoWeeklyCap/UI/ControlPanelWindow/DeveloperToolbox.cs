@@ -27,7 +27,7 @@ internal static class DeveloperToolbox
     internal static void Draw()
     {
         if (ImGui.Button("TEST")) {
-            var expansion = new Stormblood();
+            var expansion = new Shadowbringers();
 
             expansion.EnqueueSequence(PlayerHelper.GetCurrentJob());
 
