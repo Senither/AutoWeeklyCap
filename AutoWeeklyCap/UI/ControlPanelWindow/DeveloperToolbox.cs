@@ -27,7 +27,7 @@ internal static class DeveloperToolbox
     internal static void Draw()
     {
         if (ImGui.Button("TEST")) {
-            var expansion = new Endwalker();
+            var expansion = new Dawntrail();
 
             expansion.EnqueueSequence(PlayerHelper.GetCurrentJob());
 

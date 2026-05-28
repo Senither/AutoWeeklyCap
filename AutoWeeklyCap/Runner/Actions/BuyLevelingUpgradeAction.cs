@@ -9,6 +9,7 @@ public class BuyLevelingUpgradeAction : BaseAction
 
     private readonly List<ExpansionGear> _expansionGears =
     [
+        new Dawntrail(),
         new Endwalker(),
         new Shadowbringers(),
         new Stormblood(),
