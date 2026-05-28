@@ -25,41 +25,25 @@ public class BuyLevelingUpgradeAction : BaseAction
             return false;
         }
 
-        // 1. Get an instance of the gear container that best matches the current level
-        var gearExpansion = GetExpansionGear(level);
-        if (gearExpansion == null) {
+        var expansion = GetExpansionGear(level);
+        if (expansion == null) {
             return false;
         }
 
-        // 2. Check if the current item level is below the threshold for that gear container
         var itemLevel = InventoryHelper.GetCurrentItemLevel();
-        if (gearExpansion.ItemLevelThreshold <= itemLevel) {
-            // 3.a If the item level is at or above the threshold, stop the action
+        if (expansion.ItemLevelThreshold <= itemLevel) {
             return false;
         }
 
-        // 3.b If the item level is below the threshold, call a method to navigate to the vendor territory
-        gearExpansion.MoveToTerritory();
+        LocationManager.Reset();
 
-        // 4. Get the item and slot that needs to be upgraded, and move to the vendor location
-        var (item, slot) = InventoryHelper.GetLowestEquippedItemLevelItem();
-        gearExpansion.MoveToVendor(slot);
+        using (TitleManager.RegisterTitle(BitmapFontIcon.LevelSync, "Buying leveling gear")) {
+            expansion.EnqueueSequence(job);
+        }
 
-        // 4.a Get the item type for the current job and slot, and open the correct shop window
-        var type = ItemTypeExtensions.GetItemTypeFromJobAndSlot(job, slot);
-        gearExpansion.OpenVendorWindow(slot, type);
+        ActionInstance.EquipGearUpgrade.Invoke();
 
-        // 4.b The call to buy the item should then be made, based off the slot and item type
-        gearExpansion.BuyShopUpgradeMatchingJob(slot, type, job);
-
-        // 4.c After the item is bought, close all the addons, call Stylist to equip the gear upgrade
-        gearExpansion.CloseShopWindows();
-
-        // 4.d Wait for Stylist, when it's done, loop back to step 2
-
-        AWC.Log.Debug($"Job: {job} | Item: {item?.Name ?? "<empty>"} | Item Level: {item?.LevelItem.RowId ?? 0} | Slot: {slot} | Type: {type}");
-
-        return false;
+        return true;
     }
 
     private ExpansionGear? GetExpansionGear(int level)

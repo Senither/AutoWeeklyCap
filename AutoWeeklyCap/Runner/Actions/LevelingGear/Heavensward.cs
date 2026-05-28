@@ -18,7 +18,7 @@ public class Heavensward : ExpansionGear
     private readonly uint _armorerVendorDataId = 1011204u;
     private readonly uint _jewelerVendorDataId = 1011200u;
 
-    public override void OpenVendorWindow(ItemSlot slot, ItemType type)
+    protected override void OpenVendorWindow(ItemSlot slot, ItemType type)
     {
         Enqueue(() =>
         {

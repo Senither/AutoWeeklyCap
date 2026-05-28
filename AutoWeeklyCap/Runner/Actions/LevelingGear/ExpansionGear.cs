@@ -12,11 +12,25 @@ public abstract class ExpansionGear : QueueableAction
     protected abstract string TerritoryAetheriteName { get; }
     protected abstract uint TerritoryDataId { get; }
 
-    public abstract void OpenVendorWindow(ItemSlot slot, ItemType type);
+    public void EnqueueSequence(PlayerJob job)
+    {
+        var (_, slot) = InventoryHelper.GetLowestEquippedItemLevelItem();
+        MoveToTerritory();
+        MoveToVendor(slot);
+
+        var type = ItemTypeExtensions.GetItemTypeFromJobAndSlot(job, slot);
+        OpenVendorWindow(slot, type);
+        BuyShopUpgradeMatchingJob(slot, type, job);
+        CloseShopWindows();
+
+        AWC.Log.Debug($"{nameof(ExpansionGear)}: Starting sequence with data (Job={job}, Slot={slot}, Type={type}, MinimumLevel={MinimumLevel}, ItemLevelThreshold={ItemLevelThreshold})");
+    }
+
+    protected abstract void OpenVendorWindow(ItemSlot slot, ItemType type);
 
     protected abstract (Vector3, uint) GetVendorData(ItemSlot slot);
 
-    public void MoveToTerritory()
+    private void MoveToTerritory()
     {
         Enqueue(() =>
         {
@@ -47,7 +61,7 @@ public abstract class ExpansionGear : QueueableAction
         }, "waiting for player to be in territory");
     }
 
-    public void MoveToVendor(ItemSlot slot)
+    private void MoveToVendor(ItemSlot slot)
     {
         Enqueue(() =>
         {
@@ -57,7 +71,7 @@ public abstract class ExpansionGear : QueueableAction
         }, "start moving to npc location");
     }
 
-    public void BuyShopUpgradeMatchingJob(ItemSlot slot, ItemType type, PlayerJob job)
+    private void BuyShopUpgradeMatchingJob(ItemSlot slot, ItemType type, PlayerJob job)
     {
         Enqueue(() =>
         {
@@ -80,7 +94,7 @@ public abstract class ExpansionGear : QueueableAction
         }, "buy shop item");
     }
 
-    public void CloseShopWindows()
+    private void CloseShopWindows()
     {
         Enqueue(() => AddonHelper.CloseAddons(RelatedAddonsToClose), "close shop window");
     }

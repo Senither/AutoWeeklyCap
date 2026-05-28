@@ -27,17 +27,9 @@ internal static class DeveloperToolbox
     internal static void Draw()
     {
         if (ImGui.Button("TEST")) {
-            var heavensward = new Heavensward();
+            var expansion = new Heavensward();
 
-            var job = PlayerHelper.GetCurrentJob();
-            var (item, slot) = InventoryHelper.GetLowestEquippedItemLevelItem();
-            var type = ItemTypeExtensions.GetItemTypeFromJobAndSlot(job, slot);
-
-            heavensward.MoveToTerritory();
-            heavensward.MoveToVendor(slot);
-            heavensward.OpenVendorWindow(slot, type);
-            heavensward.BuyShopUpgradeMatchingJob(slot, type, job);
-            heavensward.CloseShopWindows();
+            expansion.EnqueueSequence(PlayerHelper.GetCurrentJob());
 
             return;
         }
