@@ -22,6 +22,10 @@ public class BuyLevelingUpgradeAction : BaseAction
             return false;
         }
 
+        if (AWC.Config.LevelJobs.MinimumGilThreshold >= CurrencyHelper.GetGil()) {
+            return false;
+        }
+
         var job = PlayerHelper.GetCurrentJob();
         var level = PlayerHelper.GetJobLevel(job);
 

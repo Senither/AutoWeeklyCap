@@ -5,6 +5,8 @@ using Dalamud.Interface;
 
 using ECommons.Configuration;
 
+using Range = AutoWeeklyCap.UI.Helpers.Range;
+
 namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
 public static class StopActionsUi
@@ -148,6 +150,30 @@ public static class StopActionsUi
                 StatusText.Draw(VNavMeshIPC.IsEnabled, "VNavMesh");
                 ImGui.Text(" to be enabled");
             });
+
+            ImGui.Text("Minimum gil to keep");
+
+            var gilThreshold = AWC.Config.LevelJobs.MinimumGilThreshold;
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text($"The minimum amount of gil that the player should have at any time for the gear expansion step");
+                ImGui.Text($"to run, if the character has less than your gil limit, the gear upgrade step will be skipped.");
+                ImGui.Text("");
+                ImGui.Text("Note: The gear buying step can bring you below your threshold by buying gear when you're");
+                ImGui.Text($"close to your limit of {gilThreshold.ToString("N0")} gil.");
+            });
+
+            if (Range.DrawWithSteps(
+                    "###buy-expansion-gear-gil-range",
+                    ref gilThreshold,
+                    vMin: 60_000,
+                    vMax: 100_000_000,
+                    slowSteps: 500,
+                    fastSteps: 5_000
+                )) {
+                AWC.Config.LevelJobs.MinimumGilThreshold = gilThreshold;
+                EzConfig.Save();
+            }
         });
 
         ImGui.Spacing();
