@@ -242,8 +242,7 @@ public class Runner
             AWC.TaskManager.Enqueue(() => playerJob?.SwitchToJob() ?? true, "switching job");
         }
 
-        // TODO: Add config option to ensure buying leveling upgrades are only done when the user allows it
-        if (_leveling && ActionInstance.BuyLevelingUpgrade.Invoke()) {
+        if (_leveling && AWC.Config.LevelJobs.BuyExpansionGearUpgrades && ActionInstance.BuyLevelingUpgrade.Invoke()) {
             return;
         }
 

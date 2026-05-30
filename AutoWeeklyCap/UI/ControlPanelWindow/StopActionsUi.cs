@@ -125,6 +125,31 @@ public static class StopActionsUi
             ImGui.Text(" instead.");
         });
 
+        Disabled.Draw(!useStylistForGearUpgrades, () =>
+        {
+            var buyExpansionGearUpgrades = AWC.Config.LevelJobs.BuyExpansionGearUpgrades;
+            if (ImGui.Checkbox("Buy gear expansion upgrades", ref buyExpansionGearUpgrades)) {
+                AWC.Config.LevelJobs.BuyExpansionGearUpgrades = buyExpansionGearUpgrades;
+                EzConfig.Save();
+            }
+
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text("Will buy gear upgrades with gil from vendors to ensure the job you're leveling is able");
+                ImGui.Text("to enter duties after reaching a new expansion. If the job is below the expansion");
+                ImGui.Text("threshold for entering duties, the runner will continue to buy gear from vendors");
+                ImGui.Text("until your selected job meets your selected item level threshold.");
+                ImGui.Text("");
+                ImGui.Text("Requires ");
+                StatusText.Draw(StylistIPC.IsEnabled, "Stylist");
+                ImGui.Text(", ");
+                StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
+                ImGui.Text(" and ");
+                StatusText.Draw(VNavMeshIPC.IsEnabled, "VNavMesh");
+                ImGui.Text(" to be enabled");
+            });
+        });
+
         ImGui.Spacing();
         var useCharacterOrder = AWC.Config.LevelJobs.UseCharacterOrder;
         if (ImGui.RadioButton("All characters", useCharacterOrder)) {

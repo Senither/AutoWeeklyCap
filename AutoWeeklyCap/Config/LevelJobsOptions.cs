@@ -5,6 +5,7 @@ public class LevelJobsOptions
 {
     public bool UseCharacterOrder { get; set; } = true;
     public bool UseStylistForGearUpgrades { get; set; } = true;
+    public bool BuyExpansionGearUpgrades { get; set; } = false;
     public string SelectedCharacter { get; set; } = string.Empty;
     public Dictionary<string, List<LevelJobEntry>> CharacterJobs { get; set; } = new();
 }
