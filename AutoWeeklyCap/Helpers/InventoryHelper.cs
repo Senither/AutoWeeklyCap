@@ -1,4 +1,5 @@
 ﻿using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 using Lumina.Excel.Sheets;
 
@@ -74,43 +75,12 @@ public static unsafe class InventoryHelper
         }
 
         try {
-            var equippedItems = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
-            if (equippedItems == null) {
+            var uiState = UIState.Instance();
+            if (uiState == null) {
                 return 0;
             }
 
-            var totalItemLevel = 0u;
-            var countedSlots = 12;
-
-            foreach (var slot in Enum.GetValues<ItemSlot>()) {
-                if (!TryGetSheetItemFromInventoryItem(equippedItems->Items[slot.GetSlot()], out var item)) {
-                    continue;
-                }
-
-                var categoryId = item.ItemUICategory.RowId;
-                if (IgnoreCategory.ContainsNullable(categoryId)) {
-                    // If main hand is ignored, offhand is also removed from the denominator
-                    if (slot == ItemSlot.MainHand) {
-                        countedSlots -= 1;
-                    }
-
-                    countedSlots -= 1;
-                    continue;
-                }
-
-                if (slot == ItemSlot.MainHand && !CanHaveOffhand.ContainsNullable(categoryId)) {
-                    // Jobs without offhand count main hand twice
-                    totalItemLevel += item.LevelItem.RowId;
-                }
-
-                totalItemLevel += item.LevelItem.RowId;
-            }
-
-            if (countedSlots == 0) {
-                return 0;
-            }
-
-            return (int)(totalItemLevel / countedSlots);
+            return uiState->CurrentItemLevel;
         } catch (Exception) {
             return 0;
         }
