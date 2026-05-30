@@ -237,9 +237,11 @@ public class Runner
             ? LevelingHelper.GetJobToLevel(_currentCharacter)
             : AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob;
 
-        // TODO: Change the job switching from being queued to being called directly, so we're able to invoke the "BuyLevelingUpgrade" action and pause the preparation step if the action is attempting to buy gear upgrades
         using (TitleManager.RegisterTitle(playerJob?.GetIcon() ?? BitmapFontIcon.AnyClass, "Switching Job")) {
-            AWC.TaskManager.Enqueue(() => playerJob?.SwitchToJob() ?? true, "switching job");
+            if (!playerJob?.IsAlreadyOnJob() ?? false) {
+                AWC.TaskManager.Enqueue(() => playerJob?.SwitchToJob() ?? true, "switching job");
+                return;
+            }
         }
 
         if (_leveling && AWC.Config.LevelJobs.BuyExpansionGearUpgrades && ActionInstance.BuyLevelingUpgrade.Invoke()) {
