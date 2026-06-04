@@ -151,6 +151,34 @@ public static class StopActionsUi
                 ImGui.Text(" to be enabled");
             });
 
+            ImGui.Spacing();
+
+            ImGui.Text("Gearing profile to use");
+
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text("Select the gearing profile you want to use, the more limited");
+                ImGui.Text("the profile is, the less gil will be spent to upgrade gear.");
+                ImGui.Text("");
+                foreach (var profile in Enum.GetValues<GearProfile>()) {
+                    ImGui.Text($"{profile.GetName()}:  {profile.GetDescription()}");
+                }
+            });
+
+            var profileSelector = AWC.Config.LevelJobs.PreferredGearingProfile;
+            if (ImGui.BeginCombo("###level-gear-profiles-selector", profileSelector.GetName())) {
+                foreach (var profile in Enum.GetValues<GearProfile>()) {
+                    if (!ImGui.Selectable(profile.GetName(), profile == profileSelector)) {
+                        continue;
+                    }
+
+                    AWC.Config.LevelJobs.PreferredGearingProfile = profile;
+                    EzConfig.Save();
+                }
+
+                ImGui.EndCombo();
+            }
+
             ImGui.Text("Minimum gil to keep");
 
             var gilThreshold = AWC.Config.LevelJobs.MinimumGilThreshold;
@@ -175,6 +203,8 @@ public static class StopActionsUi
                 EzConfig.Save();
             }
         });
+
+        Card.Separator();
 
         ImGui.Spacing();
         var useCharacterOrder = AWC.Config.LevelJobs.UseCharacterOrder;

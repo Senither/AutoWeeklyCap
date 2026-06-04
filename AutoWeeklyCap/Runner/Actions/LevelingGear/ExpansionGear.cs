@@ -7,10 +7,17 @@ public abstract class ExpansionGear : QueueableAction
     private static readonly string[] RelatedAddonsToClose = ["SelectIconString", "SelectString", "Shop", "SelectYesno"];
 
     public abstract int MinimumLevel { get; }
-    public abstract int ItemLevelThreshold { get; }
+    protected abstract int ItemLevelThreshold { get; }
 
     protected abstract string TerritoryAetheriteName { get; }
     protected abstract uint TerritoryDataId { get; }
+
+    public bool IsAboveItemLevelThreshold(int itemLevel)
+    {
+        var levelingProfile = AWC.Config.LevelJobs.PreferredGearingProfile;
+
+        return ItemLevelThreshold - levelingProfile.GetSubtractedItemLevel() <= itemLevel;
+    }
 
     public void EnqueueSequence(PlayerJob job)
     {

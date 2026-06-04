@@ -5,7 +5,7 @@ public class Heavensward : ExpansionGear
     protected override string Name => nameof(Heavensward);
 
     public override int MinimumLevel => 50;
-    public override int ItemLevelThreshold => 115;
+    protected override int ItemLevelThreshold => 115;
 
     protected override string TerritoryAetheriteName => "The Jeweled Crozier";
     protected override uint TerritoryDataId => 419;

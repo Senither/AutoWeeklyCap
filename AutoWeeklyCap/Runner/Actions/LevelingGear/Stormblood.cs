@@ -5,7 +5,7 @@ public class Stormblood : Heavensward
     protected override string Name => nameof(Stormblood);
 
     public override int MinimumLevel => 60;
-    public override int ItemLevelThreshold => 255;
+    protected override int ItemLevelThreshold => 255;
 
     protected override void OpenVendorWindow(ItemSlot slot, ItemType type)
     {

@@ -6,7 +6,8 @@ public class LevelJobsOptions
     public bool UseCharacterOrder { get; set; } = true;
     public bool UseStylistForGearUpgrades { get; set; } = true;
     public bool BuyExpansionGearUpgrades { get; set; } = false;
-    public uint MinimumGilThreshold = 250_000;
+    public uint MinimumGilThreshold { get; set; } = 250_000;
+    public GearProfile PreferredGearingProfile { get; set; } = GearProfile.Limited;
     public string SelectedCharacter { get; set; } = string.Empty;
     public Dictionary<string, List<LevelJobEntry>> CharacterJobs { get; set; } = new();
 }

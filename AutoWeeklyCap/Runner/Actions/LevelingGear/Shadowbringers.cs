@@ -5,7 +5,7 @@ public class Shadowbringers : ExpansionGear
     protected override string Name => nameof(Shadowbringers);
 
     public override int MinimumLevel => 70;
-    public override int ItemLevelThreshold => 385;
+    protected override int ItemLevelThreshold => 385;
 
     protected override string TerritoryAetheriteName => "Kogane Dori Markets";
     protected override uint TerritoryDataId => 628;

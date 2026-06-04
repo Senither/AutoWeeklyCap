@@ -5,7 +5,7 @@ public class Dawntrail : ExpansionGear
     protected override string Name => nameof(Dawntrail);
 
     public override int MinimumLevel => 90;
-    public override int ItemLevelThreshold => 645;
+    protected override int ItemLevelThreshold => 645;
 
     protected override string TerritoryAetheriteName => "Tuliyollal";
     protected override uint TerritoryDataId => 1185;

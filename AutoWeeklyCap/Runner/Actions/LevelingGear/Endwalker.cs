@@ -5,7 +5,7 @@ public class Endwalker : ExpansionGear
     protected override string Name => nameof(Endwalker);
 
     public override int MinimumLevel => 80;
-    public override int ItemLevelThreshold => 515;
+    protected override int ItemLevelThreshold => 515;
 
     protected override string TerritoryAetheriteName => "Old Sharlayan";
     protected override uint TerritoryDataId => 962;

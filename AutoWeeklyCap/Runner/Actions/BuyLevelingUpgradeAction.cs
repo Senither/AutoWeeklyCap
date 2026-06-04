@@ -39,7 +39,7 @@ public class BuyLevelingUpgradeAction : BaseAction
         }
 
         var itemLevel = InventoryHelper.GetCurrentItemLevel();
-        if (expansion.ItemLevelThreshold <= itemLevel) {
+        if (expansion.IsAboveItemLevelThreshold(itemLevel)) {
             return false;
         }
 
