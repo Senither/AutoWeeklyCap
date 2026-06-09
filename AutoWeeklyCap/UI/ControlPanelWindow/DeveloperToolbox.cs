@@ -3,7 +3,6 @@
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.Runner.Actions;
-using AutoWeeklyCap.Runner.Actions.LevelingGear;
 using AutoWeeklyCap.UI.Helpers;
 
 using ECommons.Configuration;
@@ -26,14 +25,6 @@ internal static class DeveloperToolbox
 
     internal static void Draw()
     {
-        if (ImGui.Button("TEST")) {
-            var expansion = new Dawntrail();
-
-            expansion.EnqueueSequence(PlayerHelper.GetCurrentJob());
-
-            return;
-        }
-
         Card.Draw("Plugin Details", DrawPluginDetails, false);
         Card.Draw("Runner Debug Steps", DrawRunnerDebugSteps, false);
         Card.Draw("Runner Debug Actions", DrawRunnerDebugActions, false);
