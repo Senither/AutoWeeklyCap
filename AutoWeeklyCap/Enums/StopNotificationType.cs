@@ -3,7 +3,8 @@
 public enum StopNotificationType
 {
     RunnerStopped = 0,
-    CharacterCapped = 1
+    CharacterCapped = 1,
+    LevelingRunStopped = 2
 }
 
 public static class NotificationTypeExtensions
@@ -14,6 +15,7 @@ public static class NotificationTypeExtensions
         {
             StopNotificationType.CharacterCapped => "The runner has finished capping tomes on all your characters.",
             StopNotificationType.RunnerStopped => "The runner has finished a duty tomestone run and has stopped.",
+            StopNotificationType.LevelingRunStopped => "The runner has finished a duty leveling run and has stopped.",
             _ => throw new ArgumentOutOfRangeException(nameof(stopNotificationType), stopNotificationType, null)
         };
     }

@@ -552,7 +552,11 @@ public class Runner
         }
 
         if (_stopGracefully && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnRunnerStopped) {
-            ActionInstance.Notification.ForceInvoke(StopNotificationType.RunnerStopped);
+            ActionInstance.Notification.ForceInvoke(
+                _leveling
+                    ? StopNotificationType.LevelingRunStopped
+                    : StopNotificationType.RunnerStopped
+            );
         }
 
         CurrentDutyStartUtc = null;

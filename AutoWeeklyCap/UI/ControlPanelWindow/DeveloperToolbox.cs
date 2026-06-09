@@ -122,6 +122,7 @@ internal static class DeveloperToolbox
 
         DebugButton("Notify: RunnerStopped", () => ActionInstance.Notification.Invoke(StopNotificationType.RunnerStopped), false);
         DebugButton("Notify: CharacterCapped", () => ActionInstance.Notification.Invoke(StopNotificationType.CharacterCapped));
+        DebugButton("Notify: LevelingStopped", () => ActionInstance.Notification.Invoke(StopNotificationType.LevelingRunStopped));
 
         ImGui.Spacing();
         ImGui.TextWrapped("All actions except for \"Stop Sound\" has a 1500ms delay");
