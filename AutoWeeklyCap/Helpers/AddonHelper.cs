@@ -9,6 +9,9 @@ namespace AutoWeeklyCap.Helpers;
 
 public static unsafe class AddonHelper
 {
+    private static int _closingAddonIteration = 0;
+    private static bool _isInitialAddonIteration = true;
+
     internal static bool IsTitleScreenReady()
     {
         try {
@@ -35,6 +38,39 @@ public static unsafe class AddonHelper
         } catch (Exception ex) {
             AWC.Log.Error($"{ex}");
         }
+    }
+
+    internal static bool CloseAddons(string[] addons)
+    {
+        if (!EzThrottler.Throttle("CloseAddons", 150)) {
+            return false;
+        }
+
+        foreach (var name in addons) {
+            try {
+                if (!TryGetReadyAddon(name, out var addon)) {
+                    continue;
+                }
+
+                _closingAddonIteration = 0;
+                _isInitialAddonIteration = false;
+
+                addon->FireCallbackInt(-1);
+
+                return false;
+            } catch (Exception) {
+                // ignored
+            }
+        }
+
+        if (!_isInitialAddonIteration && _closingAddonIteration++ < 3) {
+            return false;
+        }
+
+        _closingAddonIteration = 0;
+        _isInitialAddonIteration = true;
+
+        return true;
     }
 
     internal static bool ClickSelectYesno(bool yes = true)
@@ -116,6 +152,28 @@ public static unsafe class AddonHelper
         }
 
         if (!TryGetReadyAddon("ShopExchangeCurrency", out var addon)) {
+            return false;
+        }
+
+        var values = stackalloc AtkValue[3];
+        values[0].Type = ValueType.Int;
+        values[0].Int = 0;
+        values[1].Type = ValueType.Int;
+        values[1].Int = index;
+        values[2].Type = ValueType.Int;
+        values[2].Int = quantity;
+
+        addon->FireCallback(3, values);
+        return true;
+    }
+
+    internal static bool ClickShopItem(int index, int quantity = 1)
+    {
+        if (!EzThrottler.Throttle(nameof(ClickShopItem), 500)) {
+            return false;
+        }
+
+        if (!TryGetReadyAddon("Shop", out var addon)) {
             return false;
         }
 

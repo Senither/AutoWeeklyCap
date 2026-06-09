@@ -4,13 +4,9 @@ using ECommons.Automation.NeoTaskManager;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public abstract class BaseAction
+public abstract class BaseAction : QueueableAction
 {
-    protected abstract string Name { get; }
     protected virtual string[] AddonsToClose { get; } = [];
-
-    private int _closingAddonIteration = 0;
-    private bool _isInitialAddonIteration = true;
 
     public string GetName()
     {
@@ -35,7 +31,7 @@ public abstract class BaseAction
         }
 
         if (AddonsToClose.Length > 0) {
-            AWC.TaskManager.Insert(CloseAddons, $"{Name}: closing addons");
+            AWC.TaskManager.Insert(() => AddonHelper.CloseAddons(AddonsToClose), $"{Name}: closing addons");
         }
 
         return true;
@@ -65,62 +61,6 @@ public abstract class BaseAction
         }
 
         return AWC.PlayerState.IsLoaded && Player.Available;
-    }
-
-    protected bool CloseAddons()
-    {
-        if (!EzThrottler.Throttle("CloseAddons", 150)) {
-            return false;
-        }
-
-        foreach (var name in AddonsToClose) {
-            try {
-                unsafe {
-                    if (!AddonHelper.TryGetReadyAddon(name, out var addon)) {
-                        continue;
-                    }
-
-                    _closingAddonIteration = 0;
-                    _isInitialAddonIteration = false;
-
-                    addon->FireCallbackInt(-1);
-
-                    return false;
-                }
-            } catch (Exception) {
-                // ignored
-            }
-        }
-
-        if (!_isInitialAddonIteration && _closingAddonIteration++ < 3) {
-            return false;
-        }
-
-        _closingAddonIteration = 0;
-        _isInitialAddonIteration = true;
-
-        return true;
-    }
-
-    // TaskManager proxy methods
-
-    protected void Enqueue(Func<bool> action, string description)
-    {
-        AWC.TaskManager.Enqueue(action, $"{Name}: {description}");
-    }
-
-    protected void Enqueue(Func<bool> action, string description, int timelimitMs)
-    {
-        AWC.TaskManager.Enqueue(
-            action,
-            $"{Name}: {description}",
-            new TaskManagerConfiguration(timelimitMs)
-        );
-    }
-
-    protected void EnqueueDelay(int ms)
-    {
-        AWC.TaskManager.EnqueueDelay(ms);
     }
 
     protected void LogDebug(string message)

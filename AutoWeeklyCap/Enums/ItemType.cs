@@ -1,0 +1,106 @@
+﻿using Lumina.Excel.Sheets;
+
+namespace AutoWeeklyCap.Enums;
+
+public enum ItemType
+{
+    Fending,
+    Healing,
+    Striking,
+    Maiming,
+    Slaying,
+    Scouting,
+    Aiming,
+    Casting,
+
+    Unknown
+}
+
+public static class ItemTypeExtensions
+{
+    public static ItemType FromItem(Item item)
+    {
+        var itemName = item.Name.ToString();
+        if (string.IsNullOrWhiteSpace(itemName)) {
+            return ItemType.Unknown;
+        }
+
+        if (itemName.Contains(" of Fending", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Fending;
+        }
+
+        if (itemName.Contains(" of Healing", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Healing;
+        }
+
+        if (itemName.Contains(" of Striking", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Striking;
+        }
+
+        if (itemName.Contains(" of Maiming", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Maiming;
+        }
+
+        if (itemName.Contains(" of Slaying", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Slaying;
+        }
+
+        if (itemName.Contains(" of Scouting", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Scouting;
+        }
+
+        if (itemName.Contains(" of Aiming", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Aiming;
+        }
+
+        if (itemName.Contains(" of Casting", StringComparison.OrdinalIgnoreCase)) {
+            return ItemType.Casting;
+        }
+
+        return ItemType.Unknown;
+    }
+
+    public static ItemType GetItemTypeFromJobAndSlot(PlayerJob playerJob, ItemSlot slot)
+    {
+        return playerJob switch
+        {
+            PlayerJob.PLD or PlayerJob.WAR or PlayerJob.DRK or PlayerJob.GNB => ItemType.Fending,
+            PlayerJob.WHM or PlayerJob.SCH or PlayerJob.AST or PlayerJob.SGE => ItemType.Healing,
+            PlayerJob.BLM or PlayerJob.SMN or PlayerJob.RDM or PlayerJob.PCT => ItemType.Casting,
+            PlayerJob.BRD or PlayerJob.MCH or PlayerJob.DNC => ItemType.Aiming,
+            PlayerJob.MNK or PlayerJob.SAM => slot.IsGear() ? ItemType.Striking : ItemType.Slaying,
+            PlayerJob.DRG or PlayerJob.RPR => slot.IsGear() ? ItemType.Maiming : ItemType.Slaying,
+            PlayerJob.NIN or PlayerJob.VPR => slot.IsGear() ? ItemType.Scouting : ItemType.Aiming,
+
+            _ => ItemType.Unknown
+        };
+    }
+
+    extension(ItemType itemType)
+    {
+        public bool IsWarGear()
+        {
+            return itemType switch
+            {
+                ItemType.Fending => true,
+                ItemType.Maiming => true,
+                ItemType.Striking => true,
+                ItemType.Scouting => true,
+                ItemType.Aiming => true,
+                ItemType.Slaying => true,
+
+
+                ItemType.Healing => false,
+                ItemType.Casting => false,
+                ItemType.Unknown => false,
+
+                _ => throw new ArgumentOutOfRangeException(nameof(itemType), itemType, null)
+            };
+        }
+
+        public bool IsMagicGear()
+        {
+            return !itemType.IsWarGear();
+        }
+    }
+}

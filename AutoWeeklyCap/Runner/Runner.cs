@@ -233,6 +233,21 @@ public class Runner
             return;
         }
 
+        var playerJob = _leveling
+            ? LevelingHelper.GetJobToLevel(_currentCharacter)
+            : AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob;
+
+        using (TitleManager.RegisterTitle(playerJob?.GetIcon() ?? BitmapFontIcon.AnyClass, "Switching Job")) {
+            if (!playerJob?.IsAlreadyOnJob() ?? false) {
+                AWC.TaskManager.Enqueue(() => playerJob?.SwitchToJob() ?? true, "switching job");
+                return;
+            }
+        }
+
+        if (_leveling && AWC.Config.LevelJobs.BuyExpansionGearUpgrades && ActionInstance.BuyLevelingUpgrade.Invoke()) {
+            return;
+        }
+
         if (AWC.Config.AutoRetainerEnabled && AWC.Config.AutoRetainerTrigger.IsWithinThreshold()) {
             _timestamp = DateTime.UtcNow;
 
@@ -241,14 +256,6 @@ public class Runner
                 "next stage: waiting for auto retainer"
             );
             return;
-        }
-
-        var playerJob = _leveling
-            ? LevelingHelper.GetJobToLevel(_currentCharacter)
-            : AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.PreferredJob;
-
-        using (TitleManager.RegisterTitle(playerJob?.GetIcon() ?? BitmapFontIcon.AnyClass, "Switching Job")) {
-            AWC.TaskManager.Enqueue(() => playerJob?.SwitchToJob() ?? true, "switching job");
         }
 
         AWC.TaskManager.Enqueue(() =>

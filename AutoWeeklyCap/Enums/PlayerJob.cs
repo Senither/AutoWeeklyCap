@@ -118,6 +118,15 @@ public static class PlayerJobExtensions
             AWC.Log.Debug($"PlayerJob: Attempted to switch to job {job}, got status: {status}");
             return status == CharacterSwapStatus.AlreadyOnTargetJob;
         }
+
+        public bool IsAlreadyOnJob()
+        {
+            if (job == PlayerJob.None) {
+                return true;
+            }
+
+            return AWC.PlayerState.ClassJob.RowId == (uint)job;
+        }
     }
 
     public static PlayerJob[] GetSelectableCombatJobs()

@@ -1,4 +1,5 @@
 ﻿using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 using Lumina.Excel.Sheets;
 
@@ -16,10 +17,10 @@ public static unsafe class InventoryHelper
 
     internal static bool CanRepair(uint percent)
     {
-        return (LowestEquippedItem().Condition / 300f) <= percent;
+        return (GetLowestConditionEquippedItem().Condition / 300f) <= percent;
     }
 
-    internal static InventoryItem LowestEquippedItem()
+    internal static InventoryItem GetLowestConditionEquippedItem()
     {
         var equippedItems = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
 
@@ -74,55 +75,70 @@ public static unsafe class InventoryHelper
         }
 
         try {
-            var equippedItems = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
-            if (equippedItems == null) {
+            var uiState = UIState.Instance();
+            if (uiState == null) {
                 return 0;
             }
 
-            var totalItemLevel = 0u;
-            var countedSlots = 12;
-            var itemSheet = Svc.Data.GetExcelSheet<Item>();
-
-            for (uint slotIndex = 0; slotIndex < 13; slotIndex++) {
-                // Slot 5 is the soul crystal and is always excluded from average item level
-                if (slotIndex == 5) {
-                    continue;
-                }
-
-                var equippedItem = equippedItems->Items[slotIndex];
-                var itemId = equippedItem.ItemId % 1000000;
-
-                if (!itemSheet.TryGetRow(itemId, out var item)) {
-                    continue;
-                }
-
-                var categoryId = item.ItemUICategory.RowId;
-                if (IgnoreCategory.ContainsNullable(categoryId)) {
-                    if (slotIndex == 0) {
-                        // If main hand is ignored, offhand is also removed from the denominator
-                        countedSlots -= 1;
-                    }
-
-                    countedSlots -= 1;
-                    continue;
-                }
-
-                if (slotIndex == 0 && !CanHaveOffhand.ContainsNullable(categoryId)) {
-                    // Jobs without offhand count main hand twice and skip the offhand slot
-                    totalItemLevel += item.LevelItem.RowId;
-                    slotIndex++;
-                }
-
-                totalItemLevel += item.LevelItem.RowId;
-            }
-
-            if (countedSlots == 0) {
-                return 0;
-            }
-
-            return (int)(totalItemLevel / countedSlots);
+            return uiState->CurrentItemLevel;
         } catch (Exception) {
             return 0;
         }
+    }
+
+    internal static (Item?, ItemSlot) GetLowestEquippedItemLevelItem()
+    {
+        if (!AWC.PlayerState.IsLoaded) {
+            return default;
+        }
+
+        try {
+            var equippedItems = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
+            if (equippedItems == null) {
+                return default;
+            }
+
+            var canUseOffhand = true;
+            if (TryGetSheetItemFromInventoryItem(equippedItems->Items[ItemSlot.MainHand.GetSlot()], out var mainHandItem)) {
+                canUseOffhand = CanHaveOffhand.ContainsNullable(mainHandItem.ItemUICategory.RowId);
+            }
+
+            Item? lowestItem = null;
+            var lowestSlot = default(ItemSlot);
+            var lowestItemLevel = uint.MaxValue;
+
+            foreach (var slot in Enum.GetValues<ItemSlot>()) {
+                if (slot == ItemSlot.OffHand && !canUseOffhand) {
+                    continue;
+                }
+
+                var equippedItem = equippedItems->Items[slot.GetSlot()];
+                if (equippedItem.ItemId == 0 || !TryGetSheetItemFromInventoryItem(equippedItem, out var item)) {
+                    return (null, slot);
+                }
+
+                var itemLevel = item.LevelItem.RowId;
+                if (itemLevel >= lowestItemLevel) {
+                    continue;
+                }
+
+                lowestItem = item;
+                lowestSlot = slot;
+                lowestItemLevel = itemLevel;
+            }
+
+            return (lowestItem, lowestSlot);
+        } catch (Exception) {
+            return default;
+        }
+    }
+
+    private static bool TryGetSheetItemFromInventoryItem(InventoryItem container, out Item item)
+    {
+        if (!Svc.Data.GetExcelSheet<Item>().TryGetRow(container.ItemId % 1000000, out item)) {
+            return false;
+        }
+
+        return item.RowId > 0;
     }
 }

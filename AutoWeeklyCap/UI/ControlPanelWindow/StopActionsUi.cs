@@ -5,6 +5,8 @@ using Dalamud.Interface;
 
 using ECommons.Configuration;
 
+using Range = AutoWeeklyCap.UI.Helpers.Range;
+
 namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
 public static class StopActionsUi
@@ -124,6 +126,85 @@ public static class StopActionsUi
             StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
             ImGui.Text(" instead.");
         });
+
+        Disabled.Draw(!useStylistForGearUpgrades, () =>
+        {
+            var buyExpansionGearUpgrades = AWC.Config.LevelJobs.BuyExpansionGearUpgrades;
+            if (ImGui.Checkbox("Buy gear expansion upgrades", ref buyExpansionGearUpgrades)) {
+                AWC.Config.LevelJobs.BuyExpansionGearUpgrades = buyExpansionGearUpgrades;
+                EzConfig.Save();
+            }
+
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text("Will buy gear upgrades with gil from vendors to ensure the job you're leveling is able");
+                ImGui.Text("to enter duties after reaching a new expansion. If the job is below the expansion");
+                ImGui.Text("threshold for entering duties, the runner will continue to buy gear from vendors");
+                ImGui.Text("until your selected job meets your selected item level threshold.");
+                ImGui.Text("");
+                ImGui.Text("Requires ");
+                StatusText.Draw(StylistIPC.IsEnabled, "Stylist");
+                ImGui.Text(", ");
+                StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
+                ImGui.Text(" and ");
+                StatusText.Draw(VNavMeshIPC.IsEnabled, "VNavMesh");
+                ImGui.Text(" to be enabled");
+            });
+
+            ImGui.Spacing();
+
+            ImGui.Text("Gearing profile to use");
+
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text("Select the gearing profile you want to use, the more limited");
+                ImGui.Text("the profile is, the less gil will be spent to upgrade gear.");
+                ImGui.Text("");
+                foreach (var profile in Enum.GetValues<GearProfile>()) {
+                    ImGui.Text($"{profile.GetName()}:  {profile.GetDescription()}");
+                }
+            });
+
+            var profileSelector = AWC.Config.LevelJobs.PreferredGearingProfile;
+            if (ImGui.BeginCombo("###level-gear-profiles-selector", profileSelector.GetName())) {
+                foreach (var profile in Enum.GetValues<GearProfile>()) {
+                    if (!ImGui.Selectable(profile.GetName(), profile == profileSelector)) {
+                        continue;
+                    }
+
+                    AWC.Config.LevelJobs.PreferredGearingProfile = profile;
+                    EzConfig.Save();
+                }
+
+                ImGui.EndCombo();
+            }
+
+            ImGui.Text("Minimum gil to keep");
+
+            var gilThreshold = AWC.Config.LevelJobs.MinimumGilThreshold;
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text($"The minimum amount of gil that the player should have at any time for the gear expansion step");
+                ImGui.Text($"to run, if the character has less than your gil limit, the gear upgrade step will be skipped.");
+                ImGui.Text("");
+                ImGui.Text("Note: The gear buying step can bring you below your threshold by buying gear when you're");
+                ImGui.Text($"close to your limit of {gilThreshold.ToString("N0")} gil.");
+            });
+
+            if (Range.DrawWithSteps(
+                    "###buy-expansion-gear-gil-range",
+                    ref gilThreshold,
+                    vMin: 60_000,
+                    vMax: 100_000_000,
+                    slowSteps: 500,
+                    fastSteps: 5_000
+                )) {
+                AWC.Config.LevelJobs.MinimumGilThreshold = gilThreshold;
+                EzConfig.Save();
+            }
+        });
+
+        Card.Separator();
 
         ImGui.Spacing();
         var useCharacterOrder = AWC.Config.LevelJobs.UseCharacterOrder;

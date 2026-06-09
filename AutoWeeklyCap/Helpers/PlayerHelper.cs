@@ -72,6 +72,15 @@ public static class PlayerHelper
         }
     }
 
+    public static PlayerJob GetCurrentJob()
+    {
+        if (!AWC.PlayerState.IsLoaded) {
+            return PlayerJob.None;
+        }
+
+        return (PlayerJob)AWC.PlayerState.ClassJob.RowId;
+    }
+
     public static CharacterSwapStatus SwitchJob(uint targetJobId)
     {
         if (!AWC.PlayerState.IsLoaded) {

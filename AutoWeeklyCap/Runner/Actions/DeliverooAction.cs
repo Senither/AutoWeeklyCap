@@ -120,7 +120,7 @@ public class DeliverooAction : BaseAction
                 AWC.TaskManager.InsertMulti(
                     new TaskManagerTask(select.No, $"{Name}: selecting no in addon"),
                     new TaskManagerTask(DeliverooIPC.StopTurnIn, $"{Name}: stopping deliveroo"),
-                    new TaskManagerTask(CloseAddons, $"{Name}: closing deliveroo addons")
+                    new TaskManagerTask(() => AddonHelper.CloseAddons(AddonsToClose), $"{Name}: closing deliveroo addons")
                 );
                 break;
 

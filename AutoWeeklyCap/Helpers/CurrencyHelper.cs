@@ -6,6 +6,17 @@ namespace AutoWeeklyCap.Helpers;
 
 public static class CurrencyHelper
 {
+    public static int GetGil()
+    {
+        try {
+            unsafe {
+                return InventoryManager.Instance()->GetInventoryItemCount(1);
+            }
+        } catch (Exception) {
+            return 0;
+        }
+    }
+
     public static int GetUncappedAcquiredTomestoneCount()
     {
         try {
