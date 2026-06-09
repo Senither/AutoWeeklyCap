@@ -36,7 +36,6 @@ public class Configuration : IPluginConfiguration
 
     // Duty Options
     public uint ZoneId { get; set; } = TomestoneZone.AvailableTomestoneZones[0];
-    public bool StopRunnerGracefully { get; set; } = true;
     public bool UseBossModRebornAI { get; set; } = true;
 
     // Stop Actions

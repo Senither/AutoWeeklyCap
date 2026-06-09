@@ -92,7 +92,7 @@ public class Runner
 
     public void Stop()
     {
-        if (AWC.Config.StopRunnerGracefully && PlayerHelper.IsLoggedIn) {
+        if (PlayerHelper.IsLoggedIn) {
             if (_state is State.RunningAutoDuty or State.SwitchingCharacter || !AutoDutyIPC.IsStopped()) {
                 _stopGracefully = true;
                 return;
@@ -104,7 +104,7 @@ public class Runner
 
     public void Resume()
     {
-        if (!AWC.Config.StopRunnerGracefully || !_stopGracefully || AutoDutyIPC.IsStopped()) {
+        if (!_stopGracefully || AutoDutyIPC.IsStopped()) {
             return;
         }
 
