@@ -46,6 +46,16 @@ public static class StopActionExtensions
             };
         }
 
+        public string GetRunnerStatusText()
+        {
+            return action switch
+            {
+                StopAction.StartUnlimitedRuns => "Runner is preforming unlimited runs",
+                StopAction.LevelJobs => "Runner is leveling your characters",
+                _ => throw new ArgumentOutOfRangeException(nameof(action), action, null)
+            };
+        }
+
         public string? GetActionButtonText()
         {
             return action switch

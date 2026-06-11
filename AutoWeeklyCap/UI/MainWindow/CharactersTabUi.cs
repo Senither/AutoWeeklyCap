@@ -75,7 +75,9 @@ internal static class CharactersTabUi
         ImGuiEx.LineCentered(
             "TomestoneEta",
             time.TotalSeconds > 0D
-                ? () => ImGuiEx.Text($"Estimated time to cap {etaText}")
+                ? AWC.Runner.IsInNormalMode()
+                    ? () => ImGuiEx.Text($"Estimated time to cap {etaText}")
+                    : () => ImGui.TextColored(Theme.TextMuted, AWC.Config.StopAction.GetRunnerStatusText())
                 : () => ImGui.TextColored(Theme.TextMuted, "All your characters are tome capped")
         );
     }
