@@ -561,8 +561,10 @@ public class Runner
             var durationSeconds = (int)(DateTime.UtcNow - CurrentDutyStartUtc.Value).TotalSeconds;
             AWC.Log.Debug($"Runner: Finished the run in {durationSeconds} seconds");
 
-            AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.AddDutyDurationSeconds(durationSeconds);
-            EzConfig.Save();
+            if (IsInNormalMode()) {
+                AWC.Config.GetOrRegisterCharacterOptions(_currentCharacter)?.AddDutyDurationSeconds(durationSeconds);
+                EzConfig.Save();
+            }
         }
 
         if (_stopGracefully && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnRunnerStopped) {
