@@ -46,6 +46,16 @@ public static class StopActionExtensions
             };
         }
 
+        public string? GetActionButtonText()
+        {
+            return action switch
+            {
+                StopAction.StartUnlimitedRuns => "Start Unlimited Runs",
+                StopAction.LevelJobs => "Start Leveling Jobs",
+                _ => null
+            };
+        }
+
         public Action? GetTooltip()
         {
             return action switch
@@ -109,6 +119,32 @@ public static class StopActionExtensions
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(action), action, null);
+            }
+        }
+
+        public void StartRunnerAsAction()
+        {
+            if (AWC.Runner.IsRunning()) {
+                return;
+            }
+
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+            switch (action) {
+                case StopAction.StartUnlimitedRuns: {
+                    if (AWC.Runner.Start()) {
+                        AWC.Runner.ForceEnableUnlimitedMode();
+                    }
+
+                    break;
+                }
+
+                case StopAction.LevelJobs: {
+                    if (AWC.Runner.Start()) {
+                        AWC.Runner.ForceEnableLevelingMode();
+                    }
+
+                    break;
+                }
             }
         }
     }

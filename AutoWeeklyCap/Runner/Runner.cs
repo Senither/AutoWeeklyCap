@@ -34,8 +34,7 @@ public class Runner
 
         var character = PlayerHelper.GetFullCharacterName();
         if (character == null || !(AWC.Config.GetOrRegisterCharacterOptions(character)?.IsEnabled() ?? false)) {
-            StartCharacterSwap();
-            return true;
+            character = null;
         }
 
         _currentCharacter = character;
@@ -43,7 +42,7 @@ public class Runner
         _runsCounter = 0;
         _runsCharacter = null;
 
-        _state = CurrencyHelper.IsPlayerLimitedTomestoneCapped()
+        _state = character != null && CurrencyHelper.IsPlayerLimitedTomestoneCapped()
             ? State.StartingCharacterSwap
             : State.PreparingRunner;
 
@@ -141,6 +140,11 @@ public class Runner
         return _state != State.Waiting;
     }
 
+    public bool IsInNormalMode()
+    {
+        return !_leveling && !_unlimited;
+    }
+
     public bool IsStopping()
     {
         return _stopGracefully;
@@ -164,6 +168,16 @@ public class Runner
     public string? GetCurrentCharacter()
     {
         return _currentCharacter;
+    }
+
+    public void ForceEnableUnlimitedMode()
+    {
+        _unlimited = true;
+    }
+
+    public void ForceEnableLevelingMode()
+    {
+        _leveling = true;
     }
 
     public void Tick()
@@ -573,7 +587,7 @@ public class Runner
     private void StartCharacterSwap()
     {
         var character = AWC.Config.GetFirstUncappedCharacter();
-        if (character != null) {
+        if (IsInNormalMode() && character != null) {
             var parts = character.Split("@");
             if (parts.Length != 2) {
                 AWC.Log.Error($"Character {character} is not a valid character name, stopping runner");

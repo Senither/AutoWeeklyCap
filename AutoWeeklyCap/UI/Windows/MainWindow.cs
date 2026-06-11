@@ -184,29 +184,55 @@ public class MainWindow : Window
         }
 
         if (AWC.Runner.IsRunning()) {
-            if (ImGuiEx.Ctrl) {
-                if (RightAlignedButton.Draw(" Force Stop Runner ")) {
-                    AWC.Runner.Abort();
-                }
-            } else if (AWC.Runner.IsStopping()) {
-                if (RightAlignedButton.Draw(" Resume Runner ")) {
-                    AWC.Runner.Resume();
-                }
-            } else {
-                if (RightAlignedButton.Draw(" Stop Runner ")) {
-                    AWC.Runner.Stop();
-                }
-            }
+            DrawStopRunnerButton();
         } else {
-            if (RightAlignedButton.Draw(" Start Run ")) {
-                if (AWC.IsRequiredPluginsEnabled()) {
-                    AWC.Runner.Start();
-                }
-            }
+            DrawStartRunnerButton();
         }
 
         if (!isEnabled) {
             ImGui.EndDisabled();
+        }
+    }
+
+    private static void DrawStopRunnerButton()
+    {
+        if (ImGuiEx.Ctrl) {
+            if (RightAlignedButton.Draw(" Force Stop Runner ")) {
+                AWC.Runner.Abort();
+            }
+        } else if (AWC.Runner.IsStopping()) {
+            if (RightAlignedButton.Draw(" Resume Runner ")) {
+                AWC.Runner.Resume();
+            }
+        } else {
+            if (RightAlignedButton.Draw(" Stop Runner ")) {
+                AWC.Runner.Stop();
+            }
+        }
+    }
+
+    private static void DrawStartRunnerButton()
+    {
+        var actionButtonText = AWC.Config.StopAction.GetActionButtonText();
+
+        if (!ImGuiEx.Ctrl || actionButtonText == null) {
+            if (!RightAlignedButton.Draw(" Start Run ")) {
+                return;
+            }
+
+            if (AWC.IsRequiredPluginsEnabled()) {
+                AWC.Runner.Start();
+            }
+
+            return;
+        }
+
+        if (!RightAlignedButton.Draw(actionButtonText)) {
+            return;
+        }
+
+        if (AWC.IsRequiredPluginsEnabled()) {
+            AWC.Config.StopAction.StartRunnerAsAction();
         }
     }
 }
