@@ -72,12 +72,19 @@ internal static class CharactersTabUi
             _ => $"{time.Hours}h {time.Minutes}m {time.Seconds}s"
         };
 
+        if (!AWC.Runner.IsInNormalMode()) {
+            ImGuiEx.LineCentered(
+                "TomestoneEta",
+                () => ImGui.TextColored(Theme.TextMuted, AWC.Config.StopAction.GetRunnerStatusText())
+            );
+
+            return;
+        }
+
         ImGuiEx.LineCentered(
             "TomestoneEta",
             time.TotalSeconds > 0D
-                ? AWC.Runner.IsInNormalMode()
-                    ? () => ImGuiEx.Text($"Estimated time to cap {etaText}")
-                    : () => ImGui.TextColored(Theme.TextMuted, AWC.Config.StopAction.GetRunnerStatusText())
+                ? () => ImGuiEx.Text($"Estimated time to cap {etaText}")
                 : () => ImGui.TextColored(Theme.TextMuted, "All your characters are tome capped")
         );
     }
