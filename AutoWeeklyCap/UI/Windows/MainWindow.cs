@@ -183,7 +183,7 @@ public class MainWindow : Window
             ImGui.BeginDisabled();
         }
 
-        if (AWC.Runner.IsRunning()) {
+        if (AWC.Runner.State.IsRunning()) {
             DrawStopRunnerButton();
         } else {
             DrawStartRunnerButton();
@@ -200,7 +200,7 @@ public class MainWindow : Window
             if (RightAlignedButton.Draw(" Force Stop Runner ")) {
                 AWC.Runner.Abort();
             }
-        } else if (AWC.Runner.IsStopping()) {
+        } else if (AWC.Runner.State.StoppingGracefully) {
             if (RightAlignedButton.Draw(" Resume Runner ")) {
                 AWC.Runner.Resume();
             }

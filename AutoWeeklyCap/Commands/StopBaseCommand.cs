@@ -7,7 +7,7 @@ public class StopBaseCommand : BaseCommand
 
     public override void Run(string[] args)
     {
-        if (AWC.Runner.IsRunning() && !AWC.Runner.IsStopping()) {
+        if (AWC.Runner.State.IsRunning() && !AWC.Runner.State.StoppingGracefully) {
             AWC.Runner.Stop();
         }
     }

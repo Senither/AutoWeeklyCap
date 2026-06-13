@@ -21,7 +21,7 @@ public class RelogBaseCommand : BaseCommand
             return;
         }
 
-        if (AWC.Runner.IsRunning() || AWC.TaskManager.IsBusy) {
+        if (AWC.Runner.State.IsRunning() || AWC.TaskManager.IsBusy) {
             DuoLog.Warning("AutoWeeklyCap is busy, can't relog to character");
             return;
         }
