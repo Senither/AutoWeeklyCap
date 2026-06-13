@@ -1,4 +1,6 @@
-﻿namespace AutoWeeklyCap.Enums;
+﻿using AutoWeeklyCap.Runner.Stages;
+
+namespace AutoWeeklyCap.Enums;
 
 public enum Stage
 {
@@ -15,6 +17,15 @@ public enum Stage
 
 public static class StateExtensions
 {
+    private static readonly PreparingRunnerStage PreparingRunner = new();
+    private static readonly WaitForAutoRetainerStage WaitForAutoRetainer = new();
+    private static readonly CheckTomestoneStage CheckTomestone = new();
+    private static readonly StartAutoDutyStage StartAutoDuty = new();
+    private static readonly RunAutoDutyStage RunAutoDuty = new();
+    private static readonly StartCharacterSwapStage StartCharacterSwap = new();
+    private static readonly SwitchingCharacterStage SwitchingCharacter = new();
+    private static readonly StopRunnerStage StopRunner = new();
+
     extension(Stage stage)
     {
         public string? GetStatus(bool stopGracefully, string? currentCharacter)
@@ -57,6 +68,42 @@ public static class StateExtensions
                 Stage.StartingCharacterSwap or Stage.SwitchingCharacter => BitmapFontIcon.WatchingCutscene,
                 _ => BitmapFontIcon.Disconnecting
             };
+        }
+
+        public void Tick(RunnerState state)
+        {
+            switch (stage) {
+                case Stage.Waiting:
+                    break;
+
+                case Stage.PreparingRunner:
+                    PreparingRunner.Handle(state);
+                    break;
+                case Stage.WaitingForAutoRetainer:
+                    WaitForAutoRetainer.Handle(state);
+                    break;
+                case Stage.CheckingTomestone:
+                    CheckTomestone.Handle(state);
+                    break;
+                case Stage.StartingAutoDuty:
+                    StartAutoDuty.Handle(state);
+                    break;
+                case Stage.RunningAutoDuty:
+                    RunAutoDuty.Handle(state);
+                    break;
+                case Stage.StartingCharacterSwap:
+                    StartCharacterSwap.Handle(state);
+                    break;
+                case Stage.SwitchingCharacter:
+                    SwitchingCharacter.Handle(state);
+                    break;
+                case Stage.StoppingRunner:
+                    StopRunner.Handle(state);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(stage), stage, null);
+            }
         }
     }
 }
