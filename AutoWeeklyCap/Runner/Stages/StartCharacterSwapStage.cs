@@ -4,15 +4,14 @@ public class StartCharacterSwapStage : BaseStage
 {
     protected override string Name => nameof(StartCharacterSwapStage);
 
-    public override void Handle(RunnerState state)
+    public override void Handle(Runner runner, RunnerState state)
     {
         var character = AWC.Config.GetFirstUncappedCharacter();
         if (state.IsInNormalMode() && character != null) {
             var parts = character.Split("@");
             if (parts.Length != 2) {
                 AWC.Log.Error($"Character {character} is not a valid character name, stopping runner");
-                // TODO: call stop
-                // Stop();
+                runner.Stop();
                 return;
             }
 
@@ -44,8 +43,7 @@ public class StartCharacterSwapStage : BaseStage
             var parts = preferredCharacter.Split("@");
             if (parts.Length != 2) {
                 AWC.Log.Error($"Character {preferredCharacter} is not a valid character name, stopping runner");
-                // TODO: call stop
-                // Stop();
+                runner.Stop();
                 return;
             }
 
@@ -64,8 +62,7 @@ public class StartCharacterSwapStage : BaseStage
             var levelableCharacter = LevelingHelper.GetCharacterToLevel();
             if (levelableCharacter == null) {
                 AWC.Log.Debug($"Runner: Found no characters to level, stopping runner");
-                // TODO: call stop
-                // Stop();
+                runner.Stop();
                 return;
             }
 
@@ -79,8 +76,7 @@ public class StartCharacterSwapStage : BaseStage
             var parts = levelableCharacter.Split("@");
             if (parts.Length != 2) {
                 AWC.Log.Error($"Character {levelableCharacter} is not a valid character name, stopping runner");
-                // TODO: call stop
-                // Stop();
+                runner.Stop();
                 return;
             }
 

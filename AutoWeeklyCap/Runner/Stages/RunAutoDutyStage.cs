@@ -8,7 +8,7 @@ public class RunAutoDutyStage : BaseStage
 {
     protected override string Name => nameof(StartAutoDutyStage);
 
-    public override void Handle(RunnerState state)
+    public override void Handle(Runner runner, RunnerState state)
     {
         if (!AutoDutyIPC.IsStopped()) {
             return;

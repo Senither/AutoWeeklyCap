@@ -4,5 +4,5 @@ namespace AutoWeeklyCap.Runner.Stages;
 
 public abstract class BaseStage : QueueableAction
 {
-    public abstract void Handle(RunnerState state);
+    public abstract void Handle(Runner runner, RunnerState state);
 }

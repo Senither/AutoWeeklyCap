@@ -4,7 +4,7 @@ public class SwitchingCharacterStage : BaseStage
 {
     protected override string Name => nameof(SwitchingCharacterStage);
 
-    public override void Handle(RunnerState state)
+    public override void Handle(Runner runner, RunnerState state)
     {
         if (LifestreamIPC.IsBusy()) {
             return;

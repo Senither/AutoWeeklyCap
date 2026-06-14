@@ -117,6 +117,6 @@ public class Runner
             return;
         }
 
-        State.CurrentStage.Tick(State);
+        State.CurrentStage.Tick(this, State);
     }
 }

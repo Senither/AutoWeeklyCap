@@ -4,7 +4,7 @@ public class WaitForAutoRetainerStage : BaseStage
 {
     protected override string Name => nameof(WaitForAutoRetainerStage);
 
-    public override void Handle(RunnerState state)
+    public override void Handle(Runner runner, RunnerState state)
     {
         if (!AutoRetainerIPC.GetMultiModeStatus()) {
             AutoRetainerIPC.EnableMultiMode();

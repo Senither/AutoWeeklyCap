@@ -4,11 +4,10 @@ public class PreparingRunnerStage : BaseStage
 {
     protected override string Name => nameof(PreparingRunnerStage);
 
-    public override void Handle(RunnerState state)
+    public override void Handle(Runner runner, RunnerState state)
     {
         if (state.StoppingGracefully) {
-            // TODO: call abort to stop the runner
-            // Abort();
+            runner.Abort();
             return;
         }
 

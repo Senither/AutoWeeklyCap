@@ -9,12 +9,11 @@ public class StartAutoDutyStage : BaseStage
 {
     protected override string Name => nameof(StartAutoDutyStage);
 
-    public override void Handle(RunnerState state)
+    public override void Handle(Runner runner, RunnerState state)
     {
         if (state.CurrentCharacter == null) {
             AWC.Log.Debug("Runner: Stopping runner due to character being NULL");
-            // TODO: call stop
-            // Stop();
+            runner.Stop();
             return;
         }
 
@@ -86,8 +85,7 @@ public class StartAutoDutyStage : BaseStage
 
                     if (state.CurrentCharacter == null) {
                         AWC.Log.Debug("Runner: Stopping runner due to character being NULL");
-                        // TODO: call stop
-                        // Stop();
+                        runner.Stop();
                         return true;
                     }
 
@@ -111,8 +109,7 @@ public class StartAutoDutyStage : BaseStage
 
                     if (zoneId == 0) {
                         AWC.Log.Debug("Runner: Territory Type ID was detected as zero (0), stopping runner");
-                        // TODO: call stop
-                        // Stop();
+                        runner.Stop();
                         return true;
                     }
 

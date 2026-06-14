@@ -70,35 +70,35 @@ public static class StateExtensions
             };
         }
 
-        public void Tick(RunnerState state)
+        public void Tick(Runner.Runner runner, RunnerState state)
         {
             switch (stage) {
                 case Stage.Waiting:
                     break;
 
                 case Stage.PreparingRunner:
-                    PreparingRunner.Handle(state);
+                    PreparingRunner.Handle(runner, state);
                     break;
                 case Stage.WaitingForAutoRetainer:
-                    WaitForAutoRetainer.Handle(state);
+                    WaitForAutoRetainer.Handle(runner, state);
                     break;
                 case Stage.CheckingTomestone:
-                    CheckTomestone.Handle(state);
+                    CheckTomestone.Handle(runner, state);
                     break;
                 case Stage.StartingAutoDuty:
-                    StartAutoDuty.Handle(state);
+                    StartAutoDuty.Handle(runner, state);
                     break;
                 case Stage.RunningAutoDuty:
-                    RunAutoDuty.Handle(state);
+                    RunAutoDuty.Handle(runner, state);
                     break;
                 case Stage.StartingCharacterSwap:
-                    StartCharacterSwap.Handle(state);
+                    StartCharacterSwap.Handle(runner, state);
                     break;
                 case Stage.SwitchingCharacter:
-                    SwitchingCharacter.Handle(state);
+                    SwitchingCharacter.Handle(runner, state);
                     break;
                 case Stage.StoppingRunner:
-                    StopRunner.Handle(state);
+                    StopRunner.Handle(runner, state);
                     break;
 
                 default:

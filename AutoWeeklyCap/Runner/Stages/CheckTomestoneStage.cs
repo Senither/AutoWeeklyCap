@@ -4,7 +4,7 @@ public class CheckTomestoneStage : BaseStage
 {
     protected override string Name => nameof(CheckTomestoneStage);
 
-    public override void Handle(RunnerState state)
+    public override void Handle(Runner runner, RunnerState state)
     {
         var character = PlayerHelper.GetFullCharacterName();
         if (character == null) {
@@ -26,8 +26,7 @@ public class CheckTomestoneStage : BaseStage
         if (state.LevelingMode) {
             var levelableCharacter = LevelingHelper.GetCharacterToLevel();
             if (levelableCharacter == null) {
-                // TODO: Call stop here
-                // Stop();
+                runner.Stop();
             } else if (levelableCharacter == state.CurrentCharacter) {
                 state.ChangeStageTo(Stage.StartingAutoDuty);
             } else {
