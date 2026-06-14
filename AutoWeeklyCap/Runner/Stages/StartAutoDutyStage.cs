@@ -1,4 +1,5 @@
-﻿using AutoWeeklyCap.Runner.Zone;
+﻿using AutoWeeklyCap.Contracts.Runner;
+using AutoWeeklyCap.Runner.Zone;
 
 using ECommons.Automation.NeoTaskManager;
 using ECommons.Configuration;

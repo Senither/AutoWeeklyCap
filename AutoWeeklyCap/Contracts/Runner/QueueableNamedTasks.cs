@@ -1,8 +1,8 @@
 ﻿using ECommons.Automation.NeoTaskManager;
 
-namespace AutoWeeklyCap.Runner.Actions;
+namespace AutoWeeklyCap.Contracts.Runner;
 
-public abstract class QueueableAction
+public abstract class QueueableNamedTasks
 {
     protected abstract string Name { get; }
 

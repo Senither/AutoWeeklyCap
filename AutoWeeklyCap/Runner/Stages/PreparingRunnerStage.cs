@@ -1,4 +1,6 @@
-﻿namespace AutoWeeklyCap.Runner.Stages;
+﻿using AutoWeeklyCap.Contracts.Runner;
+
+namespace AutoWeeklyCap.Runner.Stages;
 
 public class PreparingRunnerStage : BaseStage
 {

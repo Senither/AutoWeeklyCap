@@ -1,8 +1,10 @@
-﻿namespace AutoWeeklyCap.Runner.Actions.Safezones;
+﻿using AutoWeeklyCap.Contracts.Runner;
 
-public class EnterApartmentAction : BaseAction
+namespace AutoWeeklyCap.Runner.Actions.Safezones;
+
+public class EnterApartmentNamedTasks : BaseNamedTasks
 {
-    protected override string Name => nameof(EnterApartmentAction);
+    protected override string Name => nameof(EnterApartmentNamedTasks);
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectString", "HousingMenu"];
 
     private const int LongTaskTimeout = 120_000;

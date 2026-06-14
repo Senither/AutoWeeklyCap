@@ -5,7 +5,7 @@ using Dalamud.Interface;
 
 namespace AutoWeeklyCap.UI.MainWindow;
 
-internal static class CharactersTabUi
+public static class CharactersTabUi
 {
     private const int TomesPerRun = 50;
     private const int DefaultRunSeconds = 24 * 60;

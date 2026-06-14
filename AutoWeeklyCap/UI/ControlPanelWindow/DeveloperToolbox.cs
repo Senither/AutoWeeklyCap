@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 
 using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.Runner;
 using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.Runner.Actions;
 using AutoWeeklyCap.UI.Helpers;
@@ -16,7 +17,7 @@ using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
-internal static class DeveloperToolbox
+public static class DeveloperToolbox
 {
     private static string DebugAudioFilePath = "";
     private static uint DebugAudioVolume = 50;
@@ -80,8 +81,8 @@ internal static class DeveloperToolbox
         DebugActionButton("Leave GC Inn", ActionInstance.LeaveGrandCompanyInn);
 
         DebugActionButton("Enter Private House", ActionInstance.EnterPrivateHouse, false);
-        DebugActionButton("Enter Apartment", ActionInstance.EnterApartmentAction);
-        DebugActionButton("Enter FC House", ActionInstance.EnterFcHouseAction);
+        DebugActionButton("Enter Apartment", ActionInstance.EnterApartmentNamedTasks);
+        DebugActionButton("Enter FC House", ActionInstance.EnterFcHouseNamedTasks);
     }
 
     private static void DrawNotificationDebugActions()
@@ -208,14 +209,14 @@ internal static class DeveloperToolbox
         }
     }
 
-    private static void DebugActionButton(string text, BaseAction action, bool sameLine = true)
+    private static void DebugActionButton(string text, BaseNamedTasks namedTasks, bool sameLine = true)
     {
         if (sameLine) {
             ImGui.SameLine();
         }
 
         if (ImGui.Button(text)) {
-            DuoLog.Warning($"{action.GetName()}: {action.Invoke()}");
+            DuoLog.Warning($"{namedTasks.GetName()}: {namedTasks.Invoke()}");
         }
     }
 

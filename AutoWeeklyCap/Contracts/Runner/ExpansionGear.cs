@@ -1,8 +1,8 @@
 ﻿using FFXIVClientStructs.FFXIV.Client.UI;
 
-namespace AutoWeeklyCap.Runner.Actions.LevelingGear;
+namespace AutoWeeklyCap.Contracts.Runner;
 
-public abstract class ExpansionGear : QueueableAction
+public abstract class ExpansionGear : QueueableNamedTasks
 {
     private static readonly string[] RelatedAddonsToClose = ["SelectIconString", "SelectString", "Shop", "SelectYesno"];
 

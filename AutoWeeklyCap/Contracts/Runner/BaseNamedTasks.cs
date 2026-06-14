@@ -1,10 +1,8 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
 
-using ECommons.Automation.NeoTaskManager;
+namespace AutoWeeklyCap.Contracts.Runner;
 
-namespace AutoWeeklyCap.Runner.Actions;
-
-public abstract class BaseAction : QueueableAction
+public abstract class BaseNamedTasks : QueueableNamedTasks
 {
     protected virtual string[] AddonsToClose { get; } = [];
 

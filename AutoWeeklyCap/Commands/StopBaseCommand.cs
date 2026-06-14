@@ -1,4 +1,6 @@
-﻿namespace AutoWeeklyCap.Commands;
+﻿using AutoWeeklyCap.Contracts.Commands;
+
+namespace AutoWeeklyCap.Commands;
 
 public class StopBaseCommand : BaseCommand
 {

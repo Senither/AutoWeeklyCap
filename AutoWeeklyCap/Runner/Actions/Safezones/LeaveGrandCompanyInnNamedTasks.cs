@@ -1,8 +1,10 @@
-﻿namespace AutoWeeklyCap.Runner.Actions.Safezones;
+﻿using AutoWeeklyCap.Contracts.Runner;
 
-public class LeaveGrandCompanyInnAction : BaseAction
+namespace AutoWeeklyCap.Runner.Actions.Safezones;
+
+public class LeaveGrandCompanyInnNamedTasks : BaseNamedTasks
 {
-    protected override string Name => nameof(LeaveGrandCompanyInnAction);
+    protected override string Name => nameof(LeaveGrandCompanyInnNamedTasks);
     protected override string[] AddonsToClose { get; } = ["MaterializeDialog", "Materialize", "SelectYesno", "SelectString"];
 
     protected override bool Run(params object[] args)

@@ -1,8 +1,10 @@
-﻿namespace AutoWeeklyCap.Runner.Actions.Safezones;
+﻿using AutoWeeklyCap.Contracts.Runner;
 
-public class SafezoneAction : BaseAction
+namespace AutoWeeklyCap.Runner.Actions.Safezones;
+
+public class SafezoneNamedTasks : BaseNamedTasks
 {
-    protected override string Name => nameof(SafezoneAction);
+    protected override string Name => nameof(SafezoneNamedTasks);
 
     protected override bool Run(params object[] args)
     {
