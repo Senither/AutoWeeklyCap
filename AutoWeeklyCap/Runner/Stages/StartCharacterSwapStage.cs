@@ -10,19 +10,11 @@ public class StartCharacterSwapStage : BaseStage
     {
         var character = AWC.Config.GetFirstUncappedCharacter();
         if (state.IsInNormalMode() && character != null) {
-            var parts = character.Split("@");
-            if (parts.Length != 2) {
-                LogError($"Character {character} is not a valid character name, stopping runner");
-                runner.Stop();
+            if (ChangeCharacter(state, character)) {
                 return;
             }
 
-            LogInfo($"Switching character to {parts[0]} on {parts[1]}");
-            state.SetCurrentCharacter(character);
-            state.ChangeStageTo(Stage.SwitchingCharacter);
-            state.UpdateTimestamp();
-            LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
-
+            runner.Stop();
             return;
         }
 
@@ -30,68 +22,83 @@ public class StartCharacterSwapStage : BaseStage
             ActionInstance.Notification.ForceInvoke(StopNotificationType.CharacterCapped);
         }
 
-        if (AWC.Config.StopAction == StopAction.StartUnlimitedRuns) {
-            state.EnableUnlimitedMode();
-            LogInfo("All characters have been fully capped, starting unlimited runs");
+        // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+        switch (AWC.Config.StopAction) {
+            case StopAction.StartUnlimitedRuns:
+                HandleUnlimitedMode(runner, state);
+                break;
+            case StopAction.LevelJobs:
+                HandleLevelingMode(runner, state);
+                break;
 
-            var preferredCharacter = AWC.Config.CharacterForSwap;
-            if (PlayerHelper.GetFullCharacterName() == preferredCharacter) {
-                LogDebug("Player is already on preferred character, starting runner");
-                state.SetCurrentCharacter(preferredCharacter);
-                state.ChangeStageTo(Stage.PreparingRunner);
-                return;
-            }
+            default:
+                LogInfo("Found no character with missing weekly capped tomestones, stopping runner");
+                state.ChangeStageTo(Stage.StoppingRunner);
+                break;
+        }
+    }
 
-            var parts = preferredCharacter.Split("@");
-            if (parts.Length != 2) {
-                LogError($"Character {preferredCharacter} is not a valid character name, stopping runner");
-                runner.Stop();
-                return;
-            }
+    private void HandleUnlimitedMode(Runner runner, RunnerState state)
+    {
+        state.EnableUnlimitedMode();
+        LogInfo("All characters have been fully capped, starting unlimited runs");
 
-            LogInfo($"Switching character to {parts[0]} on {parts[1]}");
+        var preferredCharacter = AWC.Config.CharacterForSwap;
+        if (PlayerHelper.GetFullCharacterName() == preferredCharacter) {
+            LogDebug("Player is already on preferred character, starting runner");
             state.SetCurrentCharacter(preferredCharacter);
-            state.ChangeStageTo(Stage.SwitchingCharacter);
-            state.UpdateTimestamp();
-            LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
-
+            state.ChangeStageTo(Stage.PreparingRunner);
             return;
         }
 
-        if (AWC.Config.StopAction == StopAction.LevelJobs) {
-            state.EnableLevelingMode();
+        if (ChangeCharacter(state, preferredCharacter)) {
+            return;
+        }
 
-            var levelableCharacter = LevelingHelper.GetCharacterToLevel();
-            if (levelableCharacter == null) {
-                LogDebug($"Found no characters to level, stopping runner");
-                runner.Stop();
-                return;
-            }
+        runner.Stop();
+    }
 
-            if (PlayerHelper.GetFullCharacterName() == levelableCharacter) {
-                LogDebug("Player is already on character to level, starting runner");
-                state.SetCurrentCharacter(levelableCharacter);
-                state.ChangeStageTo(Stage.PreparingRunner);
-                return;
-            }
+    private void HandleLevelingMode(Runner runner, RunnerState state)
+    {
+        state.EnableLevelingMode();
 
-            var parts = levelableCharacter.Split("@");
-            if (parts.Length != 2) {
-                LogError($"Character {levelableCharacter} is not a valid character name, stopping runner");
-                runner.Stop();
-                return;
-            }
+        var levelableCharacter = LevelingHelper.GetCharacterToLevel();
+        if (levelableCharacter == null) {
+            LogDebug($"Found no characters to level, stopping runner");
+            runner.Stop();
+            return;
+        }
 
-            LogInfo($"Switching character to {parts[0]} on {parts[1]}");
+        if (PlayerHelper.GetFullCharacterName() == levelableCharacter) {
+            LogDebug("Player is already on character to level, starting runner");
             state.SetCurrentCharacter(levelableCharacter);
-            state.ChangeStageTo(Stage.SwitchingCharacter);
-            state.UpdateTimestamp();
-            LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
-
+            state.ChangeStageTo(Stage.PreparingRunner);
             return;
         }
 
-        LogInfo("Found no character with missing weekly capped tomestones, stopping runner");
-        state.ChangeStageTo(Stage.StoppingRunner);
+        if (ChangeCharacter(state, levelableCharacter)) {
+            return;
+        }
+
+        runner.Stop();
+    }
+
+    private bool ChangeCharacter(RunnerState state, string character)
+    {
+        var parts = character.Split("@");
+        if (parts.Length != 2) {
+            LogError($"Character {character} is not a valid character name, stopping runner");
+            return false;
+        }
+
+        LogInfo($"Switching character to {parts[0]} on {parts[1]}");
+
+        state.SetCurrentCharacter(character);
+        state.ChangeStageTo(Stage.SwitchingCharacter);
+        state.UpdateTimestamp();
+
+        LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
+
+        return true;
     }
 }
