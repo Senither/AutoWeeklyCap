@@ -12,12 +12,12 @@ public class StartCharacterSwapStage : BaseStage
         if (state.IsInNormalMode() && character != null) {
             var parts = character.Split("@");
             if (parts.Length != 2) {
-                AWC.Log.Error($"Character {character} is not a valid character name, stopping runner");
+                LogError($"Character {character} is not a valid character name, stopping runner");
                 runner.Stop();
                 return;
             }
 
-            AWC.Log.Info($"Switching character to {parts[0]} on {parts[1]}");
+            LogInfo($"Switching character to {parts[0]} on {parts[1]}");
             state.SetCurrentCharacter(character);
             state.ChangeStageTo(Stage.SwitchingCharacter);
             state.UpdateTimestamp();
@@ -32,11 +32,11 @@ public class StartCharacterSwapStage : BaseStage
 
         if (AWC.Config.StopAction == StopAction.StartUnlimitedRuns) {
             state.EnableUnlimitedMode();
-            AWC.Log.Info("All characters have been fully capped, starting unlimited runs");
+            LogInfo("All characters have been fully capped, starting unlimited runs");
 
             var preferredCharacter = AWC.Config.CharacterForSwap;
             if (PlayerHelper.GetFullCharacterName() == preferredCharacter) {
-                AWC.Log.Debug("Runner: Player is already on preferred character, starting runner");
+                LogDebug("Player is already on preferred character, starting runner");
                 state.SetCurrentCharacter(preferredCharacter);
                 state.ChangeStageTo(Stage.PreparingRunner);
                 return;
@@ -44,12 +44,12 @@ public class StartCharacterSwapStage : BaseStage
 
             var parts = preferredCharacter.Split("@");
             if (parts.Length != 2) {
-                AWC.Log.Error($"Character {preferredCharacter} is not a valid character name, stopping runner");
+                LogError($"Character {preferredCharacter} is not a valid character name, stopping runner");
                 runner.Stop();
                 return;
             }
 
-            AWC.Log.Info($"Switching character to {parts[0]} on {parts[1]}");
+            LogInfo($"Switching character to {parts[0]} on {parts[1]}");
             state.SetCurrentCharacter(preferredCharacter);
             state.ChangeStageTo(Stage.SwitchingCharacter);
             state.UpdateTimestamp();
@@ -63,13 +63,13 @@ public class StartCharacterSwapStage : BaseStage
 
             var levelableCharacter = LevelingHelper.GetCharacterToLevel();
             if (levelableCharacter == null) {
-                AWC.Log.Debug($"Runner: Found no characters to level, stopping runner");
+                LogDebug($"Found no characters to level, stopping runner");
                 runner.Stop();
                 return;
             }
 
             if (PlayerHelper.GetFullCharacterName() == levelableCharacter) {
-                AWC.Log.Debug("Runner: Player is already on character to level, starting runner");
+                LogDebug("Player is already on character to level, starting runner");
                 state.SetCurrentCharacter(levelableCharacter);
                 state.ChangeStageTo(Stage.PreparingRunner);
                 return;
@@ -77,12 +77,12 @@ public class StartCharacterSwapStage : BaseStage
 
             var parts = levelableCharacter.Split("@");
             if (parts.Length != 2) {
-                AWC.Log.Error($"Character {levelableCharacter} is not a valid character name, stopping runner");
+                LogError($"Character {levelableCharacter} is not a valid character name, stopping runner");
                 runner.Stop();
                 return;
             }
 
-            AWC.Log.Info($"Switching character to {parts[0]} on {parts[1]}");
+            LogInfo($"Switching character to {parts[0]} on {parts[1]}");
             state.SetCurrentCharacter(levelableCharacter);
             state.ChangeStageTo(Stage.SwitchingCharacter);
             state.UpdateTimestamp();
@@ -91,7 +91,7 @@ public class StartCharacterSwapStage : BaseStage
             return;
         }
 
-        AWC.Log.Info("Found no character with missing weekly capped tomestones, stopping runner");
+        LogInfo("Found no character with missing weekly capped tomestones, stopping runner");
         state.ChangeStageTo(Stage.StoppingRunner);
     }
 }

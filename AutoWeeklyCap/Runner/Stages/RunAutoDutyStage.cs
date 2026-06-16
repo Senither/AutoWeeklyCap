@@ -19,10 +19,10 @@ public class RunAutoDutyStage : BaseStage
             return;
         }
 
-        AWC.Log.Debug("Runner: AutoDuty has complete a run, switching to preparations stage");
+        LogDebug("AutoDuty has complete a run, switching to preparations stage");
 
         if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled) {
-            AWC.Log.Debug("Runner: disabling BossMod Reborn AI");
+            LogDebug("disabling BossMod Reborn AI");
             ChatHelper.RunCommand("bmrai off");
         }
 
@@ -32,7 +32,7 @@ public class RunAutoDutyStage : BaseStage
 
         if (state.CurrentDutyStartUtc.HasValue && state.CurrentCharacter != null) {
             var durationSeconds = (int)(DateTime.UtcNow - state.CurrentDutyStartUtc.Value).TotalSeconds;
-            AWC.Log.Debug($"Runner: Finished the run in {durationSeconds} seconds");
+            LogDebug($"Finished the run in {durationSeconds} seconds");
 
             if (state.IsInNormalMode()) {
                 AWC.Config.GetOrRegisterCharacterOptions(state.CurrentCharacter)?.AddDutyDurationSeconds(durationSeconds);

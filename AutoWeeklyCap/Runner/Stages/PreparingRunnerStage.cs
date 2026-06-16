@@ -14,7 +14,7 @@ public class PreparingRunnerStage : BaseStage
         }
 
         if (state.CurrentCharacter == null) {
-            AWC.Log.Debug($"Runner: Found no character set for, switching stage");
+            LogDebug($"Found no character set for, switching stage");
             state.ChangeStageTo(Stage.StartingCharacterSwap);
             return;
         }
@@ -77,7 +77,7 @@ public class PreparingRunnerStage : BaseStage
                                       && state.RunsCounter % AWC.Config.DeliverooRunInterval == 0
                                       && state.RunsCounter > 0;
 
-            AWC.Log.Debug($"Runner: Deliveroo check [first: {shouldRunFirst}, forCounter: {shouldRunForCounter}]");
+            LogDebug($"Deliveroo check [first: {shouldRunFirst}, forCounter: {shouldRunForCounter}]");
             if (shouldRunFirst || shouldRunForCounter) {
                 ActionInstance.EnqueueAction(ActionInstance.Deliveroo);
             }

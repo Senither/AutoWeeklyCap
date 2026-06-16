@@ -21,7 +21,7 @@ public class SwitchingCharacterStage : BaseStage
             return;
         }
 
-        AWC.Log.Info("Completed character swap, preparing runner");
+        LogInfo("Completed character swap, preparing runner");
         state.ChangeStageTo(Stage.PreparingRunner);
     }
 }

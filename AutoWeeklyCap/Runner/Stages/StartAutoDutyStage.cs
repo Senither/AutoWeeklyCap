@@ -13,7 +13,7 @@ public class StartAutoDutyStage : BaseStage
     public override void Handle(Runner runner, RunnerState state)
     {
         if (state.CurrentCharacter == null) {
-            AWC.Log.Debug("Runner: Stopping runner due to character being NULL");
+            LogDebug("Stopping runner due to character being NULL");
             runner.Stop();
             return;
         }
@@ -29,7 +29,7 @@ public class StartAutoDutyStage : BaseStage
         AWC.TaskManager.Enqueue(() =>
         {
             if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled) {
-                AWC.Log.Debug("Runner: enabling BossMod Reborn AI");
+                LogDebug("enabling BossMod Reborn AI");
                 ChatHelper.RunCommand("bmrai on");
             }
         }, "enable BossMod Reborn AI if option is enabled");
@@ -46,7 +46,7 @@ public class StartAutoDutyStage : BaseStage
                 TitleManager.Reset();
 
                 if (AWC.ClientState.TerritoryType == DutyZone.GetZoneId(state.LevelingMode)) {
-                    AWC.Log.Debug("Runner: Player detected in the duty zone, switching to RunningAutoDuty stage");
+                    LogDebug("Player detected in the duty zone, switching to RunningAutoDuty stage");
                     state.ChangeStageTo(Stage.RunningAutoDuty);
                     state.UpsertCurrentDutyStartUtc(DateTime.UtcNow);
 
@@ -59,7 +59,7 @@ public class StartAutoDutyStage : BaseStage
 
                 if (!PlayerHelper.IsReady || VNavMeshIPC.IsRunning()) {
                     if (EzThrottler.Throttle("RunnerStartingDutyBusyLog", 2500)) {
-                        AWC.Log.Debug($"Runner: Resetting AutoDuty start timer, reason: player is busy or VNavMesh is running");
+                        LogDebug($"Resetting AutoDuty start timer, reason: player is busy or VNavMesh is running");
                     }
 
                     state.UpdateTimestamp();
@@ -68,8 +68,8 @@ public class StartAutoDutyStage : BaseStage
 
                 unsafe {
                     if ((DateTime.UtcNow - state.Timestamp).Seconds > 5 && !AutoDutyIPC.IsStopped() && AddonHelper.TryGetReadyAddon("Repair", out _)) {
-                        AWC.Log.Debug("Runner: Detected repairing attempt to have been idle for 5+ seconds while trying to start AutoDuty");
-                        AWC.Log.Debug("Runner: Stopping AutoDuty and repairing through AWC instead, and then restarting");
+                        LogDebug("Detected repairing attempt to have been idle for 5+ seconds while trying to start AutoDuty");
+                        LogDebug("Stopping AutoDuty and repairing through AWC instead, and then restarting");
 
                         AutoDutyIPC.Stop();
                         AWC.TaskManager.Abort();
@@ -82,15 +82,15 @@ public class StartAutoDutyStage : BaseStage
                 }
 
                 if ((DateTime.UtcNow - state.Timestamp).Seconds > 30) {
-                    AWC.Log.Debug("Runner: Timed out while trying to start AutoDuty");
+                    LogDebug("Timed out while trying to start AutoDuty");
 
                     if (state.CurrentCharacter == null) {
-                        AWC.Log.Debug("Runner: Stopping runner due to character being NULL");
+                        LogDebug("Stopping runner due to character being NULL");
                         runner.Stop();
                         return true;
                     }
 
-                    AWC.Log.Debug($"Runner: Disabling AWC for {state.CurrentCharacter} and switching character");
+                    LogDebug($"Disabling AWC for {state.CurrentCharacter} and switching character");
 
                     AWC.Config.Characters[state.CurrentCharacter].Enabled = false;
                     EzConfig.Save();
@@ -103,13 +103,16 @@ public class StartAutoDutyStage : BaseStage
                 if (EzThrottler.Throttle("RunnerStartingDutyStartAttempt", 1500)) {
                     var zoneId = DutyZone.GetZoneId(state.LevelingMode);
 
-                    AWC.Log.Debug(
-                        "Runner: Attempting to start AutoDuty: {@Stats}",
-                        new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - state.Timestamp).Seconds }, { "AutoDuty started", !AutoDutyIPC.IsStopped() }, { "Current zone", AWC.ClientState.TerritoryType }, { "Duty zone", zoneId } }
+                    LogDebug(
+                        "Attempting to start AutoDuty: {@Stats}",
+                        new Dictionary<string, object> { { "Seconds elapsed", (DateTime.UtcNow - state.Timestamp).Seconds } },
+                        new Dictionary<string, object> { { "AutoDuty started", !AutoDutyIPC.IsStopped() } },
+                        new Dictionary<string, object> { { "Current zone", AWC.ClientState.TerritoryType } },
+                        new Dictionary<string, object> { { "Duty zone", zoneId } }
                     );
 
                     if (zoneId == 0) {
-                        AWC.Log.Debug("Runner: Territory Type ID was detected as zero (0), stopping runner");
+                        LogDebug("Territory Type ID was detected as zero (0), stopping runner");
                         runner.Stop();
                         return true;
                     }

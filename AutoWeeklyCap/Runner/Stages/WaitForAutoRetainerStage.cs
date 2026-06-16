@@ -47,7 +47,7 @@ public class WaitForAutoRetainerStage : BaseStage
 
         var parts = state.CurrentCharacter.Split("@");
 
-        AWC.Log.Info($"Switching character to {parts[0]} on {parts[1]}");
+        LogInfo($"Switching character to {parts[0]} on {parts[1]}");
         state.ChangeStageTo(Stage.SwitchingCharacter);
         state.UpdateTimestamp();
         LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
