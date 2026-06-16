@@ -1,4 +1,5 @@
-﻿using AutoWeeklyCap.Runner.Stages;
+﻿using AutoWeeklyCap.Contracts.Runner;
+using AutoWeeklyCap.Runner.Stages;
 
 namespace AutoWeeklyCap.Enums;
 
@@ -17,6 +18,7 @@ public enum Stage
 
 public static class StateExtensions
 {
+    private static readonly WaitingStage Waiting = new();
     private static readonly PreparingRunnerStage PreparingRunner = new();
     private static readonly WaitForAutoRetainerStage WaitForAutoRetainer = new();
     private static readonly CheckTomestoneStage CheckTomestone = new();
@@ -70,40 +72,21 @@ public static class StateExtensions
             };
         }
 
-        public void Tick(Runner.Runner runner, RunnerState state)
+        public BaseStage GetStageInstance()
         {
-            switch (stage) {
-                case Stage.Waiting:
-                    break;
-
-                case Stage.PreparingRunner:
-                    PreparingRunner.Handle(runner, state);
-                    break;
-                case Stage.WaitingForAutoRetainer:
-                    WaitForAutoRetainer.Handle(runner, state);
-                    break;
-                case Stage.CheckingTomestone:
-                    CheckTomestone.Handle(runner, state);
-                    break;
-                case Stage.StartingAutoDuty:
-                    StartAutoDuty.Handle(runner, state);
-                    break;
-                case Stage.RunningAutoDuty:
-                    RunAutoDuty.Handle(runner, state);
-                    break;
-                case Stage.StartingCharacterSwap:
-                    StartCharacterSwap.Handle(runner, state);
-                    break;
-                case Stage.SwitchingCharacter:
-                    SwitchingCharacter.Handle(runner, state);
-                    break;
-                case Stage.StoppingRunner:
-                    StopRunner.Handle(runner, state);
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(stage), stage, null);
-            }
+            return stage switch
+            {
+                Stage.Waiting => Waiting,
+                Stage.PreparingRunner => PreparingRunner,
+                Stage.WaitingForAutoRetainer => WaitForAutoRetainer,
+                Stage.CheckingTomestone => CheckTomestone,
+                Stage.StartingAutoDuty => StartAutoDuty,
+                Stage.RunningAutoDuty => RunAutoDuty,
+                Stage.StartingCharacterSwap => StartCharacterSwap,
+                Stage.SwitchingCharacter => SwitchingCharacter,
+                Stage.StoppingRunner => StopRunner,
+                _ => throw new ArgumentOutOfRangeException(nameof(stage), stage, null)
+            };
         }
     }
 }
