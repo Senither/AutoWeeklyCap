@@ -32,7 +32,7 @@ public class CheckTomestoneStage : BaseStage
             } else if (levelableCharacter == state.CurrentCharacter) {
                 state.ChangeStageTo(Stage.StartingAutoDuty);
             } else {
-                state.ChangeStageTo(Stage.SwitchingCharacter);
+                state.ChangeStageTo(Stage.StartingCharacterSwap);
             }
 
             return;
