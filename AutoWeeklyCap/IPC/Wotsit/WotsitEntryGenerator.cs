@@ -118,7 +118,7 @@ public static class WotsitEntryGenerator
                 "Enter personal apartment",
                 "enter|goto private|personal apartment|estate",
                 113,
-                () => ActionInstance.EnterApartmentNamedTasks.Invoke()
+                () => ActionInstance.EnterApartment.Invoke()
             );
         }
 
@@ -127,7 +127,7 @@ public static class WotsitEntryGenerator
                 "Enter free company house",
                 "enter|goto fc|free company house",
                 113,
-                () => ActionInstance.EnterFcHouseNamedTasks.Invoke()
+                () => ActionInstance.EnterFcHouse.Invoke()
             );
         }
     }

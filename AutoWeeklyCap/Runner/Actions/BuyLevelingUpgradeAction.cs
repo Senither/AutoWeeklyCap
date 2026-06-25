@@ -3,9 +3,9 @@ using AutoWeeklyCap.Runner.Actions.LevelingGear;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public class BuyLevelingUpgradeNamedTasks : BaseNamedTasks
+public class BuyLevelingUpgradeAction : BaseAction
 {
-    protected override string Name => nameof(BuyLevelingUpgradeNamedTasks);
+    protected override string Name => nameof(BuyLevelingUpgradeAction);
     protected override string[] AddonsToClose { get; } = ["SelectIconString", "SelectString", "Shop", "SelectYesno"];
 
     private readonly List<ExpansionGear> _expansionGears =

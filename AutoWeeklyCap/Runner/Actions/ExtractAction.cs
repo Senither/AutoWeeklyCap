@@ -7,9 +7,9 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public class ExtractNamedTasks : BaseNamedTasks
+public class ExtractAction : BaseAction
 {
-    protected override string Name => nameof(ExtractNamedTasks);
+    protected override string Name => nameof(ExtractAction);
     protected override string[] AddonsToClose { get; } = ["MaterializeDialog", "Materialize", "SelectYesno", "SelectString"];
 
     protected override bool Run(params object[] args)

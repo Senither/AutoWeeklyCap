@@ -2,9 +2,9 @@
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public class NotificationNamedTasks : BaseNamedTasks
+public class NotificationAction : BaseAction
 {
-    protected override string Name => nameof(NotificationNamedTasks);
+    protected override string Name => nameof(NotificationAction);
 
     protected override bool Run(params object[] args)
     {

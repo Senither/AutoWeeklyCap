@@ -2,9 +2,9 @@
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public class EquipGearUpgradeNamedTasks : BaseNamedTasks
+public class EquipGearUpgradeAction : BaseAction
 {
-    protected override string Name => nameof(EquipGearUpgradeNamedTasks);
+    protected override string Name => nameof(EquipGearUpgradeAction);
 
     protected override bool Run(params object[] args)
     {

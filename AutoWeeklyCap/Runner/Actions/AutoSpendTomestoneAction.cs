@@ -7,9 +7,9 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public class AutoSpendTomestoneNamedTasks : BaseNamedTasks
+public class AutoSpendTomestoneAction : BaseAction
 {
-    protected override string Name => nameof(AutoSpendTomestoneNamedTasks);
+    protected override string Name => nameof(AutoSpendTomestoneAction);
     protected override string[] AddonsToClose { get; } = ["ShopExchangeCurrency", "SelectIconString", "SelectYesno", "SelectString"];
 
     private const int LongTaskTimeout = 120_000;

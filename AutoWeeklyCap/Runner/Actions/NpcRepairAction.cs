@@ -4,9 +4,9 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public class NpcRepairNamedTasks : BaseNamedTasks
+public class NpcRepairAction : BaseAction
 {
-    protected override string Name => nameof(NpcRepairNamedTasks);
+    protected override string Name => nameof(NpcRepairAction);
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "Repair", "SelectString"];
 
     private const int LongTaskTimeout = 120_000;

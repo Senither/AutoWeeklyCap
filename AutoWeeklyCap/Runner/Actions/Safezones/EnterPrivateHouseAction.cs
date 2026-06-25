@@ -4,9 +4,9 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Runner.Actions.Safezones;
 
-public class EnterPrivateHouseNamedTasks : BaseNamedTasks
+public class EnterPrivateHouseAction : BaseAction
 {
-    protected override string Name => nameof(EnterPrivateHouseNamedTasks);
+    protected override string Name => nameof(EnterPrivateHouseAction);
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectString", "HousingMenu"];
 
     private const int LongTaskTimeout = 120_000;

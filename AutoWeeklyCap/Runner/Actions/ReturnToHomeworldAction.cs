@@ -2,9 +2,9 @@
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public class ReturnToHomeworldNamedTasks : BaseNamedTasks
+public class ReturnToHomeworldAction : BaseAction
 {
-    protected override string Name => nameof(ReturnToHomeworldNamedTasks);
+    protected override string Name => nameof(ReturnToHomeworldAction);
     protected override string[] AddonsToClose { get; } = ["ShopExchangeCurrency", "SelectIconString", "SelectYesno", "SelectString", "DrawStory"];
 
     private const int LongTaskTimeout = 600_000; // 10 minute

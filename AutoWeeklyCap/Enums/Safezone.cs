@@ -29,8 +29,8 @@ public static class SafezoneExtensions
             return safezone switch
             {
                 Safezone.PrivateHouse => ActionInstance.EnterPrivateHouse.Invoke(),
-                Safezone.FreeCompany => ActionInstance.EnterFcHouseNamedTasks.Invoke(),
-                Safezone.Apartment => ActionInstance.EnterApartmentNamedTasks.Invoke(),
+                Safezone.FreeCompany => ActionInstance.EnterFcHouse.Invoke(),
+                Safezone.Apartment => ActionInstance.EnterApartment.Invoke(),
                 Safezone.GrandCompanyInn => ActionInstance.EnterGrandCompanyInn.Invoke(),
                 _ => throw new ArgumentOutOfRangeException(nameof(safezone), safezone, null)
             };
