@@ -35,7 +35,7 @@ public static partial class FrameworkListener
         if (PlayerHelper.IsValid) {
             ClientListener.IsRecoveringFromDisconnect = false;
 
-            if (!AWC.Runner.IsRunning()) {
+            if (!AWC.Runner.State.IsRunning()) {
                 AWC.Runner.Start();
             }
 

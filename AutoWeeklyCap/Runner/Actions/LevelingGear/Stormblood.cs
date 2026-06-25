@@ -1,5 +1,8 @@
 ﻿namespace AutoWeeklyCap.Runner.Actions.LevelingGear;
 
+// The Stormblood and Heavensward NPCs are located within the same zone and
+// location, so we're extending Heavensward instead of the expansion gear
+// contract here, so we can share the NPC data more easily.
 public class Stormblood : Heavensward
 {
     protected override string Name => nameof(Stormblood);

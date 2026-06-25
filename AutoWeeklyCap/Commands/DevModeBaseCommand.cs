@@ -1,4 +1,6 @@
-﻿using ECommons.Logging;
+﻿using AutoWeeklyCap.Contracts.Commands;
+
+using ECommons.Logging;
 
 namespace AutoWeeklyCap.Commands;
 

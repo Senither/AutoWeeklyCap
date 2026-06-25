@@ -31,7 +31,7 @@ public class StatusOverlayWindow : Window
 
     public static void DrawOverlayPreview()
     {
-        if (AWC.Runner.IsRunning()) {
+        if (AWC.Runner.State.IsRunning()) {
             return;
         }
 
@@ -67,7 +67,7 @@ public class StatusOverlayWindow : Window
             return true;
         }
 
-        return AWC.Config.StatusOverlayEnabled && (AWC.Runner.IsRunning() || AWC.TaskManager.IsBusy);
+        return AWC.Config.StatusOverlayEnabled && (AWC.Runner.State.IsRunning() || AWC.TaskManager.IsBusy);
     }
 
     public override void Draw()
@@ -100,7 +100,7 @@ public class StatusOverlayWindow : Window
         if (ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
             if (ImGuiEx.Ctrl) {
                 AWC.Runner.Abort();
-            } else if (AWC.Runner.IsRunning() && AWC.Runner.IsStopping()) {
+            } else if (AWC.Runner.State.IsRunning() && AWC.Runner.State.StoppingGracefully) {
                 AWC.Runner.Resume();
             } else {
                 AWC.Runner.Stop();
@@ -122,7 +122,7 @@ public class StatusOverlayWindow : Window
     private static string ImageResourcePath => Path.Combine(
         Svc.PluginInterface.AssemblyLocation.DirectoryName!,
         "resources",
-        AWC.Runner.IsStopping()
+        AWC.Runner.State.StoppingGracefully
             ? "stopping.png"
             : "running.png"
     );

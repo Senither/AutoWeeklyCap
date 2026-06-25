@@ -1,10 +1,12 @@
-﻿using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using AutoWeeklyCap.Contracts.Runner;
+
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Runner.Actions.Safezones;
 
-public class EnterFcHouseAction : BaseAction
+public class EnterFcHouseNamedTasks : BaseNamedTasks
 {
-    protected override string Name => nameof(EnterFcHouseAction);
+    protected override string Name => nameof(EnterFcHouseNamedTasks);
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectString", "HousingMenu"];
 
     private const int LongTaskTimeout = 120_000;

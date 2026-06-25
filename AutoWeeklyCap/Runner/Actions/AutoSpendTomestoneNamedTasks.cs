@@ -1,13 +1,15 @@
-﻿using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using AutoWeeklyCap.Contracts.Runner;
+
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 // ReSharper disable InconsistentNaming
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public class AutoSpendTomestoneAction : BaseAction
+public class AutoSpendTomestoneNamedTasks : BaseNamedTasks
 {
-    protected override string Name => nameof(AutoSpendTomestoneAction);
+    protected override string Name => nameof(AutoSpendTomestoneNamedTasks);
     protected override string[] AddonsToClose { get; } = ["ShopExchangeCurrency", "SelectIconString", "SelectYesno", "SelectString"];
 
     private const int LongTaskTimeout = 120_000;

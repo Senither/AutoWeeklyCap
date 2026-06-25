@@ -1,13 +1,15 @@
-﻿using ECommons.UIHelpers.AddonMasterImplementations;
+﻿using AutoWeeklyCap.Contracts.Runner;
+
+using ECommons.UIHelpers.AddonMasterImplementations;
 
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public class ExtractAction : BaseAction
+public class ExtractNamedTasks : BaseNamedTasks
 {
-    protected override string Name => nameof(ExtractAction);
+    protected override string Name => nameof(ExtractNamedTasks);
     protected override string[] AddonsToClose { get; } = ["MaterializeDialog", "Materialize", "SelectYesno", "SelectString"];
 
     protected override bool Run(params object[] args)

@@ -18,8 +18,8 @@ public static class ClientListener
             return;
         }
 
-        AWC.Log.Debug($"Network: Disconnection detected, runner status: {(AWC.Runner.IsRunning() ? "active" : "idle")}");
-        if (!AWC.Runner.IsRunning()) {
+        AWC.Log.Debug($"Network: Disconnection detected, runner status: {(AWC.Runner.State.IsRunning() ? "active" : "idle")}");
+        if (!AWC.Runner.State.IsRunning()) {
             return;
         }
 

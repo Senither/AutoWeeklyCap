@@ -134,7 +134,7 @@ public static class StopActionExtensions
 
         public void StartRunnerAsAction()
         {
-            if (AWC.Runner.IsRunning()) {
+            if (AWC.Runner.State.IsRunning()) {
                 return;
             }
 
@@ -142,7 +142,7 @@ public static class StopActionExtensions
             switch (action) {
                 case StopAction.StartUnlimitedRuns: {
                     if (AWC.Runner.Start()) {
-                        AWC.Runner.ForceEnableUnlimitedMode();
+                        AWC.Runner.State.EnableUnlimitedMode();
                     }
 
                     break;
@@ -150,7 +150,7 @@ public static class StopActionExtensions
 
                 case StopAction.LevelJobs: {
                     if (AWC.Runner.Start()) {
-                        AWC.Runner.ForceEnableLevelingMode();
+                        AWC.Runner.State.EnableLevelingMode();
                     }
 
                     break;

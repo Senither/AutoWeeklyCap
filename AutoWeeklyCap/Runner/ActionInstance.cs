@@ -1,41 +1,42 @@
-﻿using AutoWeeklyCap.Runner.Actions;
+﻿using AutoWeeklyCap.Contracts.Runner;
+using AutoWeeklyCap.Runner.Actions;
 using AutoWeeklyCap.Runner.Actions.Safezones;
 
 namespace AutoWeeklyCap.Runner;
 
 public static class ActionInstance
 {
-    public static readonly ExtractAction Extract = new();
-    public static readonly AutoSpendTomestoneAction SpendTomestone = new();
-    public static readonly SelfRepairAction SelfRepair = new();
-    public static readonly NpcRepairAction NpcRepair = new();
-    public static readonly ReturnToHomeworldAction Homeworld = new();
-    public static readonly DeliverooAction Deliveroo = new();
-    public static readonly NotificationAction Notification = new();
-    public static readonly EquipGearUpgradeAction EquipGearUpgrade = new();
-    public static readonly BuyLevelingUpgradeAction BuyLevelingUpgrade = new();
+    public static readonly ExtractNamedTasks Extract = new();
+    public static readonly AutoSpendTomestoneNamedTasks SpendTomestone = new();
+    public static readonly SelfRepairNamedTasks SelfRepair = new();
+    public static readonly NpcRepairNamedTasks NpcRepair = new();
+    public static readonly ReturnToHomeworldNamedTasks Homeworld = new();
+    public static readonly DeliverooNamedTasks Deliveroo = new();
+    public static readonly NotificationNamedTasks Notification = new();
+    public static readonly EquipGearUpgradeNamedTasks EquipGearUpgrade = new();
+    public static readonly BuyLevelingUpgradeNamedTasks BuyLevelingUpgrade = new();
 
     // Safe-zone instances
-    public static readonly SafezoneAction Safezone = new();
+    public static readonly SafezoneNamedTasks Safezone = new();
 
-    public static readonly EnterGrandCompanyInnAction EnterGrandCompanyInn = new();
-    public static readonly LeaveGrandCompanyInnAction LeaveGrandCompanyInn = new();
-    public static readonly EnterApartmentAction EnterApartmentAction = new();
-    public static readonly EnterPrivateHouseAction EnterPrivateHouse = new();
-    public static readonly EnterFcHouseAction EnterFcHouseAction = new();
+    public static readonly EnterGrandCompanyInnNamedTasks EnterGrandCompanyInn = new();
+    public static readonly LeaveGrandCompanyInnNamedTasks LeaveGrandCompanyInn = new();
+    public static readonly EnterApartmentNamedTasks EnterApartmentNamedTasks = new();
+    public static readonly EnterPrivateHouseNamedTasks EnterPrivateHouse = new();
+    public static readonly EnterFcHouseNamedTasks EnterFcHouseNamedTasks = new();
 
     /**
      * Enqueues the given action for later execution, this is helpful if the conditions
      * being checked within the action to determine if it should actually run or not
      * can be changed by actions that were run before it.
      */
-    public static void EnqueueAction(BaseAction action, params object[] args)
+    public static void EnqueueAction(BaseNamedTasks namedTasks, params object[] args)
     {
         AWC.TaskManager.Enqueue(() =>
             {
-                action.Invoke(args);
+                namedTasks.Invoke(args);
 
                 return true;
-            }, $"ActionInstance: enqueued action {action.GetType().Name}");
+            }, $"ActionInstance: enqueued action {namedTasks.GetType().Name}");
     }
 }

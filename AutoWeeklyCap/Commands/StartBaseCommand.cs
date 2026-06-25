@@ -1,4 +1,6 @@
-﻿namespace AutoWeeklyCap.Commands;
+﻿using AutoWeeklyCap.Contracts.Commands;
+
+namespace AutoWeeklyCap.Commands;
 
 public class StartBaseCommand : BaseCommand
 {
@@ -7,8 +9,8 @@ public class StartBaseCommand : BaseCommand
 
     public override void Run(string[] args)
     {
-        if (AWC.Runner.IsRunning()) {
-            if (AWC.Runner.IsStopping()) {
+        if (AWC.Runner.State.IsRunning()) {
+            if (AWC.Runner.State.StoppingGracefully) {
                 AWC.Runner.Resume();
             }
         } else {

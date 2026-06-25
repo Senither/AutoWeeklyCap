@@ -28,17 +28,17 @@ public static class TitleManager
 
     public static string? GetStatus()
     {
-        return _status ?? AWC.Runner.GetState().GetStatus(AWC.Runner.IsStopping(), AWC.Runner.GetCurrentCharacter());
+        return _status ?? AWC.Runner.State.CurrentStage.GetStatus(AWC.Runner.State.StoppingGracefully, AWC.Runner.State.CurrentCharacter);
     }
 
     public static string? GetStatusShort()
     {
-        return _statusShort ?? AWC.Runner.GetState().GetStatusShort(AWC.Runner.IsStopping(), AWC.Runner.GetCurrentCharacter());
+        return _statusShort ?? AWC.Runner.State.CurrentStage.GetStatusShort(AWC.Runner.State.StoppingGracefully, AWC.Runner.State.CurrentCharacter);
     }
 
     public static BitmapFontIcon GetStatusIcon()
     {
-        return _statusIcon ?? AWC.Runner.GetState().GetStatusIcon(AWC.Runner.IsStopping());
+        return _statusIcon ?? AWC.Runner.State.CurrentStage.GetStatusIcon(AWC.Runner.State.StoppingGracefully);
     }
 
     public static IDisposable RegisterTitle(BitmapFontIcon icon, string status)

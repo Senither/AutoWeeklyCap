@@ -1,10 +1,12 @@
-﻿using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using AutoWeeklyCap.Contracts.Runner;
+
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public class SelfRepairAction : BaseAction
+public class SelfRepairNamedTasks : BaseNamedTasks
 {
-    protected override string Name => nameof(SelfRepairAction);
+    protected override string Name => nameof(SelfRepairNamedTasks);
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "Repair", "SelectString"];
 
     protected override bool Run(params object[] args)

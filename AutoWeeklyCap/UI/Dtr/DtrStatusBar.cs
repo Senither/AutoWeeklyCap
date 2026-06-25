@@ -59,7 +59,7 @@ public class DtrStatusBar : IDisposable
             ? $"Status: {TitleManager.GetStatusShort()}\n\n{DtrBarTooltip}"
             : DtrBarTooltip;
 
-        tooltip += (!AWC.Runner.IsRunning() && AWC.TaskManager.IsBusy)
+        tooltip += (!AWC.Runner.State.IsRunning() && AWC.TaskManager.IsBusy)
             ? DtrBarCancelAction
             : DtrBarNormalAction;
 
@@ -81,13 +81,13 @@ public class DtrStatusBar : IDisposable
             return;
         }
 
-        if (!AWC.Runner.IsRunning()) {
+        if (!AWC.Runner.State.IsRunning()) {
             if (AWC.TaskManager.IsBusy) {
                 AWC.Runner.Abort();
             } else {
                 AWC.Runner.Start();
             }
-        } else if (AWC.Runner.IsStopping()) {
+        } else if (AWC.Runner.State.StoppingGracefully) {
             AWC.Runner.Resume();
         } else {
             AWC.Runner.Stop();

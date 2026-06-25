@@ -1,4 +1,4 @@
-﻿namespace AutoWeeklyCap.Commands;
+﻿namespace AutoWeeklyCap.Contracts.Commands;
 
 public abstract class BaseCommand
 {

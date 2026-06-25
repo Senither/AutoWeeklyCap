@@ -1,4 +1,6 @@
-﻿namespace AutoWeeklyCap.Runner.Actions.LevelingGear;
+﻿using AutoWeeklyCap.Contracts.Runner;
+
+namespace AutoWeeklyCap.Runner.Actions.LevelingGear;
 
 public class Dawntrail : ExpansionGear
 {

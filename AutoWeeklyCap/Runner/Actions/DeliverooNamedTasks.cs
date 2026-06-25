@@ -1,11 +1,13 @@
-﻿using ECommons.Automation.NeoTaskManager;
+﻿using AutoWeeklyCap.Contracts.Runner;
+
+using ECommons.Automation.NeoTaskManager;
 using ECommons.UIHelpers.AddonMasterImplementations;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
-public class DeliverooAction : BaseAction
+public class DeliverooNamedTasks : BaseNamedTasks
 {
-    protected override string Name => nameof(DeliverooAction);
+    protected override string Name => nameof(DeliverooNamedTasks);
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "GrandCompanySupplyList", "GrandCompanyExchange", "GrandCompanySupplyReward", "SelectString"];
 
     private const int LongTaskTimeout = 450_000; // 7½ minute

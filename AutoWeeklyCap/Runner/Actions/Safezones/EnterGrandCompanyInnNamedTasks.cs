@@ -1,8 +1,10 @@
-﻿namespace AutoWeeklyCap.Runner.Actions.Safezones;
+﻿using AutoWeeklyCap.Contracts.Runner;
 
-public class EnterGrandCompanyInnAction : BaseAction
+namespace AutoWeeklyCap.Runner.Actions.Safezones;
+
+public class EnterGrandCompanyInnNamedTasks : BaseNamedTasks
 {
-    protected override string Name => nameof(EnterGrandCompanyInnAction);
+    protected override string Name => nameof(EnterGrandCompanyInnNamedTasks);
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectString", "Talk"];
 
     private const int LongTaskTimeout = 120_000;

@@ -5,7 +5,7 @@ using Dalamud.Interface;
 
 namespace AutoWeeklyCap.UI.MainWindow;
 
-internal static class CharactersTabUi
+public static class CharactersTabUi
 {
     private const int TomesPerRun = 50;
     private const int DefaultRunSeconds = 24 * 60;
@@ -62,8 +62,8 @@ internal static class CharactersTabUi
         );
 
         var time = TimeSpan.FromSeconds(totalEtaSeconds);
-        if (AWC.Runner.CurrentDutyStartUtc != null) {
-            time -= DateTime.UtcNow - AWC.Runner.CurrentDutyStartUtc.Value;
+        if (AWC.Runner.State.CurrentDutyStartUtc != null) {
+            time -= DateTime.UtcNow - AWC.Runner.State.CurrentDutyStartUtc.Value;
         }
 
         var etaText = time switch
@@ -72,7 +72,7 @@ internal static class CharactersTabUi
             _ => $"{time.Hours}h {time.Minutes}m {time.Seconds}s"
         };
 
-        if (!AWC.Runner.IsInNormalMode()) {
+        if (!AWC.Runner.State.IsInNormalMode()) {
             ImGuiEx.LineCentered(
                 "TomestoneEta",
                 () => ImGui.TextColored(Theme.TextMuted, AWC.Config.StopAction.GetRunnerStatusText())
