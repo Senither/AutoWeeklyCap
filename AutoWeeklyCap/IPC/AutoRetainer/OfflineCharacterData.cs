@@ -13,6 +13,7 @@ public class OfflineCharacterData
     public ulong CID = 0;
     public string Name = "Unknown";
     public string World = "";
+    public bool Enabled = false;
 
     [SuppressMessage("Performance", "CA1822:Mark members as static")]
     public bool ShouldSerializeIdentity()

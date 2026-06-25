@@ -50,6 +50,19 @@ public class AutoRetainerIPC
         return Svc.PluginInterface.GetIpcSubscriber<ulong, OfflineCharacterData>("AutoRetainer.GetOfflineCharacterData").InvokeFunc(cid);
     }
 
+    internal static bool IsCharacterEnabled(ulong cid)
+    {
+        if (!IsEnabled) {
+            return false;
+        }
+
+        try {
+            return GetOfflineCharacterData(cid).Enabled;
+        } catch (Exception) {
+            return false;
+        }
+    }
+
     internal static void Dispose()
     {
         IPCSubscriber.DisposeAll(DisposalTokens);

@@ -28,11 +28,16 @@ public static class RetainerTriggerExtensions
                 return false;
             }
 
+            List<ulong> enabledCharacterIds = AWC.Config.Characters.Values
+                .Select(o => o.ID)
+                .Where(AutoRetainerIPC.IsCharacterEnabled)
+                .ToList();
+
             return job switch
             {
-                RetainerTrigger.CurrentCharacter => IsCharacterWithinThreshold(Player.CID),
-                RetainerTrigger.AnyCharacter => AWC.Config.Characters.Values.Any(o => IsCharacterWithinThreshold(o.ID)),
-                RetainerTrigger.AllCharacters => AWC.Config.Characters.Values.All(o => IsCharacterWithinThreshold(o.ID)),
+                RetainerTrigger.CurrentCharacter => AutoRetainerIPC.IsCharacterEnabled(Player.CID) && IsCharacterWithinThreshold(Player.CID),
+                RetainerTrigger.AnyCharacter => enabledCharacterIds.Any(IsCharacterWithinThreshold),
+                RetainerTrigger.AllCharacters => enabledCharacterIds.Count > 0 && enabledCharacterIds.All(IsCharacterWithinThreshold),
                 _ => throw new ArgumentOutOfRangeException(nameof(job), job, null)
             };
         }
