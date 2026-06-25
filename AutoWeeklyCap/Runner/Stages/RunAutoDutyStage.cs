@@ -31,7 +31,7 @@ public class RunAutoDutyStage : BaseStage
         }
 
         if (state.CurrentDutyStartUtc.HasValue && state.CurrentCharacter != null) {
-            var durationSeconds = (int)(DateTime.UtcNow - state.CurrentDutyStartUtc.Value).TotalSeconds;
+            int durationSeconds = (int)(DateTime.UtcNow - state.CurrentDutyStartUtc.Value).TotalSeconds;
             LogDebug($"Finished the run in {durationSeconds} seconds");
 
             if (state.IsInNormalMode()) {

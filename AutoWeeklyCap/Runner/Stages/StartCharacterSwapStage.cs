@@ -43,7 +43,7 @@ public class StartCharacterSwapStage : BaseStage
         state.EnableUnlimitedMode();
         LogInfo("All characters have been fully capped, starting unlimited runs");
 
-        var preferredCharacter = AWC.Config.CharacterForSwap;
+        string preferredCharacter = AWC.Config.CharacterForSwap;
         if (PlayerHelper.GetFullCharacterName() == preferredCharacter) {
             LogDebug("Player is already on preferred character, starting runner");
             state.SetCurrentCharacter(preferredCharacter);
@@ -62,9 +62,9 @@ public class StartCharacterSwapStage : BaseStage
     {
         state.EnableLevelingMode();
 
-        var levelableCharacter = LevelingHelper.GetCharacterToLevel();
+        string? levelableCharacter = LevelingHelper.GetCharacterToLevel();
         if (levelableCharacter == null) {
-            LogDebug($"Found no characters to level, stopping runner");
+            LogDebug("Found no characters to level, stopping runner");
             runner.Stop();
             return;
         }
@@ -85,7 +85,7 @@ public class StartCharacterSwapStage : BaseStage
 
     private bool ChangeCharacter(RunnerState state, string character)
     {
-        var parts = character.Split("@");
+        string[] parts = character.Split("@");
         if (parts.Length != 2) {
             LogError($"Character {character} is not a valid character name, stopping runner");
             return false;

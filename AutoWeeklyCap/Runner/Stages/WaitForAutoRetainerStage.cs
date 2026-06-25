@@ -17,7 +17,7 @@ public class WaitForAutoRetainerStage : BaseStage
             return;
         }
 
-        var elapsed = (DateTime.UtcNow - state.Timestamp).Seconds;
+        int elapsed = (DateTime.UtcNow - state.Timestamp).Seconds;
 
         switch (PlayerHelper.IsValid) {
             case true when elapsed < 15:
@@ -38,18 +38,19 @@ public class WaitForAutoRetainerStage : BaseStage
             return;
         }
 
-        var limit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
-        var tomes = AWC.Config.CollectedTomes.GetValueOrDefault(state.CurrentCharacter, 0);
+        int limit = CurrencyHelper.GetLimitedTomestoneWeeklyLimit();
+        int tomes = AWC.Config.CollectedTomes.GetValueOrDefault(state.CurrentCharacter, 0);
         if (tomes == limit) {
             state.ChangeStageTo(Stage.StartingCharacterSwap);
             return;
         }
 
-        var parts = state.CurrentCharacter.Split("@");
-
+        string[] parts = state.CurrentCharacter.Split("@");
         LogInfo($"Switching character to {parts[0]} on {parts[1]}");
+
         state.ChangeStageTo(Stage.SwitchingCharacter);
         state.UpdateTimestamp();
+
         LifestreamIPC.ChangeCharacter(parts[0], parts[1]);
     }
 }

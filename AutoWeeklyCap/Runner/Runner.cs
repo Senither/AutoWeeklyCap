@@ -16,7 +16,7 @@ public class Runner
             return false;
         }
 
-        var character = PlayerHelper.GetFullCharacterName();
+        string? character = PlayerHelper.GetFullCharacterName();
         if (character == null || !(AWC.Config.GetOrRegisterCharacterOptions(character)?.IsEnabled() ?? false)) {
             character = null;
         }
@@ -56,7 +56,7 @@ public class Runner
 
         const int autoStartDelay = 5;
         for (var i = 0; i < autoStartDelay; i++) {
-            var seconds = autoStartDelay - i;
+            int seconds = autoStartDelay - i;
             AWC.TaskManager.Enqueue(() => Svc.NotificationManager.AddNotification(new Notification { Content = $"Auto start AWC in {seconds}!", InitialDuration = TimeSpan.FromSeconds(1), HardExpiry = DateTime.Now.AddSeconds(1), Type = NotificationType.Warning }));
 
             AWC.TaskManager.EnqueueDelay(1000);

@@ -12,7 +12,7 @@ public class SwitchingCharacterStage : BaseStage
             return;
         }
 
-        var character = PlayerHelper.GetFullCharacterName();
+        string? character = PlayerHelper.GetFullCharacterName();
         if (character == null || character != state.CurrentCharacter) {
             return;
         }

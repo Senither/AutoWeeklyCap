@@ -8,12 +8,12 @@ public class CheckTomestoneStage : BaseStage
 
     public override void Handle(Runner runner, RunnerState state)
     {
-        var character = PlayerHelper.GetFullCharacterName();
+        string? character = PlayerHelper.GetFullCharacterName();
         if (character == null) {
             return;
         }
 
-        var isCapped = CurrencyHelper.IsPlayerLimitedTomestoneCapped();
+        bool isCapped = CurrencyHelper.IsPlayerLimitedTomestoneCapped();
         if (isCapped && AWC.Config.DeliverooEnabled && !AWC.Config.DeliverooOnInterval) {
             ActionInstance.Deliveroo.Invoke();
         }

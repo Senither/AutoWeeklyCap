@@ -14,7 +14,7 @@ public class PreparingRunnerStage : BaseStage
         }
 
         if (state.CurrentCharacter == null) {
-            LogDebug($"Found no character set for, switching stage");
+            LogDebug("Found no character set for, switching stage");
             state.ChangeStageTo(Stage.StartingCharacterSwap);
             return;
         }
@@ -23,7 +23,7 @@ public class PreparingRunnerStage : BaseStage
             return;
         }
 
-        var playerJob = state.LevelingMode
+        PlayerJob? playerJob = state.LevelingMode
             ? LevelingHelper.GetJobToLevel(state.CurrentCharacter)
             : AWC.Config.GetOrRegisterCharacterOptions(state.CurrentCharacter)?.PreferredJob;
 
@@ -46,15 +46,15 @@ public class PreparingRunnerStage : BaseStage
 
         AWC.TaskManager.Enqueue(() =>
         {
-            if (AutoRetainerIPC.IsEnabled && AutoRetainerIPC.GetMultiModeStatus()) {
-                if (!AutoRetainerIPC.IsBusy()) {
-                    AutoRetainerIPC.DisableMultiMode();
-                }
-
-                return false;
+            if (!AutoRetainerIPC.IsEnabled || !AutoRetainerIPC.GetMultiModeStatus()) {
+                return true;
             }
 
-            return true;
+            if (!AutoRetainerIPC.IsBusy()) {
+                AutoRetainerIPC.DisableMultiMode();
+            }
+
+            return false;
         }, "disable AutoRetainer multi mode when it's not busy");
 
         if (AWC.Config.Extract) {
@@ -69,18 +69,8 @@ public class PreparingRunnerStage : BaseStage
             }
         }
 
-        if (AWC.Config.DeliverooEnabled) {
-            var shouldRunFirst = AWC.Config.DeliverooRunOnFirstLoop
-                                 && state.RunsCounter == 0;
-
-            var shouldRunForCounter = AWC.Config.DeliverooOnInterval
-                                      && state.RunsCounter % AWC.Config.DeliverooRunInterval == 0
-                                      && state.RunsCounter > 0;
-
-            LogDebug($"Deliveroo check [first: {shouldRunFirst}, forCounter: {shouldRunForCounter}]");
-            if (shouldRunFirst || shouldRunForCounter) {
-                ActionInstance.EnqueueAction(ActionInstance.Deliveroo);
-            }
+        if (AWC.Config.DeliverooEnabled && ShouldRunDeliveroo(state)) {
+            ActionInstance.EnqueueAction(ActionInstance.Deliveroo);
         }
 
         if (AWC.Config.SpendUncappedTomestones) {
@@ -90,5 +80,19 @@ public class PreparingRunnerStage : BaseStage
         }
 
         state.ChangeStageTo(Stage.CheckingTomestone);
+    }
+
+    private bool ShouldRunDeliveroo(RunnerState state)
+    {
+        bool shouldRunFirst = AWC.Config.DeliverooRunOnFirstLoop &&
+                              state.RunsCounter == 0;
+
+        bool shouldRunForCounter = AWC.Config.DeliverooOnInterval &&
+                                   state.RunsCounter % AWC.Config.DeliverooRunInterval == 0 &&
+                                   state.RunsCounter > 0;
+
+        LogDebug($"Deliveroo check [first: {shouldRunFirst}, forCounter: {shouldRunForCounter}]");
+
+        return shouldRunFirst || shouldRunForCounter;
     }
 }

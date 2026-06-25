@@ -56,6 +56,7 @@ public class StartAutoDutyStage : BaseStage
 
         if (AWC.ClientState.TerritoryType == DutyZone.GetZoneId(state.LevelingMode)) {
             LogDebug("Player detected in the duty zone, switching to RunningAutoDuty stage");
+
             state.ChangeStageTo(Stage.RunningAutoDuty);
             state.UpsertCurrentDutyStartUtc(DateTime.UtcNow);
 
