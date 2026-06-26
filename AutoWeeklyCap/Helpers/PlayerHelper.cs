@@ -81,6 +81,11 @@ public static class PlayerHelper
         return (PlayerJob)AWC.PlayerState.ClassJob.RowId;
     }
 
+    public static CharacterSwapStatus SwitchJob(PlayerJob targetJobId)
+    {
+        return SwitchJob((uint)targetJobId);
+    }
+
     public static CharacterSwapStatus SwitchJob(uint targetJobId)
     {
         if (!AWC.PlayerState.IsLoaded) {
@@ -106,6 +111,11 @@ public static class PlayerHelper
                 ChatHelper.RunCommand($"gs change {i + 1}");
                 return CharacterSwapStatus.SwitchedJob;
             }
+        }
+
+        var targetJob = (PlayerJob)targetJobId;
+        if (targetJob != PlayerJob.None && targetJob != targetJob.GetEarlyJob()) {
+            return SwitchJob(targetJob.GetEarlyJob());
         }
 
         return CharacterSwapStatus.FailedToSwitchJob;

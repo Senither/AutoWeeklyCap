@@ -6,6 +6,17 @@ public enum PlayerJob
 {
     None = 0,
 
+    // Early Jobs
+    GLA = 1,
+    MRD = 3,
+    PGL = 2,
+    LNC = 4,
+    ARC = 5,
+    CNJ = 6,
+    THM = 7,
+    ACN = 26,
+    ROG = 29,
+
     // Crafters
     CPR = 8,
     BSM = 9,
@@ -62,6 +73,23 @@ public static class PlayerJobExtensions
             return job.ToString();
         }
 
+        public PlayerJob GetEarlyJob()
+        {
+            return job switch
+            {
+                PlayerJob.PLD => PlayerJob.GLA,
+                PlayerJob.WAR => PlayerJob.MRD,
+                PlayerJob.MNK => PlayerJob.PGL,
+                PlayerJob.DRG => PlayerJob.LNC,
+                PlayerJob.BRD => PlayerJob.ARC,
+                PlayerJob.WHM => PlayerJob.CNJ,
+                PlayerJob.BLM => PlayerJob.THM,
+                PlayerJob.SMN or PlayerJob.SCH => PlayerJob.ACN,
+                PlayerJob.NIN => PlayerJob.ROG,
+                _ => job,
+            };
+        }
+
         public BitmapFontIcon GetIcon()
         {
             return job switch
@@ -113,7 +141,7 @@ public static class PlayerJobExtensions
                 return true;
             }
 
-            var status = PlayerHelper.SwitchJob((uint)job);
+            var status = PlayerHelper.SwitchJob(job);
 
             AWC.Log.Debug($"PlayerJob: Attempted to switch to job {job}, got status: {status}");
             return status == CharacterSwapStatus.AlreadyOnTargetJob;
@@ -125,7 +153,10 @@ public static class PlayerJobExtensions
                 return true;
             }
 
-            return AWC.PlayerState.ClassJob.RowId == (uint)job;
+            uint playerJobId = AWC.PlayerState.ClassJob.RowId;
+
+            return playerJobId == (uint)job ||
+                   playerJobId == (uint)job.GetEarlyJob();
         }
     }
 
