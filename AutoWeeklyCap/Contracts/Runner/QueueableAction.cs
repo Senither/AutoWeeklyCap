@@ -2,7 +2,7 @@
 
 namespace AutoWeeklyCap.Contracts.Runner;
 
-public abstract class QueueableNamedTasks
+public abstract class QueueableAction
 {
     protected abstract string Name { get; }
 

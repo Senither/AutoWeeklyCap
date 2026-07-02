@@ -2,7 +2,7 @@
 
 namespace AutoWeeklyCap.Contracts.Runner;
 
-public abstract class ExpansionGear : QueueableNamedTasks
+public abstract class ExpansionGear : QueueableAction
 {
     private static readonly string[] RelatedAddonsToClose = ["SelectIconString", "SelectString", "Shop", "SelectYesno"];
 

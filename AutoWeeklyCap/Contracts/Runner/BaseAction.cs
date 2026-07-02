@@ -2,7 +2,7 @@
 
 namespace AutoWeeklyCap.Contracts.Runner;
 
-public abstract class BaseAction : QueueableNamedTasks
+public abstract class BaseAction : QueueableAction
 {
     protected virtual string[] AddonsToClose { get; } = [];
 

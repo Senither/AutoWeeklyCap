@@ -11,7 +11,7 @@ public static class ActionInstance
     public static readonly SelfRepairAction SelfRepair = new();
     public static readonly NpcRepairAction NpcRepair = new();
     public static readonly ReturnToHomeworldAction Homeworld = new();
-    public static readonly DeliverooNamedAction Deliveroo = new();
+    public static readonly DeliverooAction Deliveroo = new();
     public static readonly NotificationAction Notification = new();
     public static readonly EquipGearUpgradeAction EquipGearUpgrade = new();
     public static readonly BuyLevelingUpgradeAction BuyLevelingUpgrade = new();
