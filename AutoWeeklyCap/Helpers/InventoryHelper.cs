@@ -20,6 +20,11 @@ public static unsafe class InventoryHelper
         ActionManager.Instance()->UseAction(ActionType.Item, itemId, extraParam: 65535);
     }
 
+    internal static uint GetEmptySlotsInBag()
+    {
+        return InventoryManager.Instance()->GetEmptySlotsInBag();
+    }
+
     internal static bool CanRepair()
     {
         return CanRepair(AWC.Config.RepairPercentage);

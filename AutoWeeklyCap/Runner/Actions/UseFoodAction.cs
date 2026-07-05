@@ -1,14 +1,10 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
-using FFXIVClientStructs.FFXIV.Client.Game;
-
 namespace AutoWeeklyCap.Runner.Actions;
 
 public class UseFoodAction : BaseAction
 {
     protected override string Name => nameof(UseFoodAction);
-
-    private const uint OrangeJuice = 4745;
 
     protected override bool Run(params object[] args)
     {
@@ -16,14 +12,8 @@ public class UseFoodAction : BaseAction
             return false;
         }
 
-        var itemCount = InventoryHelper.GetItemCount(OrangeJuice);
-        if (itemCount == 0) {
-            if (!QuestManager.IsQuestComplete(65970)) {
-                LogInfo("Stopping food usage, reason: player has not completed quest 65970 (It Could Happen to You)");
-                return false;
-            }
-
-            // TODO: Buy more orange juice
+        var itemCount = InventoryHelper.GetItemCount(Constants.LevelingFoodItemId);
+        if (itemCount == 0 && !ActionInstance.BuyFood.Invoke()) {
             return false;
         }
 
@@ -43,7 +33,7 @@ public class UseFoodAction : BaseAction
                 return false;
             }
 
-            InventoryHelper.UseItem(OrangeJuice);
+            InventoryHelper.UseItem(Constants.LevelingFoodItemId);
 
             return false;
         }, "use food");

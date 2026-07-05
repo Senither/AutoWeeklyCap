@@ -66,6 +66,7 @@ public static class DeveloperToolbox
         DebugActionButton("NPC Repair", ActionInstance.NpcRepair);
         DebugActionButton("Spend Tomestones", ActionInstance.SpendTomestone);
         DebugActionButton("Use Food", ActionInstance.UseFood);
+        DebugActionButton("Buy Food", ActionInstance.BuyFood);
 
         DebugActionButton("Equip Gear Upgrades", ActionInstance.EquipGearUpgrade, false);
         DebugActionButton("Buy Leveling Gear Upgrades", ActionInstance.BuyLevelingUpgrade);
