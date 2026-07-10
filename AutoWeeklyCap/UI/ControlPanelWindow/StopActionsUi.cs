@@ -116,9 +116,13 @@ public static class StopActionsUi
         InformationTooltip.Draw(() =>
         {
             ImGui.Text("When the option is enabled the runner will use \"Orange Juice\" before");
-            ImGui.Text("starting AutoDuty to get to 3% XP buff, if the character doesn't have");
+            ImGui.Text("starting ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text(" to get to 3% XP buff, if the character doesn't have");
             ImGui.Text("any orange juice in their inventory the runner will go buy some");
-            ImGui.Text("before starting AutoDuty.");
+            ImGui.Text("from the Golden Saucer before starting ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text(".");
         });
 
         var useStylistForGearUpgrades = AWC.Config.LevelJobs.UseStylistForGearUpgrades;
