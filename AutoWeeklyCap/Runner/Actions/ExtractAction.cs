@@ -37,7 +37,7 @@ public class ExtractAction : BaseAction
 
             try {
                 unsafe {
-                    if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1) {
+                    if (InventoryHelper.GetEmptySlotsInBag() < 1) {
                         LogInfo("Stopping materia extraction, reason: no items slot left");
                         return true;
                     }

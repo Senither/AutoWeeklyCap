@@ -107,6 +107,24 @@ public static class StopActionsUi
 
         Card.Separator();
 
+        var useLevelingFood = AWC.Config.LevelJobs.UseLevelingFood;
+        if (ImGui.Checkbox("Use leveling food", ref useLevelingFood)) {
+            AWC.Config.LevelJobs.UseLevelingFood = useLevelingFood;
+            EzConfig.Save();
+        }
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When the option is enabled the runner will use \"Orange Juice\" before");
+            ImGui.Text("starting ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text(" to get to 3% XP buff, if the character doesn't have");
+            ImGui.Text("any orange juice in their inventory the runner will go buy some");
+            ImGui.Text("from the Golden Saucer before starting ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text(".");
+        });
+
         var useStylistForGearUpgrades = AWC.Config.LevelJobs.UseStylistForGearUpgrades;
         if (ImGui.Checkbox("Use Stylist for gear upgrades", ref useStylistForGearUpgrades)) {
             AWC.Config.LevelJobs.UseStylistForGearUpgrades = useStylistForGearUpgrades;

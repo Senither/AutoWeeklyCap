@@ -10,6 +10,21 @@ public static unsafe class InventoryHelper
     private static readonly uint[] CanHaveOffhand = [2, 6, 8, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32];
     private static readonly uint[] IgnoreCategory = [105];
 
+    internal static int GetItemCount(uint itemId)
+    {
+        return InventoryManager.Instance()->GetInventoryItemCount(itemId);
+    }
+
+    internal static void UseItem(uint itemId)
+    {
+        ActionManager.Instance()->UseAction(ActionType.Item, itemId, extraParam: 65535);
+    }
+
+    internal static uint GetEmptySlotsInBag()
+    {
+        return InventoryManager.Instance()->GetEmptySlotsInBag();
+    }
+
     internal static bool CanRepair()
     {
         return CanRepair(AWC.Config.RepairPercentage);

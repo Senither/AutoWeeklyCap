@@ -3,7 +3,6 @@
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Contracts.Runner;
 using AutoWeeklyCap.Listeners;
-using AutoWeeklyCap.Runner.Actions;
 using AutoWeeklyCap.UI.Helpers;
 
 using ECommons.Configuration;
@@ -66,6 +65,8 @@ public static class DeveloperToolbox
         DebugActionButton("Self Repair", ActionInstance.SelfRepair);
         DebugActionButton("NPC Repair", ActionInstance.NpcRepair);
         DebugActionButton("Spend Tomestones", ActionInstance.SpendTomestone);
+        DebugActionButton("Use Food", ActionInstance.UseFood);
+        DebugActionButton("Buy Food", ActionInstance.BuyFood);
 
         DebugActionButton("Equip Gear Upgrades", ActionInstance.EquipGearUpgrade, false);
         DebugActionButton("Buy Leveling Gear Upgrades", ActionInstance.BuyLevelingUpgrade);

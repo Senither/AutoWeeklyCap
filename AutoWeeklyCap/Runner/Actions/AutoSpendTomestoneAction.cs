@@ -1,6 +1,5 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
-using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 // ReSharper disable InconsistentNaming
@@ -59,7 +58,7 @@ public class AutoSpendTomestoneAction : BaseAction
         LocationManager.Reset();
 
         unsafe {
-            if (InventoryManager.Instance()->GetEmptySlotsInBag() < 1) {
+            if (InventoryHelper.GetEmptySlotsInBag() < 1) {
                 return false;
             }
 

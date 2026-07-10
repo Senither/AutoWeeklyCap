@@ -18,6 +18,10 @@ public class StartAutoDutyStage : BaseStage
             return;
         }
 
+        if (state.LevelingMode && AWC.Config.LevelJobs.UseLevelingFood) {
+            ActionInstance.UseFood.Invoke();
+        }
+
         if (AWC.Config.OnlyStartAutoDutyFromSafezone) {
             ActionInstance.Safezone.Invoke(state.CurrentCharacter);
         }

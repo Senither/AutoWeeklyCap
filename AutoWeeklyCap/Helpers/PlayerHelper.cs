@@ -3,6 +3,7 @@ using Dalamud.Utility;
 
 using ECommons.Configuration;
 
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
@@ -29,6 +30,7 @@ public static class PlayerHelper
     public static unsafe bool IsMoving => AgentMap.Instance()->IsPlayerMoving;
     public static bool IsJumping => Svc.Condition.Any() && (Svc.Condition[ConditionFlag.Jumping] || Svc.Condition[ConditionFlag.Jumping61]);
     public static bool InDuty => Svc.Condition[ConditionFlag.BoundByDuty] || Svc.Condition[ConditionFlag.BoundByDuty56] || Svc.Condition[ConditionFlag.BoundByDuty95];
+    public static unsafe bool IsAnimationLocked => ActionManager.Instance()->AnimationLock > 0;
 
     public static bool CanSelfRepairWithCrafters =>
         HasMaxJobLevel(PlayerJob.CPR) &&
@@ -55,6 +57,11 @@ public static class PlayerHelper
     public static bool HasMaxJobLevel(PlayerJob jobType)
     {
         return GetJobLevel(jobType) == Constants.CurrentMaxLevel;
+    }
+
+    public static bool HasStatus(uint statusId, float minTime = 0)
+    {
+        return Player.Available && Player.Status.Any(x => x.StatusId == statusId && (minTime <= 0 || x.RemainingTime > minTime));
     }
 
     public static int GetJobLevel(PlayerJob jobType)
