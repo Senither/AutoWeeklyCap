@@ -70,6 +70,7 @@ public static class DeveloperToolbox
 
         DebugActionButton("Equip Gear Upgrades", ActionInstance.EquipGearUpgrade, false);
         DebugActionButton("Buy Leveling Gear Upgrades", ActionInstance.BuyLevelingUpgrade);
+        DebugActionButton("Move items to Saddlebag", ActionInstance.MoveInventoryItemsToSaddlebag);
 
         DebugActionButton("Return to Homeworld", ActionInstance.Homeworld, false);
         DebugActionButton("Deliveroo", ActionInstance.Deliveroo);

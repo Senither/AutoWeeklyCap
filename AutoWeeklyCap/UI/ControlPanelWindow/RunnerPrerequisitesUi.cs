@@ -220,6 +220,22 @@ public static class RunnerPrerequisitesUi
             }
         });
 
+        // Move items between inventory and saddlebag
+        var moveDuplicateItemsFromInventoryToSaddlebag = AWC.Config.MoveDuplicateItemsFromInventoryToSaddlebag;
+        if (ImGui.Checkbox("Move duplicated stackable items to saddlebag", ref moveDuplicateItemsFromInventoryToSaddlebag)) {
+            AWC.Config.MoveDuplicateItemsFromInventoryToSaddlebag = moveDuplicateItemsFromInventoryToSaddlebag;
+        }
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When this option is enabled, the runner will look for items that are both");
+            ImGui.Text("in your inventory and your saddlebag, if the items are stackable the");
+            ImGui.Text("runner will try to \"clean up\" your inventory by moving the");
+            ImGui.Text("items from the inventory to your saddlebag instead.");
+            ImGui.Text("");
+            ImGui.Text("It will only move duplicated items that are found in your saddlebag.");
+        });
+
         // Auto Spend Tomestones
         var autoSpendUncappedTomestones = AWC.Config.SpendUncappedTomestones;
         if (ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones)) {

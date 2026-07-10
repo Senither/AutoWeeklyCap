@@ -79,6 +79,10 @@ public class PreparingRunnerStage : BaseStage
             }
         }
 
+        if (AWC.Config.MoveDuplicateItemsFromInventoryToSaddlebag) {
+            ActionInstance.EnqueueAction(ActionInstance.MoveInventoryItemsToSaddlebag);
+        }
+
         state.ChangeStageTo(Stage.CheckingTomestone);
     }
 

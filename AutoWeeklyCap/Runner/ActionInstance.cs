@@ -15,6 +15,7 @@ public static class ActionInstance
     public static readonly NotificationAction Notification = new();
     public static readonly EquipGearUpgradeAction EquipGearUpgrade = new();
     public static readonly BuyLevelingUpgradeAction BuyLevelingUpgrade = new();
+    public static readonly MoveInventoryItemsToSaddlebagAction MoveInventoryItemsToSaddlebag = new();
     public static readonly UseFoodAction UseFood = new();
     public static readonly BuyFoodAction BuyFood = new();
 

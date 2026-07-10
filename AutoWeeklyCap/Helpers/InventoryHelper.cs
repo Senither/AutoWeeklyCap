@@ -1,4 +1,6 @@
-﻿using FFXIVClientStructs.FFXIV.Client.Game;
+﻿using Dalamud.Game.Inventory;
+
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 using Lumina.Excel.Sheets;
@@ -146,6 +148,40 @@ public static unsafe class InventoryHelper
         } catch (Exception) {
             return default;
         }
+    }
+
+    internal static List<GameInventoryItem> GetSaddleBagItems()
+    {
+        ReadOnlySpan<GameInventoryItem> bag1 = Svc.GameInventory.GetInventoryItems(GameInventoryType.SaddleBag1);
+        ReadOnlySpan<GameInventoryItem> bag2 = Svc.GameInventory.GetInventoryItems(GameInventoryType.SaddleBag2);
+        ReadOnlySpan<GameInventoryItem> premium1 = Svc.GameInventory.GetInventoryItems(GameInventoryType.PremiumSaddleBag1);
+        ReadOnlySpan<GameInventoryItem> premium2 = Svc.GameInventory.GetInventoryItems(GameInventoryType.PremiumSaddleBag2);
+
+        var combined = new List<GameInventoryItem>(bag1.Length + bag2.Length + premium1.Length + premium2.Length);
+
+        combined.AddRange(bag1);
+        combined.AddRange(bag2);
+        combined.AddRange(premium1);
+        combined.AddRange(premium2);
+
+        return combined;
+    }
+
+    internal static List<GameInventoryItem> GetPlayerInventoryItems()
+    {
+        ReadOnlySpan<GameInventoryItem> inv1 = Svc.GameInventory.GetInventoryItems(GameInventoryType.Inventory1);
+        ReadOnlySpan<GameInventoryItem> inv2 = Svc.GameInventory.GetInventoryItems(GameInventoryType.Inventory2);
+        ReadOnlySpan<GameInventoryItem> inv3 = Svc.GameInventory.GetInventoryItems(GameInventoryType.Inventory3);
+        ReadOnlySpan<GameInventoryItem> inv4 = Svc.GameInventory.GetInventoryItems(GameInventoryType.Inventory4);
+
+        var combined = new List<GameInventoryItem>(inv1.Length + inv2.Length + inv3.Length + inv4.Length);
+
+        combined.AddRange(inv1);
+        combined.AddRange(inv2);
+        combined.AddRange(inv3);
+        combined.AddRange(inv4);
+
+        return combined;
     }
 
     private static bool TryGetSheetItemFromInventoryItem(InventoryItem container, out Item item)
