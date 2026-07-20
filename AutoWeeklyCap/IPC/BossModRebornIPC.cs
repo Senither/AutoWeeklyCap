@@ -1,4 +1,6 @@
-﻿namespace AutoWeeklyCap.IPC;
+﻿// ReSharper disable InconsistentNaming
+
+namespace AutoWeeklyCap.IPC;
 
 public static class BossModRebornIPC
 {
@@ -10,4 +12,14 @@ public static class BossModRebornIPC
         "Better combat AI for dodging and avoiding attacks while in duties.",
         repositoryUrl: "https://github.com/FFXIV-CombatReborn/BossmodReborn"
     );
+
+    internal static void EnableAI()
+    {
+        ChatHelper.RunCommand("bmrai on");
+    }
+
+    internal static void DisableAI()
+    {
+        ChatHelper.RunCommand("bmrai off");
+    }
 }

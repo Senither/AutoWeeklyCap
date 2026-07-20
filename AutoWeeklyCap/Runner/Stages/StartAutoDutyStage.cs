@@ -30,16 +30,6 @@ public class StartAutoDutyStage : BaseStage
             ActionInstance.EquipGearUpgrade.Invoke();
         }
 
-        AWC.TaskManager.Enqueue(() =>
-        {
-            if (!AWC.Config.UseBossModRebornAI || !BossModRebornIPC.IsEnabled) {
-                return;
-            }
-
-            LogDebug("enabling BossMod Reborn AI");
-            ChatHelper.RunCommand("bmrai on");
-        }, "enable BossMod Reborn AI if option is enabled");
-
         AWC.TaskManager.Enqueue(LocationManager.RegisterLocation, "register last known location");
         AWC.TaskManager.Enqueue(state.UpdateTimestamp, "set timestamp to track timeouts");
 

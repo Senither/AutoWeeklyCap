@@ -15,6 +15,8 @@ public class RunnerState
     public int RunsCounter { get; private set; } = 0;
     public string? RunsCharacter { get; private set; } = null;
 
+    public bool UsingBossModRebornAi { get; private set; } = false;
+
     public DateTime? CurrentDutyStartUtc { get; private set; } = null;
 
     public void Reset()
@@ -29,6 +31,8 @@ public class RunnerState
 
         RunsCounter = 0;
         RunsCharacter = null;
+
+        UsingBossModRebornAi = false;
 
         CurrentDutyStartUtc = null;
     }
@@ -49,6 +53,8 @@ public class RunnerState
 
     public void SetCurrentDutyStartUtc(DateTime? utc) => CurrentDutyStartUtc = utc;
     public void UpsertCurrentDutyStartUtc(DateTime? utc) => CurrentDutyStartUtc ??= utc;
+
+    public void SetUsingBossModRebornAi(bool state) => UsingBossModRebornAi = state;
 
     public void ResetRunsTrackers()
     {

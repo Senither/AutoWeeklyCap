@@ -12,6 +12,7 @@ public class RunAutoDutyStage : BaseStage
     public override void Handle(Runner runner, RunnerState state)
     {
         if (!AutoDutyIPC.IsStopped()) {
+            HandleAiState(state);
             return;
         }
 
@@ -19,11 +20,40 @@ public class RunAutoDutyStage : BaseStage
             return;
         }
 
+        HandleCompletedRun(state);
+    }
+
+    private void HandleAiState(RunnerState state)
+    {
+        if (state.UsingBossModRebornAi) {
+            return;
+        }
+
+        if (!EzThrottler.Throttle("HandleAiState", 2500)) {
+            return;
+        }
+
+        if (!AWC.Config.UseBossModRebornAI || !BossModRebornIPC.IsEnabled) {
+            return;
+        }
+
+        if (!PlayerHelper.InCombat) {
+            return;
+        }
+
+        LogDebug("enabling BossMod Reborn AI");
+        BossModRebornIPC.EnableAI();
+        state.SetUsingBossModRebornAi(true);
+    }
+
+    private void HandleCompletedRun(RunnerState state)
+    {
         LogDebug("AutoDuty has complete a run, switching to preparations stage");
 
         if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled) {
             LogDebug("disabling BossMod Reborn AI");
-            ChatHelper.RunCommand("bmrai off");
+            BossModRebornIPC.DisableAI();
+            state.SetUsingBossModRebornAi(false);
         }
 
         if (state.LevelingMode && AWC.Config.LevelJobs.UseStylistForGearUpgrades) {

@@ -28,6 +28,7 @@ public static class PlayerHelper
 
     public static unsafe bool IsCasting => Player.Character->IsCasting;
     public static unsafe bool IsMoving => AgentMap.Instance()->IsPlayerMoving;
+    public static unsafe bool InCombat => Player.Character->InCombat;
     public static bool IsJumping => Svc.Condition.Any() && (Svc.Condition[ConditionFlag.Jumping] || Svc.Condition[ConditionFlag.Jumping61]);
     public static bool InDuty => Svc.Condition[ConditionFlag.BoundByDuty] || Svc.Condition[ConditionFlag.BoundByDuty56] || Svc.Condition[ConditionFlag.BoundByDuty95];
     public static unsafe bool IsAnimationLocked => ActionManager.Instance()->AnimationLock > 0;
