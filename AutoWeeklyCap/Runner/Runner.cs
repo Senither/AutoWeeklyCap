@@ -108,6 +108,10 @@ public class Runner
         LocationManager.Reset();
         AWC.TaskManager.Abort();
 
+        if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled) {
+            BossModRebornIPC.DisableAI();
+        }
+
         AWC.Log.Info("Stopped weekly cap runner");
     }
 
