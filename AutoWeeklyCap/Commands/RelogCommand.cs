@@ -4,7 +4,7 @@ using ECommons.Logging;
 
 namespace AutoWeeklyCap.Commands;
 
-public class RelogBaseCommand : BaseCommand
+public class RelogCommand : BaseCommand
 {
     public override string[] Triggers { get; } = ["relog", "r", "switch"];
 

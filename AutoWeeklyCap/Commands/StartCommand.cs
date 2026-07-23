@@ -2,7 +2,7 @@
 
 namespace AutoWeeklyCap.Commands;
 
-public class StartBaseCommand : BaseCommand
+public class StartCommand : BaseCommand
 {
     public override string[] Triggers { get; } = ["start", "s"];
     public override string Description => "Start the runner, or resume if it's being stopped gracefully";

@@ -8,10 +8,10 @@ public static class CommandHandler
 {
     private static readonly BaseCommand[] Commands =
     [
-        new StartBaseCommand(),
-        new StopBaseCommand(),
-        new RelogBaseCommand(),
-        new DevModeBaseCommand()
+        new StartCommand(),
+        new StopCommand(),
+        new RelogCommand(),
+        new DevModeCommand()
     ];
 
     public static void HandleCommand(string stringArgs)

@@ -4,12 +4,12 @@ using ECommons.Logging;
 
 namespace AutoWeeklyCap.Commands;
 
-public class DevModeBaseCommand : BaseCommand
+public class DevModeCommand : BaseCommand
 {
     public override string[] Triggers { get; } = ["devmode"];
     public override string Description => "Toggles developer mode on and off";
 
-    public DevModeBaseCommand()
+    public DevModeCommand()
     {
         Hidden = true;
     }
