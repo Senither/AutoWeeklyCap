@@ -1,5 +1,7 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
+using ECommons.UIHelpers.AddonMasterImplementations;
+
 namespace AutoWeeklyCap.Runner.Stages;
 
 public class PreparingRunnerStage : BaseStage
@@ -29,9 +31,11 @@ public class PreparingRunnerStage : BaseStage
 
         using (TitleManager.RegisterTitle(playerJob?.GetIcon() ?? BitmapFontIcon.AnyClass, "Switching Job")) {
             if (!playerJob?.IsAlreadyOnJob() ?? false) {
-                AWC.TaskManager.Enqueue(() => playerJob?.SwitchToJob() ?? true, "switching job");
+                AWC.TaskManager.Enqueue(() => SwitchCharacterJob(state, playerJob), "switching job");
                 return;
             }
+
+            state.SetArmoryChestReliefAttempted(false);
         }
 
         if (state.LevelingMode && AWC.Config.LevelJobs.BuyExpansionGearUpgrades && ActionInstance.BuyLevelingUpgrade.Invoke()) {
@@ -98,5 +102,55 @@ public class PreparingRunnerStage : BaseStage
         LogDebug($"Deliveroo check [first: {shouldRunFirst}, forCounter: {shouldRunForCounter}]");
 
         return shouldRunFirst || shouldRunForCounter;
+    }
+
+    private bool SwitchCharacterJob(RunnerState state, PlayerJob? playerJob)
+    {
+        if (playerJob == null || playerJob.Value.IsAlreadyOnJob() || playerJob.Value.SwitchToJob()) {
+            state.SetArmoryChestReliefAttempted(false);
+            return true;
+        }
+
+        unsafe {
+            if (AddonHelper.TryGetReadyAddon("SelectYesno", out var addonPtr)) {
+                var addon = new AddonMaster.SelectYesno(addonPtr);
+
+                if (!addon.Text.Contains("armoury chest", StringComparison.CurrentCultureIgnoreCase)) {
+                    addon.No();
+                    return false;
+                }
+
+                addon.Yes();
+
+                AWC.TaskManager.EnqueueDelay(1000);
+                AWC.TaskManager.Enqueue(() =>
+                {
+                    ActionInstance.EquipGearUpgrade.Invoke();
+                    return true;
+                });
+
+                return true;
+            }
+        }
+
+        if (!InventoryHelper.IsAtleastOneArmoryChestSlotFull()) {
+            return false;
+        }
+
+        if (AWC.Config.DeliverooEnabled && !state.ArmoryChestReliefAttempted) {
+            LogInfo("Detected full armory chest while switching job, running Deliveroo then retrying");
+
+            state.SetArmoryChestReliefAttempted(true);
+            ActionInstance.EnqueueAction(ActionInstance.Deliveroo);
+
+            return true;
+        }
+
+        LogInfo("Could not switch jobs because the armory chest appears to be full, stopping runner");
+
+        ActionInstance.Notification.ForceInvoke(StopNotificationType.ArmoryChestFull);
+        state.ChangeStageTo(Stage.StoppingRunner);
+
+        return true;
     }
 }

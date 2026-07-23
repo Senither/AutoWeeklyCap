@@ -27,6 +27,39 @@ public static unsafe class InventoryHelper
         return InventoryManager.Instance()->GetEmptySlotsInBag();
     }
 
+    internal static bool IsAtleastOneArmoryChestSlotFull()
+    {
+        try {
+            foreach (var inventoryType in Enum.GetValues<GameInventoryType>()) {
+                if (!inventoryType.ToString().Contains("Armory", StringComparison.OrdinalIgnoreCase)) {
+                    continue;
+                }
+
+                ReadOnlySpan<GameInventoryItem> items = Svc.GameInventory.GetInventoryItems(inventoryType);
+                if (items.Length == 0) {
+                    continue;
+                }
+
+                var isContainerFull = true;
+
+                foreach (var item in items) {
+                    if (item.IsEmpty) {
+                        isContainerFull = false;
+                        break;
+                    }
+                }
+
+                if (isContainerFull) {
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (Exception) {
+            return false;
+        }
+    }
+
     internal static bool CanRepair()
     {
         return CanRepair(AWC.Config.RepairPercentage);
