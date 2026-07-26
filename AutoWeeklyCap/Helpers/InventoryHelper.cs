@@ -10,7 +10,6 @@ namespace AutoWeeklyCap.Helpers;
 public static unsafe class InventoryHelper
 {
     private static readonly uint[] CanHaveOffhand = [2, 6, 8, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32];
-    private static readonly uint[] IgnoreCategory = [105];
 
     internal static int GetItemCount(uint itemId)
     {
@@ -58,11 +57,6 @@ public static unsafe class InventoryHelper
         } catch (Exception) {
             return false;
         }
-    }
-
-    internal static bool CanRepair()
-    {
-        return CanRepair(AWC.Config.RepairPercentage);
     }
 
     internal static bool CanRepair(uint percent)

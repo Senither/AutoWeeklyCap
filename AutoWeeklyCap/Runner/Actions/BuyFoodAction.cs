@@ -113,7 +113,7 @@ public class BuyFoodAction : BaseAction
                     return true;
                 }
 
-                if (!AddonHelper.TryGetReadyAddon("Shop", out var addon)) {
+                if (!AddonHelper.TryGetReadyAddon("Shop", out _)) {
                     return false;
                 }
 
