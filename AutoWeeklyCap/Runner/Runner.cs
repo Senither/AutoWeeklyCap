@@ -25,10 +25,17 @@ public class Runner
         State.UpdateTimestamp();
         State.ResetRunsTrackers();
 
+        bool usingAutoRetainer = AWC.Config.AutoRetainerEnabled && AutoRetainerIPC.IsEnabled;
+        if (usingAutoRetainer && !RetainerTrigger.AnyCharacter.IsWithinThreshold()) {
+            AutoRetainerIPC.DisableMultiMode();
+        }
+
         State.ChangeStageTo(
-            character != null && CurrencyHelper.IsPlayerLimitedTomestoneCapped()
-                ? Stage.StartingCharacterSwap
-                : Stage.PreparingRunner
+            usingAutoRetainer && RetainerTrigger.AnyCharacter.IsWithinThreshold()
+                ? Stage.WaitingForAutoRetainer
+                : character != null && CurrencyHelper.IsPlayerLimitedTomestoneCapped()
+                    ? Stage.StartingCharacterSwap
+                    : Stage.PreparingRunner
         );
 
         AWC.Log.Info("Starting weekly cap runner");
