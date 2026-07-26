@@ -1,7 +1,5 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
-using FFXIVClientStructs.FFXIV.Component.GUI;
-
 namespace AutoWeeklyCap.Runner.Actions;
 
 public class NpcRepairAction : BaseAction
@@ -10,13 +8,6 @@ public class NpcRepairAction : BaseAction
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "Repair", "SelectString"];
 
     private const int LongTaskTimeout = 120_000;
-
-    private static bool _seenAddon = false;
-    private static unsafe AtkUnitBase* _addonSelectYesno = null;
-    private static unsafe AtkUnitBase* _addonSelectIconString = null;
-
-    // ReSharper disable once NotAccessedField.Local
-    private static unsafe AtkUnitBase* _addonRepair = null;
 
     protected override bool Run(params object[] args)
     {
@@ -29,8 +20,6 @@ public class NpcRepairAction : BaseAction
         }
 
         LocationManager.Reset();
-
-        ResetRepairState();
 
         ActionInstance.LeaveGrandCompanyInn.Invoke();
 
@@ -72,7 +61,7 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            if (!EzThrottler.Throttle("RepairingGearViaNPC", 250)) {
+            if (!EzThrottler.Throttle("OpeningRepairWindow", 250)) {
                 return false;
             }
 
@@ -83,18 +72,41 @@ public class NpcRepairAction : BaseAction
                         return false;
                     }
 
-                    if (GenericHelpers.TryGetAddonByName("SelectIconString", out _addonSelectIconString) && GenericHelpers.IsAddonReady(_addonSelectIconString)) {
-                        AddonHelper.ClickSelectIconString(0);
-                    } else if (!GenericHelpers.TryGetAddonByName("Repair", out _addonRepair) && !GenericHelpers.TryGetAddonByName("SelectYesno", out _addonSelectYesno)) {
-                        ObjectHelper.InteractWithObject(vendor);
-                    } else if (!_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out _addonSelectYesno) || !GenericHelpers.IsAddonReady(_addonSelectYesno))) {
-                        AddonHelper.ClickRepair();
-                    } else if (GenericHelpers.TryGetAddonByName("SelectYesno", out _addonSelectYesno) && GenericHelpers.IsAddonReady(_addonSelectYesno)) {
-                        AddonHelper.ClickSelectYesno();
-                        _seenAddon = true;
-                    } else if (_seenAddon && (!GenericHelpers.TryGetAddonByName("SelectYesno", out _addonSelectYesno) || !GenericHelpers.IsAddonReady(_addonSelectYesno))) {
+                    if (AddonHelper.TryGetReadyAddon("Repair", out _)) {
                         return true;
                     }
+
+                    if (AddonHelper.TryGetReadyAddon("SelectIconString", out _)) {
+                        AddonHelper.ClickSelectIconString(0);
+                    } else {
+                        ObjectHelper.InteractWithObject(vendor);
+                    }
+                }
+            } catch (Exception) {
+                // ignored
+            }
+
+            return false;
+        }, "opening repair window");
+
+        Enqueue(() =>
+        {
+            if (!EzThrottler.Throttle("RepairingGearViaNPC", 250)) {
+                return false;
+            }
+
+            try {
+                unsafe {
+                    if (!AddonHelper.TryGetReadyAddon("Repair", out _)) {
+                        return true;
+                    }
+
+                    if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
+                        AddonHelper.ClickSelectYesno();
+                        return true;
+                    }
+
+                    AddonHelper.ClickRepair();
                 }
             } catch (Exception) {
                 // ignored
@@ -116,7 +128,6 @@ public class NpcRepairAction : BaseAction
                     }
 
                     if (!AddonHelper.TryGetReadyAddon("Repair", out var repairAddon)) {
-                        ResetRepairState();
                         return true;
                     }
 
@@ -130,13 +141,5 @@ public class NpcRepairAction : BaseAction
         }, "close window");
 
         return true;
-    }
-
-    private static unsafe void ResetRepairState()
-    {
-        _seenAddon = false;
-        _addonRepair = null;
-        _addonSelectYesno = null;
-        _addonSelectIconString = null;
     }
 }
