@@ -1,4 +1,6 @@
-﻿using ECommons.EzIpcManager;
+﻿using AutoWeeklyCap.IPC.Lifestream;
+
+using ECommons.EzIpcManager;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor.
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value null
@@ -27,6 +29,8 @@ public class LifestreamIPC
     [EzIPC] internal static Func<bool> HasApartment;
     [EzIPC] internal static Func<bool> HasPrivateHouse;
     [EzIPC] internal static Func<bool> HasFreeCompanyHouse;
+    [EzIPC] internal static Func<(int Kind, int Ward, int Plot)?> GetCurrentPlotInfo;
+    [EzIPC] internal static Func<ulong, (HousePathData? Private, HousePathData? FC)> GetHousePathData;
     [EzIPC] internal static Action Abort;
     [EzIPC] internal static Func<ErrorCode> Logout;
 

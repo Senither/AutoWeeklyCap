@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
+using AutoWeeklyCap.IPC.Lifestream;
 
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -30,7 +31,7 @@ public class EnterFcHouseAction : BaseAction
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.WatchingCutscene, "Entering FC house");
 
-        if (LocationManager.GetLastKnownLocation() != Safezone.FreeCompany) {
+        if (LocationManager.GetLastKnownLocation() != Safezone.FreeCompany && !IsOnFreeCompanyHousePlot()) {
             TeleportToFreeCompany();
         }
 
@@ -87,6 +88,23 @@ public class EnterFcHouseAction : BaseAction
         EnqueueDelay(1500);
 
         return true;
+    }
+
+    private static bool IsOnFreeCompanyHousePlot()
+    {
+        (int Kind, int Ward, int Plot)? info = LifestreamIPC.GetCurrentPlotInfo();
+        if (info == null) {
+            return false;
+        }
+
+        (HousePathData? Private, HousePathData? FC) data = LifestreamIPC.GetHousePathData(Player.CID);
+        if (data.FC == null) {
+            return false;
+        }
+
+        return data.FC.Plot == info.Value.Plot
+               && data.FC.Ward == info.Value.Ward
+               && data.FC.ResidentialDistrict == info.Value.Kind;
     }
 
     private void TeleportToFreeCompany()

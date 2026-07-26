@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
+using AutoWeeklyCap.IPC.Lifestream;
 
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -24,13 +25,13 @@ public class EnterPrivateHouseAction : BaseAction
         }
 
         if (!LifestreamIPC.HasPrivateHouse()) {
-            LogDebug($"Player has no private house");
+            LogDebug("Player has no private house");
             return false;
         }
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.WatchingCutscene, "Entering private house");
 
-        if (LocationManager.GetLastKnownLocation() != Safezone.PrivateHouse) {
+        if (LocationManager.GetLastKnownLocation() != Safezone.PrivateHouse && !IsOnPrivateHousePlot()) {
             TeleportToPrivateHouse();
         }
 
@@ -87,6 +88,23 @@ public class EnterPrivateHouseAction : BaseAction
         EnqueueDelay(1500);
 
         return true;
+    }
+
+    private static bool IsOnPrivateHousePlot()
+    {
+        (int Kind, int Ward, int Plot)? info = LifestreamIPC.GetCurrentPlotInfo();
+        if (info == null) {
+            return false;
+        }
+
+        (HousePathData? Private, HousePathData? FC) data = LifestreamIPC.GetHousePathData(Player.CID);
+        if (data.Private == null) {
+            return false;
+        }
+
+        return data.Private.Plot == info.Value.Plot
+               && data.Private.Ward == info.Value.Ward
+               && data.Private.ResidentialDistrict == info.Value.Kind;
     }
 
     private void TeleportToPrivateHouse()
