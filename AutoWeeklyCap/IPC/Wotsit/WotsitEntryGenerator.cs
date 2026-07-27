@@ -4,10 +4,10 @@ public static class WotsitEntryGenerator
 {
     private static readonly List<WotsitEntry> RunnerEntries =
     [
-        new("Start Runner", "start tome cap runner", 16, () => AWC.Runner.Start()),
-        new("Resume Runner", "resume tome cap runner", 16, () => AWC.Runner.Resume()),
-        new("Stop Runner", "stop tome cap runner", 26, () => AWC.Runner.Stop()),
-        new("Force Stop Runner", "force-stop tome cap runner", 26, () => AWC.Runner.Abort())
+        new("Start Runner", "awc start runner", 16, () => AWC.Runner.Start()),
+        new("Resume Runner", "awc resume runner", 16, () => AWC.Runner.Resume()),
+        new("Stop Runner", "awc stop runner", 26, () => AWC.Runner.Stop()),
+        new("Force Stop Runner", "awc force-stop runner", 26, () => AWC.Runner.Abort())
     ];
 
     private static readonly List<WotsitEntry> BasicRunnerActions =
