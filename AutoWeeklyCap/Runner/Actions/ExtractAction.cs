@@ -36,6 +36,10 @@ public class ExtractAction : BaseAction
                 return false;
             }
 
+            if (items.Count == 0) {
+                return true;
+            }
+
             if (InventoryHelper.GetEmptySlotsInBag() < 1) {
                 LogInfo("Stopping materia extraction, reason: no items slot left");
                 return true;
@@ -51,20 +55,16 @@ public class ExtractAction : BaseAction
                     return false;
                 }
 
-                foreach (var item in items.ToList()) {
-                    if (item.Slot != currentSlot) {
-                        currentSlot = item.Slot;
-                        AddonHelper.FireCallBack(addonMaterialize, false, 1, currentSlot);
-                        return false;
-                    }
-
-                    items.Remove(item);
+                if (items[0].Slot != currentSlot) {
+                    currentSlot = items[0].Slot;
+                    AddonHelper.FireCallBack(addonMaterialize, false, 1, currentSlot);
+                } else {
+                    items.RemoveAt(0);
                     AddonHelper.FireCallBack(addonMaterialize, true, 2, 0);
-                    return false;
                 }
             }
 
-            return true;
+            return false;
         }, "extracting materia", 180_000); // 3 minutes
 
         Enqueue(() => AddonHelper.CloseAddons(AddonsToClose), "closing window");
