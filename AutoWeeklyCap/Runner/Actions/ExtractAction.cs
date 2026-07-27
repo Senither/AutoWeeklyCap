@@ -1,7 +1,5 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
-using ECommons.UIHelpers.AddonMasterImplementations;
-
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
@@ -19,11 +17,14 @@ public class ExtractAction : BaseAction
             return false;
         }
 
-        var stoppingCategory = AWC.Config.ExtractAll ? 6 : 0;
-        var currentCategory = 0;
-        var switchCategory = false;
+        List<SpiritbondedItem> items = GetSpiritboundedItemsList();
+        if (items.Count == 0) {
+            return false;
+        }
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.ElementEarth, "Extracting materia");
+
+        int currentSlot = -1;
 
         Enqueue(() =>
         {
@@ -31,90 +32,85 @@ public class ExtractAction : BaseAction
                 return false;
             }
 
-            if (currentCategory > stoppingCategory) {
+            if (PlayerHelper.IsOccupied) {
+                return false;
+            }
+
+            if (InventoryHelper.GetEmptySlotsInBag() < 1) {
+                LogInfo("Stopping materia extraction, reason: no items slot left");
                 return true;
             }
 
-            try {
-                unsafe {
-                    if (InventoryHelper.GetEmptySlotsInBag() < 1) {
-                        LogInfo("Stopping materia extraction, reason: no items slot left");
-                        return true;
-                    }
-
-                    if (PlayerHelper.IsOccupied) {
-                        return false;
-                    }
-
-                    if (GenericHelpers.TryGetAddonByName("MaterializeDialog", out AtkUnitBase* addonMaterializeDialog) &&
-                        GenericHelpers.IsAddonReady(addonMaterializeDialog)) {
-                        LogDebug("Confirming MaterializeDialog");
-                        new AddonMaster.MaterializeDialog(addonMaterializeDialog).Materialize();
-                        return false;
-                    }
-
-                    if (!GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterialize)) {
-                        ActionManager.Instance()->UseAction(ActionType.GeneralAction, 14);
-                        return false;
-                    }
-
-                    if (!GenericHelpers.IsAddonReady(addonMaterialize)) {
-                        return false;
-                    }
-
-                    var list = addonMaterialize->GetNodeById(12)->GetAsAtkComponentList();
-                    if (list == null) {
-                        return false;
-                    }
-
-                    var spiritbondTextNode = list->UldManager.NodeList[2]->GetComponent()->GetTextNodeById(5)->GetAsAtkTextNode();
-                    var categoryTextNode = addonMaterialize->GetNodeById(4)->GetAsAtkComponentDropdownList()->UldManager.NodeList[1]
-                        ->GetAsAtkComponentCheckBox()->GetTextNodeById(3)->GetAsAtkTextNode();
-
-                    if (spiritbondTextNode == null || categoryTextNode == null) {
-                        return false;
-                    }
-
-                    if (switchCategory) {
-                        LogDebug($"Switching to Category: {currentCategory}");
-                        AddonHelper.FireCallBack(addonMaterialize, false, 1, currentCategory);
-                        switchCategory = false;
-                        return false;
-                    }
-
-                    if (spiritbondTextNode->NodeText.ToString().Replace(" ", string.Empty) == "100%") {
-                        LogDebug("Extracting Materia");
-                        AddonHelper.FireCallBack(addonMaterialize, true, 2, 0);
-                    } else {
-                        currentCategory++;
-                        switchCategory = true;
-                    }
-
+            unsafe {
+                if (!GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* addonMaterialize)) {
+                    ActionManager.Instance()->UseAction(ActionType.GeneralAction, 14);
                     return false;
                 }
-            } catch (Exception) {
-                // ignored
+
+                if (!GenericHelpers.IsAddonReady(addonMaterialize)) {
+                    return false;
+                }
+
+                foreach (var item in items.ToList()) {
+                    if (item.Slot != currentSlot) {
+                        currentSlot = item.Slot;
+                        AddonHelper.FireCallBack(addonMaterialize, false, 1, currentSlot);
+                        return false;
+                    }
+
+                    items.Remove(item);
+                    AddonHelper.FireCallBack(addonMaterialize, true, 2, 0);
+                    return false;
+                }
             }
 
             return true;
         }, "extracting materia", 180_000); // 3 minutes
 
-        Enqueue(() =>
-        {
-            try {
-                unsafe {
-                    if (GenericHelpers.TryGetAddonByName("Materialize", out AtkUnitBase* _)) {
-                        ActionManager.Instance()->UseAction(ActionType.GeneralAction, 14);
-                        return false;
-                    }
-                }
-            } catch (Exception) {
-                // ignored
-            }
-
-            return true;
-        }, "closing window");
+        Enqueue(() => AddonHelper.CloseAddons(AddonsToClose), "closing window");
 
         return true;
+    }
+
+    private static List<SpiritbondedItem> GetSpiritboundedItemsList()
+    {
+        List<SpiritbondedItem> items = GetSpiritboundedItemsFromInventorySlots(0, [InventoryType.EquippedItems]);
+
+        if (!AWC.Config.ExtractAll) {
+            return items;
+        }
+
+        items.AddRange(GetSpiritboundedItemsFromInventorySlots(1, [InventoryType.ArmoryOffHand, InventoryType.ArmoryMainHand]));
+        items.AddRange(GetSpiritboundedItemsFromInventorySlots(2, [InventoryType.ArmoryHead, InventoryType.ArmoryBody, InventoryType.ArmoryHands]));
+        items.AddRange(GetSpiritboundedItemsFromInventorySlots(3, [InventoryType.ArmoryLegs, InventoryType.ArmoryFeets]));
+        items.AddRange(GetSpiritboundedItemsFromInventorySlots(4, [InventoryType.ArmoryEar, InventoryType.ArmoryNeck]));
+        items.AddRange(GetSpiritboundedItemsFromInventorySlots(5, [InventoryType.ArmoryWrist, InventoryType.ArmoryRings]));
+
+        return items;
+    }
+
+    private static unsafe List<SpiritbondedItem> GetSpiritboundedItemsFromInventorySlots(int slot, InventoryType[] inventoryTypes)
+    {
+        List<SpiritbondedItem> items = [];
+
+        foreach (var type in inventoryTypes) {
+            InventoryContainer* inventory = InventoryManager.Instance()->GetInventoryContainer(type);
+
+            for (var i = 0; i < inventory->Size; i++) {
+                InventoryItem* item = inventory->GetInventorySlot(i);
+
+                if (item->SpiritbondOrCollectability == 10_000) {
+                    items.Add(new SpiritbondedItem { Slot = slot, Item = *item });
+                }
+            }
+        }
+
+        return items;
+    }
+
+    private record SpiritbondedItem
+    {
+        public int Slot { get; init; }
+        public InventoryItem Item { get; init; }
     }
 }
