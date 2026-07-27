@@ -15,6 +15,7 @@ public static class WotsitEntryGenerator
         new("Abort Action", "abort to force-stop runner action", 26, () => AWC.TaskManager.Abort()),
         new("Extract Materia", "extract materia from spriritbonded gear", 109, () => ActionInstance.Extract.Invoke()),
         new("Repair Gear", "repair gear", 106, () => ActionInstance.SelfRepair.Invoke()),
+        new("Move items to Saddlebag", "move items to saddlebag", 60153, () => ActionInstance.MoveInventoryItemsToSaddlebag.Invoke()),
         new("Enter Grand Company inn", "enter gc (grand company) inn", 113, () => ActionInstance.EnterGrandCompanyInn.Invoke()),
         new("Leave Grand Company inn", "leave gc (grand company) inn", 114, () => ActionInstance.LeaveGrandCompanyInn.Invoke())
     ];
