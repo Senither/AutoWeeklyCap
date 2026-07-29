@@ -37,7 +37,11 @@ public class RunAutoDutyStage : BaseStage
             return;
         }
 
-        if (!PlayerHelper.InCombat) {
+        try {
+            if (!PlayerHelper.InCombat) {
+                return;
+            }
+        } catch (Exception) {
             return;
         }
 
