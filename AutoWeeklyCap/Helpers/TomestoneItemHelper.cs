@@ -38,6 +38,7 @@ public static class TomestoneItemHelper
         Items.Add(new TomestoneItem(TomestoneNPC.Relic, 0, 500, "Arcanite (Relic)"));
         Items.Add(new TomestoneItem(TomestoneNPC.Relic, 1, 500, "Waxing Arcanite (Relic)"));
         Items.Add(new TomestoneItem(TomestoneNPC.Relic, 2, 500, "Waning Arcanite (Relic)"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Relic, 3, 500, "Ecliptic Arcanite (Relic)"));
     }
 
     public static LinkedList<TomestoneItem> GetTomestoneItems()
