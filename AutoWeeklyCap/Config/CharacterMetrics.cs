@@ -3,20 +3,20 @@
 [Serializable]
 public class CharacterMetrics
 {
-    public uint RunsCompleted { get; private set; } = 0;
-    public ulong TimeSpentInRuns { get; private set; } = 0;
+    public uint RunsCompleted { get; set; } = 0;
+    public ulong TimeSpentInRuns { get; set; } = 0;
 
-    public uint UncappedAcquiredTomestoneCollected { get; private set; } = 0;
-    public uint WeeklyAcquiredLimitedTomestoneSpent { get; private set; } = 0;
-    public uint WeeklyAcquiredLimitedTomestoneCollected { get; private set; } = 0;
+    public uint UncappedAcquiredTomestoneCollected { get; set; } = 0;
+    public uint WeeklyAcquiredLimitedTomestoneSpent { get; set; } = 0;
+    public uint WeeklyAcquiredLimitedTomestoneCollected { get; set; } = 0;
 
-    public uint RepairsCompleted { get; private set; } = 0;
-    public uint GilSpentOnRepairs { get; private set; } = 0;
-    public uint DarkMatterSpentOnRepairs { get; private set; } = 0;
+    public uint RepairsCompleted { get; set; } = 0;
+    public uint GilSpentOnRepairs { get; set; } = 0;
+    public uint DarkMatterSpentOnRepairs { get; set; } = 0;
 
-    public uint MateriaExtracted { get; private set; } = 0;
+    public uint MateriaExtracted { get; set; } = 0;
 
-    public uint RetainersCollected { get; private set; } = 0;
+    public uint RetainersCollected { get; set; } = 0;
 
     public void IncrementRunsCounter(int durationInSeconds)
     {
