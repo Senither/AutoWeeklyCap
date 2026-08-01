@@ -9,7 +9,7 @@ using Dalamud.Utility;
 
 namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
-public static class PluginInformationAndDependenciesUI
+public static class PluginInformationAndDependenciesUi
 {
     private static readonly List<PluginInstallerHelper.PluginContext> RequiredPlugins =
     [
