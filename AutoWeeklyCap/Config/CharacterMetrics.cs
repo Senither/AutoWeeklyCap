@@ -22,6 +22,8 @@ public class CharacterMetrics
 
     public uint GilSpentOnTeleportationFees { get; set; } = 0;
 
+    public uint DeliverableItemsHandedIn { get; set; } = 0;
+
     public void IncrementRunsCounter(int durationInSeconds, uint uncappedTomesCollected = 0, uint limitedTomesCollected = 0)
     {
         RunsCompleted++;
@@ -41,4 +43,5 @@ public class CharacterMetrics
     public void IncrementMateriaCounter() => MateriaExtracted++;
     public void IncrementWeeklyTomestoneSpentCounter(uint tomestones) => WeeklyAcquiredLimitedTomestoneSpent += tomestones;
     public void IncrementGilSpentOnTeleportationFeesCounter(uint gilSpent) => GilSpentOnTeleportationFees += gilSpent;
+    public void IncrementDeliverableItemsHandedInCounter(uint deliverableItems) => DeliverableItemsHandedIn += deliverableItems;
 }

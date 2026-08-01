@@ -59,6 +59,42 @@ public static unsafe class InventoryHelper
         }
     }
 
+    internal static int GetDeliverableItemsCount()
+    {
+        var counter = 0;
+
+        try {
+            foreach (var inventoryType in Enum.GetValues<GameInventoryType>()) {
+                if (!(inventoryType.ToString().Contains("Armory", StringComparison.OrdinalIgnoreCase) || inventoryType.ToString().Contains("Inventory", StringComparison.OrdinalIgnoreCase))) {
+                    continue;
+                }
+
+                ReadOnlySpan<GameInventoryItem> items = Svc.GameInventory.GetInventoryItems(inventoryType);
+                if (items.Length == 0) {
+                    continue;
+                }
+
+                foreach (var item in items) {
+                    if (item.ItemId == 0) {
+                        continue;
+                    }
+
+                    if (!TryGetSheetItemFromGameInventoryItem(item, out var itemObj)) {
+                        continue;
+                    }
+
+                    if (itemObj.ClassJobCategory.Value.RowId > 0) {
+                        counter++;
+                    }
+                }
+            }
+
+            return counter;
+        } catch (Exception) {
+            return 0;
+        }
+    }
+
     internal static bool CanRepair(uint percent)
     {
         return (GetLowestConditionEquippedItem().Condition / 300f) <= percent;
@@ -212,6 +248,15 @@ public static unsafe class InventoryHelper
     }
 
     private static bool TryGetSheetItemFromInventoryItem(InventoryItem container, out Item item)
+    {
+        if (!Svc.Data.GetExcelSheet<Item>().TryGetRow(container.ItemId % 1000000, out item)) {
+            return false;
+        }
+
+        return item.RowId > 0;
+    }
+
+    private static bool TryGetSheetItemFromGameInventoryItem(GameInventoryItem container, out Item item)
     {
         if (!Svc.Data.GetExcelSheet<Item>().TryGetRow(container.ItemId % 1000000, out item)) {
             return false;

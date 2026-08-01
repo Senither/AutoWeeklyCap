@@ -1,6 +1,7 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
 using ECommons.Automation.NeoTaskManager;
+using ECommons.Configuration;
 using ECommons.UIHelpers.AddonMasterImplementations;
 
 namespace AutoWeeklyCap.Runner.Actions;
@@ -12,6 +13,8 @@ public class DeliverooAction : BaseAction
 
     private const int LongTaskTimeout = 450_000; // 7½ minute
     private DateTime? _lastStuckAt = null;
+
+    private const string MetricsKey = "DeliverooItems";
 
     protected override bool Run(params object[] args)
     {
@@ -29,6 +32,15 @@ public class DeliverooAction : BaseAction
         _lastStuckAt = null;
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.PriorityWorld, "GC delivery");
+
+        Enqueue(
+            () =>
+            {
+                AWC.Runner.State.SetMetric(MetricsKey, (uint)InventoryHelper.GetDeliverableItemsCount());
+                return true;
+            },
+            "prepare items metrics"
+        );
 
         Enqueue(
             () => MovementHelper.TeleportTo(GrandCompanyHelper.AetheriteName, GrandCompanyHelper.TerritoryId),
@@ -70,6 +82,25 @@ public class DeliverooAction : BaseAction
                 return false;
             }
         }, "waiting for deliveroo turn in to finish", LongTaskTimeout);
+
+        Enqueue(
+            () =>
+            {
+                if (!AWC.Runner.State.HasMetric(MetricsKey)) {
+                    return true;
+                }
+
+                uint before = AWC.Runner.State.PullMetric(MetricsKey);
+
+                AWC.Config.GetCurrentCharacterMetrics()
+                    ?.IncrementDeliverableItemsHandedInCounter((uint)(before - InventoryHelper.GetDeliverableItemsCount()));
+
+                EzConfig.Save();
+
+                return true;
+            },
+            "prepare items metrics"
+        );
 
         return true;
     }
