@@ -57,6 +57,12 @@ public static class DeveloperToolbox
         DebugButton("Stop", () => AWC.Runner.Stop());
         DebugButton("Resume", () => AWC.Runner.Resume());
         DebugButton("Abort", () => AWC.Runner.Abort());
+
+        DebugButton("Export Runner State", () =>
+        {
+            ImGui.SetClipboardText(EzConfig.DefaultSerializationFactory.Serialize(AWC.Runner.State, true));
+            Notify.Info("Runner state copied to clipboard");
+        });
     }
 
     private static void DrawRunnerDebugActions()
