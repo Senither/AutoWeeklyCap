@@ -23,4 +23,11 @@ public class CharacterMetrics
         RunsCompleted++;
         TimeSpentInRuns += (ulong)durationInSeconds;
     }
+
+    public void IncrementRepairsCounter(uint gilSpent = 0, uint darkMatterSpent = 0)
+    {
+        RepairsCompleted++;
+        GilSpentOnRepairs += gilSpent;
+        DarkMatterSpentOnRepairs += darkMatterSpent;
+    }
 }

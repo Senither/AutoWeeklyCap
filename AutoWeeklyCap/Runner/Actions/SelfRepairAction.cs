@@ -1,5 +1,7 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
+using ECommons.Configuration;
+
 using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace AutoWeeklyCap.Runner.Actions;
@@ -8,6 +10,8 @@ public class SelfRepairAction : BaseAction
 {
     protected override string Name => nameof(SelfRepairAction);
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "Repair", "SelectString"];
+
+    private const string MetricsKey = "RepairDarkMatter";
 
     protected override bool Run(params object[] args)
     {
@@ -31,6 +35,8 @@ public class SelfRepairAction : BaseAction
 
             try {
                 unsafe {
+                    AWC.Runner.State.SetMetric(MetricsKey, (uint)InventoryHelper.GetDarkMatterCount());
+
                     if (AddonHelper.TryGetReadyAddon("Repair", out _)) {
                         return true;
                     }
@@ -96,6 +102,31 @@ public class SelfRepairAction : BaseAction
 
             return false;
         }, "close window");
+
+        Enqueue(() => !PlayerHelper.IsOccupied, "wait for repair to finish");
+
+        Enqueue(() =>
+        {
+            var character = PlayerHelper.GetFullCharacterName();
+            if (character == null) {
+                return true;
+            }
+
+            uint darkMatterSpent = 0;
+
+            if (AWC.Runner.State.HasMetric(MetricsKey)) {
+                uint before = AWC.Runner.State.PullMetric(MetricsKey);
+
+                darkMatterSpent = (uint)(before - InventoryHelper.GetDarkMatterCount());
+            }
+
+            AWC.Config.GetOrRegisterCharacterOptions(character)
+                ?.Metrics
+                .IncrementRepairsCounter(darkMatterSpent: darkMatterSpent);
+
+            EzConfig.Save();
+            return true;
+        }, "update metrics");
 
         return true;
     }
