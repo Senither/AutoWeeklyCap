@@ -1,5 +1,7 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
+using ECommons.Configuration;
+
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
@@ -61,6 +63,13 @@ public class ExtractAction : BaseAction
                 } else {
                     items.RemoveAt(0);
                     AddonHelper.FireCallBack(addonMaterialize, true, 2, 0);
+
+                    var characterName = PlayerHelper.GetFullCharacterName();
+                    if (characterName != null) {
+                        AWC.Config.GetOrRegisterCharacterOptions(characterName)
+                            ?.Metrics
+                            .IncrementMateriaCounter();
+                    }
                 }
             }
 
@@ -68,6 +77,12 @@ public class ExtractAction : BaseAction
         }, "extracting materia", 180_000); // 3 minutes
 
         Enqueue(() => AddonHelper.CloseAddons(AddonsToClose), "closing window");
+
+        Enqueue(() =>
+        {
+            EzConfig.Save();
+            return true;
+        }, "saving metrics");
 
         return true;
     }

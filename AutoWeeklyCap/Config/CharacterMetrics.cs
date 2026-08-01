@@ -1,4 +1,6 @@
-﻿namespace AutoWeeklyCap.Config;
+﻿// ReSharper disable ArrangeMethodOrOperatorBody
+
+namespace AutoWeeklyCap.Config;
 
 [Serializable]
 public class CharacterMetrics
@@ -30,4 +32,6 @@ public class CharacterMetrics
         GilSpentOnRepairs += gilSpent;
         DarkMatterSpentOnRepairs += darkMatterSpent;
     }
+
+    public void IncrementMateriaCounter() => MateriaExtracted++;
 }
