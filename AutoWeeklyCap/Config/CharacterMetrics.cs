@@ -20,10 +20,13 @@ public class CharacterMetrics
 
     public uint RetainersCollected { get; set; } = 0;
 
-    public void IncrementRunsCounter(int durationInSeconds)
+    public void IncrementRunsCounter(int durationInSeconds, uint uncappedTomesCollected = 0, uint limitedTomesCollected = 0)
     {
         RunsCompleted++;
         TimeSpentInRuns += (ulong)durationInSeconds;
+
+        UncappedAcquiredTomestoneCollected += uncappedTomesCollected;
+        WeeklyAcquiredLimitedTomestoneCollected += limitedTomesCollected;
     }
 
     public void IncrementRepairsCounter(uint gilSpent = 0, uint darkMatterSpent = 0)
