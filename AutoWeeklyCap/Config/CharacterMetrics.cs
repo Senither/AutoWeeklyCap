@@ -37,4 +37,5 @@ public class CharacterMetrics
     }
 
     public void IncrementMateriaCounter() => MateriaExtracted++;
+    public void IncrementWeeklyTomestoneSpentCounter(uint tomestones) => WeeklyAcquiredLimitedTomestoneSpent += tomestones;
 }

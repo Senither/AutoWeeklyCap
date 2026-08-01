@@ -1,5 +1,7 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
+using ECommons.Configuration;
+
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 // ReSharper disable InconsistentNaming
@@ -29,6 +31,8 @@ public class AutoSpendTomestoneAction : BaseAction
     // Pointers for game instances to open and interact with windows
     private unsafe AtkUnitBase* AddonSelectIconString = null;
     private unsafe AtkUnitBase* AddonShopExchangeCurrency = null;
+
+    private const string MetricsKey = "TomestonesSpent";
 
     protected override bool Run(params object[] args)
     {
@@ -73,6 +77,12 @@ public class AutoSpendTomestoneAction : BaseAction
         LogDebug($"Queueing buy attempt tasks for: [position: {position}, territory: {territoryID}, aetherite: {aetheriteName}, vendorId: {vendorId}, sectionId: {sectionId}]");
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.VentureDeliveryMoogle, "Spending tomestones");
+
+        Enqueue(() =>
+        {
+            AWC.Runner.State.SetMetric(MetricsKey, (uint)CurrencyHelper.GetUncappedAcquiredTomestoneCount());
+            return true;
+        }, "store tomestone metrics");
 
         Enqueue(() =>
         {
@@ -177,6 +187,22 @@ public class AutoSpendTomestoneAction : BaseAction
 
             return false;
         }, "close window");
+
+        Enqueue(() =>
+        {
+            uint tomestones = 0;
+
+            if (AWC.Runner.State.HasMetric(MetricsKey)) {
+                uint before = AWC.Runner.State.PullMetric(MetricsKey);
+
+                tomestones = (uint)(before - CurrencyHelper.GetUncappedAcquiredTomestoneCount());
+            }
+
+            AWC.Config.GetCurrentCharacterMetrics()?.IncrementWeeklyTomestoneSpentCounter(tomestones);
+            EzConfig.Save();
+
+            return true;
+        }, "update metrics");
 
         return true;
     }
