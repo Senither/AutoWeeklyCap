@@ -17,6 +17,8 @@ public class CharacterOptions
     public List<int> LastDutyDurationsSeconds { get; set; } = [];
     public Dictionary<PlayerJob, int> JobLevels { get; set; } = new();
 
+    public CharacterMetrics Metrics { get; set; } = new();
+
     private const int MaxDutySamples = 5;
 
     /// <summary>
