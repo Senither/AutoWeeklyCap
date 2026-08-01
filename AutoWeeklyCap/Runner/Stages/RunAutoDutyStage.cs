@@ -68,9 +68,7 @@ public class RunAutoDutyStage : BaseStage
             int durationSeconds = (int)(DateTime.UtcNow - state.CurrentDutyStartUtc.Value).TotalSeconds;
             LogDebug($"Finished the run in {durationSeconds} seconds");
 
-            AWC.Config.GetOrRegisterCharacterOptions(state.CurrentCharacter)
-                ?.Metrics
-                .IncrementRunsCounter(durationSeconds);
+            AWC.Config.GetCurrentCharacterMetrics()?.IncrementRunsCounter(durationSeconds);
 
             if (state.IsInNormalMode()) {
                 AWC.Config.GetOrRegisterCharacterOptions(state.CurrentCharacter)?.AddDutyDurationSeconds(durationSeconds);

@@ -107,11 +107,6 @@ public class SelfRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            var character = PlayerHelper.GetFullCharacterName();
-            if (character == null) {
-                return true;
-            }
-
             uint darkMatterSpent = 0;
 
             if (AWC.Runner.State.HasMetric(MetricsKey)) {
@@ -120,11 +115,9 @@ public class SelfRepairAction : BaseAction
                 darkMatterSpent = (uint)(before - InventoryHelper.GetDarkMatterCount());
             }
 
-            AWC.Config.GetOrRegisterCharacterOptions(character)
-                ?.Metrics
-                .IncrementRepairsCounter(darkMatterSpent: darkMatterSpent);
-
+            AWC.Config.GetCurrentCharacterMetrics()?.IncrementRepairsCounter(darkMatterSpent: darkMatterSpent);
             EzConfig.Save();
+
             return true;
         }, "update metrics");
 

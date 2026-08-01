@@ -63,13 +63,7 @@ public class ExtractAction : BaseAction
                 } else {
                     items.RemoveAt(0);
                     AddonHelper.FireCallBack(addonMaterialize, true, 2, 0);
-
-                    var characterName = PlayerHelper.GetFullCharacterName();
-                    if (characterName != null) {
-                        AWC.Config.GetOrRegisterCharacterOptions(characterName)
-                            ?.Metrics
-                            .IncrementMateriaCounter();
-                    }
+                    AWC.Config.GetCurrentCharacterMetrics()?.IncrementMateriaCounter();
                 }
             }
 

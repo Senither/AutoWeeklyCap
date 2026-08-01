@@ -147,11 +147,6 @@ public class NpcRepairAction : BaseAction
 
         Enqueue(() =>
         {
-            var character = PlayerHelper.GetFullCharacterName();
-            if (character == null) {
-                return true;
-            }
-
             uint gilSpent = 0;
 
             if (AWC.Runner.State.HasMetric(MetricsKey)) {
@@ -160,11 +155,9 @@ public class NpcRepairAction : BaseAction
                 gilSpent = (uint)(before - CurrencyHelper.GetGil());
             }
 
-            AWC.Config.GetOrRegisterCharacterOptions(character)
-                ?.Metrics
-                .IncrementRepairsCounter(gilSpent: gilSpent);
-
+            AWC.Config.GetCurrentCharacterMetrics()?.IncrementRepairsCounter(gilSpent: gilSpent);
             EzConfig.Save();
+
             return true;
         }, "update metrics");
 

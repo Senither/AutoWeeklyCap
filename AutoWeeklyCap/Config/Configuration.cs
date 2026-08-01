@@ -277,6 +277,15 @@ public class Configuration : IPluginConfiguration
         return Characters[character];
     }
 
+    public CharacterMetrics? GetCurrentCharacterMetrics()
+    {
+        var character = PlayerHelper.GetFullCharacterName();
+
+        return character == null
+            ? null
+            : GetOrRegisterCharacterOptions(character)?.Metrics;
+    }
+
     public void SetColorTheme(ColorTheme theme)
     {
         SelectedColorTheme = theme;
