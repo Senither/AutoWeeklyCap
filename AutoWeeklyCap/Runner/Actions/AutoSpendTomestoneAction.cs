@@ -84,33 +84,10 @@ public class AutoSpendTomestoneAction : BaseAction
             return true;
         }, "store tomestone metrics");
 
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500)) {
-                return false;
-            }
-
-            if (Player.Territory.RowId == territoryID) {
-                return true;
-            }
-
-            if (LifestreamIPC.IsBusy()) {
-                return false;
-            }
-
-            LifestreamIPC.ExecuteCommand(aetheriteName);
-
-            return true;
-        }, "start moving to territory");
-
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500)) {
-                return false;
-            }
-
-            return Player.Territory.RowId == territoryID && PlayerHelper.IsReady && !LifestreamIPC.IsBusy();
-        }, "waiting for player to be in territory");
+        Enqueue(
+            () => MovementHelper.TeleportTo(aetheriteName, territoryID),
+            "start moving to territory"
+        );
 
         Enqueue(
             () => MovementHelper.MoveTo(position),

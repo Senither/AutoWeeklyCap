@@ -23,9 +23,7 @@ public class LifestreamIPC
 
     [EzIPC] internal static Func<bool> IsBusy;
     [EzIPC] internal static Func<string, string, ErrorCode> ChangeCharacter;
-    [EzIPC] internal static Func<string, bool> AethernetTeleport;
     [EzIPC] internal static Action<string> ExecuteCommand;
-    [EzIPC] internal static Action<bool> EnterApartment;
     [EzIPC] internal static Func<bool> HasApartment;
     [EzIPC] internal static Func<bool> HasPrivateHouse;
     [EzIPC] internal static Func<bool> HasFreeCompanyHouse;

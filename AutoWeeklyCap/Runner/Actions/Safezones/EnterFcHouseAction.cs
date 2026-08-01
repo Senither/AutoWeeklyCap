@@ -109,24 +109,12 @@ public class EnterFcHouseAction : BaseAction
 
     private void TeleportToFreeCompany()
     {
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToFCHousePlot", 500)) {
-                return false;
-            }
-
-            if (LifestreamIPC.IsBusy()) {
-                return false;
-            }
-
-            LifestreamIPC.ExecuteCommand(LifestreamFcCommand);
-            return true;
-        }, "teleport to FC plot");
-
         Enqueue(
-            () => IsInFcHouseTerritory() && PlayerHelper.IsReady && !LifestreamIPC.IsBusy(),
-            "wait for FC plot teleport",
-            LongTaskTimeout
+            () => MovementHelper.TeleportTo(
+                LifestreamFcCommand,
+                () => IsInFcHouseTerritory() && PlayerHelper.IsReady && !LifestreamIPC.IsBusy()
+            ),
+            "teleport to FC plot"
         );
     }
 

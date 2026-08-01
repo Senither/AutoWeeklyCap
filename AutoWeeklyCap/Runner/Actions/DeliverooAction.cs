@@ -30,33 +30,10 @@ public class DeliverooAction : BaseAction
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.PriorityWorld, "GC delivery");
 
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
-                return false;
-            }
-
-            if (Player.Territory.RowId == GrandCompanyHelper.TerritoryId) {
-                return true;
-            }
-
-            if (LifestreamIPC.IsBusy()) {
-                return false;
-            }
-
-            LifestreamIPC.ExecuteCommand(GrandCompanyHelper.AetheriteName);
-
-            return true;
-        }, "start moving to gc territory");
-
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
-                return false;
-            }
-
-            return Player.Territory.RowId == GrandCompanyHelper.TerritoryId && PlayerHelper.IsReady;
-        }, "waiting for player to be in gc territory");
+        Enqueue(
+            () => MovementHelper.TeleportTo(GrandCompanyHelper.AetheriteName, GrandCompanyHelper.TerritoryId),
+            "start moving to territory"
+        );
 
         Enqueue(
             () => MovementHelper.MoveTo(GrandCompanyHelper.TurnInLocation),
