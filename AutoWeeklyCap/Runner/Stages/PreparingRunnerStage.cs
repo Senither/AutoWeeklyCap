@@ -106,7 +106,14 @@ public class PreparingRunnerStage : BaseStage
 
     private bool SwitchCharacterJob(RunnerState state, PlayerJob? playerJob)
     {
+        if (!EzThrottler.Throttle("SwitchPlayerJobAttempt", 250)) {
+            return false;
+        }
+
+        state.IncrementPlayerJobSwitchAttempts();
+
         if (playerJob == null || playerJob.Value.IsAlreadyOnJob() || playerJob.Value.SwitchToJob()) {
+            state.ResetPlayerJobSwitchAttempts();
             state.SetArmoryChestReliefAttempted(false);
             return true;
         }
@@ -120,6 +127,7 @@ public class PreparingRunnerStage : BaseStage
                     return false;
                 }
 
+                state.ResetPlayerJobSwitchAttempts();
                 addon.Yes();
 
                 AWC.TaskManager.EnqueueDelay(1000);
@@ -131,6 +139,10 @@ public class PreparingRunnerStage : BaseStage
 
                 return true;
             }
+        }
+
+        if (state.PlayerJobSwitchAttempts <= 5) {
+            return false;
         }
 
         if (!InventoryHelper.IsAtleastOneArmoryChestSlotFull()) {

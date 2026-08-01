@@ -17,6 +17,7 @@ public class RunnerState
 
     public bool UsingBossModRebornAi { get; private set; } = false;
     public bool ArmoryChestReliefAttempted { get; private set; } = false;
+    public int PlayerJobSwitchAttempts { get; private set; } = 0;
 
     public DateTime? CurrentDutyStartUtc { get; private set; } = null;
 
@@ -35,6 +36,7 @@ public class RunnerState
 
         UsingBossModRebornAi = false;
         ArmoryChestReliefAttempted = false;
+        PlayerJobSwitchAttempts = 0;
 
         CurrentDutyStartUtc = null;
     }
@@ -58,6 +60,9 @@ public class RunnerState
 
     public void SetUsingBossModRebornAi(bool state) => UsingBossModRebornAi = state;
     public void SetArmoryChestReliefAttempted(bool state) => ArmoryChestReliefAttempted = state;
+
+    public void IncrementPlayerJobSwitchAttempts() => PlayerJobSwitchAttempts++;
+    public void ResetPlayerJobSwitchAttempts() => PlayerJobSwitchAttempts = 0;
 
     public void ResetRunsTrackers()
     {
