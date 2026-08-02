@@ -7,7 +7,9 @@ using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.UI.Dtr;
 using AutoWeeklyCap.UI.Windows;
 
+using Dalamud;
 using Dalamud.Game.Command;
+using Dalamud.Interface.ManagedFontAtlas;
 using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
@@ -94,6 +96,8 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
         _ = new TickScheduler(() =>
         {
+            Theme.RegisterFonts();
+
             DtrStatusBar.Start();
 
             Log.Debug($"AWC#Startup - StartRunnerOnBoot: {Config.StartRunnerOnBoot}");
@@ -118,6 +122,8 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
         DtrStatusBar.Dispose();
         TaskManager.Dispose();
+
+        Theme.Dispose();
 
         ECommonsMain.Dispose();
         IPCSubscriber.Dispose();
