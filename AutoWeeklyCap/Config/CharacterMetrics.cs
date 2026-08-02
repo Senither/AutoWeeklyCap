@@ -41,6 +41,7 @@ public class CharacterMetrics
     }
 
     public void IncrementMateriaCounter() => MateriaExtracted++;
+    public void IncrementRetainersCollected(uint retainers) => RetainersCollected += retainers;
     public void IncrementWeeklyTomestoneSpentCounter(uint tomestones) => WeeklyAcquiredLimitedTomestoneSpent += tomestones;
     public void IncrementGilSpentOnTeleportationFeesCounter(uint gilSpent) => GilSpentOnTeleportationFees += gilSpent;
     public void IncrementDeliverableItemsHandedInCounter(uint deliverableItems) => DeliverableItemsHandedIn += deliverableItems;
