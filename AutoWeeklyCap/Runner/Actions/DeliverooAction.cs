@@ -1,6 +1,7 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
 using ECommons.Automation.NeoTaskManager;
+using ECommons.Configuration;
 using ECommons.UIHelpers.AddonMasterImplementations;
 
 namespace AutoWeeklyCap.Runner.Actions;
@@ -12,6 +13,8 @@ public class DeliverooAction : BaseAction
 
     private const int LongTaskTimeout = 450_000; // 7½ minute
     private DateTime? _lastStuckAt = null;
+
+    private const string MetricsKey = "DeliverooItems";
 
     protected override bool Run(params object[] args)
     {
@@ -30,33 +33,19 @@ public class DeliverooAction : BaseAction
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.PriorityWorld, "GC delivery");
 
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
-                return false;
-            }
-
-            if (Player.Territory.RowId == GrandCompanyHelper.TerritoryId) {
+        Enqueue(
+            () =>
+            {
+                AWC.Runner.State.SetMetric(MetricsKey, (uint)InventoryHelper.GetDeliverableItemsCount());
                 return true;
-            }
+            },
+            "prepare items metrics"
+        );
 
-            if (LifestreamIPC.IsBusy()) {
-                return false;
-            }
-
-            LifestreamIPC.ExecuteCommand(GrandCompanyHelper.AetheriteName);
-
-            return true;
-        }, "start moving to gc territory");
-
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
-                return false;
-            }
-
-            return Player.Territory.RowId == GrandCompanyHelper.TerritoryId && PlayerHelper.IsReady;
-        }, "waiting for player to be in gc territory");
+        Enqueue(
+            () => MovementHelper.TeleportTo(GrandCompanyHelper.AetheriteName, GrandCompanyHelper.TerritoryId),
+            "start moving to territory"
+        );
 
         Enqueue(
             () => MovementHelper.MoveTo(GrandCompanyHelper.TurnInLocation),
@@ -93,6 +82,25 @@ public class DeliverooAction : BaseAction
                 return false;
             }
         }, "waiting for deliveroo turn in to finish", LongTaskTimeout);
+
+        Enqueue(
+            () =>
+            {
+                if (!AWC.Runner.State.HasMetric(MetricsKey)) {
+                    return true;
+                }
+
+                uint before = AWC.Runner.State.PullMetric(MetricsKey);
+
+                AWC.Config.GetCurrentCharacterMetrics()
+                    ?.IncrementDeliverableItemsHandedInCounter((uint)(before - InventoryHelper.GetDeliverableItemsCount()));
+
+                EzConfig.Save();
+
+                return true;
+            },
+            "prepare items metrics"
+        );
 
         return true;
     }

@@ -68,10 +68,27 @@ public class RunAutoDutyStage : BaseStage
             int durationSeconds = (int)(DateTime.UtcNow - state.CurrentDutyStartUtc.Value).TotalSeconds;
             LogDebug($"Finished the run in {durationSeconds} seconds");
 
+            uint uncappedTomes = 0;
+            if (state.HasMetric(Constants.MetricUncappedAcquiredTomestoneKey)) {
+                uncappedTomes = (uint)(CurrencyHelper.GetUncappedAcquiredTomestoneCount() - state.PullMetric(Constants.MetricUncappedAcquiredTomestoneKey));
+            }
+
+            uint limitedTomes = 0;
+            if (state.HasMetric(Constants.MetricWeeklyAcquiredLimitedTomestoneKey)) {
+                limitedTomes = (uint)(CurrencyHelper.GetWeeklyAcquiredLimitedTomestoneCount() - state.PullMetric(Constants.MetricWeeklyAcquiredLimitedTomestoneKey));
+            }
+
+            AWC.Config.GetCurrentCharacterMetrics()?.IncrementRunsCounter(
+                durationInSeconds: durationSeconds,
+                uncappedTomesCollected: uncappedTomes,
+                limitedTomesCollected: limitedTomes
+            );
+
             if (state.IsInNormalMode()) {
                 AWC.Config.GetOrRegisterCharacterOptions(state.CurrentCharacter)?.AddDutyDurationSeconds(durationSeconds);
-                EzConfig.Save();
             }
+
+            EzConfig.Save();
         }
 
         if (state.StoppingGracefully && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnRunnerStopped) {

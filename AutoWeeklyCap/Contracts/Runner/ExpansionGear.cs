@@ -39,33 +39,10 @@ public abstract class ExpansionGear : QueueableAction
 
     private void MoveToTerritory()
     {
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToGearTerritory", 500)) {
-                return false;
-            }
-
-            if (Player.Territory.RowId == TerritoryDataId) {
-                return true;
-            }
-
-            if (LifestreamIPC.IsBusy()) {
-                return false;
-            }
-
-            LifestreamIPC.ExecuteCommand(TerritoryAetheriteName);
-
-            return true;
-        }, "start moving to territory");
-
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToGearTerritory", 500)) {
-                return false;
-            }
-
-            return Player.Territory.RowId == TerritoryDataId && PlayerHelper.IsReady && !LifestreamIPC.IsBusy();
-        }, "waiting for player to be in territory");
+        Enqueue(
+            () => MovementHelper.TeleportTo(TerritoryAetheriteName, TerritoryDataId),
+            "start moving to territory"
+        );
     }
 
     private void MoveToVendor(ItemSlot slot)

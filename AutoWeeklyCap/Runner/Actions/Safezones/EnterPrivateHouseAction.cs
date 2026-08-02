@@ -109,24 +109,12 @@ public class EnterPrivateHouseAction : BaseAction
 
     private void TeleportToPrivateHouse()
     {
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToPrivateHousePlot", 500)) {
-                return false;
-            }
-
-            if (LifestreamIPC.IsBusy()) {
-                return false;
-            }
-
-            LifestreamIPC.ExecuteCommand(LifestreamHomeCommand);
-            return true;
-        }, "teleport to house plot");
-
         Enqueue(
-            () => IsInPrivateHouseTerritory() && PlayerHelper.IsReady && !LifestreamIPC.IsBusy(),
-            "wait for house plot teleport",
-            LongTaskTimeout
+            () => MovementHelper.TeleportTo(
+                LifestreamHomeCommand,
+                () => IsInPrivateHouseTerritory() && PlayerHelper.IsReady && !LifestreamIPC.IsBusy()
+            ),
+            "teleport to house plot"
         );
     }
 

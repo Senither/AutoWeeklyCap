@@ -1,5 +1,7 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
+using ECommons.Configuration;
+
 namespace AutoWeeklyCap.Runner.Actions;
 
 public class NpcRepairAction : BaseAction
@@ -8,6 +10,7 @@ public class NpcRepairAction : BaseAction
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectIconString", "Repair", "SelectString"];
 
     private const int LongTaskTimeout = 120_000;
+    private const string MetricsKey = "RepairGil";
 
     protected override bool Run(params object[] args)
     {
@@ -25,33 +28,10 @@ public class NpcRepairAction : BaseAction
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.Blacksmith, "Repairing gear");
 
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
-                return false;
-            }
-
-            if (Player.Territory.RowId == GrandCompanyHelper.TerritoryId) {
-                return true;
-            }
-
-            if (LifestreamIPC.IsBusy()) {
-                return false;
-            }
-
-            LifestreamIPC.ExecuteCommand(GrandCompanyHelper.AetheriteName);
-
-            return true;
-        }, "start moving to gc territory");
-
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToGcTerritory", 500)) {
-                return false;
-            }
-
-            return Player.Territory.RowId == GrandCompanyHelper.TerritoryId && PlayerHelper.IsReady;
-        }, "waiting for player to be in gc territory");
+        Enqueue(
+            () => MovementHelper.TeleportTo(GrandCompanyHelper.AetheriteName, GrandCompanyHelper.TerritoryId),
+            "start moving to territory"
+        );
 
         Enqueue(
             () => MovementHelper.MoveTo(GrandCompanyHelper.RepairVendorLocation),
@@ -67,6 +47,8 @@ public class NpcRepairAction : BaseAction
 
             try {
                 unsafe {
+                    AWC.Runner.State.SetMetric(MetricsKey, (uint)CurrencyHelper.GetGil());
+
                     var vendor = ObjectHelper.FindGameObject(GrandCompanyHelper.RepairVendorId, GrandCompanyHelper.RepairVendorLocation);
                     if (vendor == null) {
                         return false;
@@ -139,6 +121,22 @@ public class NpcRepairAction : BaseAction
 
             return false;
         }, "close window");
+
+        Enqueue(() =>
+        {
+            uint gilSpent = 0;
+
+            if (AWC.Runner.State.HasMetric(MetricsKey)) {
+                uint before = AWC.Runner.State.PullMetric(MetricsKey);
+
+                gilSpent = (uint)(before - CurrencyHelper.GetGil());
+            }
+
+            AWC.Config.GetCurrentCharacterMetrics()?.IncrementRepairsCounter(gilSpent: gilSpent);
+            EzConfig.Save();
+
+            return true;
+        }, "update metrics");
 
         return true;
     }

@@ -1,5 +1,7 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
+using ECommons.Configuration;
+
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 // ReSharper disable InconsistentNaming
@@ -29,6 +31,8 @@ public class AutoSpendTomestoneAction : BaseAction
     // Pointers for game instances to open and interact with windows
     private unsafe AtkUnitBase* AddonSelectIconString = null;
     private unsafe AtkUnitBase* AddonShopExchangeCurrency = null;
+
+    private const string MetricsKey = "TomestonesSpent";
 
     protected override bool Run(params object[] args)
     {
@@ -76,31 +80,14 @@ public class AutoSpendTomestoneAction : BaseAction
 
         Enqueue(() =>
         {
-            if (!EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500)) {
-                return false;
-            }
-
-            if (Player.Territory.RowId == territoryID) {
-                return true;
-            }
-
-            if (LifestreamIPC.IsBusy()) {
-                return false;
-            }
-
-            LifestreamIPC.ExecuteCommand(aetheriteName);
-
+            AWC.Runner.State.SetMetric(MetricsKey, (uint)CurrencyHelper.GetUncappedAcquiredTomestoneCount());
             return true;
-        }, "start moving to territory");
+        }, "store tomestone metrics");
 
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500)) {
-                return false;
-            }
-
-            return Player.Territory.RowId == territoryID && PlayerHelper.IsReady && !LifestreamIPC.IsBusy();
-        }, "waiting for player to be in territory");
+        Enqueue(
+            () => MovementHelper.TeleportTo(aetheriteName, territoryID),
+            "start moving to territory"
+        );
 
         Enqueue(
             () => MovementHelper.MoveTo(position),
@@ -177,6 +164,22 @@ public class AutoSpendTomestoneAction : BaseAction
 
             return false;
         }, "close window");
+
+        Enqueue(() =>
+        {
+            uint tomestones = 0;
+
+            if (AWC.Runner.State.HasMetric(MetricsKey)) {
+                uint before = AWC.Runner.State.PullMetric(MetricsKey);
+
+                tomestones = (uint)(before - CurrencyHelper.GetUncappedAcquiredTomestoneCount());
+            }
+
+            AWC.Config.GetCurrentCharacterMetrics()?.IncrementWeeklyTomestoneSpentCounter(tomestones);
+            EzConfig.Save();
+
+            return true;
+        }, "update metrics");
 
         return true;
     }

@@ -21,6 +21,8 @@ public class RunnerState
 
     public DateTime? CurrentDutyStartUtc { get; private set; } = null;
 
+    private Dictionary<string, uint> Metrics { get; } = new();
+
     public void Reset()
     {
         StoppingGracefully = false;
@@ -39,6 +41,8 @@ public class RunnerState
         PlayerJobSwitchAttempts = 0;
 
         CurrentDutyStartUtc = null;
+
+        Metrics.Clear();
     }
 
     public bool IsRunning() => CurrentStage != Stage.Waiting;
@@ -63,6 +67,10 @@ public class RunnerState
 
     public void IncrementPlayerJobSwitchAttempts() => PlayerJobSwitchAttempts++;
     public void ResetPlayerJobSwitchAttempts() => PlayerJobSwitchAttempts = 0;
+
+    public void SetMetric(string key, uint value) => Metrics[key] = value;
+    public bool HasMetric(string key) => Metrics.ContainsKey(key);
+    public uint PullMetric(string key) => Metrics.Remove(key, out var metric) ? metric : 0;
 
     public void ResetRunsTrackers()
     {

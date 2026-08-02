@@ -10,8 +10,9 @@ public enum SettingsWindowOption
     Characters = 1,
     RunnerOptions = 2,
     StopOptions = 3,
-    Changelog = 4,
-    PluginInformationAndDependencies = 5,
+    Statistics = 4,
+    Changelog = 5,
+    PluginInformationAndDependencies = 6,
 
     DeveloperToolbox = 99,
 }
@@ -28,6 +29,7 @@ public static class SettingsWindowOptionsExtensions
                 SettingsWindowOption.Characters => "Characters",
                 SettingsWindowOption.RunnerOptions => "Runner Options",
                 SettingsWindowOption.StopOptions => "Stop Actions",
+                SettingsWindowOption.Statistics => "Statistics",
                 SettingsWindowOption.Changelog => "Changelog",
                 SettingsWindowOption.PluginInformationAndDependencies => "About & Dependencies",
                 SettingsWindowOption.DeveloperToolbox => "Developer Toolbox",
@@ -43,6 +45,7 @@ public static class SettingsWindowOptionsExtensions
                 SettingsWindowOption.Characters => FontAwesomeIcon.Users,
                 SettingsWindowOption.RunnerOptions => FontAwesomeIcon.Gamepad,
                 SettingsWindowOption.StopOptions => FontAwesomeIcon.StopCircle,
+                SettingsWindowOption.Statistics => FontAwesomeIcon.ChartLine,
                 SettingsWindowOption.Changelog => FontAwesomeIcon.List,
                 SettingsWindowOption.PluginInformationAndDependencies => FontAwesomeIcon.InfoCircle,
                 SettingsWindowOption.DeveloperToolbox => FontAwesomeIcon.Code,
@@ -74,11 +77,14 @@ public static class SettingsWindowOptionsExtensions
                 case SettingsWindowOption.StopOptions:
                     StopActionsUi.Draw();
                     break;
+                case SettingsWindowOption.Statistics:
+                    StatisticsUi.Draw();
+                    break;
                 case SettingsWindowOption.Changelog:
-                    ChangelogUI.Draw();
+                    ChangelogUi.Draw();
                     break;
                 case SettingsWindowOption.PluginInformationAndDependencies:
-                    PluginInformationAndDependenciesUI.Draw();
+                    PluginInformationAndDependenciesUi.Draw();
                     break;
                 case SettingsWindowOption.DeveloperToolbox:
                     DeveloperToolbox.Draw();

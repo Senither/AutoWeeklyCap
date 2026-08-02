@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
-public static class ChangelogUI
+public static class ChangelogUi
 {
     private const string ChangelogUrl = "https://dalamud-plugins.senither.com/changelog/Senither/AutoWeeklyCap.json";
     private static readonly TimeSpan RefreshInterval = TimeSpan.FromMinutes(30);

@@ -8,6 +8,7 @@ public class EnterApartmentAction : BaseAction
     protected override string[] AddonsToClose { get; } = ["SelectYesno", "SelectString", "HousingMenu"];
 
     private const int LongTaskTimeout = 120_000;
+    private const string LifestreamApartmentCommand = "Apartment";
 
     protected override bool Run(params object[] args)
     {
@@ -26,24 +27,12 @@ public class EnterApartmentAction : BaseAction
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.WatchingCutscene, "Entering apartment");
 
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToApartmentPlot", 500)) {
-                return false;
-            }
-
-            if (LifestreamIPC.IsBusy()) {
-                return false;
-            }
-
-            LifestreamIPC.EnterApartment(true);
-            return true;
-        }, "teleport to apartment");
-
         Enqueue(
-            () => HousingHelper.IsInsideApartment() && PlayerHelper.IsReady && !LifestreamIPC.IsBusy(),
-            "wait for apartment teleport",
-            LongTaskTimeout
+            () => MovementHelper.TeleportTo(
+                LifestreamApartmentCommand,
+                () => HousingHelper.IsInsideApartment() && PlayerHelper.IsReady && !LifestreamIPC.IsBusy()
+            ),
+            "teleport to apartment"
         );
 
         return true;

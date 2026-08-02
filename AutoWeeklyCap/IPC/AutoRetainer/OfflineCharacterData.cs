@@ -11,9 +11,10 @@ namespace AutoWeeklyCap.IPC.AutoRetainer;
 public class OfflineCharacterData
 {
     public ulong CID = 0;
+    public bool Enabled = false;
     public string Name = "Unknown";
     public string World = "";
-    public bool Enabled = false;
+    public List<OfflineRetainerData> RetainerData = [];
 
     [SuppressMessage("Performance", "CA1822:Mark members as static")]
     public bool ShouldSerializeIdentity()

@@ -41,33 +41,10 @@ public class BuyFoodAction : BaseAction
         LocationManager.Reset();
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.OrangeDiamond, "Buying Food");
 
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToTerritory", 500)) {
-                return false;
-            }
-
-            if (Player.Territory.RowId == VendorTerritoryID) {
-                return true;
-            }
-
-            if (LifestreamIPC.IsBusy()) {
-                return false;
-            }
-
-            LifestreamIPC.ExecuteCommand(AetheriteName);
-
-            return true;
-        }, "start moving to territory");
-
-        Enqueue(() =>
-        {
-            if (!EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500)) {
-                return false;
-            }
-
-            return Player.Territory.RowId == VendorTerritoryID && PlayerHelper.IsReady && !LifestreamIPC.IsBusy();
-        }, "waiting for player to be in territory");
+        Enqueue(
+            () => MovementHelper.TeleportTo(AetheriteName, VendorTerritoryID),
+            "start moving to territory"
+        );
 
         Enqueue(
             () => MovementHelper.MoveTo(VendorPosition),

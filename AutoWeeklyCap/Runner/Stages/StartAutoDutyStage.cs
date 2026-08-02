@@ -54,6 +54,9 @@ public class StartAutoDutyStage : BaseStage
             state.ChangeStageTo(Stage.RunningAutoDuty);
             state.UpsertCurrentDutyStartUtc(DateTime.UtcNow);
 
+            state.SetMetric(Constants.MetricUncappedAcquiredTomestoneKey, (uint)CurrencyHelper.GetUncappedAcquiredTomestoneCount());
+            state.SetMetric(Constants.MetricWeeklyAcquiredLimitedTomestoneKey, (uint)CurrencyHelper.GetWeeklyAcquiredLimitedTomestoneCount());
+
             if (AutoDutyIPC.IsStopped()) {
                 AutoDutyIPC.Run(DutyZone.GetZoneId(state.LevelingMode), 1, false);
             }

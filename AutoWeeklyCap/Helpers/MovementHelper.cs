@@ -1,5 +1,6 @@
 ﻿using ECommons.Automation.NeoTaskManager;
 using ECommons.Automation.NeoTaskManager.Tasks;
+using ECommons.Configuration;
 
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -14,6 +15,8 @@ public static class MovementHelper
 
     private static readonly TimeSpan StuckCheckWindow = TimeSpan.FromSeconds(3);
     private const float MinimumMovementDistance = 0.45f;
+
+    private const string MetricsKey = "TeleportationFees";
 
     public static bool MoveTo(Vector3? position)
     {
@@ -76,6 +79,131 @@ public static class MovementHelper
             ),
             new DelayTask(250)
         );
+    }
+
+    public static bool TeleportTo(string aetheriteName, uint territoryId, int timeLimitMs = 90_000)
+    {
+        if (aetheriteName.Trim().Length == 0 || territoryId == 0) {
+            return false;
+        }
+
+        if (!LifestreamIPC.IsEnabled) {
+            return false;
+        }
+
+        if (!PlayerHelper.IsReady) {
+            return false;
+        }
+
+        AWC.TaskManager.InsertMulti(
+            new TaskManagerTask(
+                () => AWC.Runner.State.SetMetric(MetricsKey, (uint)CurrencyHelper.GetGil()),
+                "MovementHelper: prepare teleportation metrics",
+                new TaskManagerConfiguration(timeLimitMs)
+            ),
+            new TaskManagerTask(
+                () => TeleportToLocation(aetheriteName, territoryId),
+                "MovementHelper: start teleporting to location",
+                new TaskManagerConfiguration(timeLimitMs)
+            ),
+            new TaskManagerTask(
+                () => CheckForTeleportationArrival(territoryId),
+                "MovementHelper: wait for teleporting arrival",
+                new TaskManagerConfiguration(timeLimitMs)
+            ),
+            new TaskManagerTask(
+                UpdateTeleportationMetrics,
+                "MovementHelper: update teleportation metrics",
+                new TaskManagerConfiguration(timeLimitMs)
+            ),
+            new DelayTask(250)
+        );
+
+        return true;
+    }
+
+    public static bool TeleportTo(string aetheriteName, Func<bool> teleportationCondition, int timeLimitMs = 90_000)
+    {
+        if (aetheriteName.Trim().Length == 0) {
+            return false;
+        }
+
+        if (!LifestreamIPC.IsEnabled) {
+            return false;
+        }
+
+        if (!PlayerHelper.IsReady) {
+            return false;
+        }
+
+        AWC.TaskManager.InsertMulti(
+            new TaskManagerTask(
+                () => AWC.Runner.State.SetMetric(MetricsKey, (uint)CurrencyHelper.GetGil()),
+                "MovementHelper: prepare teleportation metrics",
+                new TaskManagerConfiguration(timeLimitMs)
+            ),
+            new TaskManagerTask(
+                () => TeleportToLocation(aetheriteName),
+                "MovementHelper: start teleporting to location",
+                new TaskManagerConfiguration(timeLimitMs)
+            ),
+            new TaskManagerTask(
+                teleportationCondition.Invoke,
+                "MovementHelper: wait for teleporting arrival",
+                new TaskManagerConfiguration(timeLimitMs)
+            ),
+            new TaskManagerTask(
+                UpdateTeleportationMetrics,
+                "MovementHelper: update teleportation metrics",
+                new TaskManagerConfiguration(timeLimitMs)
+            ),
+            new DelayTask(250)
+        );
+
+        return true;
+    }
+
+    private static bool TeleportToLocation(string aetheriteName)
+    {
+        if (!EzThrottler.Throttle("NavigatingToTerritory", 500)) {
+            return false;
+        }
+
+        if (LifestreamIPC.IsBusy()) {
+            return false;
+        }
+
+        LifestreamIPC.ExecuteCommand(aetheriteName);
+
+        return true;
+    }
+
+    private static bool TeleportToLocation(string aetheriteName, uint territoryId)
+    {
+        if (!EzThrottler.Throttle("NavigatingToTerritory", 500)) {
+            return false;
+        }
+
+        if (Player.Territory.RowId == territoryId) {
+            return true;
+        }
+
+        if (LifestreamIPC.IsBusy()) {
+            return false;
+        }
+
+        LifestreamIPC.ExecuteCommand(aetheriteName);
+
+        return true;
+    }
+
+    private static bool CheckForTeleportationArrival(uint territoryId)
+    {
+        if (!EzThrottler.Throttle("NavigatingToTomestoneTerritory", 500)) {
+            return false;
+        }
+
+        return Player.Territory.RowId == territoryId && PlayerHelper.IsReady && !LifestreamIPC.IsBusy();
     }
 
     private static bool MoveToPosition(Vector3 position)
@@ -164,6 +292,20 @@ public static class MovementHelper
         _movementCheckStartPosition = null;
 
         return true;
+    }
+
+    private static void UpdateTeleportationMetrics()
+    {
+        if (!AWC.Runner.State.HasMetric(MetricsKey)) {
+            return;
+        }
+
+        uint before = AWC.Runner.State.PullMetric(MetricsKey);
+
+        AWC.Config.GetCurrentCharacterMetrics()
+            ?.IncrementGilSpentOnTeleportationFeesCounter((uint)(before - CurrencyHelper.GetGil()));
+
+        EzConfig.Save();
     }
 
     private static unsafe bool CanUseSprint =>

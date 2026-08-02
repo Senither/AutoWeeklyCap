@@ -13,4 +13,8 @@ public static class Constants
 
     // Orange Juice
     internal const uint LevelingFoodItemId = 4745;
+
+    // Metrics keys
+    internal const string MetricUncappedAcquiredTomestoneKey = "UncappedAcquiredTomestone";
+    internal const string MetricWeeklyAcquiredLimitedTomestoneKey = "WeeklyAcquiredLimitedTomestone";
 }

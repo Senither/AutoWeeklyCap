@@ -2,6 +2,9 @@
 
 using AutoWeeklyCap.UI.Helpers;
 
+using Dalamud;
+using Dalamud.Interface.ManagedFontAtlas;
+
 namespace AutoWeeklyCap.UI.Layouts;
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
@@ -35,6 +38,23 @@ internal static class Theme
     internal static Vector4 TextWarning = ColorUtils.HexToVector("#EBD22A");
     internal static Vector4 TextDanger = ColorUtils.HexToVector("#CC0000");
     internal static Vector4 TextMuted = ColorUtils.HexToVector("#FFFFFF", 0.45f);
+
+    internal static IFontHandle? BigFont;
+
+    internal static void RegisterFonts()
+    {
+        Dispose();
+
+        BigFont = AWC.PluginInterface.UiBuilder.FontAtlas.NewDelegateFontHandle(e =>
+        {
+            e.OnPreBuild(tk => tk.AddDalamudAssetFont(DalamudAsset.NotoSansCjkMedium, new SafeFontConfig { SizePx = 28 }));
+        });
+    }
+
+    internal static void Dispose()
+    {
+        BigFont?.Dispose();
+    }
 
     internal static IDisposable Push(bool withBackground = true)
     {
