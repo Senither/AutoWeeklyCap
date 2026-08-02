@@ -9,6 +9,12 @@ namespace AutoWeeklyCap.Helpers;
 public static class MovementHelper
 {
     private static DateTime? _startedAt = null;
+    private static DateTime? _movementCheckStartedAt = null;
+    private static Vector3? _movementCheckStartPosition = null;
+    private static int _movementCheckStuckCounter = 0;
+
+    private static readonly TimeSpan StuckCheckWindow = TimeSpan.FromSeconds(3);
+    private const float MinimumMovementDistance = 0.45f;
 
     private const string MetricsKey = "TeleportationFees";
 
@@ -40,26 +46,39 @@ public static class MovementHelper
             return true;
         }
 
+        _movementCheckStuckCounter = 0;
+
+        CreateMovementToPositionTasks(position.Value, breakpoint, timeLimitMs);
+
+        return true;
+    }
+
+    private static void CreateMovementToPositionTasks(Vector3 position, float breakpoint, int timeLimitMs)
+    {
+        if (_movementCheckStuckCounter > 3) {
+            AWC.Log.Warning("MovementHelper: Player stuck detection has reached the the limit, stopping runner");
+            AWC.Runner.Abort();
+            return;
+        }
+
         AWC.TaskManager.InsertMulti(
             new TaskManagerTask(
-                () => MoveToPosition((Vector3)position),
+                () => MoveToPosition(position),
                 "MovementHelper: start moving to location",
                 new TaskManagerConfiguration(timeLimitMs)
             ),
             new TaskManagerTask(
-                () => CheckForMovement((Vector3)position),
+                () => CheckForMovement(position),
                 "MovementHelper: check for movement",
                 new TaskManagerConfiguration(timeLimitMs)
             ),
             new TaskManagerTask(
-                () => WaitForPosition((Vector3)position, breakpoint),
+                () => WaitForPosition(position, breakpoint, timeLimitMs),
                 "MovementHelper: waiting for player movement to location",
                 new TaskManagerConfiguration(timeLimitMs)
             ),
             new DelayTask(250)
         );
-
-        return true;
     }
 
     public static bool TeleportTo(string aetheriteName, uint territoryId, int timeLimitMs = 90_000)
@@ -199,6 +218,8 @@ public static class MovementHelper
         VNavMeshIPC.PathfindAndMoveTo(position, false);
 
         _startedAt = DateTime.UtcNow;
+        _movementCheckStartedAt = DateTime.UtcNow;
+        _movementCheckStartPosition = Player.Position;
 
         return true;
     }
@@ -222,7 +243,7 @@ public static class MovementHelper
         return MoveToPosition(position);
     }
 
-    private static unsafe bool WaitForPosition(Vector3 position, float breakpoint)
+    private static unsafe bool WaitForPosition(Vector3 position, float breakpoint, int timeLimitMs)
     {
         var distance = Vector3.Distance(position, Player.Position);
 
@@ -237,11 +258,38 @@ public static class MovementHelper
         }
 
         if (distance > breakpoint) {
+            if (_movementCheckStartedAt == null || _movementCheckStartPosition == null) {
+                _movementCheckStartedAt = DateTime.UtcNow;
+                _movementCheckStartPosition = Player.Position;
+            } else if (DateTime.UtcNow - _movementCheckStartedAt.Value >= StuckCheckWindow) {
+                var movedDistance = Vector3.Distance(Player.Position, _movementCheckStartPosition.Value);
+
+                _movementCheckStartedAt = DateTime.UtcNow;
+                _movementCheckStartPosition = Player.Position;
+
+                if (movedDistance >= MinimumMovementDistance) {
+                    return false;
+                }
+
+                AWC.Log.Warning("MovementHelper: player stuck detected, rebuilding vnavmesh and retrying");
+
+                VNavMeshIPC.Stop();
+                VNavMeshIPC.Rebuild();
+
+                _movementCheckStuckCounter++;
+
+                CreateMovementToPositionTasks(position, breakpoint, timeLimitMs);
+
+                return true;
+            }
+
             return false;
         }
 
         VNavMeshIPC.Stop();
         _startedAt = null;
+        _movementCheckStartedAt = null;
+        _movementCheckStartPosition = null;
 
         return true;
     }
