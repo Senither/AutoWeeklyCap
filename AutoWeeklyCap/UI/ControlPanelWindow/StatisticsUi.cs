@@ -57,8 +57,8 @@ public static class StatisticsUi
         [
             new("Runs Completed", FormatNumber(totals.RunsCompleted), FontAwesomeIcon.FlagCheckered),
             new("Time In Runs", FormatDuration(totals.TimeSpentInRuns), FontAwesomeIcon.Clock),
-            new("Tomes Collected", FormatNumber(totals.UncappedTomestonesCollected), FontAwesomeIcon.Coins),
-            new("Tomes Spent", FormatNumber(totals.WeeklyLimitedTomestonesCollected), FontAwesomeIcon.Trophy),
+            new("Tomes Collected", FormatNumber(totals.TomestonesCollected), FontAwesomeIcon.Coins),
+            new("Tomes Spent", FormatNumber(totals.TomestonesSpent), FontAwesomeIcon.Trophy),
             new("Repairs", FormatNumber(totals.RepairsCompleted), FontAwesomeIcon.Hammer),
             new("Materia Extracted", FormatNumber(totals.MateriaExtracted), FontAwesomeIcon.Gem),
             new("Deliverables Handed In", FormatNumber(totals.DeliverableItemsHandedIn), FontAwesomeIcon.MailBulk),
@@ -171,8 +171,8 @@ public static class StatisticsUi
     {
         var totalRuns = 0u;
         var totalTimeSpentInRuns = 0ul;
-        var totalUncappedTomestones = 0u;
-        var totalLimitedTomestones = 0u;
+        var totalTomestonesCollected = 0u;
+        var totalTomestonesSpent = 0u;
         var totalRepairsCompleted = 0u;
         var totalMateriaExtracted = 0u;
         var totalDeliverableItemsHandedIn = 0u;
@@ -181,8 +181,9 @@ public static class StatisticsUi
         foreach (var metrics in characterEntries.Select(entry => entry.Metrics)) {
             totalRuns += metrics.RunsCompleted;
             totalTimeSpentInRuns += metrics.TimeSpentInRuns;
-            totalUncappedTomestones += metrics.UncappedAcquiredTomestoneCollected;
-            totalLimitedTomestones += metrics.WeeklyAcquiredLimitedTomestoneCollected;
+            totalTomestonesCollected += metrics.UncappedAcquiredTomestoneCollected;
+            totalTomestonesCollected += metrics.WeeklyAcquiredLimitedTomestoneCollected;
+            totalTomestonesSpent += metrics.WeeklyAcquiredLimitedTomestoneSpent;
             totalRepairsCompleted += metrics.RepairsCompleted;
             totalMateriaExtracted += metrics.MateriaExtracted;
             totalDeliverableItemsHandedIn += metrics.DeliverableItemsHandedIn;
@@ -192,8 +193,8 @@ public static class StatisticsUi
         return new AggregateMetrics(
             RunsCompleted: totalRuns,
             TimeSpentInRuns: totalTimeSpentInRuns,
-            UncappedTomestonesCollected: totalUncappedTomestones,
-            WeeklyLimitedTomestonesCollected: totalLimitedTomestones,
+            TomestonesCollected: totalTomestonesCollected,
+            TomestonesSpent: totalTomestonesSpent,
             RepairsCompleted: totalRepairsCompleted,
             MateriaExtracted: totalMateriaExtracted,
             DeliverableItemsHandedIn: totalDeliverableItemsHandedIn,
@@ -227,8 +228,8 @@ public static class StatisticsUi
     private readonly record struct AggregateMetrics(
         uint RunsCompleted,
         ulong TimeSpentInRuns,
-        uint UncappedTomestonesCollected,
-        uint WeeklyLimitedTomestonesCollected,
+        uint TomestonesCollected,
+        uint TomestonesSpent,
         uint RepairsCompleted,
         uint MateriaExtracted,
         uint DeliverableItemsHandedIn,
