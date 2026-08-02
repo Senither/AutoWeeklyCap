@@ -81,6 +81,12 @@ public class DtrStatusBar : IDisposable
             return;
         }
 
+        if (!AWC.IsRequiredPluginsEnabled() || !AWC.Config.IsRequiredSettingsSetup()) {
+            Notify.Warning("Failed to start AWC, some required plugins are missing");
+            AWC.Instance.OpenMainUi();
+            return;
+        }
+
         if (!AWC.Runner.State.IsRunning()) {
             if (AWC.TaskManager.IsBusy) {
                 AWC.Runner.Abort();
