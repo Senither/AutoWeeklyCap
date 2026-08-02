@@ -26,12 +26,12 @@ public class Runner
         State.ResetRunsTrackers();
 
         bool usingAutoRetainer = AWC.Config.AutoRetainerEnabled && AutoRetainerIPC.IsEnabled;
-        if (usingAutoRetainer && !RetainerTrigger.AnyCharacter.IsWithinThreshold()) {
+        if (usingAutoRetainer && !AWC.Config.AutoRetainerTrigger.IsWithinThreshold()) {
             AutoRetainerIPC.DisableMultiMode();
         }
 
         State.ChangeStageTo(
-            usingAutoRetainer && RetainerTrigger.AnyCharacter.IsWithinThreshold()
+            usingAutoRetainer && AWC.Config.AutoRetainerTrigger.IsWithinThreshold()
                 ? Stage.WaitingForAutoRetainer
                 : character != null && CurrencyHelper.IsPlayerLimitedTomestoneCapped()
                     ? Stage.StartingCharacterSwap
