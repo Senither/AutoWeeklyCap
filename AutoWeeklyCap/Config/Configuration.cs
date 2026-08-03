@@ -34,6 +34,7 @@ public class Configuration : IPluginConfiguration
     public bool ShowStatusInStatusBar { get; set; } = false;
     public bool ShowStatusAsIcons { get; set; } = false;
     public bool TrackDisabledCharacters { get; set; } = true;
+    public bool MuteGameSoundsWhenRunning { get; set; } = false;
 
     // Duty Options
     public uint ZoneId { get; set; } = TomestoneZone.AvailableTomestoneZones[0];

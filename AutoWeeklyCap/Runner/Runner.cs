@@ -38,6 +38,10 @@ public class Runner
                     : Stage.PreparingRunner
         );
 
+        if (AWC.Config.MuteGameSoundsWhenRunning) {
+            AudioHelper.MuteMasterGameAudio(true);
+        }
+
         AWC.Log.Info("Starting weekly cap runner");
 
         return true;
@@ -76,6 +80,10 @@ public class Runner
             State.ResetRunsTrackers();
             State.SetCurrentCharacter(AWC.Config.GetFirstUncappedCharacter());
         });
+
+        if (AWC.Config.MuteGameSoundsWhenRunning) {
+            AudioHelper.MuteMasterGameAudio(true);
+        }
 
         return true;
     }
@@ -117,6 +125,10 @@ public class Runner
 
         if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled) {
             BossModRebornIPC.DisableAI();
+        }
+
+        if (AWC.Config.MuteGameSoundsWhenRunning) {
+            AudioHelper.MuteMasterGameAudio(false);
         }
 
         AWC.Log.Info("Stopped weekly cap runner");

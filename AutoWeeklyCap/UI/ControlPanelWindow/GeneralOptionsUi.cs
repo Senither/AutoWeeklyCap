@@ -10,7 +10,7 @@ public static class GeneralOptionsUi
     public static void Draw()
     {
         Card.Draw("General Options", GeneralOptions, defaultOpen: true);
-        Card.Draw("UI Elements & Windows", UiElementsAndWindows, defaultOpen: true);
+        Card.Draw("UI Elements, Windows & Sounds", UiElementsWindowsAndSounds, defaultOpen: true);
         Card.Draw("Status Icon", StatusIcon, defaultOpen: true);
         Card.Draw("Network Options", NetworkOptions, defaultOpen: true);
         Card.DrawWarning("Reset Weekly Tomestones", ResetWeeklyTomestones);
@@ -38,16 +38,16 @@ public static class GeneralOptionsUi
         }
     }
 
-    private static void UiElementsAndWindows()
+    private static void UiElementsWindowsAndSounds()
     {
         var openWindow = AWC.Config.OpenWindowOnStartup;
         if (ImGui.Checkbox("Open Character UI window on startup", ref openWindow)) {
             AWC.Config.OpenWindowOnStartup = openWindow;
         }
 
-        var useSliders = AWC.Config.UseSliders;
-        if (ImGui.Checkbox("Slider inputs", ref useSliders)) {
-            AWC.Config.UseSliders = useSliders;
+        var muteGameWhenRunning = AWC.Config.UseSliders;
+        if (ImGui.Checkbox("Slider inputs", ref muteGameWhenRunning)) {
+            AWC.Config.UseSliders = muteGameWhenRunning;
         }
 
         InformationTooltip.Draw(
@@ -113,6 +113,22 @@ public static class GeneralOptionsUi
         }
 
         ImGuiEx.Tooltip("Next theme");
+
+        Card.Separator();
+
+        var muteGameSoundsWhenRunning = AWC.Config.MuteGameSoundsWhenRunning;
+        if (ImGui.Checkbox("Mute game audio when running", ref muteGameSoundsWhenRunning)) {
+            AWC.Config.MuteGameSoundsWhenRunning = muteGameSoundsWhenRunning;
+
+            if (AWC.Runner.State.IsRunning()) {
+                AudioHelper.MuteMasterGameAudio(muteGameSoundsWhenRunning);
+            }
+        }
+
+        InformationTooltip.Draw(
+            "When enabled, the game \"Master Volume\" will be muted while\n" +
+            "the runner is going, effectively muting all game audio"
+        );
     }
 
     private static void StatusIcon()
