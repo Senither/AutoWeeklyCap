@@ -67,7 +67,7 @@ public static class PluginInformationAndDependenciesUi
 
         ImGuiEx.TextCentered("Developed and published by Senither");
         ImGuiEx.TextCentered("Original idea by Tuffic");
-        ImGuiEx.TextCentered("Additional ideas by Naru, Myuri & Yoite");
+        ImGuiEx.TextCentered("Additional ideas by Naru, Myuri, Yoite & Ayaka");
 
         ImGuiHelpers.ScaledDummy(5f);
 
