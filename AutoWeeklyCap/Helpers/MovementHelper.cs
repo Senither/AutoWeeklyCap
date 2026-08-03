@@ -56,7 +56,7 @@ public static class MovementHelper
     private static void CreateMovementToPositionTasks(Vector3 position, float breakpoint, int timeLimitMs)
     {
         if (_movementCheckStuckCounter > 3) {
-            AWC.Log.Warning("MovementHelper: Player stuck detection has reached the the limit, stopping runner");
+            AWC.Log.Warning("MovementHelper: Player stuck detection has reached the limit, stopping runner");
             AWC.Runner.Abort();
             return;
         }

@@ -62,7 +62,7 @@ public static class StatisticsUi
             new("Repairs", FormatNumber(totals.RepairsCompleted), FontAwesomeIcon.Hammer),
             new("Materia Extracted", FormatNumber(totals.MateriaExtracted), FontAwesomeIcon.Gem),
             new("Deliverables Handed In", FormatNumber(totals.DeliverableItemsHandedIn), FontAwesomeIcon.MailBulk),
-            new("Retains Collected", FormatNumber(totals.RetainersCollected), FontAwesomeIcon.Bell)
+            new("Retainers Collected", FormatNumber(totals.RetainersCollected), FontAwesomeIcon.Bell)
         ];
 
         var availableWidth = Math.Max(0f, ImGui.GetContentRegionAvail().X);
