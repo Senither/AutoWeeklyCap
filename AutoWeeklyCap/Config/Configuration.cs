@@ -10,6 +10,7 @@ namespace AutoWeeklyCap.Config;
 public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
+    public string LastSeenPluginVersion { get; set; } = "unknown";
     public bool DevMode { get; set; } = false;
 
     // Plugin storage

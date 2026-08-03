@@ -106,6 +106,15 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
             }
 
             WotsitIPC.Manager.InitializeWotsit("AWC initialization");
+
+            if (Version == Config.LastSeenPluginVersion) {
+                return;
+            }
+
+            Config.LastSeenPluginVersion = Version;
+            EzConfig.Save();
+
+            OpenConfigUi(SettingsWindowOption.Changelog);
         });
     }
 
