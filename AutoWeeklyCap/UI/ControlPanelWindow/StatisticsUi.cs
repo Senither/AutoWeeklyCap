@@ -1,10 +1,9 @@
-﻿using AutoWeeklyCap.Config;
+﻿using System.Globalization;
+
+using AutoWeeklyCap.Config;
 using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface;
-
-using System.Globalization;
-
 using Dalamud.Interface.Utility.Raii;
 
 namespace AutoWeeklyCap.UI.ControlPanelWindow;

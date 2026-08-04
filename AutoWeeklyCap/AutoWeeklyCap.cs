@@ -7,9 +7,7 @@ using AutoWeeklyCap.Listeners;
 using AutoWeeklyCap.UI.Dtr;
 using AutoWeeklyCap.UI.Windows;
 
-using Dalamud;
 using Dalamud.Game.Command;
-using Dalamud.Interface.ManagedFontAtlas;
 using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
