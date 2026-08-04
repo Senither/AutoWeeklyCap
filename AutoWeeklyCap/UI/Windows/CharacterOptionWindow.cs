@@ -125,6 +125,17 @@ public class CharacterOptionWindow : Window
             ImGui.Text("Overrides the \"Runner Options\" > \"Item to buy\" option");
         });
 
+        var framerKitsVisible = options.MaterialVendorFramerKitsVisible;
+        if (ImGui.Checkbox("Material vendor shows raid Framer's Kits###material-vendor-framer-kits", ref framerKitsVisible)) {
+            options.MaterialVendorFramerKitsVisible = framerKitsVisible;
+        }
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Leave enabled when the Mathematics (Other) shop begins with eleven raid Framer's Kits.");
+            ImGui.Text("Disable it for characters whose shop begins directly with Mastodon Pelt.");
+        });
+
         ImGui.Text("Preferred safezone");
 
         if (ImGui.BeginCombo($"###selected-safezone", options.PreferredSafezone?.GetName() ?? "Use default")) {
