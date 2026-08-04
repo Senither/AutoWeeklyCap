@@ -5,7 +5,7 @@ namespace AutoWeeklyCap.Helpers;
 
 public static class TomestoneItemHelper
 {
-    private const int offset = 12;
+    private const int offset = 11;
     private static readonly LinkedList<TomestoneItem> Items = [];
 
     public static void RegisterTomestoneItems()
@@ -13,8 +13,8 @@ public static class TomestoneItemHelper
         Items.Clear();
 
         // Current items (Costs 20)
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 0, 20, "Turali Pigment"));
-        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 1, 20, "Mastodon Pelt"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 0, 20, "Mastodon Pelt"));
+        Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 1, 20, "Turali Pigment"));
         Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 2, 20, "Everkeep Resin"));
         Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 3, 20, "Insulating Varnish"));
         Items.Add(new TomestoneItem(TomestoneNPC.Material, offset + 4, 20, "Double Duracoat"));
