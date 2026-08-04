@@ -23,6 +23,8 @@ public class MoveInventoryItemsToSaddlebagAction : BaseAction
             return false;
         }
 
+        using var title = TitleManager.RegisterTitle(BitmapFontIcon.ElementLightning, "Moving items to Saddlebag");
+
         ExcelSheet<Item> itemSheet = Svc.Data.GetExcelSheet<Item>();
 
         Enqueue(() => !PlayerHelper.IsOccupied, "waiting for player not to be occupied");
