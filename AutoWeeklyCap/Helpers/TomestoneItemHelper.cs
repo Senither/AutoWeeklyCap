@@ -5,7 +5,7 @@ namespace AutoWeeklyCap.Helpers;
 
 public static class TomestoneItemHelper
 {
-    private const int offset = 11;
+    private const int offset = 12;
     private static readonly LinkedList<TomestoneItem> Items = [];
 
     public static void RegisterTomestoneItems()
