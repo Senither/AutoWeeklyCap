@@ -11,6 +11,7 @@ public class CharacterOptions
     public bool Hidden { get; set; } = false;
     public PlayerJob PreferredJob { get; set; } = PlayerJob.None;
     public string? PreferredTomestoneItemName { get; set; } = null;
+    public bool MaterialVendorFramerKitsVisible { get; set; } = true;
     public Safezone? PreferredSafezone { get; set; } = null;
     public uint TotalAcquiredLimitedTomestones { get; set; } = 0;
     public uint Position { get; set; } = 0;
@@ -42,7 +43,7 @@ public class CharacterOptions
 
     public bool HasOverrideSettingsEnabled()
     {
-        return PreferredTomestoneItemName != null || PreferredSafezone != null;
+        return PreferredTomestoneItemName != null || !MaterialVendorFramerKitsVisible || PreferredSafezone != null;
     }
 
     public void AddDutyDurationSeconds(int durationSeconds)
