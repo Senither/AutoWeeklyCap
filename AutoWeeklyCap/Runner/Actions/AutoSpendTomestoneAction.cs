@@ -14,6 +14,7 @@ public class AutoSpendTomestoneAction : BaseAction
     protected override string[] AddonsToClose { get; } = ["ShopExchangeCurrency", "SelectIconString", "SelectYesno", "SelectString"];
 
     private const int LongTaskTimeout = 120_000;
+    private const int MaterialVendorFramerKitCount = 11;
 
     // Path 7.4 - Materials - Zircon @ Solution Nine (Nexus Arcade)
     private static readonly Vector3 MaterialVendorPosition = new(-185.5f, 0.6600001f, -28.45f);
@@ -41,13 +42,19 @@ public class AutoSpendTomestoneAction : BaseAction
             return false;
         }
 
+        var characterOptions = AWC.Config.GetOrRegisterCharacterOptions(name);
         var itemToBuy = TomestoneItemHelper.GetTomestoneItemFromNames(
-            AWC.Config.GetOrRegisterCharacterOptions(name)?.PreferredTomestoneItemName,
+            characterOptions?.PreferredTomestoneItemName,
             AWC.Config.SpendUncappedTomestoneItemName
         );
 
         if (itemToBuy == null) {
             return false;
+        }
+
+        var shopItemIndex = itemToBuy.Index;
+        if (itemToBuy.NPC == TomestoneNPC.Material && characterOptions?.MaterialVendorFramerKitsVisible == false) {
+            shopItemIndex -= MaterialVendorFramerKitCount;
         }
 
         var quantity = itemToBuy.CalculateQuantityForGivenTomestones(CurrencyHelper.GetUncappedAcquiredTomestoneCount());
@@ -74,7 +81,7 @@ public class AutoSpendTomestoneAction : BaseAction
         var (position, territoryID, aetheriteName) = GetVendorLocation(itemToBuy.NPC);
         var (vendorId, sectionId) = GetVendorInteractData(itemToBuy.NPC);
 
-        LogDebug($"Queueing buy attempt tasks for: [position: {position}, territory: {territoryID}, aetherite: {aetheriteName}, vendorId: {vendorId}, sectionId: {sectionId}]");
+        LogDebug($"Queueing buy attempt tasks for: [position: {position}, territory: {territoryID}, aetherite: {aetheriteName}, vendorId: {vendorId}, sectionId: {sectionId}, itemIndex: {shopItemIndex}]");
 
         using var title = TitleManager.RegisterTitle(BitmapFontIcon.VentureDeliveryMoogle, "Spending tomestones");
 
@@ -132,7 +139,7 @@ public class AutoSpendTomestoneAction : BaseAction
                 }
 
                 if (GenericHelpers.TryGetAddonByName("ShopExchangeCurrency", out AddonShopExchangeCurrency) && GenericHelpers.IsAddonReady(AddonShopExchangeCurrency)) {
-                    AddonHelper.ClickShopExchangeItem(itemToBuy.Index, quantity);
+                    AddonHelper.ClickShopExchangeItem(shopItemIndex, quantity);
                 }
             }
 
