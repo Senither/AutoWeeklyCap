@@ -1,8 +1,7 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
 
 using ECommons.Configuration;
-
-using FFXIVClientStructs.FFXIV.Component.GUI;
+using ECommons.UIHelpers.AddonMasterImplementations;
 
 // ReSharper disable InconsistentNaming
 
@@ -14,6 +13,8 @@ public class AutoSpendTomestoneAction : BaseAction
     protected override string[] AddonsToClose { get; } = ["ShopExchangeCurrency", "SelectIconString", "SelectYesno", "SelectString"];
 
     private const int LongTaskTimeout = 120_000;
+
+    private const string MetricsKey = "TomestonesSpent";
 
     // Path 7.4 - Materials - Zircon @ Solution Nine (Nexus Arcade)
     private static readonly Vector3 MaterialVendorPosition = new(-185.5f, 0.6600001f, -28.45f);
@@ -27,12 +28,6 @@ public class AutoSpendTomestoneAction : BaseAction
     private const uint RelicVendorDataID = 1053904u;
     private const uint RelicVendorTerritoryID = 1278u;
     private const string RelicVendorAetheriteName = "Phantom Village";
-
-    // Pointers for game instances to open and interact with windows
-    private unsafe AtkUnitBase* AddonSelectIconString = null;
-    private unsafe AtkUnitBase* AddonShopExchangeCurrency = null;
-
-    private const string MetricsKey = "TomestonesSpent";
 
     protected override bool Run(params object[] args)
     {
@@ -61,14 +56,8 @@ public class AutoSpendTomestoneAction : BaseAction
 
         LocationManager.Reset();
 
-        unsafe {
-            if (InventoryHelper.GetEmptySlotsInBag() < 1) {
-                return false;
-            }
-
-            // Reset state before starting
-            AddonSelectIconString = null;
-            AddonShopExchangeCurrency = null;
+        if (InventoryHelper.GetEmptySlotsInBag() < 1) {
+            return false;
         }
 
         var (position, territoryID, aetheriteName) = GetVendorLocation(itemToBuy.NPC);
@@ -107,11 +96,11 @@ public class AutoSpendTomestoneAction : BaseAction
             }
 
             unsafe {
-                if (GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString)) {
+                if (AddonHelper.TryGetReadyAddon("SelectIconString", out _)) {
                     AddonHelper.ClickSelectIconString(sectionId);
-                } else if (GenericHelpers.TryGetAddonByName("ShopExchangeCurrency", out AddonShopExchangeCurrency) && GenericHelpers.IsAddonReady(AddonShopExchangeCurrency)) {
+                } else if (AddonHelper.TryGetReadyAddon("ShopExchangeCurrency", out _)) {
                     return true;
-                } else if (!GenericHelpers.TryGetAddonByName("SelectIconString", out AddonSelectIconString)) {
+                } else if (!AddonHelper.TryGetReadyAddon("SelectIconString", out _)) {
                     ObjectHelper.InteractWithObject(vendor);
                 }
             }
@@ -126,14 +115,31 @@ public class AutoSpendTomestoneAction : BaseAction
             }
 
             unsafe {
-                if (GenericHelpers.TryGetAddonByName("SelectYesno", out AddonSelectIconString) && GenericHelpers.IsAddonReady(AddonSelectIconString)) {
+                if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
                     AddonHelper.ClickSelectYesno();
                     return true;
                 }
 
-                if (GenericHelpers.TryGetAddonByName("ShopExchangeCurrency", out AddonShopExchangeCurrency) && GenericHelpers.IsAddonReady(AddonShopExchangeCurrency)) {
-                    AddonHelper.ClickShopExchangeItem(itemToBuy.Index, quantity);
+                if (!AddonHelper.TryGetReadyAddon("ShopExchangeCurrency", out var shopExchangeAddon)) {
+                    return false;
                 }
+
+                var shopExchangeCurrency = new AddonMaster.ShopExchangeCurrency(shopExchangeAddon);
+                var index = -1;
+
+                foreach (var item in ShopHelper.GetAllShopExchangeCurrencyItems(shopExchangeCurrency)) {
+                    if (itemToBuy.ItemId == item.ItemId) {
+                        index = (int)item.Index;
+                    }
+                }
+
+                if (index == -1) {
+                    AWC.Log.Error($"Failed to find item with an ID of {itemToBuy.ItemId} in the current shop window.");
+                    AWC.Log.Error("Please report the item Id you're trying to buy, and the shop you're buying from to the developers so they can fix it, thanks :)");
+                    return true;
+                }
+
+                AddonHelper.ClickShopExchangeItem(index, quantity);
             }
 
             return false;

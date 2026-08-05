@@ -1,4 +1,5 @@
 ﻿using ECommons.ExcelServices;
+using ECommons.UIHelpers.AddonMasterImplementations;
 
 using FFXIVClientStructs.FFXIV.Client.UI;
 
@@ -13,6 +14,43 @@ public static class ShopHelper
 
     private static Dictionary<string, uint>? _itemNameToRowId;
     private static Dictionary<string, uint>? _normalizedItemNameToRowId;
+
+    internal static IEnumerable<AddonMaster.ShopExchangeCurrency.ShopItemInfo> GetAllShopExchangeCurrencyItems(AddonMaster.ShopExchangeCurrency shop)
+    {
+        var defaultItems = ReadShopExchangeCurrencyItems(shop, 1066, 456, 1310);
+        var fallbackItems = ReadShopExchangeCurrencyItems(shop, 1064, 454, 1308);
+
+        // Some client versions expose this data 2 AtkValue slots earlier.
+        return fallbackItems.Count > defaultItems.Count ? fallbackItems : defaultItems;
+    }
+
+    private static unsafe List<AddonMaster.ShopExchangeCurrency.ShopItemInfo> ReadShopExchangeCurrencyItems(
+        AddonMaster.ShopExchangeCurrency shop,
+        int itemIdStart,
+        int costStart,
+        int indexStart
+    )
+    {
+        var items = new List<AddonMaster.ShopExchangeCurrency.ShopItemInfo>();
+
+        for (var i = 0; i < shop.NumEntries; i++) {
+            var itemId = shop.Addon->AtkValues[itemIdStart + i].UInt;
+            if (itemId == 0u) {
+                continue;
+            }
+
+            // @formatter:off
+            items.Add(new AddonMaster.ShopExchangeCurrency.ShopItemInfo(shop)
+            {
+                ItemId = itemId,
+                CostAmount = shop.Addon->AtkValues[costStart + i].UInt,
+                Index = shop.Addon->AtkValues[indexStart + i].UInt,
+            });
+            // @formatter:on
+        }
+
+        return items;
+    }
 
     internal static unsafe ShopItemMatch? GetMatchingShopItem(AddonShop* addonShop, ItemSlot expectedSlot, ItemType expectedType, PlayerJob job, int requiredLevel)
     {
