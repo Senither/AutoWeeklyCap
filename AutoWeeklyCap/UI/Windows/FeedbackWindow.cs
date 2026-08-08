@@ -1,6 +1,9 @@
 ﻿using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+
+using AutoWeeklyCap.Helpers;
 
 using Dalamud.Interface.Windowing;
 using Dalamud.Utility;
@@ -103,12 +106,18 @@ public class FeedbackWindow : Window
         AWC.TaskManager.Enqueue(async void () =>
         {
             var character = PlayerHelper.GetFullCharacterName() ?? "<unknown>";
+            var debugReport = DebugReportHelper.GenerateReport(prettyPrint: true) ?? "{}";
 
+            // ReSharper disable once ShortLivedHttpClient
             using var client = new HttpClient();
             var payload = new { embeds = new[] { new { title = _type, description = $"**Version:**\nv{AWC.Version}\n\n**Character:**\n{character}\n\n**Message:**\n{_message}" } } };
 
-            var json = JsonSerializer.Serialize(payload);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            using var content = new MultipartFormDataContent();
+            content.Add(new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"), "payload_json");
+
+            var debugReportContent = new ByteArrayContent(Encoding.UTF8.GetBytes(debugReport));
+            debugReportContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            content.Add(debugReportContent, "files[0]", "debug-details.json");
 
             await client.PostAsync(Secrets.DiscordWebhookUrl, content);
         });
