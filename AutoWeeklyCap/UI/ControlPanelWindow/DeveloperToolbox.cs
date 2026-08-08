@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 
 using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Contracts.Runner;
@@ -7,8 +8,10 @@ using AutoWeeklyCap.UI.Helpers;
 
 using ECommons.Configuration;
 using ECommons.Logging;
+using ECommons.UIHelpers.AddonMasterImplementations;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 using Microsoft.VisualBasic;
 
@@ -31,6 +34,7 @@ public static class DeveloperToolbox
         Card.Draw("Notification Debug Actions", DrawNotificationDebugActions, false);
         Card.Draw("Game Data State", DrawGameDataState, false);
         Card.Draw("Plugin Logs", DrawPluginLogs);
+        Card.Draw("Addon Debug Actions", DrawAddonDebugActions);
         Card.DrawDanger("Plugin Configuration", DrawPluginConfiguration);
     }
 
@@ -252,6 +256,123 @@ public static class DeveloperToolbox
         InternalLog.PrintImgui();
         ImGui.EndChild();
     }
+
+    private static unsafe void DrawAddonDebugActions()
+    {
+        DebugAddonButton("ShopExchangeCurrency", addon =>
+        {
+            StringBuilder builder = new StringBuilder();
+            IEnumerable<AddonMaster.ShopExchangeCurrency.ShopItemInfo> items = ShopHelper.GetAllShopExchangeCurrencyItems(new AddonMaster.ShopExchangeCurrency(addon));
+
+            foreach (AddonMaster.ShopExchangeCurrency.ShopItemInfo item in items) {
+                builder.Append($"Index={item.Index}, ItemId={item.ItemId}, CostAmount={item.CostAmount}");
+
+                if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
+                    builder.Append($", ItemName={itemObj.Name}");
+                }
+
+                builder.Append('\n');
+            }
+
+            return builder.ToString();
+        }, false);
+
+        DebugAddonButton("Shop", addon =>
+        {
+            StringBuilder builder = new StringBuilder();
+
+            foreach (AddonMaster.Shop.ShopItemInfo item in new AddonMaster.Shop(addon).ShopItems) {
+                builder.Append($"ItemId={item.ItemId}, CostAmount={item.CostAmount}");
+
+                if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
+                    builder.Append($", ItemName={itemObj.Name}");
+                }
+
+                builder.Append('\n');
+            }
+
+            return builder.ToString();
+        });
+
+        DebugAddonButton("SelectString", addon =>
+        {
+            StringBuilder builder = new StringBuilder();
+            AddonMaster.SelectString select = new AddonMaster.SelectString(addon);
+
+            builder.AppendLine($"Text:");
+            builder.AppendLine(select.Text.Length == 0 ? "<empty>" : select.Text);
+            builder.AppendLine();
+            builder.AppendLine("Entries:");
+
+            foreach (var item in select.Entries) {
+                builder.Append($"Index={item.Index}, Text={item.Text}\n");
+            }
+
+            return builder.ToString();
+        });
+
+        DebugAddonButton("SelectIconString", addon =>
+        {
+            StringBuilder builder = new StringBuilder();
+            AddonMaster.SelectIconString select = new AddonMaster.SelectIconString(addon);
+
+            builder.AppendLine("Entries:");
+
+            foreach (var item in select.Entries) {
+                builder.Append($"Index={item.Index}, Text={item.Text}\n");
+            }
+
+            return builder.ToString();
+        });
+
+        DebugAddonButton("SelectYesno", addon =>
+        {
+            StringBuilder builder = new StringBuilder();
+            AddonMaster.SelectYesno select = new AddonMaster.SelectYesno(addon);
+
+            builder.AppendLine($"Text:");
+            builder.AppendLine(select.Text.Length == 0 ? "<empty>" : select.Text);
+            builder.AppendLine();
+            builder.AppendLine($"YesButton: {select.Addon->YesButton->ButtonTextNode->GetText()}");
+            builder.AppendLine($"NoButton: {select.Addon->NoButton->ButtonTextNode->GetText()}");
+
+            if (select.ThirdButton != null && select.ThirdButton->ButtonTextNode->GetText().Length > 0) {
+                builder.AppendLine($"ThirdButton: {select.ThirdButton->ButtonTextNode->GetText()}");
+            }
+
+            return builder.ToString();
+        });
+    }
+
+    private static unsafe void DebugAddonButton(string addonName, DebugAddonAction action, bool sameLine = true)
+    {
+        if (sameLine) {
+            ImGui.SameLine();
+        }
+
+        if (!ImGui.Button(addonName)) {
+            return;
+        }
+
+        try {
+            if (!AddonHelper.TryGetReadyAddon(addonName, out var addon)) {
+                DuoLog.Warning($"Found no addon \"{addonName}\" that are ready");
+                return;
+            }
+
+            var result = action.Invoke(addon);
+            if (result != null) {
+                ImGui.SetClipboardText(result);
+                DuoLog.Warning($"Copied {addonName} addon content to clipboard");
+            } else {
+                DuoLog.Warning($"{addonName} returned null");
+            }
+        } catch (Exception ex) {
+            AWC.Log.Error($"Got error while running debug addon action for {addonName}", ex);
+        }
+    }
+
+    private unsafe delegate string? DebugAddonAction(AtkUnitBase* addon);
 
     private static void DrawPluginConfiguration()
     {

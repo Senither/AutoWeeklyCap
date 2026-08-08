@@ -79,7 +79,7 @@ public static unsafe class InventoryHelper
                         continue;
                     }
 
-                    if (!TryGetSheetItemFromGameInventoryItem(item, out var itemObj)) {
+                    if (!TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
                         continue;
                     }
 
@@ -179,7 +179,7 @@ public static unsafe class InventoryHelper
             }
 
             var canUseOffhand = true;
-            if (TryGetSheetItemFromInventoryItem(equippedItems->Items[ItemSlot.MainHand.GetSlot()], out var mainHandItem)) {
+            if (TryGetSheetItemFromItemId(equippedItems->Items[ItemSlot.MainHand.GetSlot()].ItemId, out var mainHandItem)) {
                 canUseOffhand = CanHaveOffhand.ContainsNullable(mainHandItem.ItemUICategory.RowId);
             }
 
@@ -193,7 +193,7 @@ public static unsafe class InventoryHelper
                 }
 
                 var equippedItem = equippedItems->Items[slot.GetSlot()];
-                if (equippedItem.ItemId == 0 || !TryGetSheetItemFromInventoryItem(equippedItem, out var item)) {
+                if (equippedItem.ItemId == 0 || !TryGetSheetItemFromItemId(equippedItem.ItemId, out var item)) {
                     return (null, slot);
                 }
 
@@ -247,18 +247,9 @@ public static unsafe class InventoryHelper
         return combined;
     }
 
-    private static bool TryGetSheetItemFromInventoryItem(InventoryItem container, out Item item)
+    internal static bool TryGetSheetItemFromItemId(uint itemId, out Item item)
     {
-        if (!Svc.Data.GetExcelSheet<Item>().TryGetRow(container.ItemId % 1000000, out item)) {
-            return false;
-        }
-
-        return item.RowId > 0;
-    }
-
-    private static bool TryGetSheetItemFromGameInventoryItem(GameInventoryItem container, out Item item)
-    {
-        if (!Svc.Data.GetExcelSheet<Item>().TryGetRow(container.ItemId % 1000000, out item)) {
+        if (!Svc.Data.GetExcelSheet<Item>().TryGetRow(itemId % 1000000, out item)) {
             return false;
         }
 
