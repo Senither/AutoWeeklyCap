@@ -96,11 +96,11 @@ public static class PlayerHelper
 
     public static CharacterSwapStatus SwitchJob(uint targetJobId)
     {
-        if (!AWC.PlayerState.IsLoaded) {
+        if (!Player.Available) {
             return CharacterSwapStatus.FailedToSwitchJob;
         }
 
-        var currentJobId = AWC.PlayerState.ClassJob.RowId;
+        var currentJobId = Player.ClassJob.RowId;
         if (currentJobId == targetJobId) {
             return CharacterSwapStatus.AlreadyOnTargetJob;
         }

@@ -18,6 +18,7 @@ public class RunnerState
     public bool UsingBossModRebornAi { get; private set; } = false;
     public bool ArmoryChestReliefAttempted { get; private set; } = false;
     public int PlayerJobSwitchAttempts { get; private set; } = 0;
+    public bool SkipPlayerJobSwitch { get; private set; } = false;
 
     public DateTime? CurrentDutyStartUtc { get; private set; } = null;
 
@@ -39,6 +40,7 @@ public class RunnerState
         UsingBossModRebornAi = false;
         ArmoryChestReliefAttempted = false;
         PlayerJobSwitchAttempts = 0;
+        SkipPlayerJobSwitch = false;
 
         CurrentDutyStartUtc = null;
 
@@ -67,6 +69,8 @@ public class RunnerState
 
     public void IncrementPlayerJobSwitchAttempts() => PlayerJobSwitchAttempts++;
     public void ResetPlayerJobSwitchAttempts() => PlayerJobSwitchAttempts = 0;
+    public void EnableSkipPlayerJobSwitch() => SkipPlayerJobSwitch = true;
+    public void DisableSkipPlayerJobSwitch() => SkipPlayerJobSwitch = false;
 
     public void SetMetric(string key, uint value) => Metrics[key] = value;
     public bool HasMetric(string key) => Metrics.ContainsKey(key);

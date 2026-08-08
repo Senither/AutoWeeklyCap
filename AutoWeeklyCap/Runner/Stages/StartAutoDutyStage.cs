@@ -18,6 +18,8 @@ public class StartAutoDutyStage : BaseStage
             return;
         }
 
+        state.DisableSkipPlayerJobSwitch();
+
         if (state.LevelingMode && AWC.Config.LevelJobs.UseLevelingFood) {
             ActionInstance.UseFood.Invoke();
         }
@@ -48,7 +50,8 @@ public class StartAutoDutyStage : BaseStage
 
         TitleManager.Reset();
 
-        if (AWC.ClientState.TerritoryType == DutyZone.GetZoneId(state.LevelingMode)) {
+        uint zoneId = DutyZone.GetZoneId(state.LevelingMode);
+        if (AWC.ClientState.TerritoryType == zoneId) {
             LogDebug("Player detected in the duty zone, switching to RunningAutoDuty stage");
 
             state.ChangeStageTo(Stage.RunningAutoDuty);
@@ -58,7 +61,7 @@ public class StartAutoDutyStage : BaseStage
             state.SetMetric(Constants.MetricWeeklyAcquiredLimitedTomestoneKey, (uint)CurrencyHelper.GetWeeklyAcquiredLimitedTomestoneCount());
 
             if (AutoDutyIPC.IsStopped()) {
-                AutoDutyIPC.Run(DutyZone.GetZoneId(state.LevelingMode), 1, false);
+                AutoDutyIPC.Run(zoneId, 1, false);
             }
 
             return true;
@@ -110,8 +113,6 @@ public class StartAutoDutyStage : BaseStage
         if (!EzThrottler.Throttle("RunnerStartingDutyStartAttempt", 1500)) {
             return false;
         }
-
-        var zoneId = DutyZone.GetZoneId(state.LevelingMode);
 
         LogDebug(
             "Attempting to start AutoDuty: {@Stats}",

@@ -30,7 +30,7 @@ public class PreparingRunnerStage : BaseStage
             : AWC.Config.GetOrRegisterCharacterOptions(state.CurrentCharacter)?.PreferredJob;
 
         using (TitleManager.RegisterTitle(playerJob?.GetIcon() ?? BitmapFontIcon.AnyClass, "Switching Job")) {
-            if (!playerJob?.IsAlreadyOnJob() ?? false) {
+            if (!state.SkipPlayerJobSwitch && !(playerJob?.IsAlreadyOnJob() ?? true)) {
                 AWC.TaskManager.Enqueue(() => SwitchCharacterJob(state, playerJob), "switching job");
                 return;
             }
@@ -146,7 +146,18 @@ public class PreparingRunnerStage : BaseStage
         }
 
         if (!InventoryHelper.IsAtleastOneArmoryChestSlotFull()) {
-            return false;
+            if (state.PlayerJobSwitchAttempts < 15) {
+                return false;
+            }
+
+            // If the player has failed to switch job 10+ times and their armoury chest isn't
+            // full, something is just preventing them from switching, so instead of
+            // stalling we'll just skip switching their job entirely.
+
+            state.EnableSkipPlayerJobSwitch();
+            AWC.Log.Warning("Failed to switch player job beyond the attempt threshold, skipping player job switch");
+
+            return true;
         }
 
         if (AWC.Config.DeliverooEnabled && !state.ArmoryChestReliefAttempted) {
