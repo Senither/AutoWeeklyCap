@@ -18,9 +18,10 @@ using ECommons.Schedulers;
 
 using Module = ECommons.Module;
 
+// ReSharper disable once ClassNeverInstantiated.Global
+
 namespace AutoWeeklyCap;
 
-// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class AutoWeeklyCap : IDalamudPlugin
 {
     internal static AWC Instance = null!;
@@ -91,6 +92,8 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         OpenMainUi();
         OpenConfigUi();
 #endif
+
+        _ = new IPCProvider();
 
         _ = new TickScheduler(() =>
         {
