@@ -45,9 +45,9 @@ public static class GeneralOptionsUi
             AWC.Config.OpenWindowOnStartup = openWindow;
         }
 
-        var muteGameWhenRunning = AWC.Config.UseSliders;
-        if (ImGui.Checkbox("Slider inputs", ref muteGameWhenRunning)) {
-            AWC.Config.UseSliders = muteGameWhenRunning;
+        var useSliders = AWC.Config.UseSliders;
+        if (ImGui.Checkbox("Slider inputs", ref useSliders)) {
+            AWC.Config.UseSliders = useSliders;
         }
 
         InformationTooltip.Draw(
