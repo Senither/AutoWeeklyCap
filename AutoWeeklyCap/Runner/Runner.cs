@@ -1,3 +1,5 @@
+using AutoWeeklyCap.IPC.AutoDuty;
+
 using Dalamud.Interface.ImGuiNotification;
 
 namespace AutoWeeklyCap.Runner;
@@ -125,6 +127,10 @@ public class Runner
 
         if (AWC.Config.UseBossModRebornAI && BossModRebornIPC.IsEnabled) {
             BossModRebornIPC.DisableAI();
+        }
+
+        if (AWC.Config.UseAutoDutyProfileOverride) {
+            AutoDutyProfile.Pop();
         }
 
         if (AWC.Config.MuteGameSoundsWhenRunning) {

@@ -39,6 +39,7 @@ public class Configuration : IPluginConfiguration
     // Duty Options
     public uint ZoneId { get; set; } = TomestoneZone.AvailableTomestoneZones[0];
     public bool UseBossModRebornAI { get; set; } = true;
+    public bool UseAutoDutyProfileOverride { get; set; } = true;
 
     // Stop Actions
     public StopAction StopAction { get; set; } = StopAction.None;

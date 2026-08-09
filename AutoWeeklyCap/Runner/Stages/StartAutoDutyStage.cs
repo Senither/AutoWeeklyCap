@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.Contracts.Runner;
+using AutoWeeklyCap.IPC.AutoDuty;
 using AutoWeeklyCap.Runner.Zone;
 
 using ECommons.Automation.NeoTaskManager;
@@ -123,6 +124,10 @@ public class StartAutoDutyStage : BaseStage
             LogDebug("Territory Type ID was detected as zero (0), stopping runner");
             runner.Stop();
             return true;
+        }
+
+        if (AWC.Config.UseAutoDutyProfileOverride) {
+            AutoDutyProfile.Apply();
         }
 
         AutoDutyIPC.Run(zoneId, 1, false);

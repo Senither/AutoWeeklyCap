@@ -68,6 +68,28 @@ public static class RunnerPrerequisitesUi
             StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
             ImGui.Text(" over the default AI");
         });
+
+        var useAutoDutyProfileOverride = AWC.Config.UseAutoDutyProfileOverride;
+        if (ImGui.Checkbox("Use automatic AutoDuty profile", ref useAutoDutyProfileOverride)) {
+            AWC.Config.UseBossModRebornAI = useAutoDutyProfileOverride;
+        }
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When enabled, the runner will configure your ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text(" profile");
+            ImGui.Text("to be optimized for usage with AWC and it's current state by");
+            ImGui.Text("enabling and disabling options within ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text(" depending on");
+            ImGui.Text("the features you have enabled in the runner.");
+            ImGui.Text("");
+            ImGui.Text("This feature uses temporary config overrides in ");
+            StatusText.Draw(AutoDutyIPC.IsEnabled, "AutoDuty");
+            ImGui.Text(", so");
+            ImGui.Text("your settings will automatically be restored when stopped.");
+        });
     }
 
     private static void DrawBeforeRunOptions()

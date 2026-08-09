@@ -22,6 +22,8 @@ public class AutoDutyIPC
     [EzIPC] internal static Action<uint, int, bool> Run;
     [EzIPC] internal static Action Stop;
     [EzIPC] internal static Func<bool> IsStopped;
+    [EzIPC] internal static Func<object, bool> PushConfigOverrides;
+    [EzIPC] internal static Func<bool> PopConfigOverrides;
 
     internal static void Dispose()
     {
