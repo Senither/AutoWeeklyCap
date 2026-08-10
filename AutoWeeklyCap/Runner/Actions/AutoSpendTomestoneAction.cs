@@ -114,6 +114,11 @@ public class AutoSpendTomestoneAction : BaseAction
                 return false;
             }
 
+            if (InventoryHelper.GetEmptySlotsInBag() < 1) {
+                LogInfo($"Stopping {Name}, reason: no items slot left");
+                return true;
+            }
+
             unsafe {
                 if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
                     AddonHelper.ClickSelectYesno();

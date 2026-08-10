@@ -27,6 +27,11 @@ public class BuyLevelingUpgradeAction : BaseAction
             return false;
         }
 
+        if (InventoryHelper.GetEmptySlotsInBag() < 1) {
+            LogInfo($"Stopping {Name}, reason: no items slot left");
+            return true;
+        }
+
         var job = PlayerHelper.GetCurrentJob();
         var level = PlayerHelper.GetJobLevel(job);
 

@@ -43,7 +43,7 @@ public class ExtractAction : BaseAction
             }
 
             if (InventoryHelper.GetEmptySlotsInBag() < 1) {
-                LogInfo("Stopping materia extraction, reason: no items slot left");
+                LogInfo($"Stopping {Name}, reason: no items slot left");
                 return true;
             }
 

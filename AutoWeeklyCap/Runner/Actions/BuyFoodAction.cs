@@ -84,6 +84,11 @@ public class BuyFoodAction : BaseAction
                 return false;
             }
 
+            if (InventoryHelper.GetEmptySlotsInBag() < 1) {
+                LogInfo($"{Name}: Stopping {Name}, reason: no items slot left");
+                return true;
+            }
+
             unsafe {
                 if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
                     AddonHelper.ClickSelectYesno();

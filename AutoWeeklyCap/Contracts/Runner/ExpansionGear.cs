@@ -63,6 +63,11 @@ public abstract class ExpansionGear : QueueableAction
                 return false;
             }
 
+            if (InventoryHelper.GetEmptySlotsInBag() < 1) {
+                AWC.Log.Info($"Stopping {Name}, reason: no items slot left");
+                return true;
+            }
+
             unsafe {
                 if (AddonHelper.TryGetReadyAddon("SelectYesno", out _)) {
                     AddonHelper.ClickSelectYesno();
