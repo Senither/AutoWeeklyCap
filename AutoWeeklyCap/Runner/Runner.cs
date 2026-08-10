@@ -70,7 +70,16 @@ public class Runner
         const int autoStartDelay = 5;
         for (var i = 0; i < autoStartDelay; i++) {
             int seconds = autoStartDelay - i;
-            AWC.TaskManager.Enqueue(() => Svc.NotificationManager.AddNotification(new Notification { Content = $"Auto start AWC in {seconds}!", InitialDuration = TimeSpan.FromSeconds(1), HardExpiry = DateTime.Now.AddSeconds(1), Type = NotificationType.Warning }));
+            // @formatter:off
+            AWC.TaskManager.Enqueue(() => {
+                Svc.NotificationManager.AddNotification(new Notification {
+                    Content = $"Auto start AWC in {seconds}!",
+                    InitialDuration = TimeSpan.FromSeconds(1),
+                    HardExpiry = DateTime.Now.AddSeconds(1),
+                    Type = NotificationType.Warning
+                });
+            });
+            // @formatter:on
 
             AWC.TaskManager.EnqueueDelay(1000);
         }
