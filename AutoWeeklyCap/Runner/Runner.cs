@@ -92,11 +92,9 @@ public class Runner
 
     public bool Stop()
     {
-        if (PlayerHelper.IsLoggedIn) {
-            if (State.CurrentStage is Stage.RunningAutoDuty or Stage.SwitchingCharacter || !AutoDutyIPC.IsStopped()) {
-                State.SetStoppingGracefully(true);
-                return false;
-            }
+        if (IsCurrentStageResumable() || !AutoDutyIPC.IsStopped()) {
+            State.SetStoppingGracefully(true);
+            return false;
         }
 
         Abort();
@@ -106,11 +104,11 @@ public class Runner
 
     public bool Resume()
     {
-        if (!State.StoppingGracefully || AutoDutyIPC.IsStopped()) {
+        if (!State.StoppingGracefully) {
             return false;
         }
 
-        if (State.CurrentStage is not (Stage.RunningAutoDuty or Stage.SwitchingCharacter)) {
+        if (!IsCurrentStageResumable()) {
             return false;
         }
 
@@ -151,5 +149,10 @@ public class Runner
         }
 
         State.CurrentStage.GetStageInstance().Handle(this, State);
+    }
+
+    private bool IsCurrentStageResumable()
+    {
+        return State.CurrentStage is Stage.RunningAutoDuty or Stage.SwitchingCharacter or Stage.WaitingForAutoRetainer;
     }
 }

@@ -38,6 +38,11 @@ public class WaitForAutoRetainerStage : BaseStage
 
         StorePlayerRetainersEndingAtToMetrics();
 
+        if (state.StoppingGracefully) {
+            runner.Abort();
+            return;
+        }
+
         if (state.CurrentCharacter == null) {
             AutoRetainerIPC.DisableMultiMode();
             state.ChangeStageTo(Stage.StartingCharacterSwap);

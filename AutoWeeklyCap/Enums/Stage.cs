@@ -36,7 +36,7 @@ public static class StateExtensions
             {
                 Stage.Waiting => null,
                 Stage.PreparingRunner => "Preparing runner",
-                Stage.WaitingForAutoRetainer => "Waiting for AutoRetainer",
+                Stage.WaitingForAutoRetainer => stopGracefully ? "Stopping when AutoRetainer finishes" : "Waiting for AutoRetainer",
                 Stage.CheckingTomestone => "Checking Tomestone",
                 Stage.StartingAutoDuty => "Starting AutoDuty",
                 Stage.RunningAutoDuty => stopGracefully ? "Stopping when duty finishes" : "Running AutoDuty",
