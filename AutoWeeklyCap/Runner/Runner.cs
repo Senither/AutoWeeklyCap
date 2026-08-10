@@ -90,29 +90,33 @@ public class Runner
         return true;
     }
 
-    public void Stop()
+    public bool Stop()
     {
         if (PlayerHelper.IsLoggedIn) {
             if (State.CurrentStage is Stage.RunningAutoDuty or Stage.SwitchingCharacter || !AutoDutyIPC.IsStopped()) {
                 State.SetStoppingGracefully(true);
-                return;
+                return false;
             }
         }
 
         Abort();
+
+        return true;
     }
 
-    public void Resume()
+    public bool Resume()
     {
         if (!State.StoppingGracefully || AutoDutyIPC.IsStopped()) {
-            return;
+            return false;
         }
 
         if (State.CurrentStage is not (Stage.RunningAutoDuty or Stage.SwitchingCharacter)) {
-            return;
+            return false;
         }
 
         State.SetStoppingGracefully(false);
+
+        return true;
     }
 
     public void Abort()

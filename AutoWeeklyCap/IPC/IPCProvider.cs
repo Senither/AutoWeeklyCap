@@ -34,13 +34,13 @@ public class IPCProvider
     /// Attempts to stop the runner loop.
     /// </summary>
     [EzIPC("Runner.Stop")]
-    public void RunnerStop() => AWC.Runner.Stop();
+    public bool RunnerStop() => AWC.Runner.Stop();
 
     /// <summary>
     /// Resumes the runner loop if graceful shutdown is enabled, otherwise does nothing.
     /// </summary>
     [EzIPC("Runner.Resume")]
-    public void RunnerResume() => AWC.Runner.Resume();
+    public bool RunnerResume() => AWC.Runner.Resume();
 
     /// <summary>
     /// Aborts the runner loop immediately, cancelling any tasks that are currently running,
