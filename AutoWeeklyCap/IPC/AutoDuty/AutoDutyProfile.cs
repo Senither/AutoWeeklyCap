@@ -34,7 +34,6 @@ public static class AutoDutyProfile
         { "AutoExitDuty", "True" },
         { "OnlyExitWhenDutyDone", "False" },
         { "AutoManageRotationPluginState", "True" },
-        { "rotationPlugin", "RotationSolverReborn" },
         { "Wrath_AutoSetupJobs", "True" },
         { "Wrath_TargetingTank", "Highest_Max" },
         { "Wrath_TargetingNonTank", "Lowest_Current" },
@@ -153,6 +152,10 @@ public static class AutoDutyProfile
 
         if (ShouldBeOpeningCoffers()) {
             overrides["LootTreasure"] = "True";
+        }
+
+        if (RotationSolverRebornIPC.IsEnabled) {
+            overrides["rotationPlugin"] = "RotationSolverReborn";
         }
 
         if (AWC.Config.Extract) {
