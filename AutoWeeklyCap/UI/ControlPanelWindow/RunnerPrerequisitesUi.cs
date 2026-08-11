@@ -269,7 +269,9 @@ public static class RunnerPrerequisitesUi
         InformationTooltip.Draw(() =>
         {
             ImGui.Text("Will teleport to Solution Nine or the Phantom Village and buy");
-            ImGui.Text("your selected item with your uncapped tomestones");
+            ImGui.Text("your selected items with your uncapped tomestones, each time");
+            ImGui.Text("an item is bought the amount is decremented from the counter");
+            ImGui.Text("below, until it hits zero and it's removed.");
 
             ImGui.Text("Requires ");
             StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
