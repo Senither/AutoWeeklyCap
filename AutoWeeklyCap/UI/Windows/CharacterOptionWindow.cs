@@ -110,6 +110,10 @@ public class CharacterOptionWindow : Window
             }
 
             foreach (var item in TomestoneItemHelper.GetTomestoneItems()) {
+                if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
+                    ItemIcon.Draw(itemObj.Icon);
+                }
+
                 if (ImGui.Selectable(item.Name, options.PreferredTomestoneItemName == item.Name)) {
                     options.PreferredTomestoneItemName = item.Name;
                 }
