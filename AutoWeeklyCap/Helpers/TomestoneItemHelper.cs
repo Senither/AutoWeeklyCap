@@ -45,11 +45,6 @@ public static class TomestoneItemHelper
         return Items;
     }
 
-    public static TomestoneItem? GetTomestoneItemFromNames(string? first, string? second)
-    {
-        return GetTomestoneItemFromName(first) ?? GetTomestoneItemFromName(second);
-    }
-
     public static TomestoneItem? GetTomestoneItemFromName(string? name)
     {
         if (name == null) {

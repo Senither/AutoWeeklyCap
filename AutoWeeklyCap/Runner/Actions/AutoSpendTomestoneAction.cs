@@ -29,6 +29,13 @@ public class AutoSpendTomestoneAction : BaseAction
     private const uint RelicVendorTerritoryID = 1278u;
     private const string RelicVendorAetheriteName = "Phantom Village";
 
+    private record SelectedTomestoneItem(TomestoneItem Item, uint MaxQuantity, bool ShouldUpdate)
+    {
+        public readonly TomestoneItem Item = Item;
+        public readonly uint MaxQuantity = MaxQuantity;
+        public readonly bool ShouldUpdate = ShouldUpdate;
+    }
+
     protected override bool Run(params object[] args)
     {
         var name = PlayerHelper.GetFullCharacterName();
@@ -36,18 +43,17 @@ public class AutoSpendTomestoneAction : BaseAction
             return false;
         }
 
-        var itemToBuy = TomestoneItemHelper.GetTomestoneItemFromNames(
-            AWC.Config.GetOrRegisterCharacterOptions(name)?.PreferredTomestoneItemName,
-            // AWC.Config.SpendUncappedTomestoneItemName
-            ""
-        );
-
-        if (itemToBuy == null) {
+        SelectedTomestoneItem? itemContainer = GetSelectedTomestoneToBuy(name);
+        if (itemContainer == null) {
             return false;
         }
 
-        var quantity = itemToBuy.CalculateQuantityForGivenTomestones(CurrencyHelper.GetUncappedAcquiredTomestoneCount());
-        if (quantity == 0) {
+        var quantity = (int)Math.Min(
+            itemContainer.MaxQuantity,
+            itemContainer.Item.CalculateQuantityForGivenTomestones(CurrencyHelper.GetUncappedAcquiredTomestoneCount())
+        );
+
+        if (quantity <= 0) {
             return false;
         }
 
@@ -61,8 +67,8 @@ public class AutoSpendTomestoneAction : BaseAction
             return false;
         }
 
-        var (position, territoryID, aetheriteName) = GetVendorLocation(itemToBuy.NPC);
-        var (vendorId, sectionId) = GetVendorInteractData(itemToBuy.NPC);
+        var (position, territoryID, aetheriteName) = GetVendorLocation(itemContainer.Item.NPC);
+        var (vendorId, sectionId) = GetVendorInteractData(itemContainer.Item.NPC);
 
         LogDebug($"Queueing buy attempt tasks for: [position: {position}, territory: {territoryID}, aetherite: {aetheriteName}, vendorId: {vendorId}, sectionId: {sectionId}]");
 
@@ -134,13 +140,13 @@ public class AutoSpendTomestoneAction : BaseAction
                 var index = -1;
 
                 foreach (var item in ShopHelper.GetAllShopExchangeCurrencyItems(shopExchangeCurrency)) {
-                    if (itemToBuy.ItemId == item.ItemId) {
+                    if (itemContainer.Item.ItemId == item.ItemId) {
                         index = (int)item.Index;
                     }
                 }
 
                 if (index == -1) {
-                    AWC.Log.Error($"Failed to find item with an ID of {itemToBuy.ItemId} in the current shop window.");
+                    AWC.Log.Error($"Failed to find item with an ID of {itemContainer.Item.ItemId} in the current shop window.");
                     AWC.Log.Error("Please report the item Id you're trying to buy, and the shop you're buying from to the developers so they can fix it, thanks :)");
                     return true;
                 }
@@ -179,6 +185,29 @@ public class AutoSpendTomestoneAction : BaseAction
 
         Enqueue(() =>
         {
+            if (!itemContainer.ShouldUpdate) {
+                return true;
+            }
+
+            Config.TomestoneItem? configItem = AWC.Config.SpendUncappedTomestoneItems.FirstOrDefault();
+            if (configItem == null) {
+                return true;
+            }
+
+            var remainingQuantity = configItem.Quantity - quantity;
+            if (remainingQuantity <= 0) {
+                AWC.Config.SpendUncappedTomestoneItems.RemoveAt(0);
+            } else {
+                configItem.Quantity = (uint)remainingQuantity;
+            }
+
+            EzConfig.Save();
+
+            return true;
+        }, "update tomestone config");
+
+        Enqueue(() =>
+        {
             uint tomestones = 0;
 
             if (AWC.Runner.State.HasMetric(MetricsKey)) {
@@ -196,7 +225,38 @@ public class AutoSpendTomestoneAction : BaseAction
         return true;
     }
 
-    protected static (Vector3, uint, string) GetVendorLocation(TomestoneNPC npc)
+    private static SelectedTomestoneItem? GetSelectedTomestoneToBuy(string characterName)
+    {
+        TomestoneItem? characterItem = TomestoneItemHelper.GetTomestoneItemFromName(
+            AWC.Config.GetOrRegisterCharacterOptions(characterName)?.PreferredTomestoneItemName
+        );
+
+        if (characterItem != null) {
+            return new SelectedTomestoneItem(
+                Item: characterItem,
+                MaxQuantity: 9999,
+                ShouldUpdate: false
+            );
+        }
+
+        Config.TomestoneItem? configItem = AWC.Config.SpendUncappedTomestoneItems.FirstOrDefault();
+        if (configItem == null) {
+            return null;
+        }
+
+        TomestoneItem? tomestoneItem = TomestoneItemHelper.GetTomestoneItemFromItemId(configItem.ItemId);
+        if (tomestoneItem == null) {
+            return null;
+        }
+
+        return new SelectedTomestoneItem(
+            Item: tomestoneItem,
+            MaxQuantity: configItem.Quantity,
+            ShouldUpdate: AWC.Config.SpendUncappedTomestoneItems.Count != 1
+        );
+    }
+
+    private static (Vector3, uint, string) GetVendorLocation(TomestoneNPC npc)
     {
         return npc switch
         {
@@ -206,7 +266,7 @@ public class AutoSpendTomestoneAction : BaseAction
         };
     }
 
-    protected static (uint, int) GetVendorInteractData(TomestoneNPC npc)
+    private static (uint, int) GetVendorInteractData(TomestoneNPC npc)
     {
         return npc switch
         {
