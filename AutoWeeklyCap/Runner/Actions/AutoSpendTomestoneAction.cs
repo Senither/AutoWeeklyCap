@@ -38,7 +38,8 @@ public class AutoSpendTomestoneAction : BaseAction
 
         var itemToBuy = TomestoneItemHelper.GetTomestoneItemFromNames(
             AWC.Config.GetOrRegisterCharacterOptions(name)?.PreferredTomestoneItemName,
-            AWC.Config.SpendUncappedTomestoneItemName
+            // AWC.Config.SpendUncappedTomestoneItemName
+            ""
         );
 
         if (itemToBuy == null) {

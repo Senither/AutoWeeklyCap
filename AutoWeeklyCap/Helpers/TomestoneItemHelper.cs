@@ -58,4 +58,9 @@ public static class TomestoneItemHelper
 
         return Items.FirstOrDefault(item => item.Name == name);
     }
+
+    public static TomestoneItem? GetTomestoneItemFromItemId(uint itemId)
+    {
+        return Items.FirstOrDefault(item => item.ItemId == itemId);
+    }
 }

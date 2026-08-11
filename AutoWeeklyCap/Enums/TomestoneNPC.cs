@@ -8,10 +8,10 @@ public enum TomestoneNPC
     Relic = 1
 }
 
-public record TomestoneItem(TomestoneNPC NPC, int ItemId, int Cost, string Name)
+public record TomestoneItem(TomestoneNPC NPC, uint ItemId, int Cost, string Name)
 {
     public readonly TomestoneNPC NPC = NPC;
-    public readonly int ItemId = ItemId;
+    public readonly uint ItemId = ItemId;
     public readonly int Cost = Cost;
     public readonly string Name = Name;
 
