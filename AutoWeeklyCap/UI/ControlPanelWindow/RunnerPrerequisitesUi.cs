@@ -384,8 +384,12 @@ public static class RunnerPrerequisitesUi
         });
 
         ImGui.SameLine(0f, spacing);
-        if (ImGuiEx.IconButton(FontAwesomeIcon.Trash)) {
+        if (ImGuiEx.IconButton(FontAwesomeIcon.Trash) && ImGuiEx.Ctrl) {
             items.RemoveAt(index);
+        }
+
+        if (ImGui.IsItemHovered()) {
+            ImGuiEx.Tooltip("Hold down CTRL + Click to delete this item");
         }
 
         ImGui.PopID();
