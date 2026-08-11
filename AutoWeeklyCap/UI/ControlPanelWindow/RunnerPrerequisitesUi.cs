@@ -2,10 +2,9 @@ using AutoWeeklyCap.Runner.Zone;
 using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface;
-using Dalamud.Interface.Textures;
-using Dalamud.Interface.Textures.TextureWraps;
 
 using Range = AutoWeeklyCap.UI.Helpers.Range;
+using TomestoneItem = AutoWeeklyCap.Config.TomestoneItem;
 
 namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
@@ -320,7 +319,7 @@ public static class RunnerPrerequisitesUi
                         }
 
                         if (ImGui.Selectable(item.Name)) {
-                            AWC.Config.SpendUncappedTomestoneItems.Add(new Config.TomestoneItem { ItemId = item.ItemId, Quantity = 1 });
+                            AWC.Config.SpendUncappedTomestoneItems.Add(new TomestoneItem { ItemId = item.ItemId, Quantity = 1 });
                         }
                     }
 
@@ -329,14 +328,14 @@ public static class RunnerPrerequisitesUi
         });
     }
 
-    private static void DrawTomestoneConfigItem(List<Config.TomestoneItem> items, int index)
+    private static void DrawTomestoneConfigItem(List<TomestoneItem> items, int index)
     {
         if (index < 0 || index >= items.Count) {
             return;
         }
 
-        Config.TomestoneItem configItem = items[index];
-        TomestoneItem? tomestoneItem = TomestoneItemHelper.GetTomestoneItemFromItemId(configItem.ItemId);
+        TomestoneItem configItem = items[index];
+        Enums.TomestoneItem? tomestoneItem = TomestoneItemHelper.GetTomestoneItemFromItemId(configItem.ItemId);
         bool isLastItem = index == items.Count - 1;
 
         ImGui.PushID($"tomestone-item-{index}-{configItem.ItemId}");

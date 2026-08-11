@@ -3,8 +3,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
-using AutoWeeklyCap.Helpers;
-
 using Dalamud.Interface.Windowing;
 using Dalamud.Utility;
 
