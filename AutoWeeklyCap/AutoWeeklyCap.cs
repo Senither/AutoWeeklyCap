@@ -64,6 +64,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         Configuration = EzConfig.Init<Configuration>();
         Configuration.NormalizeCharacterPositions();
         Configuration.NormalizeSafezoneOrder();
+        Configuration.RemoveInvalidSpendUncappedTomestoneItems();
 
         Runner = new Runner.Runner();
 

@@ -2,6 +2,8 @@
 
 using Dalamud.Configuration;
 
+using ECommons.Configuration;
+
 // ReSharper disable InconsistentNaming
 
 namespace AutoWeeklyCap.Config;
@@ -57,7 +59,7 @@ public class Configuration : IPluginConfiguration
     public bool ExtractAll { get; set; } = false;
     public bool SpendUncappedTomestones { get; set; } = false;
     public uint SpendUncappedTomestoneThreshold { get; set; } = 1800;
-    public string? SpendUncappedTomestoneItemName { get; set; } = null;
+    public List<TomestoneItem> SpendUncappedTomestoneItems = [];
     public bool MoveDuplicateItemsFromInventoryToSaddlebag = false;
 
     // Runner Options (AutoRetainer)
@@ -233,6 +235,20 @@ public class Configuration : IPluginConfiguration
         }
 
         PreferredSafezones = normalizedSafezones;
+        return true;
+    }
+
+    public bool RemoveInvalidSpendUncappedTomestoneItems()
+    {
+        var removed = SpendUncappedTomestoneItems.RemoveAll(item => TomestoneItemHelper.GetTomestoneItemFromItemId(item.ItemId) == null);
+
+        if (removed <= 0) {
+            return false;
+        }
+
+        AWC.Log.Warning($"Config: Removed {removed} invalid auto-spend tomestone item(s) from configuration.");
+        EzConfig.Save();
+
         return true;
     }
 

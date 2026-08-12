@@ -4,6 +4,7 @@ using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Interface;
 
 using Range = AutoWeeklyCap.UI.Helpers.Range;
+using TomestoneItem = AutoWeeklyCap.Config.TomestoneItem;
 
 namespace AutoWeeklyCap.UI.ControlPanelWindow;
 
@@ -267,7 +268,9 @@ public static class RunnerPrerequisitesUi
         InformationTooltip.Draw(() =>
         {
             ImGui.Text("Will teleport to Solution Nine or the Phantom Village and buy");
-            ImGui.Text("your selected item with your uncapped tomestones");
+            ImGui.Text("your selected items with your uncapped tomestones, each time");
+            ImGui.Text("an item is bought the amount is decremented from the counter");
+            ImGui.Text("below, until it hits zero and it's removed.");
 
             ImGui.Text("Requires ");
             StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
@@ -291,18 +294,104 @@ public static class RunnerPrerequisitesUi
 
             ImGui.PopItemWidth();
 
-            ImGui.Text("Item to buy");
-            var selectedItem = TomestoneItemHelper.GetTomestoneItemFromName(AWC.Config.SpendUncappedTomestoneItemName);
-            if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", selectedItem != null ? selectedItem.Name : "Not selected")) {
-                foreach (var item in TomestoneItemHelper.GetTomestoneItems()) {
-                    if (ImGui.Selectable(item.Name)) {
-                        AWC.Config.SpendUncappedTomestoneItemName = item.Name;
+            Card.DrawSubtle(
+                title: $"Item{(AWC.Config.SpendUncappedTomestoneItems.Count != 1 ? "s" : "")} to buy",
+                collapsible: false,
+                bodyContent: () =>
+                {
+                    if (AWC.Config.SpendUncappedTomestoneItems.Count == 0) {
+                        ImGui.TextColored(Theme.TextMuted, "No items selected");
+                    } else {
+                        for (var index = 0; index < AWC.Config.SpendUncappedTomestoneItems.Count; index++) {
+                            DrawTomestoneConfigItem(AWC.Config.SpendUncappedTomestoneItems, index);
+                        }
                     }
-                }
 
-                ImGui.EndCombo();
+                    Card.Separator();
+
+                    if (!ImGui.BeginCombo("##PreferredUncappedTomestoneItem", "Add item...")) {
+                        return;
+                    }
+
+                    foreach (var item in TomestoneItemHelper.GetTomestoneItems()) {
+                        if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
+                            ItemIcon.Draw(itemObj.Icon);
+                        }
+
+                        if (ImGui.Selectable(item.Name)) {
+                            AWC.Config.SpendUncappedTomestoneItems.Add(new TomestoneItem { ItemId = item.ItemId, Quantity = 1 });
+                        }
+                    }
+
+                    ImGui.EndCombo();
+                });
+        });
+    }
+
+    private static void DrawTomestoneConfigItem(List<TomestoneItem> items, int index)
+    {
+        if (index < 0 || index >= items.Count) {
+            return;
+        }
+
+        TomestoneItem configItem = items[index];
+        Enums.TomestoneItem? tomestoneItem = TomestoneItemHelper.GetTomestoneItemFromItemId(configItem.ItemId);
+        bool isLastItem = index == items.Count - 1;
+
+        ImGui.PushID($"tomestone-item-{index}-{configItem.ItemId}");
+
+        if (InventoryHelper.TryGetSheetItemFromItemId(configItem.ItemId, out var itemObj)) {
+            ItemIcon.Draw(itemObj.Icon);
+        }
+
+        ImGui.Text(tomestoneItem?.Name ?? $"Unknown item ({configItem.ItemId})");
+
+        const float spacing = 4f;
+        var quantityWidth = 100f * ImGuiHelpers.GlobalScale;
+        var iconButtonWidth = ImGui.GetFrameHeight() * 4;
+        var controlsWidth = quantityWidth + iconButtonWidth + (spacing * 3f);
+
+        var controlsX = Math.Max(ImGui.GetCursorPosX(), ImGui.GetWindowContentRegionMax().X - controlsWidth);
+        ImGui.SameLine();
+        ImGui.SetCursorPosX(controlsX);
+        ImGui.SetNextItemWidth(quantityWidth);
+
+        if (isLastItem) {
+            var infiniteSymbol = "∞";
+            Disabled.Draw(true, () => ImGui.InputText("##tomestone-item-quantity", ref infiniteSymbol, 2));
+        } else {
+            var quantity = (int)Math.Max(1, configItem.Quantity);
+            if (ImGui.InputInt("##tomestone-item-quantity", ref quantity, 1, 10)) {
+                configItem.Quantity = (uint)Math.Clamp(quantity, 1, 9999);
+            }
+        }
+
+        ImGui.SameLine(0f, spacing);
+        Disabled.Draw(index == 0, () =>
+        {
+            if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowUp)) {
+                (items[index], items[index - 1]) = (items[index - 1], items[index]);
             }
         });
+
+        ImGui.SameLine(0f, spacing);
+        Disabled.Draw(isLastItem, () =>
+        {
+            if (ImGuiEx.IconButton(FontAwesomeIcon.ArrowDown)) {
+                (items[index], items[index + 1]) = (items[index + 1], items[index]);
+            }
+        });
+
+        ImGui.SameLine(0f, spacing);
+        if (ImGuiEx.IconButton(FontAwesomeIcon.Trash) && ImGuiEx.Ctrl) {
+            items.RemoveAt(index);
+        }
+
+        if (ImGui.IsItemHovered()) {
+            ImGuiEx.Tooltip("Hold down CTRL + Click to delete this item");
+        }
+
+        ImGui.PopID();
     }
 
     private static void DrawAutoRetainer()
