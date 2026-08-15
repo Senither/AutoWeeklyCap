@@ -72,7 +72,7 @@ public static class RunnerPrerequisitesUi
 
         var useAutoDutyProfileOverride = AWC.Config.UseAutoDutyProfileOverride;
         if (ImGui.Checkbox("Use automatic AutoDuty profile", ref useAutoDutyProfileOverride)) {
-            AWC.Config.UseBossModRebornAI = useAutoDutyProfileOverride;
+            AWC.Config.UseAutoDutyProfileOverride = useAutoDutyProfileOverride;
         }
 
         InformationTooltip.Draw(() =>
