@@ -309,21 +309,44 @@ public static class RunnerPrerequisitesUi
 
                     Card.Separator();
 
-                    if (!ImGui.BeginCombo("##PreferredUncappedTomestoneItem", "Add item...")) {
-                        return;
-                    }
+                    if (ImGui.BeginCombo("##PreferredUncappedTomestoneItem", "Add item...")) {
+                        foreach (var item in TomestoneItemHelper.GetTomestoneItems()) {
+                            if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
+                                ItemIcon.Draw(itemObj.Icon);
+                            }
 
-                    foreach (var item in TomestoneItemHelper.GetTomestoneItems()) {
-                        if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
-                            ItemIcon.Draw(itemObj.Icon);
+                            if (ImGui.Selectable(item.Name)) {
+                                AWC.Config.SpendUncappedTomestoneItems.Add(new TomestoneItem { ItemId = item.ItemId, Quantity = 1 });
+                            }
                         }
 
-                        if (ImGui.Selectable(item.Name)) {
-                            AWC.Config.SpendUncappedTomestoneItems.Add(new TomestoneItem { ItemId = item.ItemId, Quantity = 1 });
+                        ImGui.EndCombo();
+                    }
+
+                    ImGui.SameLine();
+
+                    if (ImGui.Button("Add Relic Items")) {
+                        List<Enums.TomestoneItem> tomestoneItems = TomestoneItemHelper.GetTomestoneItems()
+                            .Where(item => item.NPC == TomestoneNPC.Relic)
+                            .ToList();
+
+                        var itemCount = Math.Min(
+                            tomestoneItems.Count,
+                            ImGuiEx.Ctrl
+                                ? 1
+                                : ImGuiEx.Shift
+                                    ? 2
+                                    : ImGuiEx.Alt
+                                        ? 3
+                                        : tomestoneItems.Count
+                        );
+
+                        foreach (Enums.TomestoneItem item in tomestoneItems.Skip(Math.Max(0, tomestoneItems.Count - itemCount))) {
+                            AWC.Config.SpendUncappedTomestoneItems.Add(new TomestoneItem { ItemId = item.ItemId, Quantity = 3 });
                         }
                     }
 
-                    ImGui.EndCombo();
+                    ImGuiEx.Tooltip("Adds all relic items, or hold CTRL, SHIFT, or ALT to add the last 1, 2, or 3 items");
                 });
         });
     }
