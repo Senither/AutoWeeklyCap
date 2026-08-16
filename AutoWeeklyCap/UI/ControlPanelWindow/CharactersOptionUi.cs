@@ -9,8 +9,11 @@ public static class CharactersOptionUi
 {
     public static void Draw()
     {
-        Card.Draw("Characters", DrawCharacterList, collapsible: false);
-        DrawCharacterImporter();
+        ConfigOverridesStatus.Draw(() =>
+        {
+            Card.Draw("Characters", DrawCharacterList, collapsible: false);
+            DrawCharacterImporter();
+        });
     }
 
     private static void DrawCharacterList()

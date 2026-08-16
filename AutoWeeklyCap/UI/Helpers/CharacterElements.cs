@@ -2,8 +2,6 @@
 
 using Dalamud.Interface;
 
-using ECommons.Configuration;
-
 namespace AutoWeeklyCap.UI.Helpers;
 
 public static class CharacterElements
@@ -135,12 +133,12 @@ public static class CharacterElements
         (currentOptions.Position, otherOptions.Position) = (otherOptions.Position, currentOptions.Position);
 
         AWC.Config.NormalizeCharacterPositions();
-        EzConfig.Save();
+        Configuration.Save();
     }
 
     private static void SaveCharacterConfigurationOption(string character, CharacterOptions options)
     {
         AWC.Config.Characters[character] = options;
-        EzConfig.Save();
+        Configuration.Save();
     }
 }

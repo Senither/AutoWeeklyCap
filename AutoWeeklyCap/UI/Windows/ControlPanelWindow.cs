@@ -1,9 +1,8 @@
-﻿using AutoWeeklyCap.UI.Helpers;
+﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
-
-using ECommons.Configuration;
 
 namespace AutoWeeklyCap.UI.Windows;
 
@@ -55,6 +54,6 @@ public class ControlPanelWindow : Window
 
     public override void OnClose()
     {
-        EzConfig.Save();
+        Configuration.Save();
     }
 }

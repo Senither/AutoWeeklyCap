@@ -1,9 +1,9 @@
-﻿using AutoWeeklyCap.Contracts.Runner;
+﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.Runner;
 using AutoWeeklyCap.IPC.AutoDuty;
 using AutoWeeklyCap.Runner.Zone;
 
 using ECommons.Automation.NeoTaskManager;
-using ECommons.Configuration;
 
 namespace AutoWeeklyCap.Runner.Stages;
 
@@ -104,7 +104,7 @@ public class StartAutoDutyStage : BaseStage
             LogDebug($"Disabling AWC for {state.CurrentCharacter} and switching character");
 
             AWC.Config.Characters[state.CurrentCharacter].Enabled = false;
-            EzConfig.Save();
+            Configuration.Save();
 
             state.ChangeStageTo(Stage.StartingCharacterSwap);
 

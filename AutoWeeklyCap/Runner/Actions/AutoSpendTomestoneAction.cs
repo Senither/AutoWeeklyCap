@@ -1,7 +1,9 @@
-﻿using AutoWeeklyCap.Contracts.Runner;
+﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.Runner;
 
-using ECommons.Configuration;
 using ECommons.UIHelpers.AddonMasterImplementations;
+
+using TomestoneItem = AutoWeeklyCap.Enums.TomestoneItem;
 
 // ReSharper disable InconsistentNaming
 
@@ -201,7 +203,7 @@ public class AutoSpendTomestoneAction : BaseAction
                 configItem.Quantity = (uint)remainingQuantity;
             }
 
-            EzConfig.Save();
+            Configuration.Save();
 
             return true;
         }, "update tomestone config");
@@ -217,7 +219,7 @@ public class AutoSpendTomestoneAction : BaseAction
             }
 
             AWC.Config.GetCurrentCharacterMetrics()?.IncrementWeeklyTomestoneSpentCounter(tomestones);
-            EzConfig.Save();
+            Configuration.Save();
 
             return true;
         }, "update metrics");

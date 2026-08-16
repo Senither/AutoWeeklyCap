@@ -1,6 +1,5 @@
-﻿using AutoWeeklyCap.Contracts.Runner;
-
-using ECommons.Configuration;
+﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.Runner;
 
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -74,7 +73,7 @@ public class ExtractAction : BaseAction
 
         Enqueue(() =>
         {
-            EzConfig.Save();
+            Configuration.Save();
             return true;
         }, "saving metrics");
 

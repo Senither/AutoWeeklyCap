@@ -405,5 +405,22 @@ public static class DeveloperToolbox
         }
 
         ImGuiEx.Tooltip("Hold down CTRL + Click to reset the plugin configuration to all the default values");
+
+        if (ImGui.Button("Print Overridable Config Pairs")) {
+            foreach (var (key, value) in ConfigOverrides.GetKeyValuePairs()) {
+                AWC.Log.Debug($"OverridablePair: Key: {key}, Value: {value}");
+            }
+        }
+
+        ImGuiEx.Tooltip("Prints the overridable pairs of keys and their current value of to the console");
+
+        ImGui.SameLine();
+
+        if (ImGui.Button("Remove Plugin Overrides") && ImGuiEx.Ctrl) {
+            ConfigOverrides.Clear();
+            Notify.Info("Config overrides have been cleared");
+        }
+
+        ImGuiEx.Tooltip("Hold down CTRL + Click to remove all the plugin overrides");
     }
 }

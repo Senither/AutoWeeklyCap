@@ -1,6 +1,5 @@
-﻿using AutoWeeklyCap.Contracts.Runner;
-
-using ECommons.Configuration;
+﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.Runner;
 
 namespace AutoWeeklyCap.Runner.Actions;
 
@@ -133,7 +132,7 @@ public class NpcRepairAction : BaseAction
             }
 
             AWC.Config.GetCurrentCharacterMetrics()?.IncrementRepairsCounter(gilSpent: gilSpent);
-            EzConfig.Save();
+            Configuration.Save();
 
             return true;
         }, "update metrics");

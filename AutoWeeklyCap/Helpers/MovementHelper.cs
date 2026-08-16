@@ -1,6 +1,7 @@
-﻿using ECommons.Automation.NeoTaskManager;
+﻿using AutoWeeklyCap.Config;
+
+using ECommons.Automation.NeoTaskManager;
 using ECommons.Automation.NeoTaskManager.Tasks;
-using ECommons.Configuration;
 
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -305,7 +306,7 @@ public static class MovementHelper
         AWC.Config.GetCurrentCharacterMetrics()
             ?.IncrementGilSpentOnTeleportationFeesCounter((uint)(before - CurrencyHelper.GetGil()));
 
-        EzConfig.Save();
+        Configuration.Save();
     }
 
     private static unsafe bool CanUseSprint =>

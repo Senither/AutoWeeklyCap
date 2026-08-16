@@ -1,7 +1,7 @@
-﻿using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Utility;
+﻿using AutoWeeklyCap.Config;
 
-using ECommons.Configuration;
+using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Utility;
 
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
@@ -158,7 +158,7 @@ public static class PlayerHelper
         }
 
         if (changed) {
-            EzConfig.Save();
+            Configuration.Save();
         }
     }
 }

@@ -1,7 +1,6 @@
-﻿using AutoWeeklyCap.Contracts.Runner;
+﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.Runner;
 using AutoWeeklyCap.IPC.AutoRetainer;
-
-using ECommons.Configuration;
 
 namespace AutoWeeklyCap.Runner.Stages;
 
@@ -110,6 +109,6 @@ public class WaitForAutoRetainerStage : BaseStage
         }
 
         _retainerEndingAt.Clear();
-        EzConfig.Save();
+        Configuration.Save();
     }
 }

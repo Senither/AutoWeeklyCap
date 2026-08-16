@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
+using AutoWeeklyCap.Config;
+
 using ECommons.EzIpcManager;
 
 // ReSharper disable ArrangeMethodOrOperatorBody
@@ -75,6 +77,57 @@ public class IPCProvider
     /// </summary>
     [EzIPC("Runner.EnableLevelingMode")]
     public void RunnerEnableLevelingMode() => AWC.Runner.State.EnableLevelingMode();
+
+    // ------------------------- Config IPC Methods -------------------------
+    // The config IPC methods can be used to temporarily override the users
+    // config values, the overrides will persists until manually cleared,
+    // or when the runner is stopped or the game shuts down.
+
+    /// <summary>
+    /// Gets all the overridable keys with their current values from the config.
+    /// The keys are returned in flattened dot notation and each value is
+    /// formatted as<c>value (object type)</c>.
+    /// </summary>
+    [EzIPC("Config.GetKeyValuePairs")]
+    public Dictionary<string, string> ConfigGetKeyValuePairs() => ConfigOverrides.GetKeyValuePairs();
+
+    /// <summary>
+    /// Pushes a dictionary of config overrides, where the keys represent the config keys,
+    /// and the value is the new value that should be used. The config key can be written
+    /// using dot notation to override nested keys, and the value type must match
+    /// the original type or structure for it to be accepted. Will return true if
+    /// all the keys were overwritten, and false if one or more keys failed.
+    /// <example>
+    /// PushOverrides(new () {
+    ///   { "SpendUncappedTomestoneThreshold", 950 },
+    ///   { "LevelJobs.UseCharacterOrder", false },
+    ///   { "LevelJobs.PreferredGearingProfile", "Partial" }
+    /// });
+    /// </example>
+    /// </summary>
+    [EzIPC("Config.PushOverrides")]
+    public bool ConfigPushOverrides(Dictionary<string, object> values) => ConfigOverrides.Set(values);
+
+    /// <summary>
+    /// Pushes a single key-value pair to the config overrides, where the keys represent
+    /// the config key, and the value is the new value that should be used. The config
+    /// key can be written using dot notation to override nested keys, and the value
+    /// type must match the original type or structure for it to be accepted. Will
+    /// return true if the key were successfully overwritten.
+    /// <example>
+    /// PushOverride("SpendUncappedTomestoneThreshold", 950);
+    /// </example>
+    /// </summary>
+    [EzIPC("Config.PushOverride")]
+    public bool ConfigPushOverride(string key, object value) => ConfigOverrides.Set(key, value);
+
+    /// <summary>
+    /// Pops the config overrides, returning the config to the state it were in before any
+    /// overrides where applied and unlocks the config for the user again. This is
+    /// automatically called when a runner is fully stopped.
+    /// </summary>
+    [EzIPC("Config.PopOverrides")]
+    public void ConfigPopOverrides() => ConfigOverrides.Clear();
 
     // ------------------------- Action IPC Methods -------------------------
     // All action methods returns a bool, which represents if the action was

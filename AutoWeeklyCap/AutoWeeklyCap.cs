@@ -114,7 +114,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
             }
 
             Config.LastSeenPluginVersion = Version;
-            EzConfig.Save();
+            Configuration.Save();
 
             OpenConfigUi(SettingsWindowOption.Changelog);
         });
@@ -122,6 +122,8 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
     public void Dispose()
     {
+        ConfigOverrides.Clear();
+
         PluginInterface.UiBuilder.Draw -= _windowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi -= ToggleMainUi;

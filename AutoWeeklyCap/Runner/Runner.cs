@@ -1,3 +1,4 @@
+using AutoWeeklyCap.Config;
 using AutoWeeklyCap.IPC.AutoDuty;
 
 using Dalamud.Interface.ImGuiNotification;
@@ -147,6 +148,8 @@ public class Runner
         if (AWC.Config.MuteGameSoundsWhenRunning) {
             AudioHelper.MuteMasterGameAudio(false);
         }
+
+        ConfigOverrides.Clear();
 
         AWC.Log.Info("Stopped weekly cap runner");
     }

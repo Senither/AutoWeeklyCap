@@ -12,16 +12,19 @@ public static class RunnerPrerequisitesUi
 {
     public static void Draw()
     {
-        Card.Draw("Duty Options###runner-duty-options", DrawDutyOptions, defaultOpen: true);
-        Card.Draw("Before Runs###runner-before-general", DrawBeforeRunOptions, defaultOpen: true);
-        Card.Draw("Between Runs###runner-between-general", DrawBetweenRunsOptions, defaultOpen: true);
+        ConfigOverridesStatus.Draw(() =>
+        {
+            Card.Draw("Duty Options###runner-duty-options", DrawDutyOptions, defaultOpen: true);
+            Card.Draw("Before Runs###runner-before-general", DrawBeforeRunOptions, defaultOpen: true);
+            Card.Draw("Between Runs###runner-between-general", DrawBetweenRunsOptions, defaultOpen: true);
 
-        ImGui.TextWrapped("Select how third-party plugins should be integrated into the runner.");
-        ImGui.Spacing();
+            ImGui.TextWrapped("Select how third-party plugins should be integrated into the runner.");
+            ImGui.Spacing();
 
-        Card.Draw("Auto Retainer###runner-prereq-auto-retainer", DrawAutoRetainer);
-        Card.Draw("Deliveroo###runner-prereq-deliveroo", DrawDeliveroo);
-        Card.Draw("Notification Master###runner-prereq-notification-master", DrawNotificationMaster);
+            Card.Draw("Auto Retainer###runner-prereq-auto-retainer", DrawAutoRetainer);
+            Card.Draw("Deliveroo###runner-prereq-deliveroo", DrawDeliveroo);
+            Card.Draw("Notification Master###runner-prereq-notification-master", DrawNotificationMaster);
+        });
     }
 
     private static void DrawDutyOptions()

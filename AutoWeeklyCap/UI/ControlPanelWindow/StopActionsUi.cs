@@ -3,8 +3,6 @@ using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface;
 
-using ECommons.Configuration;
-
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 namespace AutoWeeklyCap.UI.ControlPanelWindow;
@@ -13,27 +11,36 @@ public static class StopActionsUi
 {
     public static void Draw()
     {
-        Card.Draw("Stop Actions", () =>
+        ConfigOverridesStatus.Draw(() =>
         {
-            ImGui.TextWrapped("Select what should happen when all characters have been tomestone capped.");
+            Card.Draw("Stop Actions", DrawStopActionSelector, collapsible: false);
+            DrawOptions();
+        });
+    }
 
-            Card.Separator();
+    private static void DrawStopActionSelector()
+    {
+        ImGui.TextWrapped("Select what should happen when all characters have been tomestone capped.");
 
-            ImGui.Spacing();
-            ImGui.Spacing();
+        Card.Separator();
 
-            foreach (StopAction action in StopActionExtensions.GetOrderedStopActions()) {
-                if (ImGui.RadioButton(action.GetName(), AWC.Config.StopAction == action)) {
-                    AWC.Config.StopAction = action;
-                }
+        ImGui.Spacing();
+        ImGui.Spacing();
 
-                var tooltip = action.GetTooltip();
-                if (tooltip != null) {
-                    InformationTooltip.Draw(tooltip);
-                }
+        foreach (StopAction action in StopActionExtensions.GetOrderedStopActions()) {
+            if (ImGui.RadioButton(action.GetName(), AWC.Config.StopAction == action)) {
+                AWC.Config.StopAction = action;
             }
-        }, collapsible: false);
 
+            var tooltip = action.GetTooltip();
+            if (tooltip != null) {
+                InformationTooltip.Draw(tooltip);
+            }
+        }
+    }
+
+    private static void DrawOptions()
+    {
         List<Action> elements = GetOptionsDrawElements();
         if (elements.Count > 0) {
             Card.Draw(AWC.Config.StopAction.GetName() + " Options", () =>
@@ -110,7 +117,7 @@ public static class StopActionsUi
         var useLevelingFood = AWC.Config.LevelJobs.UseLevelingFood;
         if (ImGui.Checkbox("Use leveling food", ref useLevelingFood)) {
             AWC.Config.LevelJobs.UseLevelingFood = useLevelingFood;
-            EzConfig.Save();
+            Configuration.Save();
         }
 
         InformationTooltip.Draw(() =>
@@ -128,7 +135,7 @@ public static class StopActionsUi
         var useStylistForGearUpgrades = AWC.Config.LevelJobs.UseStylistForGearUpgrades;
         if (ImGui.Checkbox("Use Stylist for gear upgrades", ref useStylistForGearUpgrades)) {
             AWC.Config.LevelJobs.UseStylistForGearUpgrades = useStylistForGearUpgrades;
-            EzConfig.Save();
+            Configuration.Save();
         }
 
         InformationTooltip.Draw(() =>
@@ -150,7 +157,7 @@ public static class StopActionsUi
             var buyExpansionGearUpgrades = AWC.Config.LevelJobs.BuyExpansionGearUpgrades;
             if (ImGui.Checkbox("Buy gear expansion upgrades", ref buyExpansionGearUpgrades)) {
                 AWC.Config.LevelJobs.BuyExpansionGearUpgrades = buyExpansionGearUpgrades;
-                EzConfig.Save();
+                Configuration.Save();
             }
 
             InformationTooltip.Draw(() =>
@@ -191,7 +198,7 @@ public static class StopActionsUi
                     }
 
                     AWC.Config.LevelJobs.PreferredGearingProfile = profile;
-                    EzConfig.Save();
+                    Configuration.Save();
                 }
 
                 ImGui.EndCombo();
@@ -218,7 +225,7 @@ public static class StopActionsUi
                     fastSteps: 5_000
                 )) {
                 AWC.Config.LevelJobs.MinimumGilThreshold = gilThreshold;
-                EzConfig.Save();
+                Configuration.Save();
             }
         });
 
@@ -228,7 +235,7 @@ public static class StopActionsUi
         var useCharacterOrder = AWC.Config.LevelJobs.UseCharacterOrder;
         if (ImGui.RadioButton("All characters", useCharacterOrder)) {
             AWC.Config.LevelJobs.UseCharacterOrder = true;
-            EzConfig.Save();
+            Configuration.Save();
         }
 
         InformationTooltip.Draw(() =>
@@ -240,7 +247,7 @@ public static class StopActionsUi
 
         if (ImGui.RadioButton("Selected character", !useCharacterOrder)) {
             AWC.Config.LevelJobs.UseCharacterOrder = false;
-            EzConfig.Save();
+            Configuration.Save();
         }
 
         InformationTooltip.Draw(() =>
@@ -298,7 +305,7 @@ public static class StopActionsUi
 
         if (!sortedCharacters.Contains(AWC.Config.LevelJobs.SelectedCharacter)) {
             AWC.Config.LevelJobs.SelectedCharacter = sortedCharacters[0];
-            EzConfig.Save();
+            Configuration.Save();
         }
 
         var preview = AWC.Config.LevelJobs.SelectedCharacter;
@@ -312,7 +319,7 @@ public static class StopActionsUi
             }
 
             AWC.Config.LevelJobs.SelectedCharacter = character;
-            EzConfig.Save();
+            Configuration.Save();
         }
 
         ImGui.EndCombo();
@@ -336,7 +343,7 @@ public static class StopActionsUi
             var enabled = entry.Enabled;
             if (ImGui.Checkbox("##enabled", ref enabled)) {
                 entry.Enabled = enabled;
-                EzConfig.Save();
+                Configuration.Save();
             }
 
             ImGui.SameLine(0f, 4f);
@@ -413,7 +420,7 @@ public static class StopActionsUi
         }
 
         if (changed) {
-            EzConfig.Save();
+            Configuration.Save();
         }
 
         return entries;
@@ -431,6 +438,6 @@ public static class StopActionsUi
         }
 
         (entries[index], entries[targetIndex]) = (entries[targetIndex], entries[index]);
-        EzConfig.Save();
+        Configuration.Save();
     }
 }

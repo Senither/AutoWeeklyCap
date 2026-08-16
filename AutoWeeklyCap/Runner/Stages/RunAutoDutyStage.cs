@@ -1,7 +1,6 @@
-﻿using AutoWeeklyCap.Contracts.Runner;
+﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.Runner;
 using AutoWeeklyCap.Runner.Zone;
-
-using ECommons.Configuration;
 
 namespace AutoWeeklyCap.Runner.Stages;
 
@@ -88,7 +87,7 @@ public class RunAutoDutyStage : BaseStage
                 AWC.Config.GetOrRegisterCharacterOptions(state.CurrentCharacter)?.AddDutyDurationSeconds(durationSeconds);
             }
 
-            EzConfig.Save();
+            Configuration.Save();
         }
 
         if (state.StoppingGracefully && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnRunnerStopped) {

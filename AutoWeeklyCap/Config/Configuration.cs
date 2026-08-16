@@ -86,9 +86,14 @@ public class Configuration : IPluginConfiguration
     public uint NotificationMasterUsingPlaySoundOptionVolume { get; set; } = 50;
     public string NotificationMasterUsingPlaySoundOptionFilePath { get; set; } = "";
 
-    public void Save()
+    public static void Save()
     {
-        AWC.PluginInterface.SavePluginConfig(this);
+        if (ConfigOverrides.IsLocked) {
+            AWC.Log.Warning("Config: Save skipped, configuration is locked by active config overrides");
+            return;
+        }
+
+        EzConfig.Save();
     }
 
     public int GetWeeklyTomes(string character)
@@ -247,7 +252,7 @@ public class Configuration : IPluginConfiguration
         }
 
         AWC.Log.Warning($"Config: Removed {removed} invalid auto-spend tomestone item(s) from configuration.");
-        EzConfig.Save();
+        Save();
 
         return true;
     }

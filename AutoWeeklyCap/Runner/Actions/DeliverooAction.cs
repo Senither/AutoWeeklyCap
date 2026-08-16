@@ -1,7 +1,7 @@
-﻿using AutoWeeklyCap.Contracts.Runner;
+﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.Runner;
 
 using ECommons.Automation.NeoTaskManager;
-using ECommons.Configuration;
 using ECommons.UIHelpers.AddonMasterImplementations;
 
 namespace AutoWeeklyCap.Runner.Actions;
@@ -95,7 +95,7 @@ public class DeliverooAction : BaseAction
                 AWC.Config.GetCurrentCharacterMetrics()
                     ?.IncrementDeliverableItemsHandedInCounter((uint)(before - InventoryHelper.GetDeliverableItemsCount()));
 
-                EzConfig.Save();
+                Configuration.Save();
 
                 return true;
             },

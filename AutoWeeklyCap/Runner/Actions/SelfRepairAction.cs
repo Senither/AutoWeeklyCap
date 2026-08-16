@@ -1,6 +1,5 @@
-﻿using AutoWeeklyCap.Contracts.Runner;
-
-using ECommons.Configuration;
+﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.Runner;
 
 using FFXIVClientStructs.FFXIV.Client.Game;
 
@@ -116,7 +115,7 @@ public class SelfRepairAction : BaseAction
             }
 
             AWC.Config.GetCurrentCharacterMetrics()?.IncrementRepairsCounter(darkMatterSpent: darkMatterSpent);
-            EzConfig.Save();
+            Configuration.Save();
 
             return true;
         }, "update metrics");
