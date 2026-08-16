@@ -48,10 +48,10 @@ public class AutoSpendTomestoneAction : BaseAction
             return false;
         }
 
-        var quantity = (int)Math.Min(
+        var quantity = (int)Math.Min(99, Math.Min(
             itemContainer.MaxQuantity,
             itemContainer.Item.CalculateQuantityForGivenTomestones(CurrencyHelper.GetUncappedAcquiredTomestoneCount())
-        );
+        ));
 
         if (quantity <= 0) {
             return false;
