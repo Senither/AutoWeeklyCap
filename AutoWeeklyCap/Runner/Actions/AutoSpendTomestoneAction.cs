@@ -249,10 +249,12 @@ public class AutoSpendTomestoneAction : BaseAction
             return null;
         }
 
+        var shouldUpdate = AWC.Config.SpendUncappedTomestoneItems.Count != 1;
+
         return new SelectedTomestoneItem(
             Item: tomestoneItem,
-            MaxQuantity: configItem.Quantity,
-            ShouldUpdate: AWC.Config.SpendUncappedTomestoneItems.Count != 1
+            MaxQuantity: shouldUpdate ? configItem.Quantity : 9999,
+            ShouldUpdate: shouldUpdate
         );
     }
 
