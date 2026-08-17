@@ -215,17 +215,17 @@ public static unsafe class InventoryHelper
 
     internal static List<GameInventoryItem> GetSaddleBagItems()
     {
-        ReadOnlySpan<GameInventoryItem> bag1 = Svc.GameInventory.GetInventoryItems(GameInventoryType.SaddleBag1);
-        ReadOnlySpan<GameInventoryItem> bag2 = Svc.GameInventory.GetInventoryItems(GameInventoryType.SaddleBag2);
-        ReadOnlySpan<GameInventoryItem> premium1 = Svc.GameInventory.GetInventoryItems(GameInventoryType.PremiumSaddleBag1);
-        ReadOnlySpan<GameInventoryItem> premium2 = Svc.GameInventory.GetInventoryItems(GameInventoryType.PremiumSaddleBag2);
+        var combined = new List<GameInventoryItem>();
 
-        var combined = new List<GameInventoryItem>(bag1.Length + bag2.Length + premium1.Length + premium2.Length);
+        combined.AddRange(Svc.GameInventory.GetInventoryItems(GameInventoryType.SaddleBag1));
+        combined.AddRange(Svc.GameInventory.GetInventoryItems(GameInventoryType.SaddleBag2));
 
-        combined.AddRange(bag1);
-        combined.AddRange(bag2);
-        combined.AddRange(premium1);
-        combined.AddRange(premium2);
+        if (!PlayerHelper.HasPremiumSaddlebags()) {
+            return combined;
+        }
+
+        combined.AddRange(Svc.GameInventory.GetInventoryItems(GameInventoryType.PremiumSaddleBag1));
+        combined.AddRange(Svc.GameInventory.GetInventoryItems(GameInventoryType.PremiumSaddleBag2));
 
         return combined;
     }

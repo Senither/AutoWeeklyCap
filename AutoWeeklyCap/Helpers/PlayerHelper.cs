@@ -65,6 +65,21 @@ public static class PlayerHelper
         return Player.Available && Player.Status.Any(x => x.StatusId == statusId && (minTime <= 0 || x.RemainingTime > minTime));
     }
 
+    public static bool HasPremiumSaddlebags()
+    {
+        if (!AWC.PlayerState.IsLoaded) {
+            return false;
+        }
+
+        try {
+            unsafe {
+                return PlayerState.Instance()->HasPremiumSaddlebag;
+            }
+        } catch (Exception) {
+            return false;
+        }
+    }
+
     public static int GetJobLevel(PlayerJob jobType)
     {
         if (!AWC.PlayerState.IsLoaded) {
