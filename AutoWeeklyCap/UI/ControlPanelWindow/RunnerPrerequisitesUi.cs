@@ -349,7 +349,12 @@ public static class RunnerPrerequisitesUi
                         }
                     }
 
-                    ImGuiEx.Tooltip("Adds all relic items, or hold CTRL, SHIFT, or ALT to add the last 1, 2, or 3 items");
+                    ImGuiEx.Tooltip(
+                        "Adds all relic items, or hold down a modifier key to add a limited number of items.\n" +
+                        "CTRL    = Adds the last relic material\n" +
+                        "SHIFT   = Adds the last two relic materials\n" +
+                        "ALT        = Adds the last three relic materials"
+                    );
                 });
         });
     }
