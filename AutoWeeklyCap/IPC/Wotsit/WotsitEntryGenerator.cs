@@ -85,51 +85,68 @@ public static class WotsitEntryGenerator
         }
     }
 
-    private static IEnumerable<WotsitEntry> SafezoneTeleporterActions()
+    private static List<WotsitEntry> SafezoneTeleporterActions()
     {
         if (!LifestreamIPC.IsEnabled || PlayerHelper.InDuty) {
-            yield break;
+            return [];
         }
 
-        yield return new WotsitEntry(
-            "Enter preferred safe-zone",
-            "enter|goto safezone|safe zone",
-            113,
-            () =>
-            {
-                var characterName = PlayerHelper.GetFullCharacterName();
+        var actions = new List<WotsitEntry>
+        {
+            new(
+                "Enter preferred safe-zone",
+                "enter|goto safezone|safe zone",
+                113,
+                () =>
+                {
+                    var characterName = PlayerHelper.GetFullCharacterName();
 
-                _ = characterName == null
-                    ? ActionInstance.Safezone.Invoke()
-                    : ActionInstance.Safezone.Invoke(characterName);
+                    _ = characterName == null
+                        ? ActionInstance.Safezone.Invoke()
+                        : ActionInstance.Safezone.Invoke(characterName);
+                }
+            )
+        };
+
+        try {
+            if (LifestreamIPC.HasPrivateHouse()) {
+                actions.Add(new WotsitEntry(
+                    "Enter personal house",
+                    "enter|goto private|personal house|estate",
+                    113,
+                    () => ActionInstance.EnterPrivateHouse.Invoke()
+                ));
             }
-        );
-
-        if (LifestreamIPC.HasPrivateHouse()) {
-            yield return new WotsitEntry(
-                "Enter personal house",
-                "enter|goto private|personal house|estate",
-                113,
-                () => ActionInstance.EnterPrivateHouse.Invoke()
-            );
+        } catch (Exception) {
+            // ignored
         }
 
-        if (LifestreamIPC.HasApartment()) {
-            yield return new WotsitEntry(
-                "Enter personal apartment",
-                "enter|goto private|personal apartment|estate",
-                113,
-                () => ActionInstance.EnterApartment.Invoke()
-            );
+        try {
+            if (LifestreamIPC.HasApartment()) {
+                actions.Add(new WotsitEntry(
+                    "Enter personal apartment",
+                    "enter|goto private|personal apartment|estate",
+                    113,
+                    () => ActionInstance.EnterApartment.Invoke()
+                ));
+            }
+        } catch (Exception) {
+            // ignored
         }
 
-        if (LifestreamIPC.HasFreeCompanyHouse()) {
-            yield return new WotsitEntry(
-                "Enter free company house",
-                "enter|goto fc|free company house",
-                113,
-                () => ActionInstance.EnterFcHouse.Invoke()
-            );
+        try {
+            if (LifestreamIPC.HasFreeCompanyHouse()) {
+                actions.Add(new WotsitEntry(
+                    "Enter free company house",
+                    "enter|goto fc|free company house",
+                    113,
+                    () => ActionInstance.EnterFcHouse.Invoke()
+                ));
+            }
+        } catch (Exception) {
+            // ignored
         }
+
+        return actions;
     }
 }
