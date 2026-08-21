@@ -73,6 +73,9 @@ public static class DebugReportHelper
         state["InventoryHelper#GetLowestConditionEquippedItem"] = InventoryHelper.GetLowestConditionEquippedItem().Container;
         state["InventoryHelper#GetDarkMatterCount"] = InventoryHelper.GetDarkMatterCount();
         state["InventoryHelper#GetCurrentItemLevel"] = InventoryHelper.GetCurrentItemLevel();
+        state["FreeCompanyHelper#IsInFreeCompany"] = FreeCompanyHelper.IsInFreeCompany;
+        state["FreeCompanyHelper#GetFreeCompanyLevel"] = FreeCompanyHelper.GetFreeCompanyLevel();
+        state["FreeCompanyHelper#GetRank"] = FreeCompanyHelper.GetRank();
 
         return state;
     }

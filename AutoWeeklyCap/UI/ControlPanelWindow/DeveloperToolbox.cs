@@ -28,6 +28,15 @@ public static class DeveloperToolbox
 
     internal static void Draw()
     {
+        if (ImGui.Button("TEST")) {
+            AWC.Log.Debug($"TEST: FreeCompanyHelper.IsInFreeCompany={FreeCompanyHelper.IsInFreeCompany}");
+            AWC.Log.Debug($"TEST: FreeCompanyHelper.GetFreeCompanyLevel={FreeCompanyHelper.GetFreeCompanyLevel()}");
+            AWC.Log.Debug($"TEST: FreeCompanyHelper.GetRank={FreeCompanyHelper.GetRank()}");
+            AWC.Log.Debug($"TEST: FreeCompanyHelper.CanExecuteActions={FreeCompanyHelper.CanExecuteActions()}");
+            // AWC.Log.Debug($"TEST: FreeCompanyHelper.CanDiscardActions={FreeCompanyHelper.CanDiscardActions()}");
+            // AWC.Log.Debug($"TEST: FreeCompanyHelper.CanBuyActions={FreeCompanyHelper.CanBuyActions()}");
+        }
+
         Card.Draw("Plugin Details", DrawPluginDetails, false);
         Card.Draw("Runner Debug Steps", DrawRunnerDebugSteps, false);
         Card.Draw("Runner Debug Actions", DrawRunnerDebugActions, false);
