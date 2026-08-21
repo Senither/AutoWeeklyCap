@@ -59,8 +59,8 @@ public static unsafe class FreeCompanyHelper
                (permissions[ExecutingActionsPermissionByte] & ExecutingActionsPermissionMask) != 0;
     }
 
-    // TODO these still use the disproven upstream BasicSettings bit mapping (see CanExecuteActions comment above) and need
-    // the same empirical byte-diff verification before being trusted.
+    // TODO Discard still uses the disproven upstream BasicSettings bit mapping (see CanExecuteActions comment above) and
+    // needs the same empirical byte-diff verification before being trusted - couldn't isolate its bit with only 2 samples.
     public static bool CanDiscardActions()
     {
         return GetCurrentRankBasicSettings() is { } settings &&
@@ -70,8 +70,8 @@ public static unsafe class FreeCompanyHelper
     // Buying/refilling FC actions spends company credits, which is gated by this permission
     public static bool CanBuyActions()
     {
-        return GetCurrentRankBasicSettings() is { } settings &&
-               settings.HasFlag(InfoProxyFreeCompany.RankData.BasicSettings.CompanyCredists);
+        return GetCurrentRankPermissions() is { } permissions &&
+               (InfoProxyFreeCompany.RankData.ChestAccess)(((permissions[4] & 0x0E) >> 1) + ((permissions[5] % 0x04) << 1)) == InfoProxyFreeCompany.RankData.ChestAccess.FullAccess;
     }
 
     public static bool CanInviteActions()
@@ -109,6 +109,9 @@ public static unsafe class FreeCompanyHelper
                 if (raw[RankDataRankNumberOffset] != rank) {
                     continue;
                 }
+
+                var fullHex = string.Join(" ", Enumerable.Range(0, sizeof(InfoProxyFreeCompany.RankData)).Select(o => raw[o].ToString("X2")));
+                AWC.Log.Debug($"TEST: full raw for rank={rank}: [{fullHex}]");
 
                 var permissions = new byte[10];
                 for (var o = 0; o < permissions.Length; o++) {
