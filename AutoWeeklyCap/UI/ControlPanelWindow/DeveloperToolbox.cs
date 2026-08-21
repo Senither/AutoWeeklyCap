@@ -35,6 +35,7 @@ public static class DeveloperToolbox
             AWC.Log.Debug($"TEST: FreeCompanyHelper.CanExecuteActions={FreeCompanyHelper.CanExecuteActions()}");
             // AWC.Log.Debug($"TEST: FreeCompanyHelper.CanDiscardActions={FreeCompanyHelper.CanDiscardActions()}");
             // AWC.Log.Debug($"TEST: FreeCompanyHelper.CanBuyActions={FreeCompanyHelper.CanBuyActions()}");
+            // AWC.Log.Debug($"TEST: FreeCompanyHelper.CanInviteActions={FreeCompanyHelper.CanInviteActions()}");
         }
 
         Card.Draw("Plugin Details", DrawPluginDetails, false);

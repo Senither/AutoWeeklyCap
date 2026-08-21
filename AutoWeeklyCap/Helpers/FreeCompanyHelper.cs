@@ -8,6 +8,13 @@ public static unsafe class FreeCompanyHelper
 {
     public static bool IsInFreeCompany => PlayerHelper.IsValid && InfoProxyFreeCompany.Instance() != null && InfoProxyFreeCompany.Instance()->Id != 0;
 
+    // FFXIVClientStructs declares RankData.RankNumber/Permissions/Name at 0x22/0x00/0x23, but that no longer matches the
+    // live client layout. Verified by hex-dumping a populated RankData entry: MemberCount (0x20) and sizeof (0x58) are still
+    // correct, but the real RankNumber sits right before the rank's name string, and Permissions sits right after MemberCount.
+    private const int RankDataPermissionsOffset = 0x22;
+    private const int RankDataRankNumberOffset = 0x42;
+    private static DateTime _nextRankDataRequest = DateTime.MinValue;
+
     // The FC's own progression level (1-30, capped), NOT the local player's rank tier; byte.MaxValue = not in an FC
     public static byte GetFreeCompanyLevel()
     {
@@ -41,64 +48,73 @@ public static unsafe class FreeCompanyHelper
 
     public static bool CanExecuteActions()
     {
-        var data = GetCurrentRankData();
-        return data is { } rankData &&
-               rankData.BasicSettingsData.HasFlag(InfoProxyFreeCompany.RankData.BasicSettings.Invitations);
+        return GetCurrentRankBasicSettings() is { } settings &&
+               settings.HasFlag(InfoProxyFreeCompany.RankData.BasicSettings.ExecutingActions);
     }
 
     public static bool CanDiscardActions()
     {
-        return GetCurrentRankData() is { } rankData &&
-               rankData.BasicSettingsData.HasFlag(InfoProxyFreeCompany.RankData.BasicSettings.DiscardingActions);
+        return GetCurrentRankBasicSettings() is { } settings &&
+               settings.HasFlag(InfoProxyFreeCompany.RankData.BasicSettings.DiscardingActions);
     }
 
     // Buying/refilling FC actions spends company credits, which is gated by this permission
     public static bool CanBuyActions()
     {
-        return GetCurrentRankData() is { } rankData &&
-               rankData.BasicSettingsData.HasFlag(InfoProxyFreeCompany.RankData.BasicSettings.CompanyCredists);
+        return GetCurrentRankBasicSettings() is { } settings &&
+               settings.HasFlag(InfoProxyFreeCompany.RankData.BasicSettings.CompanyCredists);
     }
 
-    private static InfoProxyFreeCompany.RankData? GetCurrentRankData()
+    public static bool CanInviteActions()
     {
-        AWC.Log.Debug("TEST: FreeCompanyHelper.GetCurrentRankData - 1");
+        return GetCurrentRankBasicSettings() is { } settings &&
+               settings.HasFlag(InfoProxyFreeCompany.RankData.BasicSettings.Invitations);
+    }
+
+    private static InfoProxyFreeCompany.RankData.BasicSettings? GetCurrentRankBasicSettings()
+    {
         if (!IsInFreeCompany) {
-            AWC.Log.Debug("TEST: FreeCompanyHelper.GetCurrentRankData - 1.1");
             return null;
         }
 
-        AWC.Log.Debug("TEST: FreeCompanyHelper.GetCurrentRankData - 2");
-
         var rank = GetRank();
         if (rank == byte.MaxValue) {
-            AWC.Log.Debug("TEST: FreeCompanyHelper.GetCurrentRankData - 2.1");
             return null;
         }
 
         try {
-            AWC.Log.Debug("TEST: FreeCompanyHelper.GetCurrentRankData - 3");
             InfoProxyFreeCompany* proxy = InfoProxyFreeCompany.Instance();
             if (proxy == null) {
-                AWC.Log.Debug("TEST: FreeCompanyHelper.GetCurrentRankData - 3.1");
                 return null;
             }
 
-            AWC.Log.Debug("TEST: TestValue = {0}", proxy->Ranks[0].BasicSettingsData);
-
-            foreach (var rankData in proxy->Ranks) {
-                AWC.Log.Debug($"RANK: {rankData.NameString}");
-                if (rankData.RankNumber == rank) {
-                    AWC.Log.Debug("TEST: FreeCompanyHelper.GetCurrentRankData - 4");
-                    return rankData;
-                }
+            if (proxy->TotalMembers == 0) {
+                proxy->RequestData();
+                return null;
             }
 
-            AWC.Log.Debug("TEST: FreeCompanyHelper.GetCurrentRankData - 5");
-            // The rank permission list isn't included in the base FC data request; ask for it keyed to the local player
-            proxy->RequestDataForCharacter(PlayerState.Instance()->EntityId);
+            for (var i = 0; i < proxy->Ranks.Length; i++) {
+                var rankData = proxy->Ranks[i];
+                var raw = (byte*)&rankData;
+                if (raw[RankDataRankNumberOffset] != rank) {
+                    continue;
+                }
+
+                var permissions0 = raw[RankDataPermissionsOffset];
+                var permissions1 = raw[RankDataPermissionsOffset + 1];
+                AWC.Log.Debug($"TEST: rank={rank} perms=[{string.Join(",", Enumerable.Range(0, 10).Select(o => raw[RankDataPermissionsOffset + o].ToString("X2")))}]");
+
+                return (InfoProxyFreeCompany.RankData.BasicSettings)(ushort)(((permissions1 & 0x7F) << 8) + permissions0);
+            }
+
+            // No match means the permission table hasn't come back yet; request it (throttled) and try again on a later call
+            if (DateTime.UtcNow >= _nextRankDataRequest) {
+                _nextRankDataRequest = DateTime.UtcNow.AddSeconds(2);
+                proxy->RequestDataForCharacter(PlayerState.Instance()->EntityId);
+            }
+
             return null;
         } catch (Exception) {
-            AWC.Log.Debug("TEST: FreeCompanyHelper.GetCurrentRankData - ???");
             return null;
         }
     }
