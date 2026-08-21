@@ -13,6 +13,13 @@ public static unsafe class FreeCompanyHelper
     // correct, but the real RankNumber sits right before the rank's name string, and Permissions sits right after MemberCount.
     private const int RankDataPermissionsOffset = 0x22;
     private const int RankDataRankNumberOffset = 0x42;
+
+    // The BasicSettings enum's bit positions (upstream) don't hold either: comparing permission bytes between a rank with
+    // "Execute Company Actions" on vs off showed bytes[0..1] (where BasicSettings supposedly lives) were identical, while
+    // bytes[7] flipped 0x08 -> 0x00. Confirmed empirically; treat as the real bit until proven otherwise.
+    private const int ExecutingActionsPermissionByte = 7;
+    private const byte ExecutingActionsPermissionMask = 0x08;
+
     private static DateTime _nextRankDataRequest = DateTime.MinValue;
 
     // The FC's own progression level (1-30, capped), NOT the local player's rank tier; byte.MaxValue = not in an FC
@@ -48,10 +55,12 @@ public static unsafe class FreeCompanyHelper
 
     public static bool CanExecuteActions()
     {
-        return GetCurrentRankBasicSettings() is { } settings &&
-               settings.HasFlag(InfoProxyFreeCompany.RankData.BasicSettings.ExecutingActions);
+        return GetCurrentRankPermissions() is { } permissions &&
+               (permissions[ExecutingActionsPermissionByte] & ExecutingActionsPermissionMask) != 0;
     }
 
+    // TODO these still use the disproven upstream BasicSettings bit mapping (see CanExecuteActions comment above) and need
+    // the same empirical byte-diff verification before being trusted.
     public static bool CanDiscardActions()
     {
         return GetCurrentRankBasicSettings() is { } settings &&
@@ -71,7 +80,8 @@ public static unsafe class FreeCompanyHelper
                settings.HasFlag(InfoProxyFreeCompany.RankData.BasicSettings.Invitations);
     }
 
-    private static InfoProxyFreeCompany.RankData.BasicSettings? GetCurrentRankBasicSettings()
+    // Returns the 10 raw permission bytes for the local player's current rank
+    private static byte[]? GetCurrentRankPermissions()
     {
         if (!IsInFreeCompany) {
             return null;
@@ -100,11 +110,12 @@ public static unsafe class FreeCompanyHelper
                     continue;
                 }
 
-                var permissions0 = raw[RankDataPermissionsOffset];
-                var permissions1 = raw[RankDataPermissionsOffset + 1];
-                AWC.Log.Debug($"TEST: rank={rank} perms=[{string.Join(",", Enumerable.Range(0, 10).Select(o => raw[RankDataPermissionsOffset + o].ToString("X2")))}]");
+                var permissions = new byte[10];
+                for (var o = 0; o < permissions.Length; o++) {
+                    permissions[o] = raw[RankDataPermissionsOffset + o];
+                }
 
-                return (InfoProxyFreeCompany.RankData.BasicSettings)(ushort)(((permissions1 & 0x7F) << 8) + permissions0);
+                return permissions;
             }
 
             // No match means the permission table hasn't come back yet; request it (throttled) and try again on a later call
@@ -117,6 +128,15 @@ public static unsafe class FreeCompanyHelper
         } catch (Exception) {
             return null;
         }
+    }
+
+    private static InfoProxyFreeCompany.RankData.BasicSettings? GetCurrentRankBasicSettings()
+    {
+        if (GetCurrentRankPermissions() is not { } permissions) {
+            return null;
+        }
+
+        return (InfoProxyFreeCompany.RankData.BasicSettings)(ushort)(((permissions[1] & 0x7F) << 8) + permissions[0]);
     }
 
     // Local player's own entry in the FC member list, kicking off the server request if it hasn't loaded yet
