@@ -83,6 +83,14 @@ public class PreparingRunnerStage : BaseStage
             }
         }
 
+        if (AWC.Config.LearnTripleTriadCards) {
+            ActionInstance.EnqueueAction(ActionInstance.LearnTripleTriadCard);
+        }
+
+        if (AWC.Config.SellTripleTriadCards) {
+            ActionInstance.EnqueueAction(ActionInstance.SellTripleTriadCard);
+        }
+
         if (AWC.Config.MoveDuplicateItemsFromInventoryToSaddlebag) {
             ActionInstance.EnqueueAction(ActionInstance.MoveInventoryItemsToSaddlebag);
         }

@@ -224,7 +224,6 @@ public static class RunnerPrerequisitesUi
             ImGui.PopItemWidth();
 
             ImGui.Spacing();
-            ImGui.Spacing();
         });
 
         // Auto Extract
@@ -244,6 +243,39 @@ public static class RunnerPrerequisitesUi
             if (ImGui.RadioButton("All", AWC.Config.ExtractAll)) {
                 AWC.Config.ExtractAll = true;
             }
+        });
+
+        // Learn & Sell TT cards
+        var learnTtCards = AWC.Config.LearnTripleTriadCards;
+        if (ImGui.Checkbox("Learn Triple Triad Cards", ref learnTtCards)) {
+            AWC.Config.LearnTripleTriadCards = learnTtCards;
+        }
+
+        ImGui.SameLine();
+
+        var sellTtCards = AWC.Config.SellTripleTriadCards;
+        if (ImGui.Checkbox("Sell Triple Triad Cards", ref sellTtCards)) {
+            AWC.Config.SellTripleTriadCards = sellTtCards;
+        }
+
+        Disabled.Draw(!sellTtCards, () =>
+        {
+            ImGui.Text("Sell TT cards @");
+            ImGui.SameLine();
+
+            ImGui.PushItemWidth(80 * ImGuiHelpers.GlobalScale);
+
+            var sellTripleTriadCardsAtMinimum = AWC.Config.SellTripleTriadCardsAtMinimum;
+            if (Range.Draw("##SellTTCards@", ref sellTripleTriadCardsAtMinimum, 1, 99)) {
+                AWC.Config.SellTripleTriadCardsAtMinimum = sellTripleTriadCardsAtMinimum;
+            }
+
+            ImGui.PopItemWidth();
+
+            ImGui.SameLine();
+            ImGui.Text("cards");
+
+            ImGui.Spacing();
         });
 
         // Move items between inventory and saddlebag

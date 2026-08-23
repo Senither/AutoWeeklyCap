@@ -57,6 +57,9 @@ public class Configuration : IPluginConfiguration
     public uint RepairPercentage { get; set; } = 50;
     public bool Extract { get; set; } = true;
     public bool ExtractAll { get; set; } = false;
+    public bool LearnTripleTriadCards { get; set; } = true;
+    public bool SellTripleTriadCards { get; set; } = true;
+    public uint SellTripleTriadCardsAtMinimum { get; set; } = 3;
     public bool SpendUncappedTomestones { get; set; } = false;
     public uint SpendUncappedTomestoneThreshold { get; set; } = 1800;
     public List<TomestoneItem> SpendUncappedTomestoneItems = [];

@@ -83,7 +83,7 @@ public static class DeveloperToolbox
         DebugActionButton("Move items to Saddlebag", ActionInstance.MoveInventoryItemsToSaddlebag);
 
         DebugActionButton("Learn TT cards", ActionInstance.LearnTripleTriadCard, false);
-        DebugActionButton("Sell TT cards", ActionInstance.SellTripleTriadCardAction);
+        DebugActionButton("Sell TT cards", ActionInstance.SellTripleTriadCard);
 
         DebugActionButton("Return to Homeworld", ActionInstance.Homeworld, false);
         DebugActionButton("Deliveroo", ActionInstance.Deliveroo);

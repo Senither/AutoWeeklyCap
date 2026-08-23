@@ -245,7 +245,7 @@ public class IPCProvider
     /// Requires Lifestream and vnavmesh to be enabled.
     /// </summary>
     [EzIPC("Action.EnqueueSellTripleTriadCards")]
-    public bool EnqueueSellTripleTriadCards() => ActionInstance.SellTripleTriadCardAction.Invoke();
+    public bool EnqueueSellTripleTriadCards() => ActionInstance.SellTripleTriadCard.Invoke();
 
     /// <summary>
     /// Enqueues enter safezone action, will teleport to the
