@@ -61,9 +61,13 @@ internal static class Theme
         var colorCount = 0;
         var styleCount = 0;
 
-        foreach (var (color, value) in GetThemeColors()) { PushColor(color, value); }
+        foreach (var (color, value) in GetThemeColors()) {
+            PushColor(color, value);
+        }
 
-        foreach (var (styleVar, value) in GetThemeStyles()) { PushVar(styleVar, value); }
+        foreach (var (styleVar, value) in GetThemeStyles()) {
+            PushVar(styleVar, value);
+        }
 
         if (!withBackground) {
             return new ThemeScope(colorCount, styleCount);
@@ -123,6 +127,10 @@ internal static class Theme
             (ImGuiCol.TabActive, InteractiveActive),
             (ImGuiCol.TabUnfocused, InteractiveUnfocused),
             (ImGuiCol.TabUnfocusedActive, InteractiveUnfocused),
+
+            (ImGuiCol.TitleBg, BackgroundDark),
+            (ImGuiCol.TitleBgActive, ColorUtils.DarkenVector4(InteractiveActive, 0.35f)),
+            (ImGuiCol.TitleBgCollapsed, InteractiveUnfocused with { W = 0.8f }),
 
             (ImGuiCol.CheckMark, InteractiveLighter),
             (ImGuiCol.SliderGrab, InteractiveLighter),

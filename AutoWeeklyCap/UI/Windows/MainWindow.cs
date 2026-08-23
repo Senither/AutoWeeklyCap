@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.UI;
 using AutoWeeklyCap.UI.Helpers;
 using AutoWeeklyCap.UI.MainWindow;
 
@@ -7,7 +8,7 @@ using Dalamud.Interface.Windowing;
 
 namespace AutoWeeklyCap.UI.Windows;
 
-public class MainWindow : Window
+public class MainWindow : ThemeWindow
 {
     private readonly TitleBarButton _lockButton;
     private const float MinimumWindowHeight = 135f;
@@ -68,6 +69,8 @@ public class MainWindow : Window
 
     public override void PreDraw()
     {
+        base.PreDraw();
+
         var name = $"{Constants.Name} {AWC.Version}";
 
         var status = TitleManager.GetStatus();
@@ -97,24 +100,22 @@ public class MainWindow : Window
 
     public override void Draw()
     {
-        using (Theme.Push(withBackground: false)) {
-            DrawPluginStatus();
-            DrawHeaderActionButtons();
+        DrawPluginStatus();
+        DrawHeaderActionButtons();
 
-            ImGui.Spacing();
-            CharactersTabUi.Draw();
-            ImGui.Spacing();
+        ImGui.Spacing();
+        CharactersTabUi.Draw();
+        ImGui.Spacing();
 
-            AWC.Config.Window.Size = AWC.Config.AutoResizeCharacterWindow && !AWC.Config.Window.Pin
-                ? ApplyAutoResizeHeight()
-                : ImGui.GetWindowSize();
+        AWC.Config.Window.Size = AWC.Config.AutoResizeCharacterWindow && !AWC.Config.Window.Pin
+            ? ApplyAutoResizeHeight()
+            : ImGui.GetWindowSize();
 
-            if (AWC.Config.Window.Pin) {
-                return;
-            }
-
-            AWC.Config.Window.Position = ImGui.GetWindowPos();
+        if (AWC.Config.Window.Pin) {
+            return;
         }
+
+        AWC.Config.Window.Position = ImGui.GetWindowPos();
     }
 
     private Vector2 ApplyAutoResizeHeight()

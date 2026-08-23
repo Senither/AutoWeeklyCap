@@ -1,4 +1,5 @@
 ﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.UI;
 using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface;
@@ -6,7 +7,7 @@ using Dalamud.Interface.Windowing;
 
 namespace AutoWeeklyCap.UI.Windows;
 
-public class ControlPanelWindow : Window
+public class ControlPanelWindow : ThemeWindow
 {
     private SettingsWindowOption _option = SettingsWindowOption.GeneralOptions;
 
@@ -29,22 +30,20 @@ public class ControlPanelWindow : Window
 
     public override void Draw()
     {
-        using (Theme.Push()) {
-            SidebarLayout.DrawSidebar(() =>
-            {
-                foreach (var option in Enum.GetValues(typeof(SettingsWindowOption)).Cast<SettingsWindowOption>()) {
-                    if (!option.IsDrawable()) {
-                        continue;
-                    }
-
-                    if (MenuButton.Draw(option.GetIcon(), option.GetName(), _option == option, widthBreakpoint: SidebarLayout.GetSidebarContentTextBreakpoint())) {
-                        SetCurrentTab(option);
-                    }
+        SidebarLayout.DrawSidebar(() =>
+        {
+            foreach (var option in Enum.GetValues(typeof(SettingsWindowOption)).Cast<SettingsWindowOption>()) {
+                if (!option.IsDrawable()) {
+                    continue;
                 }
-            });
 
-            SidebarLayout.DrawContent(() => _option.Draw());
-        }
+                if (MenuButton.Draw(option.GetIcon(), option.GetName(), _option == option, widthBreakpoint: SidebarLayout.GetSidebarContentTextBreakpoint())) {
+                    SetCurrentTab(option);
+                }
+            }
+        });
+
+        SidebarLayout.DrawContent(() => _option.Draw());
     }
 
     public void SetCurrentTab(SettingsWindowOption option)

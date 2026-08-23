@@ -3,12 +3,14 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
+using AutoWeeklyCap.Contracts.UI;
+
 using Dalamud.Interface.Windowing;
 using Dalamud.Utility;
 
 namespace AutoWeeklyCap.UI.Windows;
 
-public class FeedbackWindow : Window
+public class FeedbackWindow : ThemeWindow
 {
     private static readonly List<string> FeedbackTypes =
     [

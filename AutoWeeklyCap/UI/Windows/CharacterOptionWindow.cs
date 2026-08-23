@@ -1,11 +1,12 @@
 ﻿using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.UI;
 using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface.Windowing;
 
 namespace AutoWeeklyCap.UI.Windows;
 
-public class CharacterOptionWindow : Window
+public class CharacterOptionWindow : ThemeWindow
 {
     private string? _character = null;
 
