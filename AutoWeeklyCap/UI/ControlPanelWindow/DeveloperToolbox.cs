@@ -82,6 +82,8 @@ public static class DeveloperToolbox
         DebugActionButton("Buy Leveling Gear Upgrades", ActionInstance.BuyLevelingUpgrade);
         DebugActionButton("Move items to Saddlebag", ActionInstance.MoveInventoryItemsToSaddlebag);
 
+        DebugActionButton("Learn TT cards", ActionInstance.LearnTripleTriadCard, false);
+
         DebugActionButton("Return to Homeworld", ActionInstance.Homeworld, false);
         DebugActionButton("Deliveroo", ActionInstance.Deliveroo);
         DebugActionButton("Notification", ActionInstance.Notification);

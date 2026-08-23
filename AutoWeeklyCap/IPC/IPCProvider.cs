@@ -231,6 +231,14 @@ public class IPCProvider
     public bool EnqueueBuyLevelingFood() => ActionInstance.BuyFood.Invoke();
 
     /// <summary>
+    /// Enqueues learn triple triad card action, will scan the players
+    /// inventory for any triple triad cards they haven't learned yet,
+    /// and then use all the cards to add them to their collection.
+    /// </summary>
+    [EzIPC("Action.EnqueueLearnTripleTriadCard")]
+    public bool EnqueueLearnTripleTriadCard() => ActionInstance.LearnTripleTriadCard.Invoke();
+
+    /// <summary>
     /// Enqueues enter safezone action, will teleport to the
     /// players preferred safezone and enter the residence.
     /// <br /><br />

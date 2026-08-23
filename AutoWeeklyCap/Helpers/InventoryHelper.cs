@@ -95,6 +95,36 @@ public static unsafe class InventoryHelper
         }
     }
 
+    internal static IEnumerable<InventoryItem> GetTripleTriadCardsInInventory()
+    {
+        List<InventoryType> inventories = [InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4];
+        IEnumerable<InventoryItem> items = [];
+
+        foreach (InventoryType type in inventories) {
+            InventoryContainer container = *InventoryManager.Instance()->GetInventoryContainer(type);
+            if (!container.IsLoaded) {
+                continue;
+            }
+
+            for (uint i = 0; i < container.Size; i++) {
+                InventoryItem inventoryItem = container.Items[i];
+                if (inventoryItem.ItemId == 0) {
+                    continue;
+                }
+
+                if (!TryGetSheetItemFromItemId(inventoryItem.ItemId, out var item)) {
+                    continue;
+                }
+
+                if (item.ItemUICategory.RowId == 86) {
+                    items = items.Append(inventoryItem);
+                }
+            }
+        }
+
+        return items.Where(item => item.ItemId > 0);
+    }
+
     internal static bool CanRepair(uint percent)
     {
         return (GetLowestConditionEquippedItem().Condition / 300f) <= percent;
