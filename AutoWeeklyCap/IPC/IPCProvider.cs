@@ -239,6 +239,15 @@ public class IPCProvider
     public bool EnqueueLearnTripleTriadCard() => ActionInstance.LearnTripleTriadCard.Invoke();
 
     /// <summary>
+    /// Enqueues sell triple triad cards action, will teleport to The Golden Saucer
+    /// and sell any triple triad cards that are in the inventory.
+    /// <br /><br />
+    /// Requires Lifestream and vnavmesh to be enabled.
+    /// </summary>
+    [EzIPC("Action.EnqueueSellTripleTriadCards")]
+    public bool EnqueueSellTripleTriadCards() => ActionInstance.SellTripleTriadCardAction.Invoke();
+
+    /// <summary>
     /// Enqueues enter safezone action, will teleport to the
     /// players preferred safezone and enter the residence.
     /// <br /><br />

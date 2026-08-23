@@ -17,6 +17,17 @@ public static class CurrencyHelper
         }
     }
 
+    public static int GetMGP()
+    {
+        try {
+            unsafe {
+                return InventoryManager.Instance()->GetInventoryItemCount(29u);
+            }
+        } catch (Exception) {
+            return 0;
+        }
+    }
+
     public static int GetUncappedAcquiredTomestoneCount()
     {
         try {

@@ -154,6 +154,7 @@ public static class StatisticsUi
         DrawMetricLine("Retainers collected", FormatNumber(metrics.RetainersCollected));
         DrawMetricLine("Deliverable items handed in", FormatNumber(metrics.DeliverableItemsHandedIn));
         DrawMetricLine("Gil spent on teleportation", FormatGil(metrics.GilSpentOnTeleportationFees));
+        DrawMetricLine("MGP earned from selling cards", FormatNumber(metrics.MgpEarnedFromSellingCards));
     }
 
     private static void DrawMetricLine(string label, string value)
