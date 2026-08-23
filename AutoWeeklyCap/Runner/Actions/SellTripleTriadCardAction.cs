@@ -151,6 +151,6 @@ public class SellTripleTriadCardAction : BaseAction
             return false;
         }
 
-        return cards.Sum(card => card.Quantity) > AWC.Config.SellTripleTriadCardsAtMinimum;
+        return cards.Sum(card => card.Quantity) >= AWC.Config.SellTripleTriadCardsAtMinimum;
     }
 }
