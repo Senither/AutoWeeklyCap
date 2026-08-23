@@ -251,12 +251,32 @@ public static class RunnerPrerequisitesUi
             AWC.Config.LearnTripleTriadCards = learnTtCards;
         }
 
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When enabled the runner will use any Triple Triad cards");
+            ImGui.Text("in your inventory that you haven't already learned.");
+        });
+
         ImGui.SameLine();
 
         var sellTtCards = AWC.Config.SellTripleTriadCards;
         if (ImGui.Checkbox("Sell Triple Triad Cards", ref sellTtCards)) {
             AWC.Config.SellTripleTriadCards = sellTtCards;
         }
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("When enabled and you have at least the minimum amount of Triple Triad");
+            ImGui.Text("cards in your inventory, the runner will teleport to The Golden");
+            ImGui.Text("Saucer and trade in the cards for MGP.");
+
+            ImGui.Text("Requires ");
+            StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
+            ImGui.Text(" and ");
+            StatusText.Draw(VNavMeshIPC.IsEnabled, "VNavMesh");
+            ImGui.Text(" to be enabled");
+        });
+
 
         Disabled.Draw(!sellTtCards, () =>
         {
@@ -534,6 +554,7 @@ public static class RunnerPrerequisitesUi
         {
             ImGui.Text("When enabled the runner will move to your grand company and trade in all unused and tradable");
             ImGui.Text("items for grand company seals, and then buy your preferred items (setup within Deliveroo)");
+
 
             ImGui.Text("Requires ");
             StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
