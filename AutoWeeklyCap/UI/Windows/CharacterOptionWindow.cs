@@ -36,6 +36,8 @@ public class CharacterOptionWindow : ThemeWindow
 
     public override void PreDraw()
     {
+        base.PreDraw();
+
         WindowName = $"{_character} Configuration###character-options-window";
     }
 
@@ -50,11 +52,9 @@ public class CharacterOptionWindow : ThemeWindow
             return;
         }
 
-        using (Theme.Push()) {
-            Card.Draw("Character visibility", () => DrawCharacterVisibility(options), false);
-            Card.Draw("Character Preferences", () => DrawCharacterPreferences(options), false);
-            Card.DrawDanger("Remove Character", DrawCharacterRemoval, false);
-        }
+        Card.Draw("Character visibility", () => DrawCharacterVisibility(options), false);
+        Card.Draw("Character Preferences", () => DrawCharacterPreferences(options), false);
+        Card.DrawDanger("Remove Character", DrawCharacterRemoval, false);
     }
 
     private void DrawCharacterVisibility(CharacterOptions options)
