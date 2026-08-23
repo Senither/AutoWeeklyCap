@@ -33,13 +33,17 @@ public class Runner
             AutoRetainerIPC.DisableMultiMode();
         }
 
-        State.ChangeStageTo(
-            usingAutoRetainer && AWC.Config.AutoRetainerTrigger.IsWithinThreshold()
-                ? Stage.WaitingForAutoRetainer
-                : character != null && CurrencyHelper.IsPlayerLimitedTomestoneCapped()
-                    ? Stage.StartingCharacterSwap
-                    : Stage.PreparingRunner
-        );
+        Stage stage = Stage.PreparingRunner;
+
+        if (PlayerHelper.IsValid && PlayerHelper.InDuty) {
+            stage = Stage.StartingAutoDuty;
+        } else if (usingAutoRetainer && AWC.Config.AutoRetainerTrigger.IsWithinThreshold()) {
+            stage = Stage.WaitingForAutoRetainer;
+        } else if (character != null && CurrencyHelper.IsPlayerTotalLimitedTomestoneCapped()) {
+            stage = Stage.StartingCharacterSwap;
+        }
+
+        State.ChangeStageTo(stage);
 
         if (AWC.Config.MuteGameSoundsWhenRunning) {
             AudioHelper.MuteMasterGameAudio(true);

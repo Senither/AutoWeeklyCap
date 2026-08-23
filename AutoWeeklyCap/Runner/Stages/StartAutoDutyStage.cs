@@ -62,7 +62,10 @@ public class StartAutoDutyStage : BaseStage
             state.SetMetric(Constants.MetricWeeklyAcquiredLimitedTomestoneKey, (uint)CurrencyHelper.GetWeeklyAcquiredLimitedTomestoneCount());
 
             if (AutoDutyIPC.IsStopped()) {
-                AutoDutyIPC.Run(zoneId, 1, false);
+                AWC.Log.Debug("Attempting to resume AutoDuty while already in zone");
+
+                ApplyAutoDutyProfile();
+                AutoDutyIPC.Start(false);
             }
 
             return true;
@@ -126,12 +129,17 @@ public class StartAutoDutyStage : BaseStage
             return true;
         }
 
-        if (AWC.Config.UseAutoDutyProfileOverride) {
-            AutoDutyProfile.Apply();
-        }
+        ApplyAutoDutyProfile();
 
         AutoDutyIPC.Run(zoneId, 1, false);
 
         return false;
+    }
+
+    private void ApplyAutoDutyProfile()
+    {
+        if (AWC.Config.UseAutoDutyProfileOverride) {
+            AutoDutyProfile.Apply();
+        }
     }
 }
