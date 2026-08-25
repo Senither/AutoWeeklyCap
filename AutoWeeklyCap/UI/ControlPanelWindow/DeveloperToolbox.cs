@@ -29,63 +29,7 @@ public static class DeveloperToolbox
     internal static void Draw()
     {
         if (ImGui.Button("TEST")) {
-            var items = InventoryHelper.GetInventoryItems().ToList();
-            var uniqueItemIds = new HashSet<uint>();
-
-            foreach (var inventoryItem in items) {
-                if (!InventoryHelper.TryGetSheetItemFromItemId(inventoryItem.ItemId, out var item)) {
-                    continue;
-                }
-
-                // Skip items with no sell price
-                if (item.PriceLow == 0) {
-                    continue;
-                }
-
-                // Skip items that are not sellable on the marketboard
-                if (item.ItemSearchCategory.RowId == 0) {
-                    continue;
-                }
-
-                // Materia
-                if (item.ItemUICategory.RowId is 57) {
-                    continue;
-                }
-
-                // Glamour Prism & Dispeller & Dark Matter
-                if (item.ItemUICategory.RowId is 60 or 48) {
-                    continue;
-                }
-
-                // Potions & Food
-                if (item.ItemUICategory.RowId is 60 or 46 or 44) {
-                    continue;
-                }
-
-                // Minions
-                if (item.ItemUICategory.RowId == 81) {
-                    continue;
-                }
-
-                // Triple Triad Cards
-                if (item.ItemUICategory.RowId == 86) {
-                    continue;
-                }
-
-                AWC.Log.Debug($"Adding item: {item.Name} ({inventoryItem.ItemId}) | ItemUICategory={item.ItemUICategory.RowId}, ItemSearchCategory={item.ItemSearchCategory.RowId}");
-
-                uniqueItemIds.AddIfNotExist(inventoryItem.ItemId);
-            }
-
-            AWC.TaskManager.Enqueue(async () =>
-            {
-                AWC.Log.Debug($"TEST: Total={items.Count}, UniqueIds={uniqueItemIds.Count}");
-                AWC.Log.Debug($"IdList={string.Join(",", uniqueItemIds)}");
-
-                var result = await MarketBoardHelper.GetMarketBoardPrices(403u, uniqueItemIds);
-
-                AWC.Log.Debug($"API Result:\n{string.Join("\n", result)}");
-            });
+            ActionInstance.SellWorthlessItems.Invoke();
         }
 
         Card.Draw("Plugin Details", DrawPluginDetails, false);

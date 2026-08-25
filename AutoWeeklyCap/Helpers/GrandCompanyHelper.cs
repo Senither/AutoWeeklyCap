@@ -46,6 +46,13 @@ public static class GrandCompanyHelper
         _ => 1004416u
     };
 
+    internal static uint SellVendorId => GetGrandCompany() switch
+    {
+        GrandCompany.Maelstrom => 1045801u,
+        GrandCompany.TwinAdder => 1045803u,
+        _ => 1045802u
+    };
+
     internal static string AetheriteName => GetGrandCompany() switch
     {
         GrandCompany.Maelstrom => "The Aftcastle",
@@ -72,5 +79,12 @@ public static class GrandCompanyHelper
         GrandCompany.Maelstrom => new Vector3(17.715698f, 40.200005f, 3.9520264f),
         GrandCompany.TwinAdder => new Vector3(24.826416f, -8f, 93.18677f),
         _ => new Vector3(32.85266f, 6.999999f, -81.31531f)
+    };
+
+    internal static Vector3 SellVendorLocation => GetGrandCompany() switch
+    {
+        GrandCompany.Maelstrom => new Vector3(3.051343f, 39.51757f, -9.62764f),
+        GrandCompany.TwinAdder => new Vector3(40.66976f, -7.8f, 94.301186f),
+        _ => new Vector3(19.395454f, 7.199998f, -104.3659f)
     };
 }

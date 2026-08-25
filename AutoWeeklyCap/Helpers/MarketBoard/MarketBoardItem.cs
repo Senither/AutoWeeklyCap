@@ -9,6 +9,7 @@ public class MarketBoardItem
     public uint ItemId { get; init; }
     public uint NqPrice { get; init; }
     public uint HqPrice { get; init; }
+    public uint Price => Math.Max(NqPrice, HqPrice);
 
     public DateTime LastUpdatedAt { get; init; }
 
