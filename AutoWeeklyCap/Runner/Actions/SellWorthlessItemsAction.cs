@@ -5,12 +5,15 @@ using AutoWeeklyCap.Helpers.MarketBoard;
 
 using ECommons.Automation.NeoTaskManager;
 
+using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+
 namespace AutoWeeklyCap.Runner.Actions;
 
 public class SellWorthlessItemsAction : BaseAction
 {
     protected override string Name => nameof(SellWorthlessItemsAction);
-    protected override string[] AddonsToClose => ["SelectIconString", "SelectString", "Shop", "Talk", "SelectYesno"];
+    protected override string[] AddonsToClose => ["SelectIconString", "SelectString", "Shop", "ContextMenu", "Talk", "SelectYesno"];
 
     protected override bool Run(params object[] args)
     {
@@ -18,17 +21,23 @@ public class SellWorthlessItemsAction : BaseAction
             return false;
         }
 
-        List<MarketBoardItem> marketBoardItems;
-
         EnqueueAsync(async () =>
         {
-            // marketBoardItems =
-            marketBoardItems = [new MarketBoardItem() { IsLoaded = true, ItemId = 13714, NqPrice = 500 }];
+            HashSet<uint> uniqueItemIds = GetUniqueItemIds();
+            if (uniqueItemIds.Count == 0) {
+                return;
+            }
+
+            List<MarketBoardItem> marketBoardItems = await MarketBoardHelper.GetMarketBoardPrices(Player.CurrentWorld.RowId, uniqueItemIds);
             if (marketBoardItems.Count == 0) {
                 return;
             }
 
-            List<MarketBoardItem> itemsToSell = marketBoardItems.Where(item => item.Price < 1000).ToList();
+            List<MarketBoardItem> itemsToSell = marketBoardItems
+                .Where(item => item is { IsLoaded: true, Price: < 1000 })
+                .OrderBy(item => item.Price)
+                .ToList();
+
             if (itemsToSell.Count == 0) {
                 return;
             }
@@ -41,6 +50,8 @@ public class SellWorthlessItemsAction : BaseAction
 
     private void EnqueueActionTasks(List<MarketBoardItem> itemsToSell)
     {
+        List<MarketBoardItem> remainingItemsToSell = itemsToSell.ToList();
+
         AWC.TaskManager.InsertMulti(
             new TaskManagerTask(
                 () => MovementHelper.TeleportTo(GrandCompanyHelper.AetheriteName, GrandCompanyHelper.TerritoryId),
@@ -77,8 +88,42 @@ public class SellWorthlessItemsAction : BaseAction
                 }, $"{Name}: open window"),
             new TaskManagerTask(() =>
                 {
-                    foreach (MarketBoardItem item in itemsToSell) {
-                        AWC.Log.Debug($"Selling item: {item.ItemId}");
+                    if (remainingItemsToSell.Count == 0) {
+                        return true;
+                    }
+
+                    if (!EzThrottler.Throttle("SellingItems", 250)) {
+                        return false;
+                    }
+
+                    unsafe {
+                        if (AddonHelper.TryGetReadyAddon("SelectYesno", out var yesNoAddon)) {
+                            AddonHelper.ClickSelectYesno();
+                            return false;
+                        }
+
+                        if (AddonHelper.TryGetReadyAddon("ContextMenu", out var contextMenu)) {
+                            AddonHelper.FireCallBack(contextMenu, true, 0, 0);
+                            return false;
+                        }
+
+                        if (!AddonHelper.TryGetReadyAddon("Shop", out _)) {
+                            return true;
+                        }
+
+                        MarketBoardItem nextItem = remainingItemsToSell[0];
+                        InventoryItem inventoryItem = InventoryHelper.GetInventoryItems()
+                            .FirstOrDefault(item => item.ItemId == nextItem.ItemId);
+
+                        if (inventoryItem.ItemId == 0) {
+                            remainingItemsToSell.RemoveAt(0);
+                            return false;
+                        }
+
+                        AgentInventoryContext.Instance()->OpenForItemSlot(inventoryItem.Container, inventoryItem.Slot, 0, 0);
+                        LogDebug($"Selling item: {inventoryItem.ItemId} ({inventoryItem.Quantity} qty) | Slot={inventoryItem.Slot}, Container={inventoryItem.Container}");
+
+                        return false;
                     }
                 }, $"{Name}: sell items"),
             new TaskManagerTask(() => AddonHelper.CloseAddons(AddonsToClose), $"{Name}: closing addons")
@@ -116,6 +161,11 @@ public class SellWorthlessItemsAction : BaseAction
 
             // Potions & Food
             if (item.ItemUICategory.RowId is 60 or 46 or 44) {
+                continue;
+            }
+
+            // Gysahl Greens
+            if (item.RowId is 4868) {
                 continue;
             }
 
