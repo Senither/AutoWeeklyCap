@@ -79,6 +79,10 @@ public static class DeveloperToolbox
 
             AWC.Log.Debug($"TEST: Total={items.Count}, UniqueIds={uniqueItemIds.Count}");
             AWC.Log.Debug($"IdList={string.Join(",", uniqueItemIds)}");
+
+            var result = MarketBoardHelper.GetMarketBoardPrices(403u, uniqueItemIds);
+
+            AWC.Log.Debug($"API Result:\n{string.Join("\n", result)}");
         }
 
         Card.Draw("Plugin Details", DrawPluginDetails, false);
