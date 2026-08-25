@@ -77,12 +77,15 @@ public static class DeveloperToolbox
                 uniqueItemIds.AddIfNotExist(inventoryItem.ItemId);
             }
 
-            AWC.Log.Debug($"TEST: Total={items.Count}, UniqueIds={uniqueItemIds.Count}");
-            AWC.Log.Debug($"IdList={string.Join(",", uniqueItemIds)}");
+            AWC.TaskManager.Enqueue(async () =>
+            {
+                AWC.Log.Debug($"TEST: Total={items.Count}, UniqueIds={uniqueItemIds.Count}");
+                AWC.Log.Debug($"IdList={string.Join(",", uniqueItemIds)}");
 
-            var result = MarketBoardHelper.GetMarketBoardPrices(403u, uniqueItemIds);
+                var result = await MarketBoardHelper.GetMarketBoardPrices(403u, uniqueItemIds);
 
-            AWC.Log.Debug($"API Result:\n{string.Join("\n", result)}");
+                AWC.Log.Debug($"API Result:\n{string.Join("\n", result)}");
+            });
         }
 
         Card.Draw("Plugin Details", DrawPluginDetails, false);

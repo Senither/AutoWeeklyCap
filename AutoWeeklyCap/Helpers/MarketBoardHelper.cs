@@ -12,9 +12,9 @@ public static class MarketBoardHelper
 {
     private static readonly JsonSerializerOptions JsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
     private static readonly Dictionary<uint, MarketBoardItem> ItemsCache = new();
-    private static readonly Lock FetchLock = new();
+    private static readonly SemaphoreSlim FetchLock = new(1, 1);
 
-    public static List<MarketBoardItem> GetMarketBoardPrices(uint serverId, HashSet<uint> uniqueItemIds)
+    public static async Task<List<MarketBoardItem>> GetMarketBoardPrices(uint serverId, HashSet<uint> uniqueItemIds)
     {
         List<MarketBoardItem> result = [];
         HashSet<uint> itemIdsToFetch = [];
@@ -33,10 +33,14 @@ public static class MarketBoardHelper
 
         AggregatedUniversalisResponse? response;
 
-        lock (FetchLock) {
-            response = FetchAggregatedPricesFromUniversalis(serverId, itemIdsToFetch)
-                .GetAwaiter()
-                .GetResult();
+        await FetchLock.WaitAsync();
+
+        try {
+            response = await FetchAggregatedPricesFromUniversalis(serverId, itemIdsToFetch);
+        } catch (Exception) {
+            return result;
+        } finally {
+            FetchLock.Release();
         }
 
         foreach (var itemId in itemIdsToFetch) {
