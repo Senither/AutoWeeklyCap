@@ -42,6 +42,14 @@ public class SellWorthlessItemsAction : BaseAction
                 return;
             }
 
+            // Debug: Remove later
+            LogDebug($"Found {itemsToSell.Count} items that matches the filters, queueing up sell tasks");
+            foreach (var itemToSell in itemsToSell) {
+                if (InventoryHelper.TryGetSheetItemFromItemId(itemToSell.ItemId, out var item)) {
+                    LogDebug($"Preparing to sell item: {item.Name} | ItemId={itemToSell.ItemId}, Price={itemToSell.Price}, ItemUICategory={item.ItemUICategory.RowId}, ItemSearchCategory={item.ItemSearchCategory.RowId}");
+                }
+            }
+
             EnqueueActionTasks(itemsToSell);
         }, "checking marketboard prices");
 
@@ -52,7 +60,8 @@ public class SellWorthlessItemsAction : BaseAction
     {
         List<MarketBoardItem> remainingItemsToSell = itemsToSell.ToList();
 
-        AWC.TaskManager.InsertMulti(
+        AWC.TaskManager.InsertMulti([
+            .. CaptureQueuedActions(() => ActionInstance.LeaveGrandCompanyInn.Invoke()),
             new TaskManagerTask(
                 () => MovementHelper.TeleportTo(GrandCompanyHelper.AetheriteName, GrandCompanyHelper.TerritoryId),
                 $"{Name}: move to territory"
@@ -127,7 +136,7 @@ public class SellWorthlessItemsAction : BaseAction
                     }
                 }, $"{Name}: sell items"),
             new TaskManagerTask(() => AddonHelper.CloseAddons(AddonsToClose), $"{Name}: closing addons")
-        );
+        ]);
     }
 
     private HashSet<uint> GetUniqueItemIds()
