@@ -14,7 +14,25 @@ public static class MarketBoardHelper
     private static readonly Dictionary<uint, MarketBoardItem> ItemsCache = new();
     private static readonly SemaphoreSlim FetchLock = new(1, 1);
 
-    public static async Task<List<MarketBoardItem>> GetMarketBoardPrices(uint serverId, HashSet<uint> uniqueItemIds)
+    public static async Task<List<MarketBoardItem>> GetFilteredMarketBoardItemsFromInventory(uint serverId)
+    {
+        HashSet<uint> uniqueItemIds = GetUniqueItemIdsFromInventory();
+        if (uniqueItemIds.Count == 0) {
+            return [];
+        }
+
+        List<MarketBoardItem> marketBoardItems = await GetMarketBoardPricesForUniqueIds(serverId, uniqueItemIds);
+        if (marketBoardItems.Count == 0) {
+            return [];
+        }
+
+        return marketBoardItems
+            .Where(item => item is { IsLoaded: true, Price: < 1000 })
+            .OrderBy(item => item.Price)
+            .ToList();
+    }
+
+    private static async Task<List<MarketBoardItem>> GetMarketBoardPricesForUniqueIds(uint serverId, HashSet<uint> uniqueItemIds)
     {
         List<MarketBoardItem> result = [];
         HashSet<uint> itemIdsToFetch = [];
@@ -111,5 +129,62 @@ public static class MarketBoardHelper
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         return client;
+    }
+
+    private static HashSet<uint> GetUniqueItemIdsFromInventory()
+    {
+        HashSet<uint> uniqueItemIds = [];
+
+        foreach (var inventoryItem in InventoryHelper.GetInventoryItems()) {
+            if (!InventoryHelper.TryGetSheetItemFromItemId(inventoryItem.ItemId, out var item)) {
+                continue;
+            }
+
+            // Skip items with no sell price
+            if (item.PriceLow == 0) {
+                continue;
+            }
+
+            // Skip items that are not sellable on the marketboard
+            if (item.ItemSearchCategory.RowId == 0) {
+                continue;
+            }
+
+            // Materia
+            if (item.ItemUICategory.RowId is 57) {
+                continue;
+            }
+
+            // Glamour Prism & Dispeller & Dark Matter
+            if (item.ItemUICategory.RowId is 60 or 48) {
+                continue;
+            }
+
+            // Potions & Food
+            if (item.ItemUICategory.RowId is 60 or 46 or 44) {
+                continue;
+            }
+
+            // Gysahl Greens
+            if (item.RowId is 4868) {
+                continue;
+            }
+
+            // Minions
+            if (item.ItemUICategory.RowId == 81) {
+                continue;
+            }
+
+            // Triple Triad Cards
+            if (item.ItemUICategory.RowId == 86) {
+                continue;
+            }
+
+            AWC.Log.Debug($"[{nameof(MarketBoardHelper)}] Adding item: {item.Name} | ItemId={inventoryItem.ItemId}, ItemUICategory={item.ItemUICategory.RowId}, ItemSearchCategory={item.ItemSearchCategory.RowId}");
+
+            uniqueItemIds.AddIfNotExist(inventoryItem.ItemId);
+        }
+
+        return uniqueItemIds;
     }
 }

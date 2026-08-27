@@ -23,21 +23,7 @@ public class SellWorthlessItemsAction : BaseAction
 
         EnqueueAsync(async () =>
         {
-            HashSet<uint> uniqueItemIds = GetUniqueItemIds();
-            if (uniqueItemIds.Count == 0) {
-                return;
-            }
-
-            List<MarketBoardItem> marketBoardItems = await MarketBoardHelper.GetMarketBoardPrices(Player.CurrentWorld.RowId, uniqueItemIds);
-            if (marketBoardItems.Count == 0) {
-                return;
-            }
-
-            List<MarketBoardItem> itemsToSell = marketBoardItems
-                .Where(item => item is { IsLoaded: true, Price: < 1000 })
-                .OrderBy(item => item.Price)
-                .ToList();
-
+            var itemsToSell = await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory(Player.HomeWorld.RowId);
             if (itemsToSell.Count == 0) {
                 return;
             }
@@ -58,6 +44,8 @@ public class SellWorthlessItemsAction : BaseAction
 
     private void EnqueueActionTasks(List<MarketBoardItem> itemsToSell)
     {
+        LocationManager.Reset();
+
         List<MarketBoardItem> remainingItemsToSell = itemsToSell.ToList();
 
         AWC.TaskManager.InsertMulti([
@@ -137,62 +125,5 @@ public class SellWorthlessItemsAction : BaseAction
                 }, $"{Name}: sell items"),
             new TaskManagerTask(() => AddonHelper.CloseAddons(AddonsToClose), $"{Name}: closing addons")
         ]);
-    }
-
-    private HashSet<uint> GetUniqueItemIds()
-    {
-        HashSet<uint> uniqueItemIds = [];
-
-        foreach (var inventoryItem in InventoryHelper.GetInventoryItems()) {
-            if (!InventoryHelper.TryGetSheetItemFromItemId(inventoryItem.ItemId, out var item)) {
-                continue;
-            }
-
-            // Skip items with no sell price
-            if (item.PriceLow == 0) {
-                continue;
-            }
-
-            // Skip items that are not sellable on the marketboard
-            if (item.ItemSearchCategory.RowId == 0) {
-                continue;
-            }
-
-            // Materia
-            if (item.ItemUICategory.RowId is 57) {
-                continue;
-            }
-
-            // Glamour Prism & Dispeller & Dark Matter
-            if (item.ItemUICategory.RowId is 60 or 48) {
-                continue;
-            }
-
-            // Potions & Food
-            if (item.ItemUICategory.RowId is 60 or 46 or 44) {
-                continue;
-            }
-
-            // Gysahl Greens
-            if (item.RowId is 4868) {
-                continue;
-            }
-
-            // Minions
-            if (item.ItemUICategory.RowId == 81) {
-                continue;
-            }
-
-            // Triple Triad Cards
-            if (item.ItemUICategory.RowId == 86) {
-                continue;
-            }
-
-            LogDebug($"Adding item: {item.Name} | ItemId={inventoryItem.ItemId}, ItemUICategory={item.ItemUICategory.RowId}, ItemSearchCategory={item.ItemSearchCategory.RowId}");
-
-            uniqueItemIds.AddIfNotExist(inventoryItem.ItemId);
-        }
-
-        return uniqueItemIds;
     }
 }
