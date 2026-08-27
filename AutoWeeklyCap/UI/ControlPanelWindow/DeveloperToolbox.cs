@@ -28,6 +28,10 @@ public static class DeveloperToolbox
 
     internal static void Draw()
     {
+        if (ImGui.Button("TEST")) {
+            AWC.Instance.ToggleItemFilterUi();
+        }
+
         Card.Draw("Plugin Details", DrawPluginDetails, false);
         Card.Draw("Runner Debug Steps", DrawRunnerDebugSteps, false);
         Card.Draw("Runner Debug Actions", DrawRunnerDebugActions, false);

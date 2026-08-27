@@ -27,7 +27,7 @@ public static class MarketBoardHelper
         }
 
         return marketBoardItems
-            .Where(item => item is { IsLoaded: true, Price: < 1000 })
+            .Where(item => item is { IsLoaded: true, Price: < 10_000 })
             .OrderBy(item => item.Price)
             .ToList();
     }
@@ -150,35 +150,35 @@ public static class MarketBoardHelper
                 continue;
             }
 
-            // Materia
-            if (item.ItemUICategory.RowId is 57) {
-                continue;
-            }
-
-            // Glamour Prism & Dispeller & Dark Matter
-            if (item.ItemUICategory.RowId is 60 or 48) {
-                continue;
-            }
-
-            // Potions & Food
-            if (item.ItemUICategory.RowId is 60 or 46 or 44) {
-                continue;
-            }
-
-            // Gysahl Greens
-            if (item.RowId is 4868) {
-                continue;
-            }
-
-            // Minions
-            if (item.ItemUICategory.RowId == 81) {
-                continue;
-            }
-
-            // Triple Triad Cards
-            if (item.ItemUICategory.RowId == 86) {
-                continue;
-            }
+            // // Materia
+            // if (item.ItemUICategory.RowId is 57) {
+            //     continue;
+            // }
+            //
+            // // Glamour Prism & Dispeller & Dark Matter
+            // if (item.ItemUICategory.RowId is 60 or 48) {
+            //     continue;
+            // }
+            //
+            // // Potions & Food
+            // if (item.ItemUICategory.RowId is 60 or 46 or 44) {
+            //     continue;
+            // }
+            //
+            // // Gysahl Greens
+            // if (item.RowId is 4868) {
+            //     continue;
+            // }
+            //
+            // // Minions
+            // if (item.ItemUICategory.RowId == 81) {
+            //     continue;
+            // }
+            //
+            // // Triple Triad Cards
+            // if (item.ItemUICategory.RowId == 86) {
+            //     continue;
+            // }
 
             AWC.Log.Debug($"[{nameof(MarketBoardHelper)}] Adding item: {item.Name} | ItemId={inventoryItem.ItemId}, ItemUICategory={item.ItemUICategory.RowId}, ItemSearchCategory={item.ItemSearchCategory.RowId}");
 

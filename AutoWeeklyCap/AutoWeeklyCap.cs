@@ -48,6 +48,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     private CharacterOptionWindow CharacterOptionWindow { get; }
     private StatusOverlayWindow StatusOverlayWindow { get; }
     private FeedbackWindow FeedbackWindow { get; }
+    private ItemFilterWindow ItemFilterWindow { get; }
 
     private readonly WindowSystem _windowSystem = new("AutoWeeklyCap");
 
@@ -73,6 +74,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         _windowSystem.AddWindow(CharacterOptionWindow = new CharacterOptionWindow());
         _windowSystem.AddWindow(StatusOverlayWindow = new StatusOverlayWindow());
         _windowSystem.AddWindow(FeedbackWindow = new FeedbackWindow());
+        _windowSystem.AddWindow(ItemFilterWindow = new ItemFilterWindow());
 
         CommandManager.AddHandler(Constants.CommandNameLong, new CommandInfo(OnCommand) { HelpMessage = "Toggles the Auto Weekly Cap main window", ShowInHelp = true });
         CommandManager.AddHandler(Constants.CommandNameShort, new CommandInfo(OnCommand) { ShowInHelp = false });
@@ -164,11 +166,6 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         }
     }
 
-    public bool IsConfigUiOpen()
-    {
-        return ControlPanelWindow.IsOpen;
-    }
-
     public void ToggleMainUi()
     {
         MainWindow.Toggle();
@@ -182,6 +179,11 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
     public void ToggleFeedbackUi()
     {
         FeedbackWindow.Toggle();
+    }
+
+    public void ToggleItemFilterUi()
+    {
+        ItemFilterWindow.Toggle();
     }
 
     public void OpenCharacterOptionsUi(string character)
