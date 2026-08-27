@@ -28,10 +28,6 @@ public static class DeveloperToolbox
 
     internal static void Draw()
     {
-        if (ImGui.Button("TEST")) {
-            ActionInstance.SellWorthlessItems.Invoke();
-        }
-
         Card.Draw("Plugin Details", DrawPluginDetails, false);
         Card.Draw("Runner Debug Steps", DrawRunnerDebugSteps, false);
         Card.Draw("Runner Debug Actions", DrawRunnerDebugActions, false);
@@ -88,6 +84,7 @@ public static class DeveloperToolbox
 
         DebugActionButton("Learn TT cards", ActionInstance.LearnTripleTriadCard, false);
         DebugActionButton("Sell TT cards", ActionInstance.SellTripleTriadCard);
+        DebugActionButton("Sell Worthless Items", ActionInstance.SellWorthlessItems);
 
         DebugActionButton("Return to Homeworld", ActionInstance.Homeworld, false);
         DebugActionButton("Deliveroo", ActionInstance.Deliveroo);
