@@ -28,7 +28,7 @@ public class ItemFilterWindow : ThemeWindow
             AWC.TaskManager.Enqueue(async void () =>
             {
                 try {
-                    FilteredItems = await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory(Player.HomeWorld.RowId);
+                    FilteredItems = await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory();
                 } catch (Exception e) {
                     AWC.Log.Error("Failed to fetch items from marketboard", e);
                 }

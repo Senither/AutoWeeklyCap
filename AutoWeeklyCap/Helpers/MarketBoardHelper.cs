@@ -14,14 +14,14 @@ public static class MarketBoardHelper
     private static readonly Dictionary<uint, MarketBoardItem> ItemsCache = new();
     private static readonly SemaphoreSlim FetchLock = new(1, 1);
 
-    public static async Task<List<MarketBoardItem>> GetFilteredMarketBoardItemsFromInventory(uint serverId)
+    public static async Task<List<MarketBoardItem>> GetFilteredMarketBoardItemsFromInventory()
     {
         HashSet<uint> uniqueItemIds = GetUniqueItemIdsFromInventory();
         if (uniqueItemIds.Count == 0) {
             return [];
         }
 
-        List<MarketBoardItem> marketBoardItems = await GetMarketBoardPricesForUniqueIds(serverId, uniqueItemIds);
+        List<MarketBoardItem> marketBoardItems = await GetMarketBoardPricesForUniqueIds(uniqueItemIds);
         if (marketBoardItems.Count == 0) {
             return [];
         }
@@ -32,7 +32,7 @@ public static class MarketBoardHelper
             .ToList();
     }
 
-    private static async Task<List<MarketBoardItem>> GetMarketBoardPricesForUniqueIds(uint serverId, HashSet<uint> uniqueItemIds)
+    private static async Task<List<MarketBoardItem>> GetMarketBoardPricesForUniqueIds(HashSet<uint> uniqueItemIds)
     {
         List<MarketBoardItem> result = [];
         HashSet<uint> itemIdsToFetch = [];
@@ -54,7 +54,7 @@ public static class MarketBoardHelper
         await FetchLock.WaitAsync();
 
         try {
-            response = await FetchAggregatedPricesFromUniversalis(serverId, itemIdsToFetch);
+            response = await FetchAggregatedPricesFromUniversalis(itemIdsToFetch);
         } catch (Exception ex) {
             AWC.Log.Error($"[{nameof(MarketBoardHelper)}] Failed to fetch aggregated prices from universalis", ex);
 
@@ -100,14 +100,13 @@ public static class MarketBoardHelper
     }
 
     private static async Task<AggregatedUniversalisResponse?> FetchAggregatedPricesFromUniversalis(
-        uint serverId,
         HashSet<uint> uniqueItemIds,
         CancellationToken cancellationToken = default
     )
     {
         AWC.Log.Debug($"[{nameof(MarketBoardHelper)}] Sending request to Universalis with IDs ({string.Join(",", uniqueItemIds)})");
 
-        using var response = await BuildHttpClient(serverId).GetAsync(string.Join(",", uniqueItemIds), cancellationToken);
+        using var response = await BuildHttpClient().GetAsync(string.Join(",", uniqueItemIds), cancellationToken);
 
         response.EnsureSuccessStatusCode();
 
@@ -120,12 +119,12 @@ public static class MarketBoardHelper
         );
     }
 
-    private static HttpClient BuildHttpClient(uint serverId)
+    private static HttpClient BuildHttpClient()
     {
         HttpClient client = new HttpClient();
 
         client.Timeout = TimeSpan.FromSeconds(30);
-        client.BaseAddress = new Uri($"https://universalis.app/api/v2/aggregated/{serverId}/");
+        client.BaseAddress = new Uri($"https://universalis.app/api/v2/aggregated/{Player.HomeDataCenterName}/");
 
         client.DefaultRequestHeaders.UserAgent.ParseAdd($"AutoWeeklyCap/{AWC.Version}");
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
