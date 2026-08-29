@@ -55,7 +55,9 @@ public static class MarketBoardHelper
 
         try {
             response = await FetchAggregatedPricesFromUniversalis(serverId, itemIdsToFetch);
-        } catch (Exception) {
+        } catch (Exception ex) {
+            AWC.Log.Error($"[{nameof(MarketBoardHelper)}] Failed to fetch aggregated prices from universalis", ex);
+
             return result;
         } finally {
             FetchLock.Release();
@@ -103,7 +105,7 @@ public static class MarketBoardHelper
         CancellationToken cancellationToken = default
     )
     {
-        AWC.Log.Debug($"[MarketBoardHelper] Sending request to Universalis with IDs ({string.Join(",", uniqueItemIds)})");
+        AWC.Log.Debug($"[{nameof(MarketBoardHelper)}] Sending request to Universalis with IDs ({string.Join(",", uniqueItemIds)})");
 
         using var response = await BuildHttpClient(serverId).GetAsync(string.Join(",", uniqueItemIds), cancellationToken);
 

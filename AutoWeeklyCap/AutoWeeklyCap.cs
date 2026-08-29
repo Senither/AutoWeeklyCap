@@ -96,6 +96,9 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
         OpenConfigUi();
 #endif
 
+        // TESTING
+        ToggleItemFilterUi();
+
         _ = new IPCProvider();
 
         _ = new TickScheduler(() =>
