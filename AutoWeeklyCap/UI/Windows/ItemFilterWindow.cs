@@ -41,7 +41,7 @@ public class ItemFilterWindow : ThemeWindow
             if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
                 ItemIcon.Draw(itemObj.Icon, 2f);
 
-                ImGuiEx.Tooltip($"{itemObj.Name}: selling for {item.Price}");
+                ImGuiEx.Tooltip($"{itemObj.Name}: selling for {item.Price}\nUI Category: {itemObj.ItemUICategory.RowId}\nItem Level: {itemObj.LevelItem.RowId}");
             }
 
             if (++i % 10 == 0) {
