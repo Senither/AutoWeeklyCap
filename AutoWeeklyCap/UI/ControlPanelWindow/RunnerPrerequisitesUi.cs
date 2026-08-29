@@ -354,11 +354,31 @@ public static class RunnerPrerequisitesUi
                 collapsible: false,
                 bodyContent: () =>
                 {
+                    double tomesNeeded = 0D;
+
                     if (AWC.Config.SpendUncappedTomestoneItems.Count == 0) {
                         ImGui.TextColored(Theme.TextMuted, "No items selected");
                     } else {
                         for (var index = 0; index < AWC.Config.SpendUncappedTomestoneItems.Count; index++) {
-                            DrawTomestoneConfigItem(AWC.Config.SpendUncappedTomestoneItems, index);
+                            if (index < 0 || index >= AWC.Config.SpendUncappedTomestoneItems.Count) {
+                                continue;
+                            }
+
+                            TomestoneItem configItem = AWC.Config.SpendUncappedTomestoneItems[index];
+                            Enums.TomestoneItem? tomestoneItem = TomestoneItemHelper.GetTomestoneItemFromItemId(configItem.ItemId);
+                            bool isLastItem = index == AWC.Config.SpendUncappedTomestoneItems.Count - 1;
+
+                            DrawTomestoneConfigItem(
+                                AWC.Config.SpendUncappedTomestoneItems,
+                                configItem,
+                                tomestoneItem,
+                                isLastItem,
+                                index
+                            );
+
+                            if (tomestoneItem != null && !isLastItem) {
+                                tomesNeeded += tomestoneItem.Cost * configItem.Quantity;
+                            }
                         }
                     }
 
@@ -407,20 +427,28 @@ public static class RunnerPrerequisitesUi
                         "SHIFT   = Adds the last two relic materials\n" +
                         "ALT        = Adds the last three relic materials"
                     );
+
+                    if (tomesNeeded == 0) {
+                        return;
+                    }
+
+                    Card.Separator();
+
+                    double runsNeeded = Math.Max(Math.Ceiling(tomesNeeded / Constants.UncappedTomesPerRun), 1);
+
+                    ImGuiEx.TextCentered(Theme.TextMuted, $"Requires a total of {tomesNeeded:##,###} tomes, taking {runsNeeded:##,###} runs");
                 });
         });
     }
 
-    private static void DrawTomestoneConfigItem(List<TomestoneItem> items, int index)
+    private static void DrawTomestoneConfigItem(
+        List<TomestoneItem> items,
+        TomestoneItem configItem,
+        Enums.TomestoneItem? tomestoneItem,
+        bool isLastItem,
+        int index
+    )
     {
-        if (index < 0 || index >= items.Count) {
-            return;
-        }
-
-        TomestoneItem configItem = items[index];
-        Enums.TomestoneItem? tomestoneItem = TomestoneItemHelper.GetTomestoneItemFromItemId(configItem.ItemId);
-        bool isLastItem = index == items.Count - 1;
-
         ImGui.PushID($"tomestone-item-{index}-{configItem.ItemId}");
 
         if (InventoryHelper.TryGetSheetItemFromItemId(configItem.ItemId, out var itemObj)) {

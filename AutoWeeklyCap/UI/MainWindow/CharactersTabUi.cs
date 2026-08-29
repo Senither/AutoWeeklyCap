@@ -7,7 +7,6 @@ namespace AutoWeeklyCap.UI.MainWindow;
 
 public static class CharactersTabUi
 {
-    private const int TomesPerRun = 50;
     private const int DefaultRunSeconds = 24 * 60;
 
     internal static void Draw()
@@ -29,7 +28,7 @@ public static class CharactersTabUi
                 totalTomesCollected += characterTomes;
 
                 var remainingTomes = Math.Max(0, weeklyTomeLimit - characterTomes);
-                var runsNeeded = (int)Math.Ceiling(remainingTomes / (double)TomesPerRun);
+                var runsNeeded = (int)Math.Ceiling(remainingTomes / (double)Constants.LimitedTomesPerRun);
                 var averageSeconds = DefaultRunSeconds;
 
                 if (option.LastDutyDurationsSeconds.Count > 0) {
