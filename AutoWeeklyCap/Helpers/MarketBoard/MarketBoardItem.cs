@@ -4,19 +4,36 @@ public class MarketBoardItem
 {
     private static readonly TimeSpan CacheDuration = TimeSpan.FromHours(3);
 
-    public bool IsLoaded { get; init; }
+    public required bool IsLoaded { get; init; }
 
-    public uint ItemId { get; init; }
-    public uint NqPrice { get; init; }
-    public uint HqPrice { get; init; }
-    public uint Price => Math.Max(NqPrice, HqPrice);
+    public required uint ItemId { get; init; }
+    public MarketBoardItemPrice? NqPrice { get; init; }
+    public MarketBoardItemPrice? HqPrice { get; init; }
 
     public DateTime LastUpdatedAt { get; init; }
 
     public bool IsExpired => DateTime.UtcNow - LastUpdatedAt > CacheDuration;
 
+    public uint GetPrice(bool hq = false)
+    {
+        return AWC.Config.ItemFilters.ItemPriceType.GetPrice(hq ? HqPrice : NqPrice);
+    }
+
     public override string ToString()
     {
         return $"MarketBoardItem=[IsLoaded={IsLoaded}, ItemId={ItemId}, NqPrice={NqPrice}, HqPrice={HqPrice}, LastUpdatedAt={LastUpdatedAt}]";
     }
+}
+
+public sealed class MarketBoardItemPrice
+{
+    public required MarketBoardItemPriceList MinListing { get; init; }
+    public required MarketBoardItemPriceList RecentListing { get; init; }
+    public required MarketBoardItemPriceList AverageListing { get; init; }
+}
+
+public sealed class MarketBoardItemPriceList
+{
+    public required uint WorldPrice { get; init; }
+    public required uint DcPrice { get; init; }
 }

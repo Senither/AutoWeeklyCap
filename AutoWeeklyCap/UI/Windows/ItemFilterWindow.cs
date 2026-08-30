@@ -31,7 +31,8 @@ public class ItemFilterWindow : ThemeWindow
             {
                 try {
                     FilteredItems = (await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory())
-                        .Select(marketBoardItem => {
+                        .Select(marketBoardItem =>
+                        {
                             var hasSheetItem = InventoryHelper.TryGetSheetItemFromItemId(marketBoardItem.ItemId, out var sheetItem);
                             return new { MarketBoardItem = marketBoardItem, SheetItem = sheetItem, HasSheetItem = hasSheetItem };
                         })
@@ -83,7 +84,7 @@ public class ItemFilterWindow : ThemeWindow
             if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
                 ItemIcon.Draw(itemObj.Icon, 2f);
 
-                ImGuiEx.Tooltip($"{itemObj.Name}: selling for {item.Price}\nUI Category: {itemObj.ItemUICategory.RowId}\nItem Level: {itemObj.LevelItem.RowId}\nItem ID: {itemObj.RowId}");
+                ImGuiEx.Tooltip($"{itemObj.Name}: selling for {item.GetPrice(itemObj.CanBeHq)}\nUI Category: {itemObj.ItemUICategory.RowId}\nItem Level: {itemObj.LevelItem.RowId}\nItem ID: {itemObj.RowId}");
             }
 
             if (++i % 10 == 0) {

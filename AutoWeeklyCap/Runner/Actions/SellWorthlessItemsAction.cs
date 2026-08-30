@@ -32,7 +32,7 @@ public class SellWorthlessItemsAction : BaseAction
             LogDebug($"Found {itemsToSell.Count} items that matches the filters, queueing up sell tasks");
             foreach (var itemToSell in itemsToSell) {
                 if (InventoryHelper.TryGetSheetItemFromItemId(itemToSell.ItemId, out var item)) {
-                    LogDebug($"Preparing to sell item: {item.Name} | ItemId={itemToSell.ItemId}, Price={itemToSell.Price}, ItemUICategory={item.ItemUICategory.RowId}, ItemSearchCategory={item.ItemSearchCategory.RowId}");
+                    LogDebug($"Preparing to sell item: {item.Name} | ItemId={itemToSell.ItemId}, Price={itemToSell.GetPrice(item.CanBeHq)}, ItemUICategory={item.ItemUICategory.RowId}, ItemSearchCategory={item.ItemSearchCategory.RowId}");
                 }
             }
 

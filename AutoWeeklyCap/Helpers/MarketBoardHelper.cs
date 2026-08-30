@@ -40,8 +40,14 @@ public static class MarketBoardHelper
         }
 
         return marketBoardItems
-            .Where(item => item.IsLoaded && item.Price < AWC.Config.ItemFilters.GilThreshold)
-            .OrderBy(item => item.Price)
+            .Where(item => item.IsLoaded)
+            .Select(marketBoardItem =>
+            {
+                var hasSheetItem = InventoryHelper.TryGetSheetItemFromItemId(marketBoardItem.ItemId, out var sheetItem);
+                return new { MarketBoardItem = marketBoardItem, SheetItem = sheetItem, HasSheetItem = hasSheetItem };
+            })
+            .Where(item => item.MarketBoardItem.GetPrice(item.SheetItem.CanBeHq) < AWC.Config.ItemFilters.GilThreshold)
+            .Select(item => item.MarketBoardItem)
             .ToList();
     }
 
@@ -98,18 +104,32 @@ public static class MarketBoardHelper
         {
             IsLoaded = true,
             ItemId = itemId,
-            NqPrice = GetHighestPrice(result.Nq),
-            HqPrice = GetHighestPrice(result.Hq),
+            NqPrice = BuildMarketBoardItemPrice(result.Nq),
+            HqPrice = BuildMarketBoardItemPrice(result.Hq),
             LastUpdatedAt = DateTime.UtcNow,
         };
     }
 
-    private static uint GetHighestPrice(QualityData qualityData)
+    private static MarketBoardItemPrice BuildMarketBoardItemPrice(QualityData data)
     {
-        double worldPrice = qualityData.RecentPurchase.World?.Price ?? 0;
-        double dcPrice = qualityData.RecentPurchase.Dc?.Price ?? 0;
+        // @formatter:off
+        return new MarketBoardItemPrice {
+            MinListing = BuildMarketBoardItemPriceList(data.MinListing),
+            RecentListing = BuildMarketBoardItemPriceList(data.RecentPurchase),
+            AverageListing = BuildMarketBoardItemPriceList(data.AverageSalePrice)
+        };
+        // @formatter:on
+    }
 
-        return (uint)Math.Max(worldPrice, dcPrice);
+    private static MarketBoardItemPriceList BuildMarketBoardItemPriceList(MarketData data)
+    {
+        // @formatter:off
+        return new MarketBoardItemPriceList
+        {
+            WorldPrice = (uint)(data.World?.Price ?? 0u),
+            DcPrice =  (uint)(data.Dc?.Price ?? 0u)
+        };
+        // @formatter:on
     }
 
     private static async Task<AggregatedUniversalisResponse?> FetchAggregatedPricesFromUniversalis(
