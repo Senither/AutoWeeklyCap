@@ -26,26 +26,6 @@ public class ItemFilterWindow : ThemeWindow
 
     public override void Draw()
     {
-        if (ImGui.Button("Load items from marketboard")) {
-            AWC.TaskManager.Insert(async void () =>
-            {
-                try {
-                    FilteredItems = (await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory())
-                        .Select(marketBoardItem =>
-                        {
-                            var hasSheetItem = InventoryHelper.TryGetSheetItemFromItemId(marketBoardItem.ItemId, out var sheetItem);
-                            return new { MarketBoardItem = marketBoardItem, SheetItem = sheetItem, HasSheetItem = hasSheetItem };
-                        })
-                        .OrderBy(item => item.HasSheetItem ? item.SheetItem.ItemUICategory.RowId : uint.MaxValue)
-                        .ThenBy(item => item.HasSheetItem ? item.SheetItem.Name.ToString() : string.Empty, StringComparer.Ordinal)
-                        .Select(item => item.MarketBoardItem)
-                        .ToList();
-                } catch (Exception e) {
-                    AWC.Log.Error("Failed to fetch items from marketboard", e);
-                }
-            });
-        }
-
         var itemPriceType = AWC.Config.ItemFilters.ItemPriceType;
         if (ImGui.BeginCombo("##PreferredItemPriceType", itemPriceType.GetName())) {
             foreach (var item in Enum.GetValues<ItemPriceType>()) {
@@ -57,15 +37,25 @@ public class ItemFilterWindow : ThemeWindow
             ImGui.EndCombo();
         }
 
-        var gilThreshold = AWC.Config.ItemFilters.GilThreshold;
-        if (Range.Draw("Gil Threshold", ref gilThreshold, 0, 100_000)) {
-            AWC.Config.ItemFilters.GilThreshold = gilThreshold;
-        }
+        DrawGrid([
+            () =>
+            {
+                ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X / 3);
 
-        var itemLevelThreshold = AWC.Config.ItemFilters.ItemLevelThreshold;
-        if (Range.Draw("Item Level Threshold", ref itemLevelThreshold, 0, Constants.CurrentMaxItemLevel)) {
-            AWC.Config.ItemFilters.ItemLevelThreshold = itemLevelThreshold;
-        }
+                var gilThreshold = AWC.Config.ItemFilters.GilThreshold;
+                if (Range.Draw("###Gil", ref gilThreshold, 0, 100_000)) {
+                    AWC.Config.ItemFilters.GilThreshold = gilThreshold;
+                }
+            },
+            () =>
+            {
+                ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X / 3);
+                var itemLevelThreshold = AWC.Config.ItemFilters.ItemLevelThreshold;
+                if (Range.Draw("###ItemThreshold", ref itemLevelThreshold, 0, Constants.CurrentMaxItemLevel)) {
+                    AWC.Config.ItemFilters.ItemLevelThreshold = itemLevelThreshold;
+                }
+            }
+        ], colum: 2, height: 50);
 
         var excludeMateria = AWC.Config.ItemFilters.ExcludeMateria;
         if (ImGui.Checkbox("Exclude Materia", ref excludeMateria)) {
@@ -89,18 +79,70 @@ public class ItemFilterWindow : ThemeWindow
 
         ImGui.Spacing();
 
-        var i = 0;
-
-        foreach (var item in FilteredItems) {
-            if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
-                ItemIcon.Draw(itemObj.Icon, 2f);
-
-                ImGuiEx.Tooltip($"{itemObj.Name}: selling for {item.GetPrice(itemObj.CanBeHq)}\nUI Category: {itemObj.ItemUICategory.RowId}\nItem Level: {itemObj.LevelItem.RowId}\nItem ID: {itemObj.RowId}");
+        Card.Draw("Items to sell", () =>
+        {
+            if (RightAlignedButton.Draw(FilteredItems.Count == 0 ? "Load Items" : "Refresh Items", offsetY: -2f)) {
+                EnqueueLoadingItemsWithFilter();
             }
 
-            if (++i % 10 == 0) {
-                ImGui.NewLine();
+            ImGui.Spacing();
+            ImGui.Spacing();
+
+            List<Action> itemElements = [];
+            foreach (var item in FilteredItems) {
+                if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
+                    itemElements.Add(() =>
+                    {
+                        ItemIcon.Draw(itemObj.Icon);
+                        ImGui.Text($"{itemObj.Name}");
+                        ImGuiEx.Tooltip($"Selling for {item.GetPrice(itemObj.CanBeHq)}\nUI Category: {itemObj.ItemUICategory.RowId}\nItem Level: {itemObj.LevelItem.RowId}\nItem ID: {itemObj.RowId}");
+                    });
+                }
+            }
+
+            DrawGrid(itemElements, colum: 2, height: 28);
+        }, collapsible: false);
+    }
+
+    private static void DrawGrid(List<Action> elements, int colum = 2, int height = 40)
+    {
+        Vector2 start = ImGui.GetCursorScreenPos();
+        float width = (ImGui.GetContentRegionAvail().X / colum) - ImGui.GetStyle().ItemSpacing.X;
+
+        int currentRow = 0;
+
+        for (var i = 0; i < elements.Count; i++) {
+            ImGui.SetCursorScreenPos(start + new Vector2(i % colum * width, currentRow * height));
+
+            elements[i].Invoke();
+
+            if ((i + 1) % colum == 0) {
+                currentRow++;
             }
         }
+
+        ImGui.SetCursorScreenPos(start + new Vector2(0, currentRow * height));
+        ImGui.Dummy(Vector2.Zero);
+    }
+
+    private static void EnqueueLoadingItemsWithFilter()
+    {
+        AWC.TaskManager.Insert(async void () =>
+        {
+            try {
+                FilteredItems = (await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory())
+                    .Select(marketBoardItem =>
+                    {
+                        var hasSheetItem = InventoryHelper.TryGetSheetItemFromItemId(marketBoardItem.ItemId, out var sheetItem);
+                        return new { MarketBoardItem = marketBoardItem, SheetItem = sheetItem, HasSheetItem = hasSheetItem };
+                    })
+                    .OrderBy(item => item.HasSheetItem ? item.SheetItem.ItemUICategory.RowId : uint.MaxValue)
+                    .ThenBy(item => item.HasSheetItem ? item.SheetItem.Name.ToString() : string.Empty, StringComparer.Ordinal)
+                    .Select(item => item.MarketBoardItem)
+                    .ToList();
+            } catch (Exception e) {
+                AWC.Log.Error("Failed to fetch items from marketboard", e);
+            }
+        });
     }
 }
