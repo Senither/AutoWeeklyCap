@@ -27,7 +27,7 @@ public static class MarketBoardHelper
         }
 
         return marketBoardItems
-            .Where(item => item is { IsLoaded: true, Price: < 10_000 })
+            .Where(item => item.IsLoaded && item.Price < AWC.Config.ItemFilters.GilThreshold)
             .OrderBy(item => item.Price)
             .ToList();
     }
@@ -150,6 +150,29 @@ public static class MarketBoardHelper
             if (item.ItemSearchCategory.RowId == 0) {
                 continue;
             }
+
+            // Skip items below the item level threshold when value is set to 1 or greater
+            if (AWC.Config.ItemFilters.ItemLevelThreshold > 0 && item.LevelItem.RowId >= AWC.Config.ItemFilters.ItemLevelThreshold) {
+                continue;
+            }
+
+            if (AWC.Config.ItemFilters.ExcludeMateria && item.ItemUICategory.RowId == 58) {
+                continue;
+            }
+
+            if (AWC.Config.ItemFilters.ExcludeFood && item.ItemUICategory.RowId == 46) {
+                continue;
+            }
+
+            if (AWC.Config.ItemFilters.ExcludePotions && item.ItemUICategory.RowId == 44) {
+                continue;
+            }
+
+            if (AWC.Config.ItemFilters.ExcludeDyes && item.ItemUICategory.RowId == 55) {
+                continue;
+            }
+
+            // -----------------------------------------------------
 
             // // Materia
             // if (item.ItemUICategory.RowId is 57) {

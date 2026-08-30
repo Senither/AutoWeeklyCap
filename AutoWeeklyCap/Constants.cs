@@ -10,6 +10,7 @@ public static class Constants
 
     internal const int CurrentMaxLevel = 100;
     internal const int LimitedCurrencyCap = 2000;
+    internal const int CurrentMaxItemLevel = 795;
 
     // Orange Juice
     internal const uint LevelingFoodItemId = 4745;

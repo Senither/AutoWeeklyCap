@@ -4,6 +4,8 @@ using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface.Windowing;
 
+using Range = AutoWeeklyCap.UI.Helpers.Range;
+
 namespace AutoWeeklyCap.UI.Windows;
 
 public class ItemFilterWindow : ThemeWindow
@@ -34,6 +36,38 @@ public class ItemFilterWindow : ThemeWindow
                 }
             });
         }
+
+        var gilThreshold = AWC.Config.ItemFilters.GilThreshold;
+        if (Range.Draw("Gil Threshold", ref gilThreshold, 0, 100_000)) {
+            AWC.Config.ItemFilters.GilThreshold = gilThreshold;
+        }
+
+        var itemLevelThreshold = AWC.Config.ItemFilters.ItemLevelThreshold;
+        if (Range.Draw("Item Level Threshold", ref itemLevelThreshold, 0, Constants.CurrentMaxItemLevel)) {
+            AWC.Config.ItemFilters.ItemLevelThreshold = itemLevelThreshold;
+        }
+
+        var excludeMateria = AWC.Config.ItemFilters.ExcludeMateria;
+        if (ImGui.Checkbox("Exclude Materia", ref excludeMateria)) {
+            AWC.Config.ItemFilters.ExcludeMateria = excludeMateria;
+        }
+
+        var excludeFood = AWC.Config.ItemFilters.ExcludeFood;
+        if (ImGui.Checkbox("Exclude Food", ref excludeFood)) {
+            AWC.Config.ItemFilters.ExcludeFood = excludeFood;
+        }
+
+        var excludePotions = AWC.Config.ItemFilters.ExcludePotions;
+        if (ImGui.Checkbox("Exclude Potions", ref excludePotions)) {
+            AWC.Config.ItemFilters.ExcludePotions = excludePotions;
+        }
+
+        var excludeDyes = AWC.Config.ItemFilters.ExcludeDyes;
+        if (ImGui.Checkbox("Exclude Dyes", ref excludeDyes)) {
+            AWC.Config.ItemFilters.ExcludeDyes = excludeDyes;
+        }
+
+        ImGui.Spacing();
 
         var i = 0;
 

@@ -64,6 +64,8 @@ public class Configuration : IPluginConfiguration
     public uint SpendUncappedTomestoneThreshold { get; set; } = 1800;
     public List<TomestoneItem> SpendUncappedTomestoneItems = [];
     public bool MoveDuplicateItemsFromInventoryToSaddlebag = false;
+    public bool SellWorthlessItems = false;
+    public ItemFilterOptions ItemFilters { get; set; } = new();
 
     // Runner Options (AutoRetainer)
     public bool AutoRetainerEnabled { get; set; } = false;
