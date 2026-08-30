@@ -14,6 +14,19 @@ public static class MarketBoardHelper
     private static readonly Dictionary<uint, MarketBoardItem> ItemsCache = new();
     private static readonly SemaphoreSlim FetchLock = new(1, 1);
 
+    private static readonly List<uint> ItemsToExclude =
+    [
+        21800, // Glamour Prisms
+        7621, // Glamour Dispeller
+        7671, // Clear Prism
+        4868, // Gysahl Greens
+        4570, // Phoenix Down
+        23168, // Super-Ether
+        33916, // Grade 8 Dark Matter
+
+        Constants.LevelingFoodItemId,
+    ];
+
     public static async Task<List<MarketBoardItem>> GetFilteredMarketBoardItemsFromInventory()
     {
         HashSet<uint> uniqueItemIds = GetUniqueItemIdsFromInventory();
@@ -169,6 +182,10 @@ public static class MarketBoardHelper
             }
 
             if (AWC.Config.ItemFilters.ExcludeDyes && item.ItemUICategory.RowId == 55) {
+                continue;
+            }
+
+            if (ItemsToExclude.Contains(item.RowId)) {
                 continue;
             }
 
