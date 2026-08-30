@@ -46,6 +46,17 @@ public class ItemFilterWindow : ThemeWindow
             });
         }
 
+        var itemPriceType = AWC.Config.ItemFilters.ItemPriceType;
+        if (ImGui.BeginCombo("##PreferredItemPriceType", itemPriceType.GetName())) {
+            foreach (var item in Enum.GetValues<ItemPriceType>()) {
+                if (ImGui.Selectable(item.GetName())) {
+                    AWC.Config.ItemFilters.ItemPriceType = item;
+                }
+            }
+
+            ImGui.EndCombo();
+        }
+
         var gilThreshold = AWC.Config.ItemFilters.GilThreshold;
         if (Range.Draw("Gil Threshold", ref gilThreshold, 0, 100_000)) {
             AWC.Config.ItemFilters.GilThreshold = gilThreshold;

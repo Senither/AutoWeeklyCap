@@ -14,6 +14,18 @@ public static class ItemPriceTypeExtensions
 {
     extension(ItemPriceType type)
     {
+        public string GetName()
+        {
+            return type switch
+            {
+                ItemPriceType.Minimum => "Minimum price",
+                ItemPriceType.Recent => "Recent price",
+                ItemPriceType.Average => "Average price",
+                ItemPriceType.Maximum => "Maximum between all options",
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
+        }
+
         public uint GetPrice(MarketBoardItemPrice? item)
         {
             if (item == null) {
