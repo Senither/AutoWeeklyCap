@@ -27,7 +27,7 @@ public class ItemFilterWindow : ThemeWindow
     public override void Draw()
     {
         if (ImGui.Button("Load items from marketboard")) {
-            AWC.TaskManager.Enqueue(async void () =>
+            AWC.TaskManager.Insert(async void () =>
             {
                 try {
                     FilteredItems = (await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory())
