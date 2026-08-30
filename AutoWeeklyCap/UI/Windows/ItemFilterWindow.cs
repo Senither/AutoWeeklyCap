@@ -30,7 +30,15 @@ public class ItemFilterWindow : ThemeWindow
             AWC.TaskManager.Enqueue(async void () =>
             {
                 try {
-                    FilteredItems = await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory();
+                    FilteredItems = (await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory())
+                        .Select(marketBoardItem => {
+                            var hasSheetItem = InventoryHelper.TryGetSheetItemFromItemId(marketBoardItem.ItemId, out var sheetItem);
+                            return new { MarketBoardItem = marketBoardItem, SheetItem = sheetItem, HasSheetItem = hasSheetItem };
+                        })
+                        .OrderBy(item => item.HasSheetItem ? item.SheetItem.ItemUICategory.RowId : uint.MaxValue)
+                        .ThenBy(item => item.HasSheetItem ? item.SheetItem.Name.ToString() : string.Empty, StringComparer.Ordinal)
+                        .Select(item => item.MarketBoardItem)
+                        .ToList();
                 } catch (Exception e) {
                     AWC.Log.Error("Failed to fetch items from marketboard", e);
                 }
