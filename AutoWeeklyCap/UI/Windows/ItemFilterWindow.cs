@@ -5,6 +5,9 @@ using AutoWeeklyCap.UI.Helpers;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 
+using Lumina.Excel.Sheets;
+
+using Action = System.Action;
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 
 namespace AutoWeeklyCap.UI.Windows;
@@ -14,6 +17,7 @@ public class ItemFilterWindow : ThemeWindow
     private static List<MarketBoardItem> FilteredItems = [];
     private static bool IsLoadingItems = false;
     private static bool HasLoadedItems = false;
+    private static string SearchQuery = string.Empty;
 
     public ItemFilterWindow() : base("Item Filter##feedback-window")
     {
@@ -33,12 +37,15 @@ public class ItemFilterWindow : ThemeWindow
 
         using (ImRaii.Child("###item-filter-content", new Vector2(0, ImGui.GetContentRegionAvail().Y), true)) {
             Card.Draw("Item Filters", DrawItemFilters, collapsible: false);
+            Card.Draw("Blacklisted Items", DrawBlacklistedItems, collapsible: false);
             Card.Draw("Items to sell", DrawItemsToSell, collapsible: false);
         }
     }
 
     private static void DrawItemFilters()
     {
+        ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - (ImGui.GetStyle().FramePadding.X * 3));
+
         var itemPriceType = AWC.Config.ItemFilters.ItemPriceType;
         if (ImGui.BeginCombo("##PreferredItemPriceType", itemPriceType.GetName())) {
             foreach (var item in Enum.GetValues<ItemPriceType>()) {
@@ -105,6 +112,73 @@ public class ItemFilterWindow : ThemeWindow
                 }
             }
         ], columnCount: 4, rowHeight: 26f);
+    }
+
+    private static void DrawBlacklistedItems()
+    {
+        HashSet<uint> blacklistedItems = AWC.Config.ItemFilters.BlacklistedItems;
+
+        ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - ImGui.GetStyle().ItemSpacing.X);
+        ImGui.InputTextWithHint("##blacklist-search", "Search items to blacklist", ref SearchQuery, 64);
+
+        if (!string.IsNullOrWhiteSpace(SearchQuery)) {
+            IEnumerable<Item> matchingItems = Svc.Data.GetExcelSheet<Item>()
+                .Where(item => item.RowId > 0 && item.Name.ToString().Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
+                .Where(item => !blacklistedItems.Contains(item.RowId))
+                .Take(24);
+
+            List<Action> searchResults = [];
+            foreach (var item in matchingItems) {
+                if (InventoryHelper.TryGetSheetItemFromItemId(item.RowId, out var itemObj)) {
+                    searchResults.Add(() =>
+                    {
+                        ItemIcon.Draw(itemObj.Icon);
+                        ImGui.Text($"{itemObj.Name}");
+
+                        if (ImGuiEx.Ctrl && ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
+                            AWC.Config.ItemFilters.BlacklistedItems.Add(itemObj.RowId);
+                        }
+
+                        ImGuiEx.Tooltip("CTRL + Right click to add the item to the blacklist");
+                    });
+                }
+            }
+
+            if (searchResults.Count == 0 && SearchQuery.Length > 0) {
+                ImGuiEx.TextCentered(Theme.TextMuted, "Found no items matching your search query");
+            } else {
+                Grid.DrawFixedWidth("search-results", searchResults, itemWidth: 260, rowHeight: 24f);
+            }
+        }
+
+        Card.Separator();
+
+        if (blacklistedItems.Count == 0) {
+            ImGuiEx.TextCentered(Theme.TextMuted, "No items are currently blacklisted");
+            return;
+        }
+
+        ImGui.Text($"Blacklisted Items ({blacklistedItems.Count})");
+        ImGui.Spacing();
+
+        List<Action> itemElements = [];
+        foreach (var itemId in blacklistedItems) {
+            if (InventoryHelper.TryGetSheetItemFromItemId(itemId, out var itemObj)) {
+                itemElements.Add(() =>
+                {
+                    ItemIcon.Draw(itemObj.Icon);
+                    ImGui.Text($"{itemObj.Name}");
+
+                    if (ImGuiEx.Ctrl && ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
+                        AWC.Config.ItemFilters.BlacklistedItems.Remove(itemObj.RowId);
+                    }
+
+                    ImGuiEx.Tooltip("CTRL + Right click to remove the item from the blacklist");
+                });
+            }
+        }
+
+        Grid.DrawFixedWidth("items-blacklist", itemElements, itemWidth: 260, rowHeight: 24f);
     }
 
     private static void DrawItemsToSell()

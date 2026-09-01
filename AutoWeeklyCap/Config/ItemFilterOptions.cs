@@ -11,4 +11,6 @@ public class ItemFilterOptions
     public bool ExcludeFood { get; set; } = false;
     public bool ExcludePotions { get; set; } = false;
     public bool ExcludeDyes { get; set; } = false;
+
+    public HashSet<uint> BlacklistedItems { get; set; } = [];
 }

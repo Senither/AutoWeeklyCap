@@ -209,6 +209,10 @@ public static class MarketBoardHelper
                 continue;
             }
 
+            if (AWC.Config.ItemFilters.BlacklistedItems.Contains(item.RowId)) {
+                continue;
+            }
+
             // -----------------------------------------------------
 
             // // Materia
