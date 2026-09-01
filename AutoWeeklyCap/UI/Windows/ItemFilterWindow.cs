@@ -14,7 +14,7 @@ public class ItemFilterWindow : ThemeWindow
 
     public ItemFilterWindow() : base("Item Filter##feedback-window")
     {
-        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(550, 125), MaximumSize = new Vector2(550, 9999) };
+        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(550, 125), MaximumSize = new Vector2(550, 700) };
 
         Flags = ImGuiWindowFlags.AlwaysAutoResize;
     }
@@ -26,58 +26,75 @@ public class ItemFilterWindow : ThemeWindow
 
     public override void Draw()
     {
-        var itemPriceType = AWC.Config.ItemFilters.ItemPriceType;
-        if (ImGui.BeginCombo("##PreferredItemPriceType", itemPriceType.GetName())) {
-            foreach (var item in Enum.GetValues<ItemPriceType>()) {
-                if (ImGui.Selectable(item.GetName())) {
-                    AWC.Config.ItemFilters.ItemPriceType = item;
+        Card.Draw("Item Filters", () =>
+        {
+            var itemPriceType = AWC.Config.ItemFilters.ItemPriceType;
+            if (ImGui.BeginCombo("##PreferredItemPriceType", itemPriceType.GetName())) {
+                foreach (var item in Enum.GetValues<ItemPriceType>()) {
+                    if (ImGui.Selectable(item.GetName())) {
+                        AWC.Config.ItemFilters.ItemPriceType = item;
+                    }
                 }
+
+                ImGui.EndCombo();
             }
 
-            ImGui.EndCombo();
-        }
+            Card.Separator();
 
-        DrawGrid([
-            () =>
-            {
-                ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X / 3);
-
-                var gilThreshold = AWC.Config.ItemFilters.GilThreshold;
-                if (Range.Draw("###Gil", ref gilThreshold, 0, 100_000)) {
-                    AWC.Config.ItemFilters.GilThreshold = gilThreshold;
+            Grid.DrawColumns("input-range-elements", [
+                () =>
+                {
+                    ImGui.Text("Gil Threshold");
+                    var gilThreshold = AWC.Config.ItemFilters.GilThreshold;
+                    if (Range.Draw("###Gil", ref gilThreshold, 0, 100_000)) {
+                        AWC.Config.ItemFilters.GilThreshold = gilThreshold;
+                    }
+                },
+                () =>
+                {
+                    ImGui.Text("Item Level Threshold");
+                    var itemLevelThreshold = AWC.Config.ItemFilters.ItemLevelThreshold;
+                    if (Range.Draw("###ItemThreshold", ref itemLevelThreshold, 0, Constants.CurrentMaxItemLevel)) {
+                        AWC.Config.ItemFilters.ItemLevelThreshold = itemLevelThreshold;
+                    }
                 }
-            },
-            () =>
-            {
-                ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X / 3);
-                var itemLevelThreshold = AWC.Config.ItemFilters.ItemLevelThreshold;
-                if (Range.Draw("###ItemThreshold", ref itemLevelThreshold, 0, Constants.CurrentMaxItemLevel)) {
-                    AWC.Config.ItemFilters.ItemLevelThreshold = itemLevelThreshold;
+            ], columnCount: 2, rowHeight: 46f);
+
+            Card.Separator();
+
+            ImGui.Text("Items to exclude");
+
+            Grid.DrawColumns("input-checkbox-elements", [
+                () =>
+                {
+                    var excludeMateria = AWC.Config.ItemFilters.ExcludeMateria;
+                    if (ImGui.Checkbox("Materia", ref excludeMateria)) {
+                        AWC.Config.ItemFilters.ExcludeMateria = excludeMateria;
+                    }
+                },
+                () =>
+                {
+                    var excludeFood = AWC.Config.ItemFilters.ExcludeFood;
+                    if (ImGui.Checkbox("Food", ref excludeFood)) {
+                        AWC.Config.ItemFilters.ExcludeFood = excludeFood;
+                    }
+                },
+                () =>
+                {
+                    var excludePotions = AWC.Config.ItemFilters.ExcludePotions;
+                    if (ImGui.Checkbox("Potions", ref excludePotions)) {
+                        AWC.Config.ItemFilters.ExcludePotions = excludePotions;
+                    }
+                },
+                () =>
+                {
+                    var excludeDyes = AWC.Config.ItemFilters.ExcludeDyes;
+                    if (ImGui.Checkbox("Dyes", ref excludeDyes)) {
+                        AWC.Config.ItemFilters.ExcludeDyes = excludeDyes;
+                    }
                 }
-            }
-        ], colum: 2, height: 50);
-
-        var excludeMateria = AWC.Config.ItemFilters.ExcludeMateria;
-        if (ImGui.Checkbox("Exclude Materia", ref excludeMateria)) {
-            AWC.Config.ItemFilters.ExcludeMateria = excludeMateria;
-        }
-
-        var excludeFood = AWC.Config.ItemFilters.ExcludeFood;
-        if (ImGui.Checkbox("Exclude Food", ref excludeFood)) {
-            AWC.Config.ItemFilters.ExcludeFood = excludeFood;
-        }
-
-        var excludePotions = AWC.Config.ItemFilters.ExcludePotions;
-        if (ImGui.Checkbox("Exclude Potions", ref excludePotions)) {
-            AWC.Config.ItemFilters.ExcludePotions = excludePotions;
-        }
-
-        var excludeDyes = AWC.Config.ItemFilters.ExcludeDyes;
-        if (ImGui.Checkbox("Exclude Dyes", ref excludeDyes)) {
-            AWC.Config.ItemFilters.ExcludeDyes = excludeDyes;
-        }
-
-        ImGui.Spacing();
+            ], columnCount: 4, rowHeight: 26f);
+        }, collapsible: false);
 
         Card.Draw("Items to sell", () =>
         {
@@ -100,29 +117,8 @@ public class ItemFilterWindow : ThemeWindow
                 }
             }
 
-            DrawGrid(itemElements, colum: 2, height: 28);
+            Grid.DrawColumns("items", itemElements, columnCount: 2, rowHeight: 24f);
         }, collapsible: false);
-    }
-
-    private static void DrawGrid(List<Action> elements, int colum = 2, int height = 40)
-    {
-        Vector2 start = ImGui.GetCursorScreenPos();
-        float width = (ImGui.GetContentRegionAvail().X / colum) - ImGui.GetStyle().ItemSpacing.X;
-
-        int currentRow = 0;
-
-        for (var i = 0; i < elements.Count; i++) {
-            ImGui.SetCursorScreenPos(start + new Vector2(i % colum * width, currentRow * height));
-
-            elements[i].Invoke();
-
-            if ((i + 1) % colum == 0) {
-                currentRow++;
-            }
-        }
-
-        ImGui.SetCursorScreenPos(start + new Vector2(0, currentRow * height));
-        ImGui.Dummy(Vector2.Zero);
     }
 
     private static void EnqueueLoadingItemsWithFilter()
