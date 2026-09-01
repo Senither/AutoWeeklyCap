@@ -40,15 +40,13 @@ public static class Grid
         for (var index = 0; index < elements.Count; index++) {
             var hasNextInRow = index + 1 < elements.Count && (index + 1) % columnCount != 0;
 
-            using (ImRaii.PushStyle(ImGuiStyleVar.WindowPadding, Vector2.Zero)) {
-                ImGui.BeginChild($"##{id}-grid-cell-{index}", new Vector2(itemWidth, rowHeight), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-                ImGui.PushID(index);
+            ImGui.BeginChild($"##{id}-grid-cell-{index}", new Vector2(itemWidth, rowHeight), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoBackground);
+            ImGui.PushID(index);
 
-                elements[index].Invoke();
+            elements[index].Invoke();
 
-                ImGui.PopID();
-                ImGui.EndChild();
-            }
+            ImGui.PopID();
+            ImGui.EndChild();
 
             if (hasNextInRow) {
                 ImGui.SameLine(0f, spacing);

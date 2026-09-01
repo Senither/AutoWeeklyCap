@@ -2,6 +2,7 @@
 using AutoWeeklyCap.Helpers.MarketBoard;
 using AutoWeeklyCap.UI.Helpers;
 
+using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 
 using Range = AutoWeeklyCap.UI.Helpers.Range;
@@ -11,118 +12,139 @@ namespace AutoWeeklyCap.UI.Windows;
 public class ItemFilterWindow : ThemeWindow
 {
     private static List<MarketBoardItem> FilteredItems = [];
+    private static bool IsLoadingItems = false;
+    private static bool HasLoadedItems = false;
 
     public ItemFilterWindow() : base("Item Filter##feedback-window")
     {
-        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(550, 125), MaximumSize = new Vector2(550, 700) };
-
-        Flags = ImGuiWindowFlags.AlwaysAutoResize;
+        SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(590, 400), MaximumSize = new Vector2(9999, 9999) };
     }
 
     public override void OnClose()
     {
         FilteredItems.Clear();
+        IsLoadingItems = false;
+        HasLoadedItems = false;
     }
 
     public override void Draw()
     {
-        Card.Draw("Item Filters", () =>
-        {
-            var itemPriceType = AWC.Config.ItemFilters.ItemPriceType;
-            if (ImGui.BeginCombo("##PreferredItemPriceType", itemPriceType.GetName())) {
-                foreach (var item in Enum.GetValues<ItemPriceType>()) {
-                    if (ImGui.Selectable(item.GetName())) {
-                        AWC.Config.ItemFilters.ItemPriceType = item;
-                    }
-                }
+        using var background = ImRaii.PushColor(ImGuiCol.ChildBg, Theme.BackgroundMedium);
 
-                ImGui.EndCombo();
-            }
+        using (ImRaii.Child("###item-filter-content", new Vector2(0, ImGui.GetContentRegionAvail().Y), true)) {
+            Card.Draw("Item Filters", DrawItemFilters, collapsible: false);
+            Card.Draw("Items to sell", DrawItemsToSell, collapsible: false);
+        }
+    }
 
-            Card.Separator();
-
-            Grid.DrawColumns("input-range-elements", [
-                () =>
-                {
-                    ImGui.Text("Gil Threshold");
-                    var gilThreshold = AWC.Config.ItemFilters.GilThreshold;
-                    if (Range.Draw("###Gil", ref gilThreshold, 0, 100_000)) {
-                        AWC.Config.ItemFilters.GilThreshold = gilThreshold;
-                    }
-                },
-                () =>
-                {
-                    ImGui.Text("Item Level Threshold");
-                    var itemLevelThreshold = AWC.Config.ItemFilters.ItemLevelThreshold;
-                    if (Range.Draw("###ItemThreshold", ref itemLevelThreshold, 0, Constants.CurrentMaxItemLevel)) {
-                        AWC.Config.ItemFilters.ItemLevelThreshold = itemLevelThreshold;
-                    }
-                }
-            ], columnCount: 2, rowHeight: 46f);
-
-            Card.Separator();
-
-            ImGui.Text("Items to exclude");
-
-            Grid.DrawColumns("input-checkbox-elements", [
-                () =>
-                {
-                    var excludeMateria = AWC.Config.ItemFilters.ExcludeMateria;
-                    if (ImGui.Checkbox("Materia", ref excludeMateria)) {
-                        AWC.Config.ItemFilters.ExcludeMateria = excludeMateria;
-                    }
-                },
-                () =>
-                {
-                    var excludeFood = AWC.Config.ItemFilters.ExcludeFood;
-                    if (ImGui.Checkbox("Food", ref excludeFood)) {
-                        AWC.Config.ItemFilters.ExcludeFood = excludeFood;
-                    }
-                },
-                () =>
-                {
-                    var excludePotions = AWC.Config.ItemFilters.ExcludePotions;
-                    if (ImGui.Checkbox("Potions", ref excludePotions)) {
-                        AWC.Config.ItemFilters.ExcludePotions = excludePotions;
-                    }
-                },
-                () =>
-                {
-                    var excludeDyes = AWC.Config.ItemFilters.ExcludeDyes;
-                    if (ImGui.Checkbox("Dyes", ref excludeDyes)) {
-                        AWC.Config.ItemFilters.ExcludeDyes = excludeDyes;
-                    }
-                }
-            ], columnCount: 4, rowHeight: 26f);
-        }, collapsible: false);
-
-        Card.Draw("Items to sell", () =>
-        {
-            if (RightAlignedButton.Draw(FilteredItems.Count == 0 ? "Load Items" : "Refresh Items", offsetY: -2f)) {
-                EnqueueLoadingItemsWithFilter();
-            }
-
-            ImGui.Spacing();
-            ImGui.Spacing();
-
-            List<Action> itemElements = [];
-            foreach (var item in FilteredItems) {
-                if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
-                    itemElements.Add(() =>
-                    {
-                        ItemIcon.Draw(itemObj.Icon);
-                        ImGui.Text($"{itemObj.Name}");
-                        ImGuiEx.Tooltip($"Selling for {item.GetPrice(itemObj.CanBeHq)}\nUI Category: {itemObj.ItemUICategory.RowId}\nItem Level: {itemObj.LevelItem.RowId}\nItem ID: {itemObj.RowId}");
-                    });
+    private static void DrawItemFilters()
+    {
+        var itemPriceType = AWC.Config.ItemFilters.ItemPriceType;
+        if (ImGui.BeginCombo("##PreferredItemPriceType", itemPriceType.GetName())) {
+            foreach (var item in Enum.GetValues<ItemPriceType>()) {
+                if (ImGui.Selectable(item.GetName())) {
+                    AWC.Config.ItemFilters.ItemPriceType = item;
                 }
             }
 
-            Grid.DrawColumns("items", itemElements, columnCount: 2, rowHeight: 24f);
-        }, collapsible: false);
+            ImGui.EndCombo();
+        }
+
+        Card.Separator();
+
+        Grid.DrawColumns("input-range-elements", [
+            () =>
+            {
+                ImGui.Text("Gil Threshold");
+                var gilThreshold = AWC.Config.ItemFilters.GilThreshold;
+                if (Range.Draw("###Gil", ref gilThreshold, 0, 100_000)) {
+                    AWC.Config.ItemFilters.GilThreshold = gilThreshold;
+                }
+            },
+            () =>
+            {
+                ImGui.Text("Item Level Threshold");
+                var itemLevelThreshold = AWC.Config.ItemFilters.ItemLevelThreshold;
+                if (Range.Draw("###ItemThreshold", ref itemLevelThreshold, 0, Constants.CurrentMaxItemLevel)) {
+                    AWC.Config.ItemFilters.ItemLevelThreshold = itemLevelThreshold;
+                }
+            }
+        ], columnCount: 2, rowHeight: 46f);
+
+        Card.Separator();
+
+        ImGui.Text("Items to exclude");
+
+        Grid.DrawColumns("input-checkbox-elements", [
+            () =>
+            {
+                var excludeMateria = AWC.Config.ItemFilters.ExcludeMateria;
+                if (ImGui.Checkbox("Materia", ref excludeMateria)) {
+                    AWC.Config.ItemFilters.ExcludeMateria = excludeMateria;
+                }
+            },
+            () =>
+            {
+                var excludeFood = AWC.Config.ItemFilters.ExcludeFood;
+                if (ImGui.Checkbox("Food", ref excludeFood)) {
+                    AWC.Config.ItemFilters.ExcludeFood = excludeFood;
+                }
+            },
+            () =>
+            {
+                var excludePotions = AWC.Config.ItemFilters.ExcludePotions;
+                if (ImGui.Checkbox("Potions", ref excludePotions)) {
+                    AWC.Config.ItemFilters.ExcludePotions = excludePotions;
+                }
+            },
+            () =>
+            {
+                var excludeDyes = AWC.Config.ItemFilters.ExcludeDyes;
+                if (ImGui.Checkbox("Dyes", ref excludeDyes)) {
+                    AWC.Config.ItemFilters.ExcludeDyes = excludeDyes;
+                }
+            }
+        ], columnCount: 4, rowHeight: 26f);
+    }
+
+    private static void DrawItemsToSell()
+    {
+        if (RightAlignedButton.Draw(IsLoadingItems ? "Loading..." : HasLoadedItems ? "Refresh Items" : "Load Items", offsetY: -2f)) {
+            EnqueueLoadingItemsWithFilter();
+        }
+
+        ImGui.Spacing();
+        ImGui.Spacing();
+
+        if (!HasLoadedItems) {
+            ImGuiEx.TextCentered(Theme.TextMuted, "Click the \"Load Items\" button to see what items matches your current filter");
+            return;
+        }
+
+        if (FilteredItems.Count == 0) {
+            ImGuiEx.TextCentered(Theme.TextMuted, "Found no items to sell with your current filters");
+            return;
+        }
+
+        List<Action> itemElements = [];
+        foreach (var item in FilteredItems) {
+            if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
+                itemElements.Add(() =>
+                {
+                    ItemIcon.Draw(itemObj.Icon);
+                    ImGui.Text($"{itemObj.Name}");
+                    ImGuiEx.Tooltip($"Selling for {item.GetPrice(itemObj.CanBeHq)}\nUI Category: {itemObj.ItemUICategory.RowId}\nItem Level: {itemObj.LevelItem.RowId}\nItem ID: {itemObj.RowId}");
+                });
+            }
+        }
+
+        Grid.DrawFixedWidth("items", itemElements, itemWidth: 260, rowHeight: 24f);
     }
 
     private static void EnqueueLoadingItemsWithFilter()
     {
+        IsLoadingItems = true;
+
         AWC.TaskManager.Insert(async void () =>
         {
             try {
@@ -138,6 +160,9 @@ public class ItemFilterWindow : ThemeWindow
                     .ToList();
             } catch (Exception e) {
                 AWC.Log.Error("Failed to fetch items from marketboard", e);
+            } finally {
+                IsLoadingItems = false;
+                HasLoadedItems = true;
             }
         });
     }
