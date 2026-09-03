@@ -1,5 +1,3 @@
-using Dalamud.Interface.Utility.Raii;
-
 namespace AutoWeeklyCap.UI.Helpers;
 
 public static class Grid

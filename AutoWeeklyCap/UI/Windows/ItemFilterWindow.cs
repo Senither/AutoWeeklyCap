@@ -1,10 +1,9 @@
-﻿using AutoWeeklyCap.Contracts.UI;
-using AutoWeeklyCap.Helpers.MarketBoard;
-using AutoWeeklyCap.UI.Helpers;
-
-using System.Threading;
+﻿using System.Threading;
 
 using AutoWeeklyCap.Config;
+using AutoWeeklyCap.Contracts.UI;
+using AutoWeeklyCap.Helpers.MarketBoard;
+using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;

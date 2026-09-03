@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-using AutoWeeklyCap.Config;
+﻿using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Contracts.Runner;
 using AutoWeeklyCap.Helpers.MarketBoard;
 
@@ -31,7 +29,6 @@ public class SellWorthlessItemsAction : BaseAction
                 return;
             }
 
-            // Debug: Remove later
             LogDebug($"Found {itemsToSell.Count} items that matches the filters, queueing up sell tasks");
             foreach (var itemToSell in itemsToSell) {
                 if (InventoryHelper.TryGetSheetItemFromItemId(itemToSell.ItemId, out var item)) {
