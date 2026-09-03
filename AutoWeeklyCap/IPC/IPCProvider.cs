@@ -248,6 +248,17 @@ public class IPCProvider
     public bool EnqueueSellTripleTriadCards() => ActionInstance.SellTripleTriadCard.Invoke();
 
     /// <summary>
+    /// Enqueues sell worthless items action, will run all the items in the
+    /// players inventory through a filter, including checking prices via
+    /// Universalis, and then selling any items that doesn't match the
+    /// filters for gil instead of keeping them in the inventory.
+    /// <br /><br />
+    /// Requires Lifestream and vnavmesh to be enabled.
+    /// </summary>
+    [EzIPC("Action.EnqueueSellWorthlessItems")]
+    public bool EnqueueSellWorthlessItems() => ActionInstance.SellWorthlessItems.Invoke();
+
+    /// <summary>
     /// Enqueues enter safezone action, will teleport to the
     /// players preferred safezone and enter the residence.
     /// <br /><br />
