@@ -4,6 +4,8 @@ using AutoWeeklyCap.UI.Helpers;
 
 using System.Threading;
 
+using AutoWeeklyCap.Config;
+
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 
@@ -31,6 +33,8 @@ public class ItemFilterWindow : ThemeWindow
         FilteredItems.Clear();
         IsLoadingItems = false;
         HasLoadedItems = false;
+
+        Configuration.Save();
     }
 
     public override void Draw()
@@ -46,7 +50,7 @@ public class ItemFilterWindow : ThemeWindow
 
     private static void DrawItemFilters()
     {
-        ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - (ImGui.GetStyle().FramePadding.X * 3));
+        ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - ImGui.GetStyle().ItemSpacing.X - 24f);
 
         var itemPriceType = AWC.Config.ItemFilters.ItemPriceType;
         if (ImGui.BeginCombo("##PreferredItemPriceType", itemPriceType.GetName())) {
@@ -59,6 +63,12 @@ public class ItemFilterWindow : ThemeWindow
             ImGui.EndCombo();
         }
 
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Determines what type of price is used to get current marketboard");
+            ImGui.Text("price for items being checked with Universalis.");
+        });
+
         Card.Separator();
 
         Grid.DrawColumns("input-range-elements", [
@@ -69,6 +79,13 @@ public class ItemFilterWindow : ThemeWindow
                 if (Range.Draw("###Gil", ref gilThreshold, 0, 100_000)) {
                     AWC.Config.ItemFilters.GilThreshold = gilThreshold;
                 }
+
+                InformationTooltip.Draw(() =>
+                {
+                    ImGui.Text("Items that sell more than your set gil threshold on");
+                    ImGui.Text("the marketboard according to Universalis will be");
+                    ImGui.Text("excluded from being sold for gil.");
+                });
             },
             () =>
             {
@@ -77,12 +94,25 @@ public class ItemFilterWindow : ThemeWindow
                 if (Range.Draw("###ItemThreshold", ref itemLevelThreshold, 0, Constants.CurrentMaxItemLevel)) {
                     AWC.Config.ItemFilters.ItemLevelThreshold = itemLevelThreshold;
                 }
+
+                InformationTooltip.Draw(() =>
+                {
+                    ImGui.Text("Items which has an item level at of above your preferred item level threshold");
+                    ImGui.Text("will be excluded from being sold for gil, this includes gear, food, potions,");
+                    ImGui.Text("materia, etc, that all has a base item level.");
+                });
             }
         ], columnCount: 2, rowHeight: 46f);
 
         Card.Separator();
 
-        ImGui.Text("Items to exclude");
+        ImGui.Text("Item types to exclude");
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Allows you to exclude entire categories of item types easily, an item type");
+            ImGui.Text("that's excluded will never be included in the item filter.");
+        });
 
         Grid.DrawColumns("input-checkbox-elements", [
             () =>
@@ -120,8 +150,14 @@ public class ItemFilterWindow : ThemeWindow
     {
         HashSet<uint> blacklistedItems = AWC.Config.ItemFilters.BlacklistedItems;
 
-        ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - ImGui.GetStyle().ItemSpacing.X);
+        ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - ImGui.GetStyle().ItemSpacing.X - 24f);
         ImGui.InputTextWithHint("##blacklist-search", "Search items to blacklist", ref SearchQuery, 64);
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Items added to the blacklist will always be excluded from the filters, these");
+            ImGui.Text("are items you'd like to always keep, regardless of what they sell for.");
+        });
 
         if (!string.IsNullOrWhiteSpace(SearchQuery)) {
             IEnumerable<Item> matchingItems = Svc.Data.GetExcelSheet<Item>()
@@ -185,9 +221,12 @@ public class ItemFilterWindow : ThemeWindow
 
     private static void DrawItemsToSell()
     {
-        if (RightAlignedButton.Draw(IsLoadingItems ? "Loading..." : HasLoadedItems ? "Refresh Items" : "Load Items", offsetY: -2f)) {
-            EnqueueLoadingItemsWithFilter();
-        }
+        Disabled.Draw(!PlayerHelper.IsValid, () =>
+        {
+            if (RightAlignedButton.Draw(IsLoadingItems ? "Loading..." : HasLoadedItems ? "Refresh Items" : "Load Items", offsetY: -2f)) {
+                EnqueueLoadingItemsWithFilter();
+            }
+        });
 
         ImGui.Spacing();
         ImGui.Spacing();
@@ -209,7 +248,7 @@ public class ItemFilterWindow : ThemeWindow
                 {
                     ItemIcon.Draw(itemObj.Icon);
                     ImGui.Text($"{itemObj.Name}");
-                    ImGuiEx.Tooltip($"Selling for {item.GetPrice(itemObj.CanBeHq)}\nUI Category: {itemObj.ItemUICategory.RowId}\nItem Level: {itemObj.LevelItem.RowId}\nItem ID: {itemObj.RowId}");
+                    ImGuiEx.Tooltip($"Selling for {item.GetPrice(itemObj.CanBeHq):N0}");
                 });
             }
         }
