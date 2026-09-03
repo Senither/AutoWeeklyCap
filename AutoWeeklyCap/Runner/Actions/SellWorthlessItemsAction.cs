@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 
+using AutoWeeklyCap.Config;
 using AutoWeeklyCap.Contracts.Runner;
 using AutoWeeklyCap.Helpers.MarketBoard;
 
@@ -14,6 +15,8 @@ public class SellWorthlessItemsAction : BaseAction
 {
     protected override string Name => nameof(SellWorthlessItemsAction);
     protected override string[] AddonsToClose => ["SelectIconString", "SelectString", "Shop", "ContextMenu", "Talk", "SelectYesno"];
+
+    private const string MetricsKey = "GilEarnedFromVendoredItems";
 
     protected override bool Run(params object[] args)
     {
@@ -83,6 +86,10 @@ public class SellWorthlessItemsAction : BaseAction
 
                     return false;
                 }, $"{Name}: open window"),
+            new TaskManagerTask(
+                () => AWC.Runner.State.SetMetric(MetricsKey, (uint)CurrencyHelper.GetGil()),
+                $"{Name}: prepare gil earned metrics"
+            ),
             new TaskManagerTask(() =>
                 {
                     if (remainingItemsToSell.Count == 0) {
@@ -123,7 +130,25 @@ public class SellWorthlessItemsAction : BaseAction
                         return false;
                     }
                 }, $"{Name}: sell items"),
+            new TaskManagerTask(
+                UpdateGilEarnedMetrics,
+                "MovementHelper: update gil earned metrics"
+            ),
             new TaskManagerTask(() => AddonHelper.CloseAddons(AddonsToClose), $"{Name}: closing addons")
         ]);
+    }
+
+    private static void UpdateGilEarnedMetrics()
+    {
+        if (!AWC.Runner.State.HasMetric(MetricsKey)) {
+            return;
+        }
+
+        uint before = AWC.Runner.State.PullMetric(MetricsKey);
+
+        AWC.Config.GetCurrentCharacterMetrics()
+            ?.IncrementGilEarnedFromSellingItemsCounter((uint)(CurrencyHelper.GetGil() - before));
+
+        Configuration.Save();
     }
 }
