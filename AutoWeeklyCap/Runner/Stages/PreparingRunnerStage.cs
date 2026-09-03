@@ -95,6 +95,10 @@ public class PreparingRunnerStage : BaseStage
             ActionInstance.EnqueueAction(ActionInstance.MoveInventoryItemsToSaddlebag);
         }
 
+        if (AWC.Config.SellWorthlessItems) {
+            ActionInstance.EnqueueAction(ActionInstance.SellWorthlessItems);
+        }
+
         state.ChangeStageTo(Stage.CheckingTomestone);
     }
 
