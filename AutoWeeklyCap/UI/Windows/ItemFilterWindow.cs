@@ -2,6 +2,8 @@
 using AutoWeeklyCap.Helpers.MarketBoard;
 using AutoWeeklyCap.UI.Helpers;
 
+using System.Threading;
+
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 
@@ -217,12 +219,17 @@ public class ItemFilterWindow : ThemeWindow
 
     private static void EnqueueLoadingItemsWithFilter()
     {
-        IsLoadingItems = true;
+        if (IsLoadingItems) {
+            return;
+        }
 
-        AWC.TaskManager.Insert(async void () =>
+        IsLoadingItems = true;
+        string dataCenterName = Player.HomeDataCenterName;
+
+        var thread = new Thread(async void () =>
         {
             try {
-                FilteredItems = (await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory())
+                FilteredItems = (await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory(dataCenterName))
                     .Select(marketBoardItem =>
                     {
                         var hasSheetItem = InventoryHelper.TryGetSheetItemFromItemId(marketBoardItem.ItemId, out var sheetItem);
@@ -233,11 +240,13 @@ public class ItemFilterWindow : ThemeWindow
                     .Select(item => item.MarketBoardItem)
                     .ToList();
             } catch (Exception e) {
-                AWC.Log.Error("Failed to fetch items from marketboard", e);
+                AWC.Log.Error($"[{nameof(ItemFilterWindow)}] Failed to fetch items from marketboard: {e.Message}\n{e.StackTrace}");
             } finally {
                 IsLoadingItems = false;
                 HasLoadedItems = true;
             }
-        });
+        }) { IsBackground = true, Name = "AWC-ItemFilterLoader" };
+
+        thread.Start();
     }
 }
