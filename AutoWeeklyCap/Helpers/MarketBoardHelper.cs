@@ -76,7 +76,7 @@ public static class MarketBoardHelper
         try {
             response = await FetchAggregatedPricesFromUniversalis(dataCenterName, itemIdsToFetch);
         } catch (Exception ex) {
-            AWC.Log.Error($"[{nameof(MarketBoardHelper)}] Failed to fetch aggregated prices from universalis: {ex.Message}\n{ex.StackTrace}");
+            AWC.Log.Warning($"[{nameof(MarketBoardHelper)}] Failed to fetch aggregated prices from universalis: {ex.Message}\n{ex.StackTrace}");
 
             return result;
         } finally {

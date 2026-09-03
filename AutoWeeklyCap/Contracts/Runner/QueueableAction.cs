@@ -35,8 +35,8 @@ public abstract class QueueableAction
         {
             try {
                 await action();
-            } catch (Exception) {
-                // ignored
+            } catch (Exception ex) {
+                AWC.Log.Error($"[{nameof(QueueableAction)}] Caught exception from async action: {ex.Message}\n{ex.StackTrace}");
             }
         }
     }
@@ -68,7 +68,7 @@ public abstract class QueueableAction
         try {
             action();
         } catch (Exception ex) {
-            AWC.Log.Error("[QueueableAction] Failed to capture queued action, error:", ex);
+            AWC.Log.Error($"[{nameof(QueueableAction)}] Failed to capture queued action, error:", ex);
         } finally {
             IsCapturing = false;
         }
