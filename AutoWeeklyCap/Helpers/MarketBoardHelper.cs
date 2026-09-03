@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.IO;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading;
@@ -137,19 +138,33 @@ public static class MarketBoardHelper
         CancellationToken cancellationToken = default
     )
     {
-        AWC.Log.Debug($"[{nameof(MarketBoardHelper)}] Sending request to Universalis with IDs ({string.Join(",", uniqueItemIds)})");
+        AggregatedUniversalisResponse aggregatedResponse = new();
+        using HttpClient client = BuildHttpClient();
 
-        using var response = await BuildHttpClient().GetAsync(string.Join(",", uniqueItemIds), cancellationToken);
+        foreach (uint[] itemIdChunk in uniqueItemIds.Chunk(100)) {
+            AWC.Log.Debug($"[{nameof(MarketBoardHelper)}] Sending request to Universalis with IDs ({string.Join(",", itemIdChunk)})");
 
-        response.EnsureSuccessStatusCode();
+            using HttpResponseMessage response = await client.GetAsync(string.Join(",", itemIdChunk), cancellationToken);
 
-        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+            response.EnsureSuccessStatusCode();
 
-        return await JsonSerializer.DeserializeAsync<AggregatedUniversalisResponse>(
-            stream,
-            JsonSerializerOptions,
-            cancellationToken
-        );
+            await using Stream stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+
+            AggregatedUniversalisResponse? chunkResponse = await JsonSerializer.DeserializeAsync<AggregatedUniversalisResponse>(
+                stream,
+                JsonSerializerOptions,
+                cancellationToken
+            );
+
+            if (chunkResponse is null) {
+                continue;
+            }
+
+            aggregatedResponse.Results.AddRange(chunkResponse.Results);
+            aggregatedResponse.FailedItems.AddRange(chunkResponse.FailedItems);
+        }
+
+        return aggregatedResponse;
     }
 
     private static HttpClient BuildHttpClient()
