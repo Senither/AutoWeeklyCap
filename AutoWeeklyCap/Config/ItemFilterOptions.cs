@@ -3,7 +3,7 @@
 [Serializable]
 public class ItemFilterOptions
 {
-    public ItemPriceType ItemPriceType = ItemPriceType.Maximum;
+    public ItemPriceType ItemPriceType = ItemPriceType.Average;
 
     public uint GilThreshold { get; set; } = 1000;
     public uint ItemLevelThreshold { get; set; } = Constants.CurrentMaxItemLevel - 145;

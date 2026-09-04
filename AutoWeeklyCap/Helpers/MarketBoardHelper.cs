@@ -125,6 +125,7 @@ public static class MarketBoardHelper
         return new MarketBoardItemPrice {
             MinListing = BuildMarketBoardItemPriceList(data.MinListing),
             RecentListing = BuildMarketBoardItemPriceList(data.RecentPurchase),
+            AverageListing = BuildMarketBoardItemPriceList(data.AverageSalePrice)
         };
         // @formatter:on
     }

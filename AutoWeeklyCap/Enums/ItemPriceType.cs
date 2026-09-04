@@ -6,6 +6,7 @@ public enum ItemPriceType
 {
     Minimum,
     Recent,
+    Average,
     Maximum
 }
 
@@ -19,7 +20,8 @@ public static class ItemPriceTypeExtensions
             {
                 ItemPriceType.Minimum => "Minimum price",
                 ItemPriceType.Recent => "Recent price",
-                ItemPriceType.Maximum => "Highest between Min and Recent price",
+                ItemPriceType.Average => "Average price",
+                ItemPriceType.Maximum => "Maximum between all options",
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };
         }
@@ -32,9 +34,16 @@ public static class ItemPriceTypeExtensions
 
             return type switch
             {
-                ItemPriceType.Minimum => ItemPriceType.LoadPriceFromPriceList([item.MinListing, item.RecentListing]),
-                ItemPriceType.Recent => ItemPriceType.LoadPriceFromPriceList([item.RecentListing, item.MinListing]),
-                ItemPriceType.Maximum => Math.Max(ItemPriceType.Minimum.GetPrice(item), ItemPriceType.Recent.GetPrice(item)),
+                ItemPriceType.Minimum => ItemPriceType.LoadPriceFromPriceList([item.MinListing, item.AverageListing, item.RecentListing]),
+                ItemPriceType.Recent => ItemPriceType.LoadPriceFromPriceList([item.RecentListing, item.AverageListing, item.MinListing]),
+                ItemPriceType.Average => ItemPriceType.LoadPriceFromPriceList([item.AverageListing, item.MinListing, item.RecentListing]),
+                ItemPriceType.Maximum => Math.Max(
+                    Math.Max(
+                        ItemPriceType.Minimum.GetPrice(item),
+                        ItemPriceType.Recent.GetPrice(item)
+                    ),
+                    ItemPriceType.Average.GetPrice(item)
+                ),
                 _ => 0u
             };
         }

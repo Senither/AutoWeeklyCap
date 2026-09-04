@@ -30,6 +30,7 @@ public sealed class MarketBoardItemPrice
 {
     public required MarketBoardItemPriceList MinListing { get; init; }
     public required MarketBoardItemPriceList RecentListing { get; init; }
+    public required MarketBoardItemPriceList AverageListing { get; init; }
 }
 
 public sealed class MarketBoardItemPriceList
