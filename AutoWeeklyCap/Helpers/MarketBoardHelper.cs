@@ -28,14 +28,14 @@ public static class MarketBoardHelper
         Constants.LevelingFoodItemId,
     ];
 
-    public static async Task<List<MarketBoardItem>> GetFilteredMarketBoardItemsFromInventory(string dataCenterName)
+    public static async Task<List<MarketBoardItem>> GetFilteredMarketBoardItemsFromInventory(uint serverId)
     {
         HashSet<uint> uniqueItemIds = GetUniqueItemIdsFromInventory();
         if (uniqueItemIds.Count == 0) {
             return [];
         }
 
-        List<MarketBoardItem> marketBoardItems = await GetMarketBoardPricesForUniqueIds(dataCenterName, uniqueItemIds);
+        List<MarketBoardItem> marketBoardItems = await GetMarketBoardPricesForUniqueIds(serverId, uniqueItemIds);
         if (marketBoardItems.Count == 0) {
             return [];
         }
@@ -52,7 +52,7 @@ public static class MarketBoardHelper
             .ToList();
     }
 
-    private static async Task<List<MarketBoardItem>> GetMarketBoardPricesForUniqueIds(string dataCenterName, HashSet<uint> uniqueItemIds)
+    private static async Task<List<MarketBoardItem>> GetMarketBoardPricesForUniqueIds(uint serverId, HashSet<uint> uniqueItemIds)
     {
         List<MarketBoardItem> result = [];
         HashSet<uint> itemIdsToFetch = [];
@@ -74,7 +74,7 @@ public static class MarketBoardHelper
         await FetchLock.WaitAsync();
 
         try {
-            response = await FetchAggregatedPricesFromUniversalis(dataCenterName, itemIdsToFetch);
+            response = await FetchAggregatedPricesFromUniversalis(serverId, itemIdsToFetch);
         } catch (Exception ex) {
             AWC.Log.Warning($"[{nameof(MarketBoardHelper)}] Failed to fetch aggregated prices from universalis: {ex.Message}\n{ex.StackTrace}");
 
@@ -134,13 +134,13 @@ public static class MarketBoardHelper
     }
 
     private static async Task<AggregatedUniversalisResponse?> FetchAggregatedPricesFromUniversalis(
-        string dataCenterName,
+        uint serverId,
         HashSet<uint> uniqueItemIds,
         CancellationToken cancellationToken = default
     )
     {
         AggregatedUniversalisResponse aggregatedResponse = new();
-        using HttpClient client = BuildHttpClient(dataCenterName);
+        using HttpClient client = BuildHttpClient(serverId);
 
         foreach (uint[] itemIdChunk in uniqueItemIds.Chunk(100)) {
             AWC.Log.Debug($"[{nameof(MarketBoardHelper)}] Sending request to Universalis with IDs ({string.Join(",", itemIdChunk)})");
@@ -168,12 +168,12 @@ public static class MarketBoardHelper
         return aggregatedResponse;
     }
 
-    private static HttpClient BuildHttpClient(string dataCenterName)
+    private static HttpClient BuildHttpClient(uint serverId)
     {
         HttpClient client = new HttpClient();
 
         client.Timeout = TimeSpan.FromSeconds(30);
-        client.BaseAddress = new Uri($"https://universalis.app/api/v2/aggregated/{dataCenterName}/");
+        client.BaseAddress = new Uri($"https://universalis.app/api/v2/aggregated/{serverId}/");
 
         client.DefaultRequestHeaders.UserAgent.ParseAdd($"AutoWeeklyCap/{AWC.Version}");
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

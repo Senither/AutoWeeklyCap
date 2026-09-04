@@ -24,7 +24,7 @@ public class SellWorthlessItemsAction : BaseAction
 
         EnqueueAsync(async () =>
         {
-            var itemsToSell = await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory(Player.HomeDataCenterName);
+            var itemsToSell = await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory(Player.HomeWorld.RowId);
             if (itemsToSell.Count == 0) {
                 return;
             }

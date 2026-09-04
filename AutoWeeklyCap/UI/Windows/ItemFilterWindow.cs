@@ -262,12 +262,12 @@ public class ItemFilterWindow : ThemeWindow
         }
 
         IsLoadingItems = true;
-        string dataCenterName = Player.HomeDataCenterName;
+        uint serverId = Player.HomeWorld.RowId;
 
         var thread = new Thread(async void () =>
         {
             try {
-                FilteredItems = (await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory(dataCenterName))
+                FilteredItems = (await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory(serverId))
                     .Select(marketBoardItem =>
                     {
                         var hasSheetItem = InventoryHelper.TryGetSheetItemFromItemId(marketBoardItem.ItemId, out var sheetItem);
