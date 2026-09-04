@@ -245,7 +245,7 @@ public class ItemFilterWindow : ThemeWindow
             if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
                 itemElements.Add(() =>
                 {
-                    ItemIcon.Draw(itemObj.Icon);
+                    ItemIcon.Draw(itemObj.Icon, item.IsHq);
                     ImGui.Text($"{itemObj.Name}");
                     ImGuiEx.Tooltip($"Selling for {item.GetPrice():N0}");
                 });

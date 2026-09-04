@@ -5,9 +5,9 @@ namespace AutoWeeklyCap.UI.Helpers;
 
 public static class ItemIcon
 {
-    public static void Draw(uint iconId, float multiplier = 1f)
+    public static void Draw(uint iconId, bool itemHq = false, float multiplier = 1f)
     {
-        if (!Svc.Texture.GetFromGameIcon(new GameIconLookup(iconId)).TryGetWrap(out IDalamudTextureWrap? wrap, out _)) {
+        if (!Svc.Texture.GetFromGameIcon(new GameIconLookup(iconId, itemHq)).TryGetWrap(out IDalamudTextureWrap? wrap, out _)) {
             return;
         }
 
