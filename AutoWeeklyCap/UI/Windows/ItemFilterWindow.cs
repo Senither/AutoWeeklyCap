@@ -247,7 +247,7 @@ public class ItemFilterWindow : ThemeWindow
                 {
                     ItemIcon.Draw(itemObj.Icon);
                     ImGui.Text($"{itemObj.Name}");
-                    ImGuiEx.Tooltip($"Selling for {item.GetPrice(itemObj.CanBeHq):N0}");
+                    ImGuiEx.Tooltip($"Selling for {item.GetPrice():N0}");
                 });
             }
         }

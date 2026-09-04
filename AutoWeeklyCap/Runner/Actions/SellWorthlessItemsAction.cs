@@ -32,7 +32,7 @@ public class SellWorthlessItemsAction : BaseAction
             LogDebug($"Found {itemsToSell.Count} items that matches the filters, queueing up sell tasks");
             foreach (var itemToSell in itemsToSell) {
                 if (InventoryHelper.TryGetSheetItemFromItemId(itemToSell.ItemId, out var item)) {
-                    LogDebug($"Preparing to sell item: {item.Name} | ItemId={itemToSell.ItemId}, Price={itemToSell.GetPrice(item.CanBeHq)}, ItemUICategory={item.ItemUICategory.RowId}, ItemSearchCategory={item.ItemSearchCategory.RowId}");
+                    LogDebug($"Preparing to sell item: {item.Name} | ItemId={itemToSell.ItemId}, IsHq={itemToSell.IsHq}, Price={itemToSell.GetPrice()}, ItemUICategory={item.ItemUICategory.RowId}, ItemSearchCategory={item.ItemSearchCategory.RowId}");
                 }
             }
 
@@ -114,7 +114,7 @@ public class SellWorthlessItemsAction : BaseAction
 
                         MarketBoardItem nextItem = remainingItemsToSell[0];
                         InventoryItem inventoryItem = InventoryHelper.GetInventoryItems()
-                            .FirstOrDefault(item => item.ItemId == nextItem.ItemId);
+                            .FirstOrDefault(item => item.ItemId == nextItem.ItemId && item.IsHighQuality() == nextItem.IsHq);
 
                         if (inventoryItem.ItemId == 0) {
                             remainingItemsToSell.RemoveAt(0);

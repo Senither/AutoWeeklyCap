@@ -30,25 +30,32 @@ public static class MarketBoardHelper
 
     public static async Task<List<MarketBoardItem>> GetFilteredMarketBoardItemsFromInventory(uint serverId)
     {
-        HashSet<uint> uniqueItemIds = GetUniqueItemIdsFromInventory();
-        if (uniqueItemIds.Count == 0) {
+        HashSet<(uint ItemId, bool IsHq)> uniqueItems = GetUniqueItemsFromInventory();
+        if (uniqueItems.Count == 0) {
             return [];
         }
 
-        List<MarketBoardItem> marketBoardItems = await GetMarketBoardPricesForUniqueIds(serverId, uniqueItemIds);
+        List<MarketBoardItem> marketBoardItems = await GetMarketBoardPricesForUniqueIds(serverId, uniqueItems.Select(item => item.ItemId).ToHashSet());
         if (marketBoardItems.Count == 0) {
             return [];
         }
 
-        return marketBoardItems
-            .Where(item => item.IsLoaded)
-            .Select(marketBoardItem =>
+        return uniqueItems
+            .Select(item =>
             {
-                var hasSheetItem = InventoryHelper.TryGetSheetItemFromItemId(marketBoardItem.ItemId, out var sheetItem);
-                return new { MarketBoardItem = marketBoardItem, SheetItem = sheetItem, HasSheetItem = hasSheetItem };
+                MarketBoardItem marketBoardItem = marketBoardItems.Find(candidate => candidate.ItemId == item.ItemId)!;
+                return new MarketBoardItem
+                {
+                    IsLoaded = marketBoardItem.IsLoaded,
+                    ItemId = marketBoardItem.ItemId,
+                    IsHq = item.IsHq,
+                    NqPrice = marketBoardItem.NqPrice,
+                    HqPrice = marketBoardItem.HqPrice,
+                    LastUpdatedAt = marketBoardItem.LastUpdatedAt,
+                };
             })
-            .Where(item => item.MarketBoardItem.GetPrice(item.SheetItem.CanBeHq) < AWC.Config.ItemFilters.GilThreshold)
-            .Select(item => item.MarketBoardItem)
+            .Where(item => item.IsLoaded)
+            .Where(item => item.GetPrice() < AWC.Config.ItemFilters.GilThreshold)
             .ToList();
     }
 
@@ -98,13 +105,14 @@ public static class MarketBoardHelper
         Result? result = response?.Results.Find(r => r.ItemId == itemId);
 
         if (result is null) {
-            return new MarketBoardItem { ItemId = itemId, IsLoaded = false };
+            return new MarketBoardItem { ItemId = itemId, IsHq = false, IsLoaded = false };
         }
 
         return new MarketBoardItem
         {
             IsLoaded = true,
             ItemId = itemId,
+            IsHq = false,
             NqPrice = BuildMarketBoardItemPrice(result.Nq),
             HqPrice = BuildMarketBoardItemPrice(result.Hq),
             LastUpdatedAt = DateTime.UtcNow,
@@ -181,9 +189,9 @@ public static class MarketBoardHelper
         return client;
     }
 
-    private static HashSet<uint> GetUniqueItemIdsFromInventory()
+    private static HashSet<(uint ItemId, bool IsHq)> GetUniqueItemsFromInventory()
     {
-        HashSet<uint> uniqueItemIds = [];
+        HashSet<(uint ItemId, bool IsHq)> uniqueItems = [];
 
         foreach (var inventoryItem in InventoryHelper.GetInventoryItems()) {
             if (!InventoryHelper.TryGetSheetItemFromItemId(inventoryItem.ItemId, out var item)) {
@@ -229,11 +237,11 @@ public static class MarketBoardHelper
                 continue;
             }
 
-            AWC.Log.Debug($"[{nameof(MarketBoardHelper)}] Checking item: {item.Name} | ItemId={inventoryItem.ItemId}, ItemUICategory={item.ItemUICategory.RowId}, ItemSearchCategory={item.ItemSearchCategory.RowId}");
-
-            uniqueItemIds.AddIfNotExist(inventoryItem.ItemId);
+            if (uniqueItems.Add((inventoryItem.ItemId, inventoryItem.IsHighQuality()))) {
+                AWC.Log.Debug($"[{nameof(MarketBoardHelper)}] Checking item: {item.Name} | ItemId={inventoryItem.ItemId}, IsHighQuality={inventoryItem.IsHighQuality()}, ItemUICategory={item.ItemUICategory.RowId}, ItemSearchCategory={item.ItemSearchCategory.RowId}");
+            }
         }
 
-        return uniqueItemIds;
+        return uniqueItems;
     }
 }

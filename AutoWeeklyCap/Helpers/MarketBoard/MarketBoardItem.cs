@@ -7,6 +7,7 @@ public class MarketBoardItem
     public required bool IsLoaded { get; init; }
 
     public required uint ItemId { get; init; }
+    public required bool IsHq { get; init; }
     public MarketBoardItemPrice? NqPrice { get; init; }
     public MarketBoardItemPrice? HqPrice { get; init; }
 
@@ -14,14 +15,14 @@ public class MarketBoardItem
 
     public bool IsExpired => DateTime.UtcNow - LastUpdatedAt > CacheDuration;
 
-    public uint GetPrice(bool hq = false)
+    public uint GetPrice()
     {
-        return AWC.Config.ItemFilters.ItemPriceType.GetPrice(hq ? HqPrice : NqPrice);
+        return AWC.Config.ItemFilters.ItemPriceType.GetPrice(IsHq ? HqPrice : NqPrice);
     }
 
     public override string ToString()
     {
-        return $"MarketBoardItem=[IsLoaded={IsLoaded}, ItemId={ItemId}, NqPrice={NqPrice}, HqPrice={HqPrice}, LastUpdatedAt={LastUpdatedAt}]";
+        return $"MarketBoardItem=[IsLoaded={IsLoaded}, ItemId={ItemId}, IsHq={IsHq}, NqPrice={NqPrice}, HqPrice={HqPrice}, LastUpdatedAt={LastUpdatedAt}]";
     }
 }
 
