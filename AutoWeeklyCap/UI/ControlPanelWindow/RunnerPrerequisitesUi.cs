@@ -340,6 +340,18 @@ public static class RunnerPrerequisitesUi
             ImGui.Text(" to be enabled");
         });
 
+        Disabled.Draw(!AWC.Config.SellWorthlessItems, () =>
+        {
+            ImGui.Text("Sell items every");
+            ImGui.SameLine();
+            ImGui.SetNextItemWidth(80 * ImGuiHelpers.GlobalScale);
+
+            var sellWorthlessItemsRunInterval = AWC.Config.SellWorthlessItemsRunInterval;
+            if (Range.Draw("runs###sell-worthless-items-run-interval", ref sellWorthlessItemsRunInterval, 1, 100)) {
+                AWC.Config.SellWorthlessItemsRunInterval = sellWorthlessItemsRunInterval;
+            }
+        });
+
         // Auto Spend Tomestones
         var autoSpendUncappedTomestones = AWC.Config.SpendUncappedTomestones;
         if (ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones)) {

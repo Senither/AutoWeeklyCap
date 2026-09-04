@@ -65,6 +65,7 @@ public class Configuration : IPluginConfiguration
     public List<TomestoneItem> SpendUncappedTomestoneItems = [];
     public bool MoveDuplicateItemsFromInventoryToSaddlebag = false;
     public bool SellWorthlessItems = false;
+    public uint SellWorthlessItemsRunInterval { get; set; } = 1;
     public ItemFilterOptions ItemFilters { get; set; } = new();
 
     // Runner Options (AutoRetainer)

@@ -95,7 +95,7 @@ public class PreparingRunnerStage : BaseStage
             ActionInstance.EnqueueAction(ActionInstance.MoveInventoryItemsToSaddlebag);
         }
 
-        if (AWC.Config.SellWorthlessItems) {
+        if (AWC.Config.SellWorthlessItems && state.RunsCounter % Math.Max(1, AWC.Config.SellWorthlessItemsRunInterval) == 0) {
             ActionInstance.EnqueueAction(ActionInstance.SellWorthlessItems);
         }
 
