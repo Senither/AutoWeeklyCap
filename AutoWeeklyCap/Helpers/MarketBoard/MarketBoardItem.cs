@@ -30,11 +30,11 @@ public sealed class MarketBoardItemPrice
 {
     public required MarketBoardItemPriceList MinListing { get; init; }
     public required MarketBoardItemPriceList RecentListing { get; init; }
-    public required MarketBoardItemPriceList AverageListing { get; init; }
 }
 
 public sealed class MarketBoardItemPriceList
 {
     public required uint WorldPrice { get; init; }
     public required uint DcPrice { get; init; }
+    public required uint RegionPrice { get; init; }
 }

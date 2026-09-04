@@ -125,7 +125,6 @@ public static class MarketBoardHelper
         return new MarketBoardItemPrice {
             MinListing = BuildMarketBoardItemPriceList(data.MinListing),
             RecentListing = BuildMarketBoardItemPriceList(data.RecentPurchase),
-            AverageListing = BuildMarketBoardItemPriceList(data.AverageSalePrice)
         };
         // @formatter:on
     }
@@ -136,7 +135,8 @@ public static class MarketBoardHelper
         return new MarketBoardItemPriceList
         {
             WorldPrice = (uint)(data.World?.Price ?? 0u),
-            DcPrice =  (uint)(data.Dc?.Price ?? 0u)
+            DcPrice =  (uint)(data.Dc?.Price ?? 0u),
+            RegionPrice = (uint)(data.Region?.Price ?? 0u)
         };
         // @formatter:on
     }
