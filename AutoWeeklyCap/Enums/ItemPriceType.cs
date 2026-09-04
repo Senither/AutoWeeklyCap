@@ -32,28 +32,34 @@ public static class ItemPriceTypeExtensions
 
             return type switch
             {
-                ItemPriceType.Minimum => ItemPriceType.LoadPriceFromPriceList(item.MinListing),
-                ItemPriceType.Recent => ItemPriceType.LoadPriceFromPriceList(item.RecentListing),
+                ItemPriceType.Minimum => ItemPriceType.LoadPriceFromPriceList([item.MinListing, item.RecentListing]),
+                ItemPriceType.Recent => ItemPriceType.LoadPriceFromPriceList([item.RecentListing, item.MinListing]),
                 ItemPriceType.Maximum => Math.Max(ItemPriceType.Minimum.GetPrice(item), ItemPriceType.Recent.GetPrice(item)),
                 _ => 0u
             };
         }
 
-        private static uint LoadPriceFromPriceList(MarketBoardItemPriceList? item)
+        private static uint LoadPriceFromPriceList(MarketBoardItemPriceList?[] items)
         {
-            if (item == null) {
-                return 0u;
+            foreach (var item in items) {
+                if (item == null) {
+                    continue;
+                }
+
+                if (item.WorldPrice > 0) {
+                    return item.WorldPrice;
+                }
+
+                if (item.DcPrice > 0) {
+                    return item.DcPrice;
+                }
+
+                if (item.RegionPrice > 0) {
+                    return item.RegionPrice;
+                }
             }
 
-            if (item.WorldPrice > 0) {
-                return item.WorldPrice;
-            }
-
-            if (item.DcPrice > 0) {
-                return item.DcPrice;
-            }
-
-            return item.RegionPrice;
+            return 0u;
         }
     }
 }
