@@ -55,6 +55,7 @@ public static class MarketBoardHelper
                 };
             })
             .Where(item => item.IsLoaded)
+            .Where(item => item.GetPrice() > 0)
             .Where(item => item.GetPrice() < AWC.Config.ItemFilters.GilThreshold)
             .ToList();
     }
