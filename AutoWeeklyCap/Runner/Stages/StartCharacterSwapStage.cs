@@ -18,7 +18,7 @@ public class StartCharacterSwapStage : BaseStage
             return;
         }
 
-        if (state.RunsCounter > 0 && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnFullyCapped) {
+        if (state.RunsCounter > 0 && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnFullyCapped && state.IsInNormalMode()) {
             ActionInstance.Notification.ForceInvoke(StopNotificationType.CharacterCapped);
         }
 
