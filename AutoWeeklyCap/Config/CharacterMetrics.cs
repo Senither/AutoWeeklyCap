@@ -21,6 +21,7 @@ public class CharacterMetrics
     public uint GilSpentOnTeleportationFees { get; set; } = 0;
     public uint DeliverableItemsHandedIn { get; set; } = 0;
     public uint MgpEarnedFromSellingCards { get; set; } = 0;
+    public uint GilEarnedFromSellingItems { get; set; } = 0;
 
     public void IncrementRunsCounter(int durationInSeconds, uint uncappedTomesCollected = 0, uint limitedTomesCollected = 0)
     {
@@ -44,4 +45,5 @@ public class CharacterMetrics
     public void IncrementGilSpentOnTeleportationFeesCounter(uint gilSpent) => GilSpentOnTeleportationFees += gilSpent;
     public void IncrementDeliverableItemsHandedInCounter(uint deliverableItems) => DeliverableItemsHandedIn += deliverableItems;
     public void IncrementMgpEarnedFromSellingCardsCounter(uint mgpEarned) => MgpEarnedFromSellingCards += mgpEarned;
+    public void IncrementGilEarnedFromSellingItemsCounter(uint gilEarned) => GilEarnedFromSellingItems += gilEarned;
 }

@@ -314,6 +314,44 @@ public static class RunnerPrerequisitesUi
             ImGui.Text("It will only move duplicated items that are found in your saddlebag.");
         });
 
+        // Auto sell worthless items
+        var sellWorthlessItems = AWC.Config.SellWorthlessItems;
+        if (ImGui.Checkbox("Auto sell worthless items", ref sellWorthlessItems)) {
+            AWC.Config.SellWorthlessItems = sellWorthlessItems;
+        }
+
+        ImGui.SameLine();
+
+        if (ImGuiEx.IconButton(FontAwesomeIcon.Filter)) {
+            AWC.Instance.ToggleItemFilterUi();
+        }
+
+        ImGuiEx.Tooltip("Opens the items filter options window");
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Will run all the items in your inventory through your selected filters,");
+            ImGui.Text("and then sell any items that doesn't meet your filters.");
+
+            ImGui.Text("Requires ");
+            StatusText.Draw(LifestreamIPC.IsEnabled, "Lifestream");
+            ImGui.Text(" and ");
+            StatusText.Draw(VNavMeshIPC.IsEnabled, "VNavMesh");
+            ImGui.Text(" to be enabled");
+        });
+
+        Disabled.Draw(!AWC.Config.SellWorthlessItems, () =>
+        {
+            ImGui.Text("Sell items every");
+            ImGui.SameLine();
+            ImGui.SetNextItemWidth(80 * ImGuiHelpers.GlobalScale);
+
+            var sellWorthlessItemsRunInterval = AWC.Config.SellWorthlessItemsRunInterval;
+            if (Range.Draw("runs###sell-worthless-items-run-interval", ref sellWorthlessItemsRunInterval, 1, 100)) {
+                AWC.Config.SellWorthlessItemsRunInterval = sellWorthlessItemsRunInterval;
+            }
+        });
+
         // Auto Spend Tomestones
         var autoSpendUncappedTomestones = AWC.Config.SpendUncappedTomestones;
         if (ImGui.Checkbox("Auto Spend Uncapped Tomestones", ref autoSpendUncappedTomestones)) {
