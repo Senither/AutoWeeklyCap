@@ -2,7 +2,7 @@
 
 public static class RightAlignedButton
 {
-    public static bool Draw(string text)
+    public static bool Draw(string text, float offsetX = 0f, float offsetY = 0f)
     {
         ImGui.SameLine();
 
@@ -16,7 +16,13 @@ public static class RightAlignedButton
             rightBoundX = Math.Min(rightBoundX, cardRightBoundX);
         }
 
-        ImGui.SetCursorScreenPos(cursor with { X = Math.Max(cursor.X, rightBoundX - buttonWidth) });
+        // @formatter:off
+        ImGui.SetCursorScreenPos(cursor with
+        {
+            X = Math.Max(cursor.X + offsetX, rightBoundX - buttonWidth),
+            Y = cursor.Y + offsetY
+        });
+        // @formatter:on
 
         return ImGui.Button(text);
     }

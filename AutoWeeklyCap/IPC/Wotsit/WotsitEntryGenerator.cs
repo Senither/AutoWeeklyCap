@@ -52,6 +52,13 @@ public static class WotsitEntryGenerator
                 3,
                 () => ActionInstance.SpendTomestone.Invoke()
             );
+
+            yield return new WotsitEntry(
+                "Sell Worthless Items",
+                "auto sell worthless items for gil",
+                3,
+                () => ActionInstance.SellWorthlessItems.Invoke()
+            );
         }
 
         if (VNavMeshIPC.IsEnabled && LifestreamIPC.IsEnabled && DeliverooIPC.IsEnabled) {

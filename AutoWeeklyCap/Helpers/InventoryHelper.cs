@@ -97,6 +97,18 @@ public static unsafe class InventoryHelper
 
     internal static IEnumerable<InventoryItem> GetTripleTriadCardsInInventory()
     {
+        return GetInventoryItems().Where(inventoryItem =>
+        {
+            if (!TryGetSheetItemFromItemId(inventoryItem.ItemId, out var item)) {
+                return false;
+            }
+
+            return item.ItemUICategory.RowId == 86;
+        });
+    }
+
+    internal static IEnumerable<InventoryItem> GetInventoryItems()
+    {
         List<InventoryType> inventories = [InventoryType.Inventory1, InventoryType.Inventory2, InventoryType.Inventory3, InventoryType.Inventory4];
         IEnumerable<InventoryItem> items = [];
 
@@ -112,17 +124,11 @@ public static unsafe class InventoryHelper
                     continue;
                 }
 
-                if (!TryGetSheetItemFromItemId(inventoryItem.ItemId, out var item)) {
-                    continue;
-                }
-
-                if (item.ItemUICategory.RowId == 86) {
-                    items = items.Append(inventoryItem);
-                }
+                items = items.Append(inventoryItem);
             }
         }
 
-        return items.Where(item => item.ItemId > 0);
+        return items;
     }
 
     internal static bool CanRepair(uint percent)

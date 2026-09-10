@@ -20,6 +20,7 @@ public static class ActionInstance
     public static readonly BuyFoodAction BuyFood = new();
     public static readonly LearnTripleTriadCardAction LearnTripleTriadCard = new();
     public static readonly SellTripleTriadCardAction SellTripleTriadCard = new();
+    public static readonly SellWorthlessItemsAction SellWorthlessItems = new();
 
     // Safe-zone instances
     public static readonly SafezoneAction Safezone = new();
