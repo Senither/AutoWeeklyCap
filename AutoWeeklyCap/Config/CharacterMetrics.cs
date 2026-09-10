@@ -9,8 +9,14 @@ public class CharacterMetrics
     public ulong TimeSpentInRuns { get; set; } = 0;
 
     public uint UncappedAcquiredTomestoneCollected { get; set; } = 0;
-    public uint WeeklyAcquiredLimitedTomestoneSpent { get; set; } = 0;
+    public uint UncappedAcquiredTomestoneSpent { get; set; } = 0;
     public uint WeeklyAcquiredLimitedTomestoneCollected { get; set; } = 0;
+
+    // ReSharper disable once UnusedMember.Global
+    [Obsolete("use UncappedAcquiredTomestoneSpent instead")]
+    public uint WeeklyAcquiredLimitedTomestoneSpent {
+        set => UncappedAcquiredTomestoneSpent = value;
+    }
 
     public uint RepairsCompleted { get; set; } = 0;
     public uint GilSpentOnRepairs { get; set; } = 0;
@@ -41,7 +47,7 @@ public class CharacterMetrics
 
     public void IncrementMateriaCounter() => MateriaExtracted++;
     public void IncrementRetainersCollected(uint retainers) => RetainersCollected += retainers;
-    public void IncrementWeeklyTomestoneSpentCounter(uint tomestones) => WeeklyAcquiredLimitedTomestoneSpent += tomestones;
+    public void IncrementWeeklyTomestoneSpentCounter(uint tomestones) => UncappedAcquiredTomestoneSpent += tomestones;
     public void IncrementGilSpentOnTeleportationFeesCounter(uint gilSpent) => GilSpentOnTeleportationFees += gilSpent;
     public void IncrementDeliverableItemsHandedInCounter(uint deliverableItems) => DeliverableItemsHandedIn += deliverableItems;
     public void IncrementMgpEarnedFromSellingCardsCounter(uint mgpEarned) => MgpEarnedFromSellingCards += mgpEarned;

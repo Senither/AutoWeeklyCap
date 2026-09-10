@@ -139,8 +139,8 @@ public static class StatisticsUi
         DrawMetricLine("Runs completed", FormatNumber(metrics.RunsCompleted));
         DrawMetricLine("Time spent in runs", FormatDuration(metrics.TimeSpentInRuns));
         DrawMetricLine("Uncapped tomestones collected", FormatNumber(metrics.UncappedAcquiredTomestoneCollected));
+        DrawMetricLine("Uncapped tomestones spent", FormatNumber(metrics.UncappedAcquiredTomestoneSpent));
         DrawMetricLine("Weekly limited tomestones collected", FormatNumber(metrics.WeeklyAcquiredLimitedTomestoneCollected));
-        DrawMetricLine("Weekly limited tomestones spent", FormatNumber(metrics.WeeklyAcquiredLimitedTomestoneSpent));
 
         Card.Separator();
 
@@ -183,8 +183,8 @@ public static class StatisticsUi
             totalRuns += metrics.RunsCompleted;
             totalTimeSpentInRuns += metrics.TimeSpentInRuns;
             totalTomestonesCollected += metrics.UncappedAcquiredTomestoneCollected;
+            totalTomestonesSpent += metrics.UncappedAcquiredTomestoneSpent;
             totalTomestonesCollected += metrics.WeeklyAcquiredLimitedTomestoneCollected;
-            totalTomestonesSpent += metrics.WeeklyAcquiredLimitedTomestoneSpent;
             totalRepairsCompleted += metrics.RepairsCompleted;
             totalMateriaExtracted += metrics.MateriaExtracted;
             totalDeliverableItemsHandedIn += metrics.DeliverableItemsHandedIn;
