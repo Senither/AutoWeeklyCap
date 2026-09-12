@@ -215,15 +215,12 @@ public static class RunnerPrerequisitesUi
             ImGui.Text("Trigger @");
             ImGui.SameLine();
 
-            var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 1.5);
-            ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
+            ImGui.SetNextItemWidth(150 * ImGuiHelpers.GlobalScale);
 
             var autoRepairPercentage = AWC.Config.RepairPercentage;
             if (Range.Draw("##Repair@", ref autoRepairPercentage, 1, 99, "%d%%")) {
                 AWC.Config.RepairPercentage = Math.Min(100, Math.Max(1, autoRepairPercentage));
             }
-
-            ImGui.PopItemWidth();
 
             ImGui.Spacing();
         });
@@ -285,14 +282,12 @@ public static class RunnerPrerequisitesUi
             ImGui.Text("Sell TT cards @");
             ImGui.SameLine();
 
-            ImGui.PushItemWidth(80 * ImGuiHelpers.GlobalScale);
+            ImGui.SetNextItemWidth(80 * ImGuiHelpers.GlobalScale);
 
             var sellTripleTriadCardsAtMinimum = AWC.Config.SellTripleTriadCardsAtMinimum;
             if (Range.Draw("##SellTTCards@", ref sellTripleTriadCardsAtMinimum, 1, 99)) {
                 AWC.Config.SellTripleTriadCardsAtMinimum = sellTripleTriadCardsAtMinimum;
             }
-
-            ImGui.PopItemWidth();
 
             ImGui.SameLine();
             ImGui.Text("cards");
@@ -379,15 +374,12 @@ public static class RunnerPrerequisitesUi
             ImGui.Text("Buy @");
             ImGui.SameLine();
 
-            var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 1.5);
-            ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
+            ImGui.SetNextItemWidth(150 * ImGuiHelpers.GlobalScale);
 
             var autoBuyWithUncappedTomestones = AWC.Config.SpendUncappedTomestoneThreshold;
             if (Range.Draw("##BuyTomestones@", ref autoBuyWithUncappedTomestones, 1, 2000)) {
                 AWC.Config.SpendUncappedTomestoneThreshold = autoBuyWithUncappedTomestones;
             }
-
-            ImGui.PopItemWidth();
 
             Card.DrawSubtle(
                 title: $"Item{(AWC.Config.SpendUncappedTomestoneItems.Count != 1 ? "s" : "")} to buy",
@@ -569,11 +561,10 @@ public static class RunnerPrerequisitesUi
 
         Disabled.Draw(!AWC.Config.AutoRetainerEnabled, () =>
         {
-            var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 2.5);
-            ImGui.PushItemWidth(width * ImGuiHelpers.GlobalScale);
-
             ImGui.Text("Wait for up to");
             ImGui.SameLine();
+
+            ImGui.SetNextItemWidth(85 * ImGuiHelpers.GlobalScale);
 
             var autoRetainerRemainingTime = AWC.Config.AutoRetainerThreshold;
             if (Range.Draw("###AutoRetainerTimeWaitingRange", ref autoRetainerRemainingTime, 0, 300)) {
@@ -584,6 +575,9 @@ public static class RunnerPrerequisitesUi
             ImGui.Text("seconds");
 
             ImGui.Text($"Which characters should be within {AWC.Config.AutoRetainerThreshold} seconds?");
+
+            var width = (int)Math.Max(150, ImGui.GetContentRegionAvail().X / 2.5);
+            ImGui.SetNextItemWidth(width * ImGuiHelpers.GlobalScale);
 
             var retainerTrigger = AWC.Config.AutoRetainerTrigger;
             if (ImGui.BeginCombo("##AutoRetainerTrigger", retainerTrigger.GetName())) {
@@ -604,8 +598,6 @@ public static class RunnerPrerequisitesUi
                 ImGui.Text("collecting your retainer ventures it's recommended that you enable Teleportation in AutoRetainer.");
                 ImGui.Text("You can enable the option in: AutoRetainer Settings -> Multi Mode -> Common Settings -> Teleportation");
             });
-
-            ImGui.PopItemWidth();
 
             Card.Separator();
 
@@ -660,7 +652,7 @@ public static class RunnerPrerequisitesUi
             }
 
             ImGui.SameLine();
-            ImGui.PushItemWidth(80 * ImGuiHelpers.GlobalScale);
+            ImGui.SetNextItemWidth(80 * ImGuiHelpers.GlobalScale);
 
             var configDeliverooRunInterval = AWC.Config.DeliverooRunInterval;
             if (Range.Draw("runs###deliveroo-run-interval", ref configDeliverooRunInterval, 1, 10)) {
@@ -672,8 +664,6 @@ public static class RunnerPrerequisitesUi
                 ImGui.Text("Runs are only counted on a per-character basis, switching");
                 ImGui.Text("between characters will reset the runs counter");
             });
-
-            ImGui.PopItemWidth();
 
             if (ImGui.RadioButton("After character is tomestone capped", !AWC.Config.DeliverooOnInterval)) {
                 AWC.Config.DeliverooOnInterval = false;
