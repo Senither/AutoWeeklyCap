@@ -3,6 +3,8 @@ using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface;
 
+using Microsoft.VisualBasic;
+
 using Range = AutoWeeklyCap.UI.Helpers.Range;
 using TomestoneItem = AutoWeeklyCap.Config.TomestoneItem;
 
@@ -604,6 +606,21 @@ public static class RunnerPrerequisitesUi
             });
 
             ImGui.PopItemWidth();
+
+            Card.Separator();
+
+            var enableOnGracefulStops = AWC.Config.AlwaysEnableAutoRetainerOnGracefulStops;
+            if (ImGui.Checkbox("Always enable AutoRetainer when runner stops", ref enableOnGracefulStops)) {
+                AWC.Config.AlwaysEnableAutoRetainerOnGracefulStops = enableOnGracefulStops;
+            }
+
+            InformationTooltip.Draw(() =>
+            {
+                ImGui.Text("Will always enable ");
+                StatusText.Draw(AutoRetainerIPC.IsEnabled, "AutoRetainer");
+                ImGui.Text(" multimode when");
+                ImGui.Text("the runner is being stopped gracefully.");
+            });
         });
     }
 

@@ -129,6 +129,8 @@ public class Runner
 
     public void Abort()
     {
+        bool stoppingGracefully = AWC.Runner.State.StoppingGracefully;
+
         State.Reset();
 
         LifestreamIPC.Abort();
@@ -147,6 +149,10 @@ public class Runner
 
         if (AWC.Config.MuteGameSoundsWhenRunning) {
             AudioHelper.MuteMasterGameAudio(false);
+        }
+
+        if (stoppingGracefully && AWC.Config.AlwaysEnableAutoRetainerOnGracefulStops) {
+            AutoRetainerIPC.EnableMultiMode();
         }
 
         ConfigOverrides.Clear();

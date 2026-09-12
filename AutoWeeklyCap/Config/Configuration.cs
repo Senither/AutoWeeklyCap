@@ -70,6 +70,7 @@ public class Configuration : IPluginConfiguration
 
     // Runner Options (AutoRetainer)
     public bool AutoRetainerEnabled { get; set; } = false;
+    public bool AlwaysEnableAutoRetainerOnGracefulStops { get; set; } = false;
     public uint AutoRetainerThreshold { get; set; } = 90;
     public RetainerTrigger AutoRetainerTrigger { get; set; } = RetainerTrigger.AnyCharacter;
 
