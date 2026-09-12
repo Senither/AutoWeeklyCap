@@ -18,7 +18,7 @@ public class StartCharacterSwapStage : BaseStage
             return;
         }
 
-        if (state.RunsCounter > 0 && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnFullyCapped && state.IsInNormalMode()) {
+        if (state.SessionRunsCounter > 0 && AWC.Config.NotificationMasterEnabled && AWC.Config.NotificationMasterUsingOnFullyCapped && state.IsInNormalMode()) {
             ActionInstance.Notification.ForceInvoke(StopNotificationType.CharacterCapped);
         }
 
@@ -33,6 +33,14 @@ public class StartCharacterSwapStage : BaseStage
 
             default:
                 LogInfo("Found no character with missing weekly capped tomestones, stopping runner");
+
+                if (state.SessionRunsCounter == 0) {
+                    Notify.Info(
+                        "The runner was stopped without completing any runs.\n" +
+                        "You can setup a stop action to make the runner preform actions when all your characters are capped under the \"Stop Actions\" section."
+                    );
+                }
+
                 state.ChangeStageTo(Stage.StoppingRunner);
                 break;
         }

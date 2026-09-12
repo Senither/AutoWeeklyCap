@@ -13,6 +13,7 @@ public class RunnerState
     public DateTime Timestamp { get; private set; } = DateTime.UtcNow;
 
     public int RunsCounter { get; private set; } = 0;
+    public int SessionRunsCounter { get; private set; } = 0;
     public string? RunsCharacter { get; private set; } = null;
 
     public bool UsingBossModRebornAi { get; private set; } = false;
@@ -35,6 +36,7 @@ public class RunnerState
         Timestamp = DateTime.UtcNow;
 
         RunsCounter = 0;
+        SessionRunsCounter = 0;
         RunsCharacter = null;
 
         UsingBossModRebornAi = false;
@@ -53,7 +55,12 @@ public class RunnerState
     public void EnableUnlimitedMode() => UnlimitedMode = true;
     public void EnableLevelingMode() => LevelingMode = true;
 
-    public void IncrementRunsCounter() => RunsCounter++;
+    public void IncrementRunsCounter()
+    {
+        RunsCounter++;
+        SessionRunsCounter++;
+    }
+
     public void UpdateTimestamp() => Timestamp = DateTime.UtcNow;
 
     public void SetRunsCounter(int counter) => RunsCounter = counter;
@@ -79,6 +86,7 @@ public class RunnerState
     public void ResetRunsTrackers()
     {
         RunsCounter = 0;
+        SessionRunsCounter = 0;
         RunsCharacter = null;
     }
 
