@@ -84,7 +84,7 @@ public abstract class ExpansionGear : QueueableAction
                     return false;
                 }
 
-                AWC.Log.Debug($"{nameof(ExpansionGear)}: Found matching item: Name: {matchingShopItem.Name} | Index: {matchingShopItem.Index} | Type: {matchingShopItem.Type} | ItemId: {matchingShopItem.ItemId}");
+                AWC.Log.Debug($"{nameof(ExpansionGear)}: Found matching item: Name: {matchingShopItem.Item.Name} | Index: {matchingShopItem.Index} | Type: {matchingShopItem.Type} | ItemId: {matchingShopItem.Item.RowId}");
                 AddonHelper.ClickShopItem(matchingShopItem.Index);
 
                 return false;

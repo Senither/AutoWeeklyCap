@@ -26,7 +26,7 @@ public static class ItemSlotExtensions
     {
         return item.EquipSlotCategory.RowId switch
         {
-            1 => ItemSlot.MainHand,
+            1 or 13 => ItemSlot.MainHand,
             2 => ItemSlot.OffHand,
             3 => ItemSlot.Head,
             4 => ItemSlot.Body,
