@@ -1,0 +1,23 @@
+﻿using AutoWeeklyCap.UI.Helpers;
+
+namespace AutoWeeklyCap.UI.ControlPanelWindow.Sections.GeneralOptions;
+
+internal static class ResetWeeklyTomestonesSection
+{
+    internal static void Draw()
+    {
+        ImGui.TextWrapped(
+            "The tomestones will reset automatically during the weekly reset, however, " +
+            "if you want to reset the tomes manually you can use the button below."
+        );
+
+        ImGui.Spacing();
+        ImGui.Spacing();
+
+        ActionButton.Draw(
+            "Reset Weekly Tomestones",
+            "Hold down CTRL to reset your weekly tomestones",
+            () => AWC.Config.CollectedTomes.Clear()
+        );
+    }
+}
