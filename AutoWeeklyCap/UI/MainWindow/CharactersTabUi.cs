@@ -2,6 +2,7 @@
 using AutoWeeklyCap.UI.Helpers;
 
 using Dalamud.Interface;
+using Dalamud.Interface.Utility.Raii;
 
 namespace AutoWeeklyCap.UI.MainWindow;
 
@@ -92,14 +93,26 @@ public static class CharactersTabUi
     {
         ImGui.SameLine(0f, 4f);
 
-        var cursorPos = ImGui.GetCursorPos();
-        ImGui.ProgressBar(0, new Vector2(ImGui.GetContentRegionAvail().X, ImGui.GetFrameHeight()), "");
-        ImGui.SameLine();
+        Vector2 cursorPos = ImGui.GetCursorPos();
 
-        cursorPos.X += 8;
+        float x = ImGui.GetContentRegionAvail().X;
+        float y = ImGui.GetFrameHeight();
+
+        float tomeProgress = tomes > 0 && weeklyLimit > 0
+            ? Math.Clamp(tomes / (float)weeklyLimit, 0f, 1f)
+            : 0f;
+
+        ImGui.ProgressBar(tomeProgress, new Vector2(x, y), "");
         ImGui.SetCursorPos(cursorPos);
 
-        var characterText = character;
+        using (ImRaii.PushStyle(ImGuiStyleVar.FrameBorderSize, 0f)) {
+            ImGui.ProgressBar(0, new Vector2(x, y - 2), "");
+        }
+
+        ImGui.SameLine();
+        ImGui.SetCursorPosX(cursorPos.X + 8 + ImGui.GetStyle().FrameBorderSize);
+
+        string characterText = character;
         if (options.PreferredJob != PlayerJob.None) {
             characterText += $"  ({options.PreferredJob.GetName()})";
         }
@@ -139,5 +152,7 @@ public static class CharactersTabUi
         ImGui.SameLine(ImGui.GetContentRegionAvail().X - 64 + ImGui.GetStyle().ItemSpacing.X);
 
         ImGui.TextUnformatted($"{tomes}/{weeklyLimit}");
+
+        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 2);
     }
 }

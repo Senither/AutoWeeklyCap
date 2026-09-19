@@ -132,6 +132,9 @@ internal static class Theme
             (ImGuiCol.TitleBgActive, ColorUtils.DarkenVector4(InteractiveActive, 0.35f)),
             (ImGuiCol.TitleBgCollapsed, InteractiveUnfocused with { W = 0.8f }),
 
+            (ImGuiCol.FrameBg, InteractiveDefault),
+            (ImGuiCol.PlotHistogram, InteractiveHovered),
+
             (ImGuiCol.CheckMark, InteractiveLighter),
             (ImGuiCol.SliderGrab, InteractiveLighter),
         ];
