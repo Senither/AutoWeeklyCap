@@ -12,6 +12,7 @@ public static class DeveloperToolbox
         Card.Draw("Plugin Details", PluginDetailsSection.Draw, false);
         Card.Draw("Runner Debug Steps", RunnerDebugStepsSection.Draw, false);
         Card.Draw("Runner Debug Actions", RunnerDebugActionsSection.Draw, false);
+        Card.Draw("AutoDuty Config Overrides", AutoDutyConfigOverridesSection.Draw, false);
         Card.Draw("Notification Debug Actions", NotificationDebugActionsSection.Draw, false);
         Card.Draw("Game Data State", GameDataStateSection.Draw, false);
         Card.Draw("Plugin Logs", DrawPluginLogs);
