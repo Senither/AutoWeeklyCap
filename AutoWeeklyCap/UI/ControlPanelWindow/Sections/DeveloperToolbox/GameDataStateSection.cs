@@ -1,7 +1,5 @@
 ﻿using System.Globalization;
 
-using AutoWeeklyCap.UI.Helpers;
-
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 
