@@ -3,6 +3,8 @@ using AutoWeeklyCap.IPC.AutoDuty;
 
 using Dalamud.Interface.ImGuiNotification;
 
+using FFXIVClientStructs.FFXIV.Common.Configuration;
+
 namespace AutoWeeklyCap.Runner;
 
 public class Runner
@@ -42,7 +44,12 @@ public class Runner
         );
 
         if (AWC.Config.MuteGameSoundsWhenRunning) {
-            AudioHelper.MuteMasterGameAudio(true);
+            SystemConfigHelper.MuteMasterGameAudio(true);
+        }
+
+        State.RestoreLimitedFrameRateWhenClientIsInactive = SystemConfigHelper.GetLimitedFrameRateWhenClientIsInactive();
+        if (State.RestoreLimitedFrameRateWhenClientIsInactive) {
+            SystemConfigHelper.LimitFrameRateWhenClientIsInactive(false);
         }
 
         AWC.Log.Info("Starting weekly cap runner");
@@ -94,7 +101,12 @@ public class Runner
         });
 
         if (AWC.Config.MuteGameSoundsWhenRunning) {
-            AudioHelper.MuteMasterGameAudio(true);
+            SystemConfigHelper.MuteMasterGameAudio(true);
+        }
+
+        State.RestoreLimitedFrameRateWhenClientIsInactive = SystemConfigHelper.GetLimitedFrameRateWhenClientIsInactive();
+        if (State.RestoreLimitedFrameRateWhenClientIsInactive) {
+            SystemConfigHelper.LimitFrameRateWhenClientIsInactive(false);
         }
 
         return true;
@@ -130,6 +142,7 @@ public class Runner
     public void Abort()
     {
         bool stoppingGracefully = AWC.Runner.State.StoppingGracefully;
+        bool restoreLimitedFrameRate = State.RestoreLimitedFrameRateWhenClientIsInactive;
 
         State.Reset();
 
@@ -148,12 +161,14 @@ public class Runner
         }
 
         if (AWC.Config.MuteGameSoundsWhenRunning) {
-            AudioHelper.MuteMasterGameAudio(false);
+            SystemConfigHelper.MuteMasterGameAudio(false);
         }
 
         if (stoppingGracefully && AWC.Config.AlwaysEnableAutoRetainerOnGracefulStops) {
             AutoRetainerIPC.EnableMultiMode();
         }
+
+        SystemConfigHelper.LimitFrameRateWhenClientIsInactive(restoreLimitedFrameRate);
 
         ConfigOverrides.Clear();
 

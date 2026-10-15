@@ -87,7 +87,7 @@ internal static class UiElementsWindowsAndSoundsSection
             AWC.Config.MuteGameSoundsWhenRunning = muteGameSoundsWhenRunning;
 
             if (AWC.Runner.State.IsRunning()) {
-                AudioHelper.MuteMasterGameAudio(muteGameSoundsWhenRunning);
+                SystemConfigHelper.MuteMasterGameAudio(muteGameSoundsWhenRunning);
             }
         }
 

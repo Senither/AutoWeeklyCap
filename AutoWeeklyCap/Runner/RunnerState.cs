@@ -4,6 +4,8 @@ namespace AutoWeeklyCap.Runner;
 
 public class RunnerState
 {
+    public bool RestoreLimitedFrameRateWhenClientIsInactive = false;
+
     public bool StoppingGracefully { get; private set; } = false;
     public bool UnlimitedMode { get; private set; } = false;
     public bool LevelingMode { get; private set; } = false;
@@ -27,6 +29,8 @@ public class RunnerState
 
     public void Reset()
     {
+        RestoreLimitedFrameRateWhenClientIsInactive = false;
+
         StoppingGracefully = false;
         UnlimitedMode = false;
         LevelingMode = false;
