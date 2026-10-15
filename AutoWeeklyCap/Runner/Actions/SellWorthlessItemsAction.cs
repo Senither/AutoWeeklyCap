@@ -95,18 +95,18 @@ public class SellWorthlessItemsAction : BaseAction
                         return true;
                     }
 
-                    if (!EzThrottler.Throttle("SellingItems", 250)) {
-                        return false;
-                    }
-
                     unsafe {
+                        if (AddonHelper.TryGetReadyAddon("ContextMenu", out var contextMenu)) {
+                            AddonHelper.FireCallBack(contextMenu, true, 0, 0);
+                            return false;
+                        }
+
                         if (AddonHelper.TryGetReadyAddon("SelectYesno", out var yesNoAddon)) {
                             AddonHelper.ClickSelectYesno();
                             return false;
                         }
 
-                        if (AddonHelper.TryGetReadyAddon("ContextMenu", out var contextMenu)) {
-                            AddonHelper.FireCallBack(contextMenu, true, 0, 0);
+                        if (!EzThrottler.Throttle("SellingItems", 500)) {
                             return false;
                         }
 
