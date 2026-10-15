@@ -14,6 +14,8 @@ public class SellWorthlessItemsAction : BaseAction
     protected override string Name => nameof(SellWorthlessItemsAction);
     protected override string[] AddonsToClose => ["SelectIconString", "SelectString", "Shop", "ContextMenu", "Talk", "SelectYesno"];
 
+    private const int LongTaskTimeout = 300_000; // 5 minutes
+
     private const string MetricsKey = "GilEarnedFromVendoredItems";
 
     protected override bool Run(params object[] args)
@@ -126,7 +128,7 @@ public class SellWorthlessItemsAction : BaseAction
 
                         return false;
                     }
-                }, $"{Name}: sell items"),
+                }, $"{Name}: sell items", new TaskManagerConfiguration(LongTaskTimeout)),
             new TaskManagerTask(
                 UpdateGilEarnedMetrics,
                 "MovementHelper: update gil earned metrics"
