@@ -24,6 +24,8 @@ public abstract class QueueableAction
 
     protected void EnqueueAsync(Func<Task> action, string description)
     {
+        Task? running = null;
+
         EnqueueOrCapture(
             new TaskManagerTask(WrappedAction, $"{Name}: {description}"),
             () => AWC.TaskManager.Enqueue(WrappedAction, $"{Name}: {description}")
@@ -31,13 +33,29 @@ public abstract class QueueableAction
 
         return;
 
-        async void WrappedAction()
+        // Starts running the action on the main thread, so it's still able to
+        // use game APIs, the WrappedAction will continue to return false
+        // until it finishes, either successfully or fails gracefully.
+        async Task RunSafely()
         {
             try {
                 await action();
             } catch (Exception ex) {
                 AWC.Log.Error($"[{nameof(QueueableAction)}] Caught exception from async action: {ex.Message}\n{ex.StackTrace}");
             }
+        }
+
+        bool WrappedAction()
+        {
+            running ??= RunSafely();
+
+            if (!running.IsCompleted) {
+                return false;
+            }
+
+            running = null;
+
+            return true;
         }
     }
 
