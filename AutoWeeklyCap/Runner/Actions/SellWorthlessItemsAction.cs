@@ -24,6 +24,8 @@ public class SellWorthlessItemsAction : BaseAction
             return false;
         }
 
+        using var title = TitleManager.RegisterTitle(BitmapFontIcon.AutoTranslateBegin, "Getting item prices");
+
         EnqueueAsync(async () =>
         {
             var itemsToSell = await MarketBoardHelper.GetFilteredMarketBoardItemsFromInventory(Player.HomeWorld.RowId);
@@ -49,6 +51,8 @@ public class SellWorthlessItemsAction : BaseAction
         LocationManager.Reset();
 
         List<MarketBoardItem> remainingItemsToSell = itemsToSell.ToList();
+
+        TitleManager.SetTitle(BitmapFontIcon.AutoTranslateEnd, "Selling worthless items");
 
         AWC.TaskManager.InsertMulti([
             .. CaptureQueuedActions(() => ActionInstance.LeaveGrandCompanyInn.Invoke()),

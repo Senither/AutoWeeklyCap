@@ -51,6 +51,13 @@ public static class TitleManager
         return new TemporaryTitle(icon, status, statusShort);
     }
 
+    public static void SetTitle(BitmapFontIcon icon, string status, string? statusShort = null)
+    {
+        _statusIcon = icon;
+        _status = status;
+        _statusShort = statusShort ?? status;
+    }
+
     public static bool Reset()
     {
         _status = null;
