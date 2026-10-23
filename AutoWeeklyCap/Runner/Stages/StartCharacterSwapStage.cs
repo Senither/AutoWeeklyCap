@@ -48,17 +48,13 @@ public class StartCharacterSwapStage : BaseStage
 
     private void HandleUnlimitedMode(Runner runner, RunnerState state)
     {
-        state.EnableUnlimitedMode();
-        LogInfo("All characters have been fully capped, starting unlimited runs");
-
-        string preferredCharacter = AWC.Config.CharacterForSwap;
-        if (PlayerHelper.GetFullCharacterName() == preferredCharacter) {
-            LogDebug("Player is already on preferred character, starting runner");
-            state.SetCurrentCharacter(preferredCharacter);
-            state.ChangeStageTo(Stage.PreparingRunner);
-            return;
+        if (!state.UnlimitedMode) {
+            LogInfo("All characters have been fully capped, starting unlimited runs");
         }
 
+        state.EnableUnlimitedMode();
+
+        string preferredCharacter = AWC.Config.CharacterForSwap;
         if (ChangeCharacter(state, preferredCharacter)) {
             return;
         }
@@ -77,13 +73,6 @@ public class StartCharacterSwapStage : BaseStage
             return;
         }
 
-        if (PlayerHelper.GetFullCharacterName() == levelableCharacter) {
-            LogDebug("Player is already on character to level, starting runner");
-            state.SetCurrentCharacter(levelableCharacter);
-            state.ChangeStageTo(Stage.PreparingRunner);
-            return;
-        }
-
         if (ChangeCharacter(state, levelableCharacter)) {
             return;
         }
@@ -97,6 +86,13 @@ public class StartCharacterSwapStage : BaseStage
         if (parts.Length != 2) {
             LogError($"Character {character} is not a valid character name, stopping runner");
             return false;
+        }
+
+        if (PlayerHelper.GetFullCharacterName() == character) {
+            LogDebug("Player is already on the desired character, skipping character swap and starting runner");
+            state.SetCurrentCharacter(character);
+            state.ChangeStageTo(Stage.PreparingRunner);
+            return true;
         }
 
         LogInfo($"Switching character to {parts[0]} on {parts[1]}");
