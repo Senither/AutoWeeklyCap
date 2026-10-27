@@ -82,6 +82,28 @@ internal static class UiElementsWindowsAndSoundsSection
 
         Card.Separator();
 
+        ImGui.Text("Statistics Expansion");
+
+        ExpansionMetrics selectedExpansionMetrics = AWC.Config.SelectedExpansionMetrics;
+        if (ImGui.BeginCombo("###expansion-metrics-selector", selectedExpansionMetrics.GetName())) {
+            foreach (var metrics in Enum.GetValues(typeof(ExpansionMetrics)).Cast<ExpansionMetrics>()) {
+                if (ImGui.Selectable(metrics.GetName())) {
+                    AWC.Config.SelectedExpansionMetrics = metrics;
+                }
+            }
+
+            ImGui.EndCombo();
+        }
+
+        InformationTooltip.Draw(() =>
+        {
+            ImGui.Text("Selects which expansion of stats and metrics should be displayed on");
+            ImGui.Text("the statistics page, when \"Everything\" is selected, your stats");
+            ImGui.Text("for all the available expansions will be combined.");
+        });
+
+        Card.Separator();
+
         bool muteGameSoundsWhenRunning = AWC.Config.MuteGameSoundsWhenRunning;
         if (ImGui.Checkbox("Mute game audio when running", ref muteGameSoundsWhenRunning)) {
             AWC.Config.MuteGameSoundsWhenRunning = muteGameSoundsWhenRunning;

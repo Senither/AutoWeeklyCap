@@ -42,7 +42,7 @@ public static class StatisticsUi
                 continue;
             }
 
-            entries.Add((character, options, options.Metrics));
+            entries.Add((character, options, options.GetMetrics(AWC.Config.SelectedExpansionMetrics)));
         }
 
         return entries;

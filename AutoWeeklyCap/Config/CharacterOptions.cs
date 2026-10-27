@@ -17,7 +17,40 @@ public class CharacterOptions
     public List<int> LastDutyDurationsSeconds { get; set; } = [];
     public Dictionary<PlayerJob, int> JobLevels { get; set; } = new();
 
-    public CharacterMetrics Metrics { get; set; } = new();
+    // ReSharper disable once UnusedMember.Global
+    [Obsolete("use MetricsByExpansion instead")]
+    public CharacterMetrics Metrics {
+        set => MetricsByExpansion[Constants.CurrentMetricsExpansion] = value;
+    }
+
+    public Dictionary<ExpansionMetrics, CharacterMetrics> MetricsByExpansion { get; set; } = new();
+
+    public CharacterMetrics GetMetrics()
+    {
+        if (!MetricsByExpansion.TryGetValue(Constants.CurrentMetricsExpansion, out var metrics)) {
+            metrics = MetricsByExpansion[Constants.CurrentMetricsExpansion] = new CharacterMetrics();
+        }
+
+        return metrics;
+    }
+
+    public CharacterMetrics GetMetrics(ExpansionMetrics expansion)
+    {
+        if (expansion != ExpansionMetrics.All) {
+            return MetricsByExpansion.TryGetValue(expansion, out var stored)
+                ? stored
+                : new CharacterMetrics();
+        }
+
+        var combined = new CharacterMetrics();
+        foreach (var (key, metrics) in MetricsByExpansion) {
+            if (key != ExpansionMetrics.All) {
+                combined.Add(metrics);
+            }
+        }
+
+        return combined;
+    }
 
     private const int MaxDutySamples = 5;
 

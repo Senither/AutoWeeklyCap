@@ -21,6 +21,7 @@ public class Configuration : IPluginConfiguration
 
     // Window & UI settings
     public ColorTheme SelectedColorTheme { get; set; } = ColorTheme.Indigo;
+    public ExpansionMetrics SelectedExpansionMetrics { get; set; } = ExpansionMetrics.All;
     public WindowOptions Window { get; set; } = new();
     public bool StatusOverlayEnabled = true;
     public StatusOverlayPosition StatusOverlayPosition { get; set; } = StatusOverlayPosition.TopCenter;
@@ -314,7 +315,7 @@ public class Configuration : IPluginConfiguration
 
         return character == null
             ? null
-            : GetOrRegisterCharacterOptions(character)?.Metrics;
+            : GetOrRegisterCharacterOptions(character)?.GetMetrics();
     }
 
     public void SetColorTheme(ColorTheme theme)

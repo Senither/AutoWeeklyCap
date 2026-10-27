@@ -19,6 +19,7 @@ public static class Constants
     internal const uint LevelingFoodItemId = 4745;
 
     // Metrics keys
+    internal const ExpansionMetrics CurrentMetricsExpansion = ExpansionMetrics.Dawntrail;
     internal const string MetricUncappedAcquiredTomestoneKey = "UncappedAcquiredTomestone";
     internal const string MetricWeeklyAcquiredLimitedTomestoneKey = "WeeklyAcquiredLimitedTomestone";
 }

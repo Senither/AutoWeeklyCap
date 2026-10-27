@@ -104,7 +104,7 @@ public class WaitForAutoRetainerStage : BaseStage
             }
 
             AWC.Config.GetOrRegisterCharacterOptions(characterData.ToString())
-                ?.Metrics
+                ?.GetMetrics()
                 .IncrementRetainersCollected(collectedRetainers);
         }
 

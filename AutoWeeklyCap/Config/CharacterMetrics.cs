@@ -29,6 +29,27 @@ public class CharacterMetrics
     public uint MgpEarnedFromSellingCards { get; set; } = 0;
     public uint GilEarnedFromSellingItems { get; set; } = 0;
 
+    public void Add(CharacterMetrics metrics)
+    {
+        RunsCompleted += metrics.RunsCompleted;
+        TimeSpentInRuns += metrics.TimeSpentInRuns;
+
+        UncappedAcquiredTomestoneCollected += metrics.UncappedAcquiredTomestoneCollected;
+        UncappedAcquiredTomestoneSpent += metrics.UncappedAcquiredTomestoneSpent;
+        WeeklyAcquiredLimitedTomestoneCollected += metrics.WeeklyAcquiredLimitedTomestoneCollected;
+
+        RepairsCompleted += metrics.RepairsCompleted;
+        GilSpentOnRepairs += metrics.GilSpentOnRepairs;
+        DarkMatterSpentOnRepairs += metrics.DarkMatterSpentOnRepairs;
+
+        MateriaExtracted += metrics.MateriaExtracted;
+        RetainersCollected += metrics.RetainersCollected;
+        GilSpentOnTeleportationFees += metrics.GilSpentOnTeleportationFees;
+        DeliverableItemsHandedIn += metrics.DeliverableItemsHandedIn;
+        MgpEarnedFromSellingCards += metrics.MgpEarnedFromSellingCards;
+        GilEarnedFromSellingItems += metrics.GilEarnedFromSellingItems;
+    }
+
     public void IncrementRunsCounter(int durationInSeconds, uint uncappedTomesCollected = 0, uint limitedTomesCollected = 0)
     {
         RunsCompleted++;
