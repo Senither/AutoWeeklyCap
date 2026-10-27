@@ -42,7 +42,14 @@ public class ItemFilterWindow : ThemeWindow
 
         using (ImRaii.Child("###item-filter-content", new Vector2(0, ImGui.GetContentRegionAvail().Y), true)) {
             Card.Draw("Item Filters", DrawItemFilters, collapsible: false);
-            Card.Draw("Blacklisted Items", DrawBlacklistedItems, collapsible: false);
+
+            Card.Draw(
+                title: $"Items to always keep ({AWC.Config.ItemFilters.BlacklistedItems.Count})",
+                bodyContent: DrawItemsToAlwaysKeep,
+                collapsible: true,
+                id: "items-to-keep"
+            );
+
             Card.Draw("Items to sell", DrawItemsToSell, collapsible: false);
         }
     }
@@ -145,16 +152,16 @@ public class ItemFilterWindow : ThemeWindow
         ], columnCount: 4, rowHeight: 26f);
     }
 
-    private static void DrawBlacklistedItems()
+    private static void DrawItemsToAlwaysKeep()
     {
         HashSet<uint> blacklistedItems = AWC.Config.ItemFilters.BlacklistedItems;
 
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - ImGui.GetStyle().ItemSpacing.X - 24f);
-        ImGui.InputTextWithHint("##blacklist-search", "Search items to blacklist", ref SearchQuery, 64);
+        ImGui.InputTextWithHint("##blacklist-search", "Search items to keep", ref SearchQuery, 64);
 
         InformationTooltip.Draw(() =>
         {
-            ImGui.Text("Items added to the blacklist will always be excluded from the filters, these");
+            ImGui.Text("Items added to the list will always be excluded from the filters, these");
             ImGui.Text("are items you'd like to always keep, regardless of what they sell for.");
         });
 
@@ -176,7 +183,7 @@ public class ItemFilterWindow : ThemeWindow
                             AWC.Config.ItemFilters.BlacklistedItems.Add(itemObj.RowId);
                         }
 
-                        ImGuiEx.Tooltip("CTRL + Right click to add the item to the blacklist");
+                        ImGuiEx.Tooltip("CTRL + Right click to add the item to the list");
                     });
                 }
             }
@@ -195,7 +202,7 @@ public class ItemFilterWindow : ThemeWindow
             return;
         }
 
-        ImGui.Text($"Blacklisted Items ({blacklistedItems.Count})");
+        ImGui.Text($"Items to keep");
         ImGui.Spacing();
 
         List<Action> itemElements = [];
@@ -210,7 +217,7 @@ public class ItemFilterWindow : ThemeWindow
                         AWC.Config.ItemFilters.BlacklistedItems.Remove(itemObj.RowId);
                     }
 
-                    ImGuiEx.Tooltip("CTRL + Right click to remove the item from the blacklist");
+                    ImGuiEx.Tooltip("CTRL + Right click to remove the item from the list");
                 });
             }
         }
