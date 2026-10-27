@@ -61,6 +61,7 @@ public class MoveInventoryItemsToSaddlebagAction : BaseAction
 
             var inventoryItems = InventoryHelper.GetPlayerInventoryItems()
                 .Where(item => !item.IsEmpty)
+                .Where(item => item.ItemId != Constants.LevelingFoodItemId)
                 .ToList();
 
             foreach (var saddlebagItem in saddlebagItems) {
