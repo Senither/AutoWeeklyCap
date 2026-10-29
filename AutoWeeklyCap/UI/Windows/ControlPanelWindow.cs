@@ -11,9 +11,22 @@ public class ControlPanelWindow : ThemeWindow
 {
     private SettingsWindowOption _option = SettingsWindowOption.GeneralOptions;
 
-    public ControlPanelWindow() : base("Auto Weekly Cap Control Panel")
+    public ControlPanelWindow(AWC autoWeeklyCap) : base("Auto Weekly Cap Control Panel")
     {
         SizeConstraints = new WindowSizeConstraints { MinimumSize = new Vector2(575, 400), MaximumSize = new Vector2(9999, 9999) };
+
+        TitleBarButtons.Add(new TitleBarButton
+        {
+            Click = (m) =>
+            {
+                if (m == ImGuiMouseButton.Left) {
+                    autoWeeklyCap.ToggleFeedbackUi();
+                }
+            },
+            Icon = FontAwesomeIcon.Inbox,
+            IconOffset = new Vector2(2, 2),
+            ShowTooltip = () => ImGui.SetTooltip("Send plugin feedback")
+        });
 
         TitleBarButtons.Add(new TitleBarButton
         {
@@ -24,7 +37,7 @@ public class ControlPanelWindow : ThemeWindow
             },
             Icon = FontAwesomeIcon.Code,
             IconOffset = new Vector2(2, 2),
-            ShowTooltip = () => ImGui.SetTooltip("Copies debug and diagnostics plugin information to clipboard")
+            ShowTooltip = () => ImGui.SetTooltip("Copy debug and diagnostics plugin information to clipboard")
         });
     }
 

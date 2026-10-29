@@ -28,19 +28,6 @@ public class MainWindow : ThemeWindow
             ShowTooltip = () => ImGui.SetTooltip("Open settings window")
         });
 
-        TitleBarButtons.Add(new TitleBarButton
-        {
-            Click = (m) =>
-            {
-                if (m == ImGuiMouseButton.Left) {
-                    autoWeeklyCap.ToggleFeedbackUi();
-                }
-            },
-            Icon = FontAwesomeIcon.Inbox,
-            IconOffset = new Vector2(2, 2),
-            ShowTooltip = () => ImGui.SetTooltip("Send plugin feedback")
-        });
-
         _lockButton = new TitleBarButton
         {
             Click = (m) =>

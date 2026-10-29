@@ -69,7 +69,7 @@ public sealed class AutoWeeklyCap : IDalamudPlugin
 
         Runner = new Runner.Runner();
 
-        _windowSystem.AddWindow(ControlPanelWindow = new ControlPanelWindow());
+        _windowSystem.AddWindow(ControlPanelWindow = new ControlPanelWindow(this));
         _windowSystem.AddWindow(MainWindow = new MainWindow(this));
         _windowSystem.AddWindow(CharacterOptionWindow = new CharacterOptionWindow());
         _windowSystem.AddWindow(StatusOverlayWindow = new StatusOverlayWindow());
