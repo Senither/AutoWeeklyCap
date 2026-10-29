@@ -12,5 +12,12 @@ public class ItemFilterOptions
     public bool ExcludePotions { get; set; } = false;
     public bool ExcludeDyes { get; set; } = false;
 
-    public HashSet<uint> BlacklistedItems { get; set; } = [];
+    // ReSharper disable once UnusedMember.Global
+    [Obsolete("use AlwaysKeepItems instead")]
+    public HashSet<uint> BlacklistedItems {
+        set => AlwaysKeepItems = value;
+    }
+
+    public HashSet<uint> AlwaysKeepItems { get; set; } = [];
+    public HashSet<uint> AlwaysSellItems { get; set; } = [];
 }

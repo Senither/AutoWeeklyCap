@@ -20,7 +20,7 @@ public class ItemFilterWindow : ThemeWindow
     private static List<MarketBoardItem> FilteredItems = [];
     private static bool IsLoadingItems = false;
     private static bool HasLoadedItems = false;
-    private static string SearchQuery = string.Empty;
+    private static readonly Dictionary<string, string> SearchQueries = new();
 
     public ItemFilterWindow() : base("Item Filter##feedback-window")
     {
@@ -32,6 +32,7 @@ public class ItemFilterWindow : ThemeWindow
         FilteredItems.Clear();
         IsLoadingItems = false;
         HasLoadedItems = false;
+        SearchQueries.Clear();
 
         Configuration.Save();
     }
@@ -44,7 +45,14 @@ public class ItemFilterWindow : ThemeWindow
             Card.Draw("Item Filters", DrawItemFilters, collapsible: false);
 
             Card.Draw(
-                title: $"Items to always keep ({AWC.Config.ItemFilters.BlacklistedItems.Count})",
+                title: $"Items to always sell ({AWC.Config.ItemFilters.AlwaysSellItems.Count})",
+                bodyContent: DrawItemsToAlwaysSell,
+                collapsible: true,
+                id: "items-to-sell"
+            );
+
+            Card.Draw(
+                title: $"Items to always keep ({AWC.Config.ItemFilters.AlwaysKeepItems.Count})",
                 bodyContent: DrawItemsToAlwaysKeep,
                 collapsible: true,
                 id: "items-to-keep"
@@ -152,23 +160,69 @@ public class ItemFilterWindow : ThemeWindow
         ], columnCount: 4, rowHeight: 26f);
     }
 
+    private static void DrawItemsToAlwaysSell()
+    {
+        DrawItemListEditor(
+            id: "always-sell",
+            list: AWC.Config.ItemFilters.AlwaysSellItems,
+            otherList: AWC.Config.ItemFilters.AlwaysKeepItems,
+            searchHint: "Search items to always sell",
+            emptyText: "No items are currently set to always be sold",
+            header: "Items to always sell",
+            tooltipLines:
+            [
+                "Items added to the list will always be sold if found in your inventory,",
+                "ignoring all item filters, including the gil and item level thresholds."
+            ]
+        );
+    }
+
     private static void DrawItemsToAlwaysKeep()
     {
-        HashSet<uint> blacklistedItems = AWC.Config.ItemFilters.BlacklistedItems;
+        DrawItemListEditor(
+            id: "always-keep",
+            list: AWC.Config.ItemFilters.AlwaysKeepItems,
+            otherList: AWC.Config.ItemFilters.AlwaysSellItems,
+            searchHint: "Search items to keep",
+            emptyText: "No items are currently blacklisted",
+            header: "Items to keep",
+            tooltipLines:
+            [
+                "Items added to the list will always be excluded from the filters, these",
+                "are items you'd like to always keep, regardless of what they sell for."
+            ]
+        );
+    }
+
+    private static void DrawItemListEditor(
+        string id,
+        HashSet<uint> list,
+        HashSet<uint> otherList,
+        string searchHint,
+        string emptyText,
+        string header,
+        string[] tooltipLines
+    )
+    {
+        SearchQueries.TryGetValue(id, out var searchQuery);
+        searchQuery ??= string.Empty;
 
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - ImGui.GetStyle().ItemSpacing.X - 24f);
-        ImGui.InputTextWithHint("##blacklist-search", "Search items to keep", ref SearchQuery, 64);
+        ImGui.InputTextWithHint($"##{id}-search", searchHint, ref searchQuery, 64);
+
+        SearchQueries[id] = searchQuery;
 
         InformationTooltip.Draw(() =>
         {
-            ImGui.Text("Items added to the list will always be excluded from the filters, these");
-            ImGui.Text("are items you'd like to always keep, regardless of what they sell for.");
+            foreach (var line in tooltipLines) {
+                ImGui.Text(line);
+            }
         });
 
-        if (!string.IsNullOrWhiteSpace(SearchQuery)) {
+        if (!string.IsNullOrWhiteSpace(searchQuery)) {
             IEnumerable<Item> matchingItems = Svc.Data.GetExcelSheet<Item>()
-                .Where(item => item.RowId > 0 && item.Name.ToString().Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
-                .Where(item => !blacklistedItems.Contains(item.RowId))
+                .Where(item => item.RowId > 0 && item.Name.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                .Where(item => !list.Contains(item.RowId))
                 .Take(24);
 
             List<Action> searchResults = [];
@@ -180,7 +234,8 @@ public class ItemFilterWindow : ThemeWindow
                         ImGui.Text($"{itemObj.Name}");
 
                         if (ImGuiEx.Ctrl && ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
-                            AWC.Config.ItemFilters.BlacklistedItems.Add(itemObj.RowId);
+                            otherList.Remove(itemObj.RowId);
+                            list.Add(itemObj.RowId);
                         }
 
                         ImGuiEx.Tooltip("CTRL + Right click to add the item to the list");
@@ -188,25 +243,25 @@ public class ItemFilterWindow : ThemeWindow
                 }
             }
 
-            if (searchResults.Count == 0 && SearchQuery.Length > 0) {
+            if (searchResults.Count == 0) {
                 ImGuiEx.TextCentered(Theme.TextMuted, "Found no items matching your search query");
             } else {
-                Grid.DrawFixedWidth("search-results", searchResults, itemWidth: 260, rowHeight: 24f);
+                Grid.DrawFixedWidth($"{id}-search-results", searchResults, itemWidth: 260, rowHeight: 24f);
             }
         }
 
         Card.Separator();
 
-        if (blacklistedItems.Count == 0) {
-            ImGuiEx.TextCentered(Theme.TextMuted, "No items are currently blacklisted");
+        if (list.Count == 0) {
+            ImGuiEx.TextCentered(Theme.TextMuted, emptyText);
             return;
         }
 
-        ImGui.Text($"Items to keep");
+        ImGui.Text(header);
         ImGui.Spacing();
 
         List<Action> itemElements = [];
-        foreach (var itemId in blacklistedItems) {
+        foreach (var itemId in list.ToList()) {
             if (InventoryHelper.TryGetSheetItemFromItemId(itemId, out var itemObj)) {
                 itemElements.Add(() =>
                 {
@@ -214,7 +269,7 @@ public class ItemFilterWindow : ThemeWindow
                     ImGui.Text($"{itemObj.Name}");
 
                     if (ImGuiEx.Ctrl && ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
-                        AWC.Config.ItemFilters.BlacklistedItems.Remove(itemObj.RowId);
+                        list.Remove(itemObj.RowId);
                     }
 
                     ImGuiEx.Tooltip("CTRL + Right click to remove the item from the list");
@@ -222,7 +277,7 @@ public class ItemFilterWindow : ThemeWindow
             }
         }
 
-        Grid.DrawFixedWidth("items-blacklist", itemElements, itemWidth: 260, rowHeight: 24f);
+        Grid.DrawFixedWidth($"{id}-items", itemElements, itemWidth: 260, rowHeight: 24f);
     }
 
     private static void DrawItemsToSell()
@@ -252,9 +307,16 @@ public class ItemFilterWindow : ThemeWindow
             if (InventoryHelper.TryGetSheetItemFromItemId(item.ItemId, out var itemObj)) {
                 itemElements.Add(() =>
                 {
+                    uint price = item.GetPrice();
+
                     ItemIcon.Draw(itemObj.Icon, item.IsHq);
                     ImGui.Text($"{itemObj.Name}");
-                    ImGuiEx.Tooltip($"Selling for {item.GetPrice():N0}");
+
+                    if (AWC.Config.ItemFilters.AlwaysSellItems.Contains(item.ItemId) && price <= 0) {
+                        ImGuiEx.Tooltip($"Selling for {itemObj.PriceLow:N0} (vendor price)");
+                    } else {
+                        ImGuiEx.Tooltip($"Selling for {price:N0}");
+                    }
                 });
             }
         }

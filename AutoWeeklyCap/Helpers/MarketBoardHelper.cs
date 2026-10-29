@@ -35,15 +35,22 @@ public static class MarketBoardHelper
             return [];
         }
 
-        List<MarketBoardItem> marketBoardItems = await GetMarketBoardPricesForUniqueIds(serverId, uniqueItems.Select(item => item.ItemId).ToHashSet());
-        if (marketBoardItems.Count == 0) {
-            return [];
-        }
+        HashSet<uint> alwaysSell = AWC.Config.ItemFilters.AlwaysSellItems;
 
-        return uniqueItems
-            .Select(item =>
+        HashSet<uint> idsToPrice = uniqueItems.Select(item => item.ItemId).Where(id => !alwaysSell.Contains(id)).ToHashSet();
+        List<MarketBoardItem> marketBoardItems = idsToPrice.Count == 0
+            ? []
+            : await GetMarketBoardPricesForUniqueIds(serverId, idsToPrice);
+
+        return uniqueItems.Select(item =>
             {
-                MarketBoardItem marketBoardItem = marketBoardItems.Find(candidate => candidate.ItemId == item.ItemId)!;
+                bool force = alwaysSell.Contains(item.ItemId);
+
+                MarketBoardItem? marketBoardItem = marketBoardItems.Find(candidate => candidate.ItemId == item.ItemId);
+                if (marketBoardItem is null) {
+                    return force ? new MarketBoardItem { ItemId = item.ItemId, IsHq = item.IsHq, IsLoaded = true } : null;
+                }
+
                 return new MarketBoardItem
                 {
                     IsLoaded = marketBoardItem.IsLoaded,
@@ -54,9 +61,9 @@ public static class MarketBoardHelper
                     LastUpdatedAt = marketBoardItem.LastUpdatedAt,
                 };
             })
-            .Where(item => item.IsLoaded)
-            .Where(item => item.GetPrice() > 0)
-            .Where(item => item.GetPrice() < AWC.Config.ItemFilters.GilThreshold)
+            .OfType<MarketBoardItem>()
+            .Where(item => alwaysSell.Contains(item.ItemId) ||
+                           (item.IsLoaded && item.GetPrice() > 0 && item.GetPrice() < AWC.Config.ItemFilters.GilThreshold))
             .ToList();
     }
 
@@ -210,6 +217,12 @@ public static class MarketBoardHelper
                 continue;
             }
 
+            // Items the user always wants to sell ignore all remaining filters
+            if (AWC.Config.ItemFilters.AlwaysSellItems.Contains(item.RowId)) {
+                uniqueItems.Add((inventoryItem.ItemId, inventoryItem.IsHighQuality()));
+                continue;
+            }
+
             // Skip items below the item level threshold when value is set to 1 or greater
             if (AWC.Config.ItemFilters.ItemLevelThreshold > 0 && item.LevelItem.RowId >= AWC.Config.ItemFilters.ItemLevelThreshold) {
                 continue;
@@ -235,7 +248,7 @@ public static class MarketBoardHelper
                 continue;
             }
 
-            if (AWC.Config.ItemFilters.BlacklistedItems.Contains(item.RowId)) {
+            if (AWC.Config.ItemFilters.AlwaysKeepItems.Contains(item.RowId)) {
                 continue;
             }
 
