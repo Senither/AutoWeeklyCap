@@ -3,8 +3,6 @@ using AutoWeeklyCap.IPC.AutoDuty;
 
 using Dalamud.Interface.ImGuiNotification;
 
-using FFXIVClientStructs.FFXIV.Common.Configuration;
-
 namespace AutoWeeklyCap.Runner;
 
 public class Runner
