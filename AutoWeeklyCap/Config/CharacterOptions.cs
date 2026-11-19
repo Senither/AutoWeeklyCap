@@ -20,7 +20,7 @@ public class CharacterOptions
     // ReSharper disable once UnusedMember.Global
     [Obsolete("use MetricsByExpansion instead")]
     public CharacterMetrics Metrics {
-        set => MetricsByExpansion[Constants.CurrentMetricsExpansion] = value;
+        set => MetricsByExpansion[ExpansionMetrics.Dawntrail] = value;
     }
 
     public Dictionary<ExpansionMetrics, CharacterMetrics> MetricsByExpansion { get; set; } = new();
